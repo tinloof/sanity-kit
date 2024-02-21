@@ -1,6 +1,6 @@
 {
   "name": "@tinloof/sanity-studio",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A collection of Sanity studio plugins, fields, and components",
   "keywords": [
     "sanity",
@@ -49,7 +49,7 @@
     "@sanity/incompatible-plugin": "^1.0.4",
     "@sanity/ui": "^2.0.1",
     "@tanstack/react-virtual": "^3.0.4",
-    "@tinloof/sanity-web": "*",
+    "@tinloof/sanity-web": "^0.1.0",
     "nanoid": "^5.0.5",
     "react-rx": "^2.1.3"
   },

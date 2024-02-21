@@ -1,6 +1,6 @@
 {
   "name": "@tinloof/sanity-web",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Sanity-related utilities for web development",
   "exports": {
     ".": {

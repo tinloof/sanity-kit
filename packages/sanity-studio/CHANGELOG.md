@@ -1,5 +1,16 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 0.1.0
+
+### Minor Changes
+
+- Initial version
+
+### Patch Changes
+
+- Updated dependencies
+  - @tinloof/sanity-web@0.1.0
+
 ## 0.1.27
 
 ### Patch Changes
