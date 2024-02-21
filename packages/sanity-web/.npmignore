@@ -1,0 +1,9 @@
+node_modules
+.DS_STORE
+/.gitignore
+README.md
+src
+tests
+.turbo
+CHANGELOG.md
+/tsconfig.json

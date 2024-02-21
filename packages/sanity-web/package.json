@@ -1,0 +1,35 @@
+{
+  "name": "@tinloof/sanity-web",
+  "version": "0.0.0",
+  "description": "Sanity-related utilities for web development",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --outDir dist",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --outDir dist --watch"
+  },
+  "author": "Tinloof",
+  "license": "ISC",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "speakingurl": "^14.0.1"
+  }
+}

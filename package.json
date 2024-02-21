@@ -1,0 +1,30 @@
+{
+  "name": "sanity-kit",
+  "private": true,
+  "scripts": {
+    "build": "turbo build --no-cache --filter='./packages/*'",
+    "dev": "turbo dev --parallel --filter=./packages/*",
+    "dev:example:hello-world": "turbo dev --filter=./examples/hello-world",
+    "dev:example:with-i18n": "turbo dev --filter=./examples/with-i18n",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "publish-packages": "turbo build --filter='./packages/*' lint && changeset version && changeset publish"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "prettier": "^3.1.0",
+    "turbo": "^1.12.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@10.2.4",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "dependencies": {
+    "@sanity/document-internationalization": "^2.0.3"
+  }
+}
