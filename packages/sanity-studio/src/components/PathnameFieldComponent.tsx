@@ -90,7 +90,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
   const localizedPathname = getDocumentPath(
     {
       ...document,
-      pathname: value.current,
+      pathname: value?.current,
     },
     defaultLocaleId
   );
@@ -212,8 +212,8 @@ function runChange(onChange: (patch: any) => void, value?: string) {
 }
 
 function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
-  const navigate = usePresentationNavigate();
-  const { preview } = usePresentationParams();
+  const navigate = useSafeNavigate();
+  const preview = useSafePreview();
 
   return (
     <Button
@@ -223,9 +223,31 @@ function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
       mode="default"
       tone="default"
       icon={EyeOpenIcon}
-      disabled={preview === localizedPathname}
+      disabled={
+        !navigate ||
+        typeof localizedPathname !== "string" ||
+        preview === localizedPathname
+      }
       title="Preview page"
-      onClick={() => navigate(localizedPathname)}
+      onClick={!navigate ? undefined : () => navigate(localizedPathname)}
     />
   );
+}
+
+function useSafeNavigate() {
+  try {
+    const navigate = usePresentationNavigate();
+    return navigate;
+  } catch (e) {
+    return null;
+  }
+}
+
+function useSafePreview() {
+  try {
+    const { preview } = usePresentationParams();
+    return preview;
+  } catch (e) {
+    return null;
+  }
 }
