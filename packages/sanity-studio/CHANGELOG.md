@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 0.1.1
+
+### Patch Changes
+
+- Fix: Handle empty pathname and desk tools outside of presentation
+
 ## 0.1.0
 
 ### Minor Changes
