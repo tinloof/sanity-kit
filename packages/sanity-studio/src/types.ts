@@ -6,7 +6,10 @@ import {
   SanityDocument,
 } from "sanity";
 
-import { PresentationPluginOptions } from "sanity/presentation";
+import {
+  NavigatorOptions as PresentationNavigatorOptions,
+  PresentationPluginOptions,
+} from "sanity/presentation";
 
 export type NormalizedCreatablePage = {
   title: string;
@@ -26,6 +29,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
     locales: Locale[];
     defaultLocaleId?: string;
   };
+  navigator?: Pick<PresentationNavigatorOptions, "maxWidth" | "minWidth">;
   creatablePages?: Array<NormalizedCreatablePage | string>;
 };
 
