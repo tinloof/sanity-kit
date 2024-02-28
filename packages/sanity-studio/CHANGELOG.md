@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 0.1.2
+
+### Patch Changes
+
+- Add config options for navigator
+
 ## 0.1.1
 
 ### Patch Changes
