@@ -11,7 +11,13 @@ export default defineType({
       name: 'title',
     },
     definePathname({
-      defaultLocaleId: config.i18n.defaultLocaleId,
+      name: 'pathname',
+      options: {
+        i18n: {
+          enabled: true,
+          defaultLocaleId: config.i18n.defaultLocaleId,
+        },
+      },
     }),
     {
       type: 'string',

@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 0.2.1
+
+### Patch Changes
+
+- Fix minor locale bug in PathnameFieldComponent
+
 ## 0.2.0
 
 ### Minor Changes

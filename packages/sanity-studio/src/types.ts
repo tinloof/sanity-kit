@@ -1,9 +1,11 @@
 import { Language as Locale } from "@sanity/document-internationalization";
 import {
+  FieldDefinition,
   ObjectDefinition,
   ObjectOptions,
   ObjectSchemaType,
   SanityDocument,
+  SlugOptions,
 } from "sanity";
 
 import {
@@ -152,3 +154,18 @@ export type SectionAddHandler = (params: {
   sectionName: string;
   initialValue?: any;
 }) => void;
+
+export type PathnameOptions = SlugOptions & {
+  i18n?: {
+    enabled?: boolean;
+    defaultLocaleId?: string;
+  };
+};
+
+export type PathnameParams = Omit<
+  FieldDefinition<"slug">,
+  "type" | "options" | "name"
+> & {
+  name?: string;
+  options?: PathnameOptions;
+};

@@ -13,7 +13,7 @@ import {
   usePresentationNavigate,
   usePresentationParams,
 } from "sanity/presentation";
-import { DocumentWithLocale } from "../types";
+import { DocumentWithLocale, PathnameOptions } from "../types";
 
 const UnlockButton = styled(Button)`
   position: static !important;
@@ -36,7 +36,8 @@ const FolderText = styled(Text)`
 `;
 
 export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
-  const defaultLocaleId = props.schemaType.options?.defaultLocaleId;
+  const i18nOptions = (props.schemaType.options as PathnameOptions | undefined)
+    ?.i18n ?? { enabled: false, defaultLocaleId: undefined };
   const document = useFormValue([]) as DocumentWithLocale;
   const {
     inputProps: { onChange, value, readOnly },
@@ -90,9 +91,10 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
   const localizedPathname = getDocumentPath(
     {
       ...document,
+      locale: i18nOptions.enabled ? document.locale : undefined,
       pathname: value?.current,
     },
-    defaultLocaleId
+    i18nOptions.defaultLocaleId
   );
 
   const pathInput = useMemo(() => {

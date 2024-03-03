@@ -1,24 +1,6 @@
-import {
-  FieldDefinition,
-  SlugOptions,
-  SlugValidationContext,
-  defineField,
-} from "sanity";
+import { FieldDefinition, SlugValidationContext, defineField } from "sanity";
 import { PathnameFieldComponent } from "../components/PathnameFieldComponent";
-
-export type PathnameOptions = SlugOptions & {
-  i18n?: {
-    enabled?: boolean;
-    defaultLocaleId?: string;
-  };
-};
-
-export type PathnameParams = Omit<
-  FieldDefinition<"slug">,
-  "type" | "options"
-> & {
-  options?: PathnameOptions;
-};
+import { PathnameParams } from "../types";
 
 export function definePathname(
   params: PathnameParams = { name: "pathname" }
