@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 0.2.0
+
+### Minor Changes
+
+- definePathname bug fixes
+
 ## 0.1.2
 
 ### Patch Changes
