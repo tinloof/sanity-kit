@@ -95,7 +95,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
     defaultLocaleId
   );
 
-  const PathInput = useMemo(() => {
+  const pathInput = useMemo(() => {
     if (folderLocked && folder) {
       return (
         <Flex gap={1} align="center">
@@ -189,7 +189,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
         </Text>
       )}
 
-      {!readOnly && PathInput}
+      {pathInput}
     </Stack>
   );
 }
