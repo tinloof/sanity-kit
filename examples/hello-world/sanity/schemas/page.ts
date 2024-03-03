@@ -9,6 +9,6 @@ export default defineType({
       type: 'string',
       name: 'title',
     },
-    definePathname(),
+    definePathname({ name: 'pathname' }),
   ],
 })
