@@ -1,6 +1,6 @@
 {
   "name": "@tinloof/sanity-studio",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A collection of Sanity studio plugins, fields, and components",
   "keywords": [
     "sanity",
@@ -73,7 +73,7 @@
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
     "rimraf": "^5.0.5",
-    "sanity": "^3.29.0",
+    "sanity": "^3.34.0",
     "styled-components": "6.1.1",
     "typescript": "^5.3.3"
   },

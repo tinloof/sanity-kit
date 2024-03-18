@@ -192,7 +192,3 @@ function searchTree({
 
   return searchResults;
 }
-
-function undraftId(id: string) {
-  return id.replace(/^drafts\./, "");
-}

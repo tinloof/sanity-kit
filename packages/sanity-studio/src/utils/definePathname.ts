@@ -3,18 +3,18 @@ import { PathnameFieldComponent } from "../components/PathnameFieldComponent";
 import { PathnameParams } from "../types";
 
 export function definePathname(
-  params: PathnameParams = { name: "pathname" }
+  schema: PathnameParams = { name: "pathname" }
 ): FieldDefinition<"slug"> {
-  const slugOptions = params?.options;
+  const slugOptions = schema?.options;
 
   return defineField({
-    ...params,
-    name: params.name ?? "pathname",
-    title: params?.title ?? "URL",
+    ...schema,
+    name: schema.name ?? "pathname",
+    title: schema?.title ?? "URL",
     type: "slug",
     components: {
-      ...params.components,
-      field: params.components?.field ?? PathnameFieldComponent,
+      ...schema.components,
+      field: schema.components?.field ?? PathnameFieldComponent,
     },
     options: {
       ...(slugOptions ?? {}),

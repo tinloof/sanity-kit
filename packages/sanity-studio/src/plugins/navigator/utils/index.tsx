@@ -19,7 +19,10 @@ export const useSanityFetch = ({
 }) => {
   const documentStore = useDocumentStore();
   const subscribe = useMemoObservable(
-    () => documentStore.listenQuery(query, variables, {}),
+    () =>
+      documentStore.listenQuery(query, variables, {
+        perspective: "previewDrafts",
+      }),
     [documentStore]
   );
 
@@ -39,7 +42,7 @@ export const pathnameToTitle = (pathname: string) => {
 export function buildTree(list: Page[]): Tree {
   const root: Tree = {};
   for (const item of list) {
-    const isDraft = item._id.startsWith("drafts.");
+    const isDraft = item._originalId.startsWith("drafts.");
     const segments =
       item.pathname === "/" ? [""] : item.pathname.split("/").filter(Boolean);
     let currentFolder = root;
@@ -163,4 +166,8 @@ export function normalizeCreatablePages(
       return page;
     }) || []
   );
+}
+
+function undraftId(id: string) {
+  return id.replace(/^drafts\./, "");
 }

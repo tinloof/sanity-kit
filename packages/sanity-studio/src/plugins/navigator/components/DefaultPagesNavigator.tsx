@@ -18,6 +18,7 @@ function DefaultPagesNavigator(props: PagesNavigatorOptions) {
   const pagesRoutesQuery = `
   *[pathname.current != null]{
     _id,
+    _originalId,
     _type,
     _updatedAt,
     _createdAt,

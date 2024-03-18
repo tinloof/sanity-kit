@@ -1,10 +1,10 @@
 import { Language as Locale } from "@sanity/document-internationalization";
 import {
-  FieldDefinition,
   ObjectDefinition,
   ObjectOptions,
   ObjectSchemaType,
   SanityDocument,
+  SlugDefinition,
   SlugOptions,
 } from "sanity";
 
@@ -37,6 +37,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
 
 export type Page = {
   _id: string;
+  _originalId: string;
   _type: string;
   _updatedAt: string;
   _createdAt: string;
@@ -163,7 +164,7 @@ export type PathnameOptions = SlugOptions & {
 };
 
 export type PathnameParams = Omit<
-  FieldDefinition<"slug">,
+  SlugDefinition,
   "type" | "options" | "name"
 > & {
   name?: string;
