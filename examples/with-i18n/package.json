@@ -19,7 +19,7 @@
     "@sanity/react-loader": "^1.8.5",
     "@sanity/vision": "^3.29.1",
     "@tailwindcss/typography": "0.5.10",
-    "@tinloof/sanity-studio": "*",
+    "@tinloof/sanity-studio": "workspace:*",
     "classnames": "2.5.1",
     "next": "14.1.0",
     "next-sanity": "^8.0.0",
