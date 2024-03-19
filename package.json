@@ -2,19 +2,21 @@
   "name": "sanity-kit",
   "private": true,
   "scripts": {
-    "build": "turbo build --no-cache --filter='./packages/*'",
-    "dev": "turbo dev --parallel --filter=./packages/*",
-    "dev:example:hello-world": "turbo dev --filter=./examples/hello-world",
-    "dev:example:with-i18n": "turbo dev --filter=./examples/with-i18n",
+    "build": "turbo run build --no-cache --filter='./packages/*'",
+    "changeset": "changeset add",
+    "dev": "turbo run dev --parallel --filter=./packages/*",
+    "dev:all": "turbo run dev",
+    "dev:example:hello-world": "turbo run dev --filter=./examples/hello-world",
+    "dev:example:with-i18n": "turbo run dev --filter=./examples/with-i18n",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "publish-packages": "turbo build --filter='./packages/*' lint && changeset version && changeset publish"
+    "publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "prettier": "^3.1.0",
-    "turbo": "^1.12.3"
+    "turbo": "^1.12.5"
   },
   "engines": {
     "node": ">=18"

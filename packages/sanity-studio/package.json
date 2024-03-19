@@ -50,6 +50,7 @@
     "@sanity/ui": "^2.0.1",
     "@tanstack/react-virtual": "^3.0.4",
     "@tinloof/sanity-web": "^0.1.0",
+    "lodash": "^4.17.21",
     "nanoid": "^5.0.5",
     "react-rx": "^2.1.3"
   },
