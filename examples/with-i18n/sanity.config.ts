@@ -1,6 +1,6 @@
 import schemas from '@/sanity/schemas'
 import { visionTool } from '@sanity/vision'
-import { documentI18n, pagesNavigator } from '@tinloof/sanity-studio'
+import { documentI18n, pages } from '@tinloof/sanity-studio'
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import StudioLogo from './components/StudioLogo'
@@ -16,7 +16,7 @@ export default defineConfig({
     types: schemas,
   },
   plugins: [
-    pagesNavigator({
+    pages({
       previewUrl: {
         draftMode: {
           enable: '/api/draft',

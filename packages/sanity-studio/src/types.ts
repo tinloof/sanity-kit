@@ -33,6 +33,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
   };
   navigator?: Pick<PresentationNavigatorOptions, "maxWidth" | "minWidth">;
   creatablePages?: Array<NormalizedCreatablePage | string>;
+  title?: string;
 };
 
 export type Page = {
