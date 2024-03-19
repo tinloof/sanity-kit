@@ -12,6 +12,9 @@ importers:
         specifier: ^2.0.3
         version: 2.1.0(@sanity/ui@2.0.10)(react-dom@18.2.0)(react-fast-compare@3.2.2)(react@18.2.0)(rxjs@7.8.1)(sanity@3.35.0)(styled-components@6.1.1)
     devDependencies:
+      '@changesets/cli':
+        specifier: ^2.27.1
+        version: 2.27.1
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:packages/eslint-config
