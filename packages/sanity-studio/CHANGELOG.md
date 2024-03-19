@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 0.4.0
+
+### Minor Changes
+
+- Rename pagesNavigator to pages + add title plugin option
+
 ## 0.3.1
 
 ### Patch Changes
