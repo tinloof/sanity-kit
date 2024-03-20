@@ -46,3 +46,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - uses: actions/github-script@v7
+        if: steps.changesets.outputs.published == 'true'
+        name: Parse Changeset `publishedPackages` output
+        id: parse_packages
+        with:
+          script: |
+            const changes = ${{steps.changesets.outputs.publishedPackages}};
+            let message = ":rocket: *New release* :rocket:\n\n\nA new release of *${{github.repository}}* was published!";
+            if (Array.isArray(changes) && changes.length > 0) {
+              message += "\n\n";
+              changes.forEach(package => {
+                message += `*Package:* \`${package.name}\`\n*Version:* \`${package.version}\`\n\n`;
+              });
+            }
+            message += "Changelog :point_right: https://github.com/${{github.repository}}/releases";
+            core.setOutput("blocks",
+              JSON.stringify({
+                "text": message
+              })
+            );
+
+      - name: Send a Slack notification if a publish happens
+        if: steps.changesets.outputs.published == 'true'
+        id: slack
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          # This data can be any valid JSON from a previous step in the GitHub Action
+          payload: ${{steps.parse_packages.outputs.blocks}}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
