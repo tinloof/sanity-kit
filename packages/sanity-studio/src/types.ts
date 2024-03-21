@@ -7,7 +7,6 @@ import {
   SlugDefinition,
   SlugOptions,
 } from "sanity";
-
 import {
   NavigatorOptions as PresentationNavigatorOptions,
   PresentationPluginOptions,

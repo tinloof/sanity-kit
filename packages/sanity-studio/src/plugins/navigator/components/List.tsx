@@ -17,7 +17,7 @@ import {
 } from "sanity/presentation";
 import styled from "styled-components";
 
-import { ListItemProps, PageTreeNode } from "../../../types";
+import { ListItemProps, PageTreeNode, TreeNode } from "../../../types";
 import { useNavigator } from "../context";
 
 type PreviewStyleProps = {
@@ -207,6 +207,8 @@ const ListItem = ({
   virtualChild,
 }: ListItemProps) => {
   const { defaultLocaleId, setCurrentDir, currentDir } = useNavigator();
+  const schema = useSchema();
+  const fullSchema = schema.get(item._type);
   const innerRef = useRef<HTMLLIElement>(null);
   const listItemId = `item-${idx}`;
   const path = localizePathname({
@@ -218,6 +220,12 @@ const ListItem = ({
   const scheme = useColorSchemeValue();
   const { preview } = usePresentationParams();
   const navigate = usePresentationNavigate();
+
+
+
+  const previewData = fullSchema?.preview?.prepare?.({
+    ...item,
+  });
 
   const previewed = preview === path;
 
@@ -293,7 +301,7 @@ const ListItem = ({
           justify="center"
           style={{ position: "relative", width: 33, height: 33, flexShrink: 0 }}
         >
-          <ItemIcon type={item._type} />
+          <ItemIcon type={item._type} item={item} />
           <div
             style={{
               boxShadow: "inset 0 0 0 1px var(--card-fg-color)",
@@ -316,7 +324,7 @@ const ListItem = ({
             currentScheme={scheme}
             weight="medium"
           >
-            {item.title}
+            {previewData?.title ? previewData.title : item.title}
           </TextElement>
           <TextElement
             size={1}
@@ -325,7 +333,7 @@ const ListItem = ({
             isPreviewed={previewed}
             currentScheme={scheme}
           >
-            {path}
+            {previewData?.subtitle ? previewData.subtitle : path}
           </TextElement>
         </TextContainer>
       </Flex>
@@ -411,7 +419,7 @@ const ListItem = ({
   );
 };
 
-const ItemIcon = ({ type }: { type: string }) => {
+const ItemIcon = ({ type, item }: { type: string; item: TreeNode }) => {
   const schema = useSchema();
   const iconProps = {
     fontSize: "calc(21 / 16 * 1em)",
@@ -421,9 +429,15 @@ const ItemIcon = ({ type }: { type: string }) => {
   if (type === "folder") {
     return <FolderIcon {...iconProps} />;
   }
-
   const fullSchema = schema.get(type);
   const Icon = fullSchema?.icon ?? DocumentIcon;
+  const PreviewIcon = fullSchema.preview?.prepare?.({
+    ...item,
+  }).media;
+
+  if (typeof PreviewIcon === "function") {
+    return <PreviewIcon />;
+  }
 
   return <Icon {...iconProps} />;
 };
