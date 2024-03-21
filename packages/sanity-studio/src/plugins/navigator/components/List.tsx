@@ -10,7 +10,15 @@ import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { localizePathname } from "@tinloof/sanity-web";
 import React, { useRef } from "react";
-import { useColorSchemeValue, useSchema } from "sanity";
+import { useMemoObservable } from "react-rx";
+import {
+  SanityDefaultPreview,
+  getPreviewStateObservable,
+  getPreviewValueWithFallback,
+  useColorSchemeValue,
+  useDocumentPreviewStore,
+  useSchema,
+} from "sanity";
 import {
   usePresentationNavigate,
   usePresentationParams,
@@ -265,6 +273,19 @@ const ListItem = ({
     }
   };
 
+  if (item._type !== "folder") {
+    const value = {
+      _id: item._id,
+      _type: item._type,
+      title: item.title,
+      _createdAt: item._createdAt,
+      _updatedAt: item._updatedAt,
+      _rev: item._id,
+    };
+
+    return <PageItem _id={item._id} _type={item._type} />;
+  }
+
   return (
     <ListItemWrapper
       ref={innerRef}
@@ -470,3 +491,26 @@ const EmptySearchResults = (_props: any) => {
 EmptySearchResults.displayName = "EmptySearchResults";
 
 export { EmptySearchResults, List, SkeletonListItems };
+
+function PageItem({ _id, _type }: { _id: string; _type: string }) {
+  const documentPreviewStore = useDocumentPreviewStore();
+  const schemaType = useSchema().get(_type);
+  const { draft, published, isLoading } = useMemoObservable(
+    () => getPreviewStateObservable(documentPreviewStore, schemaType, _id, ""),
+    [_id, documentPreviewStore, schemaType]
+  )!;
+
+  return (
+    <SanityDefaultPreview
+      {...getPreviewValueWithFallback({
+        draft,
+        published,
+        value: { _id, _type },
+      })}
+      isPlaceholder={isLoading ?? true}
+      layout="default"
+      icon={schemaType.icon}
+      status={status}
+    />
+  );
+}
