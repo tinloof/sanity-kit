@@ -8,6 +8,18 @@ A collection of Sanity studio plugins, fields, and components.
 npm install @tinloof/sanity-studio
 ```
 
+## Table of contents
+
+- [Table of contents](#table-of-contents)
+- [Sanity Plugins](#sanity-plugins)
+  - [`pages`](#pages)
+  - [`documentI18n`](#documenti18n)
+- [Sanity Fields](#sanity-fields)
+  - [`definePathname`](#definepathname)
+  - [`defineSection`](#definesection)
+- [Sanity Components](#sanity-components)
+  - [`<SectionsArrayInput />`](#sectionsarrayinput)
+
 ## Sanity Plugins
 
 ### `pages`
@@ -93,13 +105,107 @@ As an example, the path `/blog/{your-slug}/article` will be parsed by the `pages
 
 Usage example:
 
+```tsx
+export default defineType({
+  type: "document",
+  name: "page",
+  fields: [
+    // ... other fields
+    definePathname({ name: "pathname" }),
+  ],
+});
+```
+
 ### `defineSection`
+
+The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
+
+#### Step 1: Create a new section schema
+
+```tsx
+// @/sanity/schemas/sections/banner.tsx
+export const bannerSection = defineSection({
+  name: "block.banner",
+  title: "Banner",
+  type: "object",
+  options: {
+    variants: [
+      {
+        /**
+         * Will be used to display a preview image
+         * when opening the section picker
+         */
+        assetUrl: "/images/blocks/hero.png",
+      },
+    ],
+  },
+  fields: [
+    defineField({
+      name: "bannerSection",
+      type: "string",
+    }),
+  ],
+});
+```
+
+#### Step 2: Create a sections list array
+
+```tsx
+// @/sanity/schemas/sections/index.tsx
+
+import { bannerSection } from "@/sanity/schemas/sections/banner";
+
+export const sections = [bannerSection];
+```
+
+#### Step 3: Add a section picker to your document
+
+```tsx
+// @/sanity/schemas/sections/index.tsx
+
+import { sections } = "@/sanity/schemas/sections/index";
+
+export default defineType({
+  name: "page",
+  type: "document",
+  // ... other fields
+  fields: [
+    defineField({
+      name: 'sectionPicker',
+      title: 'Section Picker',
+      type: 'array',
+      of: sections.map((section) => ({
+        type: section.name,
+      })),
+      components: {
+        input: SectionsArrayInput,
+      },
+    }),
+  ]
+})
+export const sections = [bannerSection];
+```
+
+#### Step 4: Add sections to your Sanity schema
+
+```tsx
+// @/sanity/schemas/index.tsx
+
+import { sections } from "@sanity/schemas/index";
+import page from "@/sanity/schemas/page";
+
+const schemas = [page, ...sections];
+
+export default schemas;
+```
 
 ## Components
 
-- PathnameFieldComponent
-- SectionArrayItem
-- SectionsArrayInput
+### `SectionsArrayInput`
+
+The `SectionsArrayInput` component is used in combination with the `defineSection` field. It will render a useful section picker in your Sanity documents.
+
+![define section](https://github.com/tinloof/sanity-kit/assets/10447155/85ccaa9e-16fa-4ddd-9938-f0e5f55061e3)
 
 ## Examples
 
