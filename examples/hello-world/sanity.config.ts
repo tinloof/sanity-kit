@@ -23,9 +23,6 @@ export default defineConfig({
         },
       },
       creatablePages: ['page'],
-      // previewFragment: `
-      //   "image": image.asset->url,
-      // `,
     }),
     structureTool(),
     visionTool({ defaultApiVersion: config.sanity.apiVersion }),

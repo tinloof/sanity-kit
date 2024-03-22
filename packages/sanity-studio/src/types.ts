@@ -36,6 +36,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
 };
 
 export type Page = {
+  _rev: string;
   _id: string;
   _originalId: string;
   _type: string;

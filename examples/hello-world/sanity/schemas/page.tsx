@@ -16,15 +16,6 @@ export default defineType({
     },
     definePathname({ name: 'pathname' }),
   ],
-  // I started by implementing the navigator preview as follows:
-  // options: {
-  //   pagesNavigatorPreview: ({ title, image }) => {
-  //     return {
-  //       title,
-  //       media: () => <img src={image} alt="" />,
-  //     }
-  //   },
-  // },
   preview: {
     select: {
       title: 'title',
@@ -36,7 +27,6 @@ export default defineType({
       return {
         title,
         media: image ? Image : Icon,
-        subtitle: 'This is a subtitle',
       }
     },
   },

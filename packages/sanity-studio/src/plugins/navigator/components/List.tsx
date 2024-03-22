@@ -10,7 +10,14 @@ import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { localizePathname } from "@tinloof/sanity-web";
 import React, { useRef } from "react";
-import { useColorSchemeValue, useSchema } from "sanity";
+import { useMemoObservable } from "react-rx";
+import {
+  getPreviewStateObservable,
+  getPreviewValueWithFallback,
+  useColorSchemeValue,
+  useDocumentPreviewStore,
+  useSchema,
+} from "sanity";
 import {
   usePresentationNavigate,
   usePresentationParams,
@@ -19,6 +26,7 @@ import styled from "styled-components";
 
 import { ListItemProps, PageTreeNode, TreeNode } from "../../../types";
 import { useNavigator } from "../context";
+import { PreviewElement } from "./Preview";
 
 type PreviewStyleProps = {
   isPreviewed?: boolean;
@@ -207,8 +215,6 @@ const ListItem = ({
   virtualChild,
 }: ListItemProps) => {
   const { defaultLocaleId, setCurrentDir, currentDir } = useNavigator();
-  const schema = useSchema();
-  const fullSchema = schema.get(item._type);
   const innerRef = useRef<HTMLLIElement>(null);
   const listItemId = `item-${idx}`;
   const path = localizePathname({
@@ -220,13 +226,6 @@ const ListItem = ({
   const scheme = useColorSchemeValue();
   const { preview } = usePresentationParams();
   const navigate = usePresentationNavigate();
-
-
-
-  const previewData = fullSchema?.preview?.prepare?.({
-    ...item,
-  });
-
   const previewed = preview === path;
 
   const handleClick = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -324,7 +323,7 @@ const ListItem = ({
             currentScheme={scheme}
             weight="medium"
           >
-            {previewData?.title ? previewData.title : item.title}
+            <PreviewText type="title" item={item} fallback={item.title} />
           </TextElement>
           <TextElement
             size={1}
@@ -333,7 +332,7 @@ const ListItem = ({
             isPreviewed={previewed}
             currentScheme={scheme}
           >
-            {previewData?.subtitle ? previewData.subtitle : path}
+            <PreviewText type="subtitle" item={item} fallback={path} />
           </TextElement>
         </TextContainer>
       </Flex>
@@ -419,8 +418,23 @@ const ListItem = ({
   );
 };
 
+const PreviewText = ({
+  item,
+  type,
+  fallback,
+}: {
+  item: TreeNode;
+  type: "title" | "subtitle";
+  fallback?: string;
+}) => {
+  if (item._type === "folder") {
+    return <>{fallback}</>;
+  }
+
+  return <PreviewElement fallback={fallback} type={type} item={item} />;
+};
+
 const ItemIcon = ({ type, item }: { type: string; item: TreeNode }) => {
-  const schema = useSchema();
   const iconProps = {
     fontSize: "calc(21 / 16 * 1em)",
     color: "var(--card-icon-color)",
@@ -429,17 +443,10 @@ const ItemIcon = ({ type, item }: { type: string; item: TreeNode }) => {
   if (type === "folder") {
     return <FolderIcon {...iconProps} />;
   }
-  const fullSchema = schema.get(type);
-  const Icon = fullSchema?.icon ?? DocumentIcon;
-  const PreviewIcon = fullSchema.preview?.prepare?.({
-    ...item,
-  }).media;
 
-  if (typeof PreviewIcon === "function") {
-    return <PreviewIcon />;
-  }
-
-  return <Icon {...iconProps} />;
+  return (
+    <PreviewElement fallback={<DocumentIcon />} type="media" item={item} />
+  );
 };
 
 const SkeletonListItems = ({ items }: { items: number }) => {
