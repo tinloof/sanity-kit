@@ -164,6 +164,7 @@ export const sections = [bannerSection];
 // @/sanity/schemas/sections/index.tsx
 
 import { sections } = "@/sanity/schemas/sections/index";
+import { SectionsArrayInput } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "page",
