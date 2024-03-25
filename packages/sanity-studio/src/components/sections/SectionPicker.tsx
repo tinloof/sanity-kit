@@ -1,15 +1,15 @@
-import React from "react";
-
 import {
   Card,
   Flex,
   Stack,
+  studioTheme,
   Text,
   ThemeProvider,
-  studioTheme,
 } from "@sanity/ui";
+import React from "react";
 import { useColorSchemeValue } from "sanity";
 import styled from "styled-components";
+
 import { SectionAddHandler, SectionVariantType } from "../../types";
 
 type SectionVariantCardWrapperProps = {
@@ -99,7 +99,15 @@ function SectionVariantCard({
                 aria-label={sectionVariant.title}
               />
             ) : (
-              <img src={sectionVariant.assetUrl} alt={sectionVariant.title} />
+              <img
+                style={{
+                  "object-fit": "cover",
+                  height: "100%",
+                  objectPosition: "center",
+                }}
+                src={sectionVariant.assetUrl}
+                alt={sectionVariant.title}
+              />
             )}
           </SectionAssetWrapper>
         </>
