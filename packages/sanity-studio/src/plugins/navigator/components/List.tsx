@@ -10,14 +10,7 @@ import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { localizePathname } from "@tinloof/sanity-web";
 import React, { useRef } from "react";
-import { useMemoObservable } from "react-rx";
-import {
-  getPreviewStateObservable,
-  getPreviewValueWithFallback,
-  useColorSchemeValue,
-  useDocumentPreviewStore,
-  useSchema,
-} from "sanity";
+import { useColorSchemeValue } from "sanity";
 import {
   usePresentationNavigate,
   usePresentationParams,
@@ -300,7 +293,7 @@ const ListItem = ({
           justify="center"
           style={{ position: "relative", width: 33, height: 33, flexShrink: 0 }}
         >
-          <ItemIcon type={item._type} item={item} />
+          <ItemIcon item={item} />
           <div
             style={{
               boxShadow: "inset 0 0 0 1px var(--card-fg-color)",
@@ -323,7 +316,11 @@ const ListItem = ({
             currentScheme={scheme}
             weight="medium"
           >
-            <PreviewText type="title" item={item} fallback={item.title} />
+            {item._type !== "folder" ? (
+              <PreviewElement fallback={item.title} type="title" item={item} />
+            ) : (
+              item.title
+            )}
           </TextElement>
           <TextElement
             size={1}
@@ -332,7 +329,11 @@ const ListItem = ({
             isPreviewed={previewed}
             currentScheme={scheme}
           >
-            <PreviewText type="subtitle" item={item} fallback={path} />
+            {item._type !== "folder" ? (
+              <PreviewElement fallback={path} type="subtitle" item={item} />
+            ) : (
+              path
+            )}
           </TextElement>
         </TextContainer>
       </Flex>
@@ -418,29 +419,13 @@ const ListItem = ({
   );
 };
 
-const PreviewText = ({
-  item,
-  type,
-  fallback,
-}: {
-  item: TreeNode;
-  type: "title" | "subtitle";
-  fallback?: string;
-}) => {
-  if (item._type === "folder") {
-    return <>{fallback}</>;
-  }
-
-  return <PreviewElement fallback={fallback} type={type} item={item} />;
-};
-
-const ItemIcon = ({ type, item }: { type: string; item: TreeNode }) => {
+const ItemIcon = ({ item }: { item: TreeNode }) => {
   const iconProps = {
     fontSize: "calc(21 / 16 * 1em)",
     color: "var(--card-icon-color)",
   };
 
-  if (type === "folder") {
+  if (item._type === "folder") {
     return <FolderIcon {...iconProps} />;
   }
 

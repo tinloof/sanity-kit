@@ -15,14 +15,14 @@ import {
   useSchema,
 } from "sanity";
 
-import { TreeNode } from "../../../types";
+import { FolderTreeNode, TreeNode } from "../../../types";
 
 const PreviewElement = ({
   item,
   type,
   fallback,
 }: {
-  item: TreeNode;
+  item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
   type: "media" | "title" | "subtitle";
   fallback?: React.ReactNode | string;
 }): React.ReactElement => {

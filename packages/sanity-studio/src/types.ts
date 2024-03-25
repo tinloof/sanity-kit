@@ -39,7 +39,7 @@ export type Page = {
   _rev: string;
   _id: string;
   _originalId: string;
-  _type: string;
+  _type: Exclude<"string", "folder">;
   _updatedAt: string;
   _createdAt: string;
   pathname: string | null;
