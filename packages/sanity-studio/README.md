@@ -2,6 +2,10 @@
 
 A collection of Sanity studio plugins, fields, and components.
 
+https://github.com/tinloof/sanity-kit/assets/10447155/7c0f6367-049c-434c-b5f1-8e9fa7e8cc23
+
+
+
 ## Installation
 
 ```sh
