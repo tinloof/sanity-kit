@@ -48,6 +48,9 @@ importers:
       classnames:
         specifier: 2.5.1
         version: 2.5.1
+      lucide-react:
+        specifier: ^0.360.0
+        version: 0.360.0(react@18.2.0)
       next:
         specifier: 14.1.0
         version: 14.1.0(@babel/core@7.24.1)(react-dom@18.2.0)(react@18.2.0)
@@ -212,9 +215,15 @@ importers:
 
   packages/sanity-studio:
     dependencies:
+      '@sanity/asset-utils':
+        specifier: ^1.3.0
+        version: 1.3.0
       '@sanity/icons':
-        specifier: ^2.10.2
+        specifier: ^2.11.2
         version: 2.11.2(react@18.2.0)
+      '@sanity/image-url':
+        specifier: ^1.0.2
+        version: 1.0.2
       '@sanity/incompatible-plugin':
         specifier: ^1.0.4
         version: 1.0.4(react-dom@18.2.0)(react@18.2.0)
@@ -8189,6 +8198,14 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+
+  /lucide-react@0.360.0(react@18.2.0):
+    resolution: {integrity: sha512-MskvbEsAhD2zxgx/I05vXq1cjFQXrmhL97YFIi4wSaKH793ZMvU/Com4d+DE7OB3QMmZig1fY1q94aTX5skozw==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /magic-string@0.30.8:
     resolution: {integrity: sha512-ISQTe55T2ao7XtlAStud6qwYPZjE4GK1S/BeVPus4jrq6JuOnQ00YKQC581RWhR122W7msZV263KzVeLoqidyQ==}

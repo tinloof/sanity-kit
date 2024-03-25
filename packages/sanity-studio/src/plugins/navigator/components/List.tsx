@@ -10,15 +10,16 @@ import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { localizePathname } from "@tinloof/sanity-web";
 import React, { useRef } from "react";
-import { useColorSchemeValue, useSchema } from "sanity";
+import { useColorSchemeValue } from "sanity";
 import {
   usePresentationNavigate,
   usePresentationParams,
 } from "sanity/presentation";
 import styled from "styled-components";
 
-import { ListItemProps, PageTreeNode } from "../../../types";
+import { ListItemProps, PageTreeNode, TreeNode } from "../../../types";
 import { useNavigator } from "../context";
+import { PreviewElement } from "./Preview";
 
 type PreviewStyleProps = {
   isPreviewed?: boolean;
@@ -218,7 +219,6 @@ const ListItem = ({
   const scheme = useColorSchemeValue();
   const { preview } = usePresentationParams();
   const navigate = usePresentationNavigate();
-
   const previewed = preview === path;
 
   const handleClick = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -293,7 +293,7 @@ const ListItem = ({
           justify="center"
           style={{ position: "relative", width: 33, height: 33, flexShrink: 0 }}
         >
-          <ItemIcon type={item._type} />
+          <ItemIcon item={item} />
           <div
             style={{
               boxShadow: "inset 0 0 0 1px var(--card-fg-color)",
@@ -316,7 +316,11 @@ const ListItem = ({
             currentScheme={scheme}
             weight="medium"
           >
-            {item.title}
+            {item._type !== "folder" ? (
+              <PreviewElement fallback={item.title} type="title" item={item} />
+            ) : (
+              item.title
+            )}
           </TextElement>
           <TextElement
             size={1}
@@ -325,7 +329,11 @@ const ListItem = ({
             isPreviewed={previewed}
             currentScheme={scheme}
           >
-            {path}
+            {item._type !== "folder" ? (
+              <PreviewElement fallback={path} type="subtitle" item={item} />
+            ) : (
+              path
+            )}
           </TextElement>
         </TextContainer>
       </Flex>
@@ -411,21 +419,19 @@ const ListItem = ({
   );
 };
 
-const ItemIcon = ({ type }: { type: string }) => {
-  const schema = useSchema();
+const ItemIcon = ({ item }: { item: TreeNode }) => {
   const iconProps = {
     fontSize: "calc(21 / 16 * 1em)",
     color: "var(--card-icon-color)",
   };
 
-  if (type === "folder") {
+  if (item._type === "folder") {
     return <FolderIcon {...iconProps} />;
   }
 
-  const fullSchema = schema.get(type);
-  const Icon = fullSchema?.icon ?? DocumentIcon;
-
-  return <Icon {...iconProps} />;
+  return (
+    <PreviewElement fallback={<DocumentIcon />} type="media" item={item} />
+  );
 };
 
 const SkeletonListItems = ({ items }: { items: number }) => {

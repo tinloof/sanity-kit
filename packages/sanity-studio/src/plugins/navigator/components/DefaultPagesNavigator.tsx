@@ -1,4 +1,5 @@
 import React from "react";
+
 import { PagesNavigatorOptions } from "../../../types";
 import { NavigatorProvider } from "../context";
 import { useSanityFetch } from "../utils";
@@ -17,6 +18,7 @@ export function createPagesNavigator(props: PagesNavigatorOptions) {
 function DefaultPagesNavigator(props: PagesNavigatorOptions) {
   const pagesRoutesQuery = `
   *[pathname.current != null]{
+    _rev,
     _id,
     _originalId,
     _type,

@@ -7,7 +7,6 @@ import {
   SlugDefinition,
   SlugOptions,
 } from "sanity";
-
 import {
   NavigatorOptions as PresentationNavigatorOptions,
   PresentationPluginOptions,
@@ -37,9 +36,10 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
 };
 
 export type Page = {
+  _rev: string;
   _id: string;
   _originalId: string;
-  _type: string;
+  _type: Exclude<"string", "folder">;
   _updatedAt: string;
   _createdAt: string;
   pathname: string | null;
