@@ -17,8 +17,6 @@ npm install @tinloof/sanity-studio
 - [Sanity Fields](#sanity-fields)
   - [`definePathname`](#definepathname)
   - [`defineSection`](#definesection)
-- [Sanity Components](#sanity-components)
-  - [`<SectionsArrayInput />`](#sectionsarrayinput)
 
 ## Sanity Plugins
 
@@ -46,6 +44,15 @@ export default defineConfig({
       // Add any documents you want to be creatable
       creatablePages: ["page"],
       title: "Your personalized title",
+      // i18n config to support multiple locales
+      // If you need i18n support, you might also add the documentI18n plugin
+      i18n: {
+        locales: [
+          { id: "en", title: "English" },
+          { id: "fr", title: "French" },
+        ],
+        defaultLocaleId: "en",
+      },
     }),
   ],
 });
@@ -118,6 +125,8 @@ export default defineType({
 
 ### `defineSection`
 
+![define section](https://github.com/tinloof/sanity-kit/assets/10447155/85ccaa9e-16fa-4ddd-9938-f0e5f55061e3)
+
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
 
 #### Step 1: Create a new section schema
@@ -160,6 +169,8 @@ export const sections = [bannerSection];
 
 #### Step 3: Add a section picker to your document
 
+Here, the `SectionsArrayInput` component is used to render a useful section picker in your Sanity documents.
+
 ```tsx
 // @/sanity/schemas/sections/index.tsx
 
@@ -199,14 +210,6 @@ const schemas = [page, ...sections];
 
 export default schemas;
 ```
-
-## Components
-
-### `SectionsArrayInput`
-
-The `SectionsArrayInput` component is used in combination with the `defineSection` field. It will render a useful section picker in your Sanity documents.
-
-![define section](https://github.com/tinloof/sanity-kit/assets/10447155/85ccaa9e-16fa-4ddd-9938-f0e5f55061e3)
 
 ## Examples
 
