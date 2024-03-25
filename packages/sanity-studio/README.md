@@ -22,11 +22,13 @@ npm install @tinloof/sanity-studio
 
 ### `pages`
 
-The `pages` plugin is a wrapper around Sanity's `presentation` plugin.
-When enabled, it will add Tinloof's pages navigator to the prensentation view.
-With this plugin, you can easily navigate through your content and quickly create new documents.
+The `pages` plugin is a wrapper around Sanity's `presentation` plugin. When enabled, it will add Tinloof's pages navigator to the presentation view.
 
-Usage example:
+With this plugin, you can easily navigate through your content and quickly create new documents. `pages` also supports internationalization.
+
+You can learn more about configuring Sanity's Presentation Tool [here](https://www.sanity.io/docs/configuring-the-presentation-tool#27749b6d3aa5).
+
+#### Usage example
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -35,17 +37,59 @@ export default defineConfig({
   // ... other Sanity Studio config
   plugins: [
     pages({
+      /**
+       * See Presentation Tool configuration reference for more info
+       * https://www.sanity.io/docs/configuring-the-presentation-tool#27749b6d3aa5
+       */
       previewUrl: {
         draftMode: {
           // Enable draft mode path
           enable: "/api/draft",
         },
       },
-      // Add any documents you want to be creatable
+    }),
+  ],
+});
+```
+
+#### Using `creatablePages`
+
+Use the `creatablePages` option to define which pages you want to be creatable from the pages navigator.
+
+```tsx
+import { pages } from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      // Add any documents you want to be creatable from the pages navigator
       creatablePages: ["page"],
-      title: "Your personalized title",
-      // i18n config to support multiple locales
-      // If you need i18n support, you might also add the documentI18n plugin
+      previewUrl: {
+        draftMode: {
+          // Enable draft mode path
+          enable: "/api/draft",
+        },
+      },
+    }),
+  ],
+});
+```
+
+#### Add internationalization
+
+You can specify a list of locales if you want to support multiple languages. The pages navigator will then allow you to switch between locales. If the `creatablePages` option is set, the selected language will be used to create new pages.
+
+```tsx
+import { pages } from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      /**
+       * i18n config to support multiple locales
+       */
       i18n: {
         locales: [
           { id: "en", title: "English" },
@@ -53,52 +97,52 @@ export default defineConfig({
         ],
         defaultLocaleId: "en",
       },
-    }),
-  ],
-});
-```
-
-### `documentI18n`
-
-The `documentI18n` plugin can be used for projects needing translations.
-It uses the Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) plugin under the hood.
-The plugin will allow you to create unique translations of a document.
-
-Usage example:
-
-```tsx
-import { documentI18n, pages } from "@tinloof/sanity-studio";
-import schemas from "@/sanity/schemas";
-
-const i18nConfig = {
-  locales: [
-    { id: "en", title: "English" },
-    { id: "fr", title: "French" },
-  ],
-  defaultLocaleId: "en",
-};
-
-export default defineConfig({
-  // ... other Sanity Studio config
-  plugins: [
-    documentI18n({
-      ...i18nConfig,
-      schemas,
-    }),
-    // documentI18n can be used in combination with the pages plugin
-    pages({
       previewUrl: {
         draftMode: {
+          // Enable draft mode path
           enable: "/api/draft",
         },
       },
-      creatablePages: ["page"],
-      // Add your i18n config here
-      i18n: i18nConfig,
     }),
   ],
 });
 ```
+
+#### Customize documents previews
+
+You can customize list previews of your documents in pages navigator as you would normally do with Sanity. You can control this by adding a preview key to the type defined in the schema. For example:
+
+```tsx
+export default {
+  name: "movie",
+  type: "document",
+  fields: [
+    {
+      title: "Title",
+      name: "title",
+      type: "string",
+    },
+    {
+      title: "Release Date",
+      name: "releaseDate",
+      type: "date",
+    },
+  ],
+  // Preview information
+  preview: {
+    select: {
+      title: "title",
+      subtitle: "releaseDate",
+    },
+  },
+};
+```
+
+Learn more about preview customization [here](https://www.sanity.io/docs/previews-list-views).
+
+### `documentI18n`
+
+The `documentI18n` plugin can be used for projects needing document level translations. It uses the Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) plugin under the hood and allows you to dynamically specify your schemas. The plugin will allow you to create unique translations of a document.
 
 ## Sanity Fields
 
