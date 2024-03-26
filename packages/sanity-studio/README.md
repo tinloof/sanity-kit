@@ -4,8 +4,6 @@ A collection of Sanity studio plugins, fields, and components.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/7c0f6367-049c-434c-b5f1-8e9fa7e8cc23
 
-
-
 ## Installation
 
 ```sh
@@ -87,6 +85,14 @@ You can specify a list of locales if you want to support multiple languages. The
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
 
+const i18nConfig = {
+  locales: [
+    { id: "en", title: "English" },
+    { id: "fr", title: "French" },
+  ],
+  defaultLocaleId: "en",
+};
+
 export default defineConfig({
   // ... other Sanity Studio config
   plugins: [
@@ -94,19 +100,39 @@ export default defineConfig({
       /**
        * i18n config to support multiple locales
        */
-      i18n: {
-        locales: [
-          { id: "en", title: "English" },
-          { id: "fr", title: "French" },
-        ],
-        defaultLocaleId: "en",
-      },
+      i18n: i18nConfig,
       previewUrl: {
         draftMode: {
           // Enable draft mode path
           enable: "/api/draft",
         },
       },
+    }),
+  ],
+});
+
+/**
+ * Don't forget to add i18n options and locale field to your document schema
+ */
+export default defineType({
+  type: "document",
+  name: "page",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        // Add i18n options
+        i18n: {
+          enabled: true,
+          defaultLocaleId: i18nConfig.defaultLocaleId,
+        },
+      },
+    }),
+    // Add locale field
+    defineField({
+      type: "string",
+      name: "locale",
+      hidden: true,
     }),
   ],
 });
@@ -171,9 +197,28 @@ export default defineType({
 });
 ```
 
-### `defineSection`
+With i18n options:
 
-![define section](https://github.com/tinloof/sanity-kit/assets/10447155/85ccaa9e-16fa-4ddd-9938-f0e5f55061e3)
+```tsx
+export default defineType({
+  type: "document",
+  name: "page",
+  fields: [
+    // ... other fields
+    definePathname({
+      name: "pathname",
+      options: {
+        i18n: {
+          enabled: true,
+          defaultLocaleId: "en",
+        },
+      },
+    }),
+  ],
+});
+```
+
+### `defineSection`
 
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
 
