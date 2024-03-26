@@ -6,6 +6,5 @@ export async function loadPage(pathname: string, locale: string) {
   return loadQuery<PagePayload | null>({
     query: PAGE_QUERY,
     params: { pathname, locale },
-    tags: ['page'],
   })
 }

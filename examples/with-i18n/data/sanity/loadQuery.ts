@@ -12,11 +12,9 @@ const DEFAULT_PARAMS = {} as QueryParams
 export async function loadQuery<QueryResponse>({
   query,
   params = DEFAULT_PARAMS,
-  tags,
 }: {
   query: string
   params?: QueryParams
-  tags: string[]
 }): Promise<QueryResponse> {
   const isDraftMode = draftMode().isEnabled
   const token = config.sanity.token
@@ -52,9 +50,8 @@ export async function loadQuery<QueryResponse>({
     token: isDraftMode ? token : undefined,
     perspective,
     next: {
-      tags,
-      // Cache forever in Draft Mode until expired with revalidateTag, use time-based cache in production that matches the CDN cache
-      revalidate: isDraftMode ? false : 60,
+      tags: ['sanity'],
+      revalidate: isDraftMode ? 0 : undefined,
     },
   } satisfies UnfilteredResponseQueryOptions
   const result = await client.fetch<QueryResponse>(query, params, {
