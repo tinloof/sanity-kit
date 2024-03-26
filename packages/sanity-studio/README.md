@@ -1,7 +1,6 @@
 # @tinloof/sanity-studio
 
 A collection of studio plugins, fields, and components to boost your Sanity studio.
-A collection of studio plugins, fields, and components to boost your Sanity studio.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/c1ae5694-3f84-4c5c-856f-aab6cc361c33
 
@@ -54,8 +53,6 @@ export default defineConfig({
 #### 2. Add a `pathname` field to page schemas using the `definePage` helper:
 
 ```tsx
-import { definePathname } from "@tinloof/sanity-studio";
-
 import { definePathname } from "@tinloof/sanity-studio";
 
 export default defineType({
