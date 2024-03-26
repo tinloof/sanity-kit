@@ -165,7 +165,6 @@ export default defineType({
 ```
 
 ### Customizing pages previews
-### Customizing pages previews
 
 Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
 Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
@@ -204,7 +203,6 @@ The `defineSection` field lets you easily define a new section schema. Used in c
 https://github.com/tinloof/sanity-kit/assets/10447155/41b65857-687e-42bb-97e5-fe3f5ec23c63
 
 #### 1. Create a new section schema
-#### 1. Create a new section schema
 
 ```tsx
 // @/sanity/schemas/sections/banner.tsx
@@ -233,7 +231,6 @@ export const bannerSection = defineSection({
 ```
 
 #### 2. Create a sections list array
-#### 2. Create a sections list array
 
 ```tsx
 // @/sanity/schemas/sections/index.tsx
@@ -243,7 +240,6 @@ import { bannerSection } from "@/sanity/schemas/sections/banner";
 export const sections = [bannerSection];
 ```
 
-#### 3. Add a section picker to your document
 #### 3. Add a section picker to your document
 
 Here, the `SectionsArrayInput` component is used to render a useful section picker in your Sanity documents.
@@ -275,7 +271,6 @@ export default defineType({
 export const sections = [bannerSection];
 ```
 
-#### 4. Add sections to your Sanity schema
 #### 4. Add sections to your Sanity schema
 
 ```tsx
