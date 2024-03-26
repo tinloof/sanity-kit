@@ -2,7 +2,7 @@
 
 A collection of Sanity studio plugins, fields, and components.
 
-https://github.com/tinloof/sanity-kit/assets/10447155/7c0f6367-049c-434c-b5f1-8e9fa7e8cc23
+https://github.com/tinloof/sanity-kit/assets/10447155/070ecda4-c52c-4972-a955-8207bc4c3a6e
 
 ## Installation
 
@@ -58,6 +58,10 @@ export default defineConfig({
 
 Use the `creatablePages` option to define which pages you want to be creatable from the pages navigator.
 
+https://github.com/tinloof/sanity-kit/assets/10447155/99c88e5a-5989-40a8-bd4c-09b0aa0ac17b
+
+Usage example:
+
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
 
@@ -81,6 +85,10 @@ export default defineConfig({
 #### Add internationalization
 
 You can specify a list of locales if you want to support multiple languages. The pages navigator will then allow you to switch between locales. If the `creatablePages` option is set, the selected language will be used to create new pages.
+
+https://github.com/tinloof/sanity-kit/assets/10447155/ba962e75-3158-44fb-9593-0360fc631fde
+
+Usage example:
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -221,6 +229,8 @@ export default defineType({
 ### `defineSection`
 
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
+
+https://github.com/tinloof/sanity-kit/assets/10447155/41b65857-687e-42bb-97e5-fe3f5ec23c63
 
 #### Step 1: Create a new section schema
 
