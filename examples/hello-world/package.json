@@ -15,8 +15,8 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@sanity/client": "^6.15.7",
     "@sanity/preview-url-secret": "^1.6.3",
-    "@sanity/react-loader": "^1.8.5",
     "@sanity/vision": "^3.29.1",
     "@tailwindcss/typography": "0.5.10",
     "@tinloof/sanity-studio": "workspace:*",
