@@ -1,6 +1,6 @@
 # @tinloof/sanity-studio
 
-A collection of Sanity studio plugins, fields, and components.
+A collection of studio plugins, fields, and components to boost your Sanity studio.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/070ecda4-c52c-4972-a955-8207bc4c3a6e
 
@@ -25,17 +25,14 @@ npm install @tinloof/sanity-studio
   - [Add sections to your Sanity schema](#step-4-add-sections-to-your-sanity-schema)
 - [`documentI18n`](#documenti18n)
 
-## `pages`
+## Pages
 
-The `pages` plugin is a wrapper around Sanity's `presentation` plugin. When enabled, it will add a sitemap-like pages navigator to the presentation view.
+Pages is a plugin that wraps [Presentation](https://www.sanity.io/docs/presentation) to display your website pages in a sitemap-like navigation and make it possible to create new ones.
 
-Documents with a defined `pathname` field value are recognized as pages and are automatically grouped into directories.
-
-With this plugin, you can easily navigate through your content and quickly create new documents. `pages` also supports internationalization.
-
-You can learn more about configuring Sanity's Presentation Tool [here](https://www.sanity.io/docs/configuring-the-presentation-tool#27749b6d3aa5).
 
 ### Basic usage
+
+#### 1. Configure Pages:
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -46,11 +43,9 @@ export default defineConfig({
     pages({
       /**
        * See Presentation Tool configuration reference for more info
-       * https://www.sanity.io/docs/configuring-the-presentation-tool#27749b6d3aa5
        */
       previewUrl: {
         draftMode: {
-          // Enable draft mode path
           enable: "/api/draft",
         },
       },
@@ -59,56 +54,31 @@ export default defineConfig({
 });
 ```
 
-### Add pathname field
-
-The `definePatnhname` field is where the magic happens. It uses the `PathnameFieldComponent` component under the hood and gives you the ability to create custom pathnames with as many slugs/levels as you want.
-
-`definePatnhname` is used by the `pages` plugin and makes the navigation of your content faster.
-
-As an example, the path `/blog/{your-slug}/article` will be parsed by the `pages` plugin so it will automatically generate a `Blog` folder with all documents using the same pathname structure.
-
-Usage example:
+#### 2. Add a `pathname` field to page schemas using the `definePage` helper:
 
 ```tsx
+import { definePathname } from "@tinloof/sanity-studio";
+
 export default defineType({
   type: "document",
-  name: "page",
+  name: "modularPage",
   fields: [
-    // ... other fields
     definePathname({ name: "pathname" }),
   ],
 });
 ```
 
-With i18n options:
+Documents with a defined `pathname` field value are now recognized as pages and are automatically grouped into directories in the pages navigator.
 
-```tsx
-export default defineType({
-  type: "document",
-  name: "page",
-  fields: [
-    // ... other fields
-    definePathname({
-      name: "pathname",
-      options: {
-        i18n: {
-          enabled: true,
-          defaultLocaleId: "en",
-        },
-      },
-    }),
-  ],
-});
-```
 
 ### Enabling page creation
 
 Use the `creatablePages` option to define which schema types can be used to create pages.
+
 When a page is created, it will automatically have the current folder in its pathname.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/99c88e5a-5989-40a8-bd4c-09b0aa0ac17b
 
-Usage example:
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -121,7 +91,6 @@ export default defineConfig({
       creatablePages: ["page"],
       previewUrl: {
         draftMode: {
-          // Enable draft mode path
           enable: "/api/draft",
         },
       },
@@ -130,14 +99,14 @@ export default defineConfig({
 });
 ```
 
-### Add internationalization
+### Enabling internationalization
 
-The `i18n` option can be used to support filtering pages by locale and displaying internationalised URLs.
-When page creation is enabled, the currently selected `locale` is used as an initial value to create new pages.
+The `i18n` option can be used to support filtering pages by a `locale` field and displaying internationalized URLs.
+
+When page creation is enabled, the currently selected `locale` is also used as an initial value to create new pages.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/ba962e75-3158-44fb-9593-0360fc631fde
 
-Usage example:
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -154,13 +123,9 @@ export default defineConfig({
   // ... other Sanity Studio config
   plugins: [
     pages({
-      /**
-       * i18n config to support multiple locales
-       */
       i18n: i18nConfig,
       previewUrl: {
         draftMode: {
-          // Enable draft mode path
           enable: "/api/draft",
         },
       },
@@ -195,9 +160,9 @@ export default defineType({
 });
 ```
 
-### Customize documents previews
+### Customizing pages previews
 
-You can customize list previews of your documents in pages navigator as you would normally do with Sanity. You can control this by adding a preview key to the type defined in the schema. For example:
+Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
 
 ```tsx
 export default {
@@ -225,15 +190,14 @@ export default {
 };
 ```
 
-Learn more about preview customization [here](https://www.sanity.io/docs/previews-list-views).
 
-## `defineSection`
+## Sections
 
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/41b65857-687e-42bb-97e5-fe3f5ec23c63
 
-#### Step 1: Create a new section schema
+#### 1. Create a new section schema
 
 ```tsx
 // @/sanity/schemas/sections/banner.tsx
@@ -261,7 +225,7 @@ export const bannerSection = defineSection({
 });
 ```
 
-#### Step 2: Create a sections list array
+#### 2. Create a sections list array
 
 ```tsx
 // @/sanity/schemas/sections/index.tsx
@@ -271,7 +235,7 @@ import { bannerSection } from "@/sanity/schemas/sections/banner";
 export const sections = [bannerSection];
 ```
 
-#### Step 3: Add a section picker to your document
+#### 3. Add a section picker to your document
 
 Here, the `SectionsArrayInput` component is used to render a useful section picker in your Sanity documents.
 
@@ -302,7 +266,7 @@ export default defineType({
 export const sections = [bannerSection];
 ```
 
-#### Step 4: Add sections to your Sanity schema
+#### 4. Add sections to your Sanity schema
 
 ```tsx
 // @/sanity/schemas/index.tsx
