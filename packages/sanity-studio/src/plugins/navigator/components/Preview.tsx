@@ -99,7 +99,14 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
         dpr?: number;
       };
     }) => {
-      const { dimensions } = options;
+      const dimensions = options.dimensions
+        ? options.dimensions
+        : {
+            width: 100,
+            height: 100,
+            fit: "max" as ImageUrlFitMode,
+            dpr: 1,
+          };
 
       // Handle sanity image
       return (
@@ -111,10 +118,10 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
               .image(
                 mediaProp as SanityImageSource /*will only enter this code path if it's compatible*/
               )
-              .width(dimensions.width || 100)
-              .height(dimensions.height || 100)
+              .width(dimensions?.width)
+              .height(dimensions.height)
               .fit(dimensions.fit)
-              .dpr(dimensions.dpr || 1)
+              .dpr(dimensions.dpr)
               .url() || ""
           }
         />

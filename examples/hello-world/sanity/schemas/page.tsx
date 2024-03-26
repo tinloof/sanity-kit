@@ -19,14 +19,12 @@ export default defineType({
   preview: {
     select: {
       title: 'title',
-      image: 'image.asset.url',
+      image: 'image',
     },
     prepare({ title, image }) {
-      const Image = () => <img src={image} alt="" />
-      const Icon = () => <StickyNote size={16} />
       return {
         title,
-        media: image ? Image : Icon,
+        media: image,
       }
     },
   },

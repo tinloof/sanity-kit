@@ -163,7 +163,6 @@ export default defineType({
 ### Customizing pages previews
 
 Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
-Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
 
 ```tsx
 export default {
@@ -176,16 +175,22 @@ export default {
       type: "string",
     },
     {
-      title: "Release Date",
-      name: "releaseDate",
-      type: "date",
+      type: "image",
+      name: "image",
+      title: "Image",
     },
   ],
   // Preview information
   preview: {
     select: {
       title: "title",
-      subtitle: "releaseDate",
+      media: "image",
+    },
+    prepare({ title, image }) {
+      return {
+        title,
+        media: image,
+      };
     },
   },
 };
