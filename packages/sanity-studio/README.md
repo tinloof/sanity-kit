@@ -13,24 +13,29 @@ npm install @tinloof/sanity-studio
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
-- [Sanity Plugins](#sanity-plugins)
-  - [`pages`](#pages)
-  - [`documentI18n`](#documenti18n)
-- [Sanity Fields](#sanity-fields)
-  - [`definePathname`](#definepathname)
-  - [`defineSection`](#definesection)
+- [`pages`](#pages)
+  - [Basic usage](#basic-usage)
+  - [Add pathname field](#add-pathname-field)
+  - [Enabling page creation](#enabling-page-creation)
+  - [Add internationalization](#add-internationalization)
+- [`defineSection`](#definesection)
+  - [Create a new section schema](#step-1-create-a-new-section-schema)
+  - [Create a sections list array](#step-2-create-a-sections-list-array)
+  - [Add a section picker to your document](#step-3-add-a-section-picker-to-your-document)
+  - [Add sections to your Sanity schema](#step-4-add-sections-to-your-sanity-schema)
+- [`documentI18n`](#documenti18n)
 
-## Sanity Plugins
+## `pages`
 
-### `pages`
+The `pages` plugin is a wrapper around Sanity's `presentation` plugin. When enabled, it will add a sitemap-like pages navigator to the presentation view.
 
-The `pages` plugin is a wrapper around Sanity's `presentation` plugin. When enabled, it will add Tinloof's pages navigator to the presentation view.
+Documents with a defined `pathname` field value are recognized as pages and are automatically grouped into directories.
 
 With this plugin, you can easily navigate through your content and quickly create new documents. `pages` also supports internationalization.
 
 You can learn more about configuring Sanity's Presentation Tool [here](https://www.sanity.io/docs/configuring-the-presentation-tool#27749b6d3aa5).
 
-#### Usage example
+### Basic usage
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -54,9 +59,52 @@ export default defineConfig({
 });
 ```
 
-#### Using `creatablePages`
+### Add pathname field
 
-Use the `creatablePages` option to define which pages you want to be creatable from the pages navigator.
+The `definePatnhname` field is where the magic happens. It uses the `PathnameFieldComponent` component under the hood and gives you the ability to create custom pathnames with as many slugs/levels as you want.
+
+`definePatnhname` is used by the `pages` plugin and makes the navigation of your content faster.
+
+As an example, the path `/blog/{your-slug}/article` will be parsed by the `pages` plugin so it will automatically generate a `Blog` folder with all documents using the same pathname structure.
+
+Usage example:
+
+```tsx
+export default defineType({
+  type: "document",
+  name: "page",
+  fields: [
+    // ... other fields
+    definePathname({ name: "pathname" }),
+  ],
+});
+```
+
+With i18n options:
+
+```tsx
+export default defineType({
+  type: "document",
+  name: "page",
+  fields: [
+    // ... other fields
+    definePathname({
+      name: "pathname",
+      options: {
+        i18n: {
+          enabled: true,
+          defaultLocaleId: "en",
+        },
+      },
+    }),
+  ],
+});
+```
+
+### Enabling page creation
+
+Use the `creatablePages` option to define which schema types can be used to create pages.
+When a page is created, it will automatically have the current folder in its pathname.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/99c88e5a-5989-40a8-bd4c-09b0aa0ac17b
 
@@ -82,9 +130,10 @@ export default defineConfig({
 });
 ```
 
-#### Add internationalization
+### Add internationalization
 
-You can specify a list of locales if you want to support multiple languages. The pages navigator will then allow you to switch between locales. If the `creatablePages` option is set, the selected language will be used to create new pages.
+The `i18n` option can be used to support filtering pages by locale and displaying internationalised URLs.
+When page creation is enabled, the currently selected `locale` is used as an initial value to create new pages.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/ba962e75-3158-44fb-9593-0360fc631fde
 
@@ -146,7 +195,7 @@ export default defineType({
 });
 ```
 
-#### Customize documents previews
+### Customize documents previews
 
 You can customize list previews of your documents in pages navigator as you would normally do with Sanity. You can control this by adding a preview key to the type defined in the schema. For example:
 
@@ -178,55 +227,7 @@ export default {
 
 Learn more about preview customization [here](https://www.sanity.io/docs/previews-list-views).
 
-### `documentI18n`
-
-The `documentI18n` plugin can be used for projects needing document level translations. It uses the Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) plugin under the hood and allows you to dynamically specify your schemas. The plugin will allow you to create unique translations of a document.
-
-## Sanity Fields
-
-### `definePathname`
-
-The `definePatnhname` field is where the magic happens. It uses the `PathnameFieldComponent` component under the hood and gives you the ability to create custom pathnames with as many slugs/levels as you want.
-
-`definePatnhname` is used by the `pages` plugin and makes the navigation of your content faster.
-
-As an example, the path `/blog/{your-slug}/article` will be parsed by the `pages` plugin so it will automatically generate a `Blog` folder with all documents using the same pathname structure.
-
-Usage example:
-
-```tsx
-export default defineType({
-  type: "document",
-  name: "page",
-  fields: [
-    // ... other fields
-    definePathname({ name: "pathname" }),
-  ],
-});
-```
-
-With i18n options:
-
-```tsx
-export default defineType({
-  type: "document",
-  name: "page",
-  fields: [
-    // ... other fields
-    definePathname({
-      name: "pathname",
-      options: {
-        i18n: {
-          enabled: true,
-          defaultLocaleId: "en",
-        },
-      },
-    }),
-  ],
-});
-```
-
-### `defineSection`
+## `defineSection`
 
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
 
@@ -313,6 +314,10 @@ const schemas = [page, ...sections];
 
 export default schemas;
 ```
+
+## `documentI18n`
+
+The `documentI18n` plugin can be used for projects needing document level translations. It uses the Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) plugin under the hood and allows you to dynamically specify your schemas. The plugin will allow you to create unique translations of a document.
 
 ## Examples
 
