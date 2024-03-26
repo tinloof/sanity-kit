@@ -29,11 +29,9 @@ npm install @tinloof/sanity-studio
 
 Pages is a plugin that wraps [Presentation](https://www.sanity.io/docs/presentation) to display your website pages in a sitemap-like navigation and make it possible to create new ones.
 
-
 ### Basic usage
 
 #### 1. Configure Pages:
-
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -44,7 +42,7 @@ export default defineConfig({
     pages({
       // Presentation's configuration
       previewUrl: {
-        draftMode: {
+        previewMode: {
           enable: "/api/draft",
         },
       },
@@ -64,18 +62,18 @@ export default defineType({
   type: "document",
   name: "modularPage",
   fields: [
-    definePathname({ name: "pathname" }),
+    definePathname({
+      name: "pathname",
+    }),
   ],
 });
 ```
 
 Documents with a defined `pathname` field value are now recognized as pages and are automatically grouped into directories in the pages navigator.
 
-
 ### Enabling page creation
 
 Use the `creatablePages` option to define which schema types can be used to create pages.
-
 
 When a page is created, it will automatically have the current folder in its pathname.
 
@@ -91,7 +89,7 @@ export default defineConfig({
       // Add any documents you want to be creatable from the pages navigator
       creatablePages: ["page"],
       previewUrl: {
-        draftMode: {
+        previewMode: {
           enable: "/api/draft",
         },
       },
@@ -127,7 +125,7 @@ export default defineConfig({
     pages({
       i18n: i18nConfig,
       previewUrl: {
-        draftMode: {
+        previewMode: {
           enable: "/api/draft",
         },
       },
@@ -192,7 +190,6 @@ export default {
   },
 };
 ```
-
 
 ## Sections
 
