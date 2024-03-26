@@ -1,6 +1,7 @@
 # @tinloof/sanity-studio
 
 A collection of studio plugins, fields, and components to boost your Sanity studio.
+A collection of studio plugins, fields, and components to boost your Sanity studio.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/070ecda4-c52c-4972-a955-8207bc4c3a6e
 
@@ -28,7 +29,10 @@ npm install @tinloof/sanity-studio
 
 Pages is a plugin that wraps [Presentation](https://www.sanity.io/docs/presentation) to display your website pages in a sitemap-like navigation and make it possible to create new ones.
 
+
 ### Basic usage
+
+#### 1. Configure Pages:
 
 #### 1. Configure Pages:
 
@@ -39,9 +43,7 @@ export default defineConfig({
   // ... other Sanity Studio config
   plugins: [
     pages({
-      /**
-       * See Presentation Tool configuration reference for more info
-       */
+      // Presentation's configuration
       previewUrl: {
         draftMode: {
           enable: "/api/draft",
@@ -57,22 +59,29 @@ export default defineConfig({
 ```tsx
 import { definePathname } from "@tinloof/sanity-studio";
 
+import { definePathname } from "@tinloof/sanity-studio";
+
 export default defineType({
   type: "document",
   name: "modularPage",
-  fields: [definePathname({ name: "pathname" })],
+  fields: [
+    definePathname({ name: "pathname" }),
+  ],
 });
 ```
 
 Documents with a defined `pathname` field value are now recognized as pages and are automatically grouped into directories in the pages navigator.
 
+
 ### Enabling page creation
 
 Use the `creatablePages` option to define which schema types can be used to create pages.
 
+
 When a page is created, it will automatically have the current folder in its pathname.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/99c88e5a-5989-40a8-bd4c-09b0aa0ac17b
+
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -95,11 +104,14 @@ export default defineConfig({
 
 ### Enabling internationalization
 
-The `i18n` option can be used to support filtering pages by a `locale` field and displaying internationalized URLs.
+The `i18n` option can be used to support filtering pages by a `locale` field and display internationalized URLs.
 
 When page creation is enabled, the currently selected `locale` is also used as an initial value to create new pages.
 
+Pathnames are automatically validated to be unique accros locales.
+
 https://github.com/tinloof/sanity-kit/assets/10447155/ba962e75-3158-44fb-9593-0360fc631fde
+
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -154,7 +166,9 @@ export default defineType({
 ```
 
 ### Customizing pages previews
+### Customizing pages previews
 
+Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
 Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
 
 ```tsx
@@ -183,12 +197,14 @@ export default {
 };
 ```
 
+
 ## Sections
 
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/41b65857-687e-42bb-97e5-fe3f5ec23c63
 
+#### 1. Create a new section schema
 #### 1. Create a new section schema
 
 ```tsx
@@ -218,6 +234,7 @@ export const bannerSection = defineSection({
 ```
 
 #### 2. Create a sections list array
+#### 2. Create a sections list array
 
 ```tsx
 // @/sanity/schemas/sections/index.tsx
@@ -227,6 +244,7 @@ import { bannerSection } from "@/sanity/schemas/sections/banner";
 export const sections = [bannerSection];
 ```
 
+#### 3. Add a section picker to your document
 #### 3. Add a section picker to your document
 
 Here, the `SectionsArrayInput` component is used to render a useful section picker in your Sanity documents.
@@ -259,6 +277,7 @@ export const sections = [bannerSection];
 ```
 
 #### 4. Add sections to your Sanity schema
+#### 4. Add sections to your Sanity schema
 
 ```tsx
 // @/sanity/schemas/index.tsx
@@ -273,7 +292,10 @@ export default schemas;
 
 ## `documentI18n`
 
-The `documentI18n` plugin can be used for projects needing document level translations. It uses the Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) plugin under the hood and allows you to dynamically specify your schemas. The plugin will allow you to create unique translations of a document.
+The `documentI18n` plugin is an opinionated thin wrapper around Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) that makes it possible to add internationalization without having to specify schema types.
+`documentI18n` enables internationalization on any schema with a `locale` field.
+
+Check the `with-i18n` example for instructions on usage.
 
 ## Examples
 
