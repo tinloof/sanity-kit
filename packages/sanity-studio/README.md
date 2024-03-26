@@ -34,7 +34,6 @@ Pages is a plugin that wraps [Presentation](https://www.sanity.io/docs/presentat
 
 #### 1. Configure Pages:
 
-#### 1. Configure Pages:
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
