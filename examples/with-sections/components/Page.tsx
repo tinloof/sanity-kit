@@ -5,7 +5,7 @@ export interface PageProps {
   data: PagePayload | null
 }
 
-export function Page({ data }: PageProps & { data: { sectionsBody: any } }) {
+export function Page({ data }: PageProps) {
   return (
     <div>
       {data?.sectionsBody?.map((section) => {
