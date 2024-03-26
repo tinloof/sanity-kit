@@ -13,22 +13,20 @@ npm install @tinloof/sanity-studio
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
-- [`pages`](#pages)
+- [Pages](#pages)
   - [Basic usage](#basic-usage)
-  - [Add pathname field](#add-pathname-field)
   - [Enabling page creation](#enabling-page-creation)
-  - [Add internationalization](#add-internationalization)
-- [`defineSection`](#definesection)
-  - [Create a new section schema](#step-1-create-a-new-section-schema)
-  - [Create a sections list array](#step-2-create-a-sections-list-array)
-  - [Add a section picker to your document](#step-3-add-a-section-picker-to-your-document)
-  - [Add sections to your Sanity schema](#step-4-add-sections-to-your-sanity-schema)
+  - [Enabling internationalization](#enabling-internationalization)
+- [Sections](#sections)
+  - [Create a new section schema](#1-create-a-new-section-schema)
+  - [Create a sections list array](#2-create-a-sections-list-array)
+  - [Add a section picker to your document](#3-add-a-section-picker-to-your-document)
+  - [Add sections to your Sanity schema](#4-add-sections-to-your-sanity-schema)
 - [`documentI18n`](#documenti18n)
 
 ## Pages
 
 Pages is a plugin that wraps [Presentation](https://www.sanity.io/docs/presentation) to display your website pages in a sitemap-like navigation and make it possible to create new ones.
-
 
 ### Basic usage
 
@@ -62,14 +60,11 @@ import { definePathname } from "@tinloof/sanity-studio";
 export default defineType({
   type: "document",
   name: "modularPage",
-  fields: [
-    definePathname({ name: "pathname" }),
-  ],
+  fields: [definePathname({ name: "pathname" })],
 });
 ```
 
 Documents with a defined `pathname` field value are now recognized as pages and are automatically grouped into directories in the pages navigator.
-
 
 ### Enabling page creation
 
@@ -78,7 +73,6 @@ Use the `creatablePages` option to define which schema types can be used to crea
 When a page is created, it will automatically have the current folder in its pathname.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/99c88e5a-5989-40a8-bd4c-09b0aa0ac17b
-
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -106,7 +100,6 @@ The `i18n` option can be used to support filtering pages by a `locale` field and
 When page creation is enabled, the currently selected `locale` is also used as an initial value to create new pages.
 
 https://github.com/tinloof/sanity-kit/assets/10447155/ba962e75-3158-44fb-9593-0360fc631fde
-
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -189,7 +182,6 @@ export default {
   },
 };
 ```
-
 
 ## Sections
 
