@@ -101,7 +101,6 @@ function SectionVariantCard({
             ) : (
               <img
                 style={{
-                  "object-fit": "cover",
                   height: "100%",
                   objectPosition: "center",
                 }}

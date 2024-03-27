@@ -25,21 +25,6 @@ export async function loadQuery<QueryResponse>({
     )
   }
 
-  /*
-  const REVALIDATE_SKIP_CACHE = 0
-  const REVALIDATE_CACHE_FOREVER = false
-  const revalidate = (
-    isDraftMode
-      ? // If we're in Draft Mode we want fresh content on every request so we skip the cache
-        REVALIDATE_SKIP_CACHE
-      : revalidateSecret
-        ? // If GROQ webhook revalidation is setup, then we only want to revalidate on-demand so the cache lives as long as possible
-          REVALIDATE_CACHE_FOREVER
-        : // No webhook means we don't know ahead of time when content changes, so we use the Sanity CDN API cache which has its own Stale-While-Revalidate logic
-          REVALIDATE_SKIP_CACHE
-          ) satisfies NextFetchRequestConfig['revalidate']
-          // */
-
   const perspective = isDraftMode ? 'previewDrafts' : 'published'
 
   const options = {
