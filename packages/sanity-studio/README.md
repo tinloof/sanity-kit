@@ -2,7 +2,7 @@
 
 A collection of studio plugins, fields, and components to boost your Sanity studio.
 
-https://github.com/tinloof/sanity-kit/assets/10447155/c1ae5694-3f84-4c5c-856f-aab6cc361c33
+https://github.com/tinloof/sanity-kit/assets/10447155/467e32d2-ded1-47ad-b7f1-85007a941785
 
 ## Installation
 
@@ -74,7 +74,7 @@ Use the `creatablePages` option to define which schema types can be used to crea
 
 When a page is created, it will automatically have the current folder in its pathname.
 
-https://github.com/tinloof/sanity-kit/assets/10447155/b9291eda-2c32-4415-a0b7-77eb19806a36
+https://github.com/tinloof/sanity-kit/assets/10447155/bd8efb2b-c0cf-45da-bf9b-8a06be9ee620
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -103,7 +103,7 @@ When page creation is enabled, the currently selected `locale` is also used as a
 
 Pathnames are automatically validated to be unique accros locales.
 
-https://github.com/tinloof/sanity-kit/assets/10447155/ba07efbb-4d2a-4dcb-ac90-c9cd57bc86ee
+https://github.com/tinloof/sanity-kit/assets/10447155/5f6a063d-833c-4e96-8c3b-58e7611f4b43
 
 ```tsx
 import { pages } from "@tinloof/sanity-studio";
@@ -197,7 +197,7 @@ export default {
 
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
 
-https://github.com/tinloof/sanity-kit/assets/10447155/f3cb9ecb-602f-4669-8a90-aa2620ed16d0
+https://github.com/tinloof/sanity-kit/assets/10447155/6215f0b5-0b6e-44e8-bd52-84f59d8d0304
 
 #### 1. Create a new section schema
 
