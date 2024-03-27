@@ -25,7 +25,6 @@ export async function loadQuery<QueryResponse>({
     )
   }
 
-  // https://nextjs.org/docs/app/api-reference/functions/fetch#optionsnextrevalidate
   /*
   const REVALIDATE_SKIP_CACHE = 0
   const REVALIDATE_CACHE_FOREVER = false
