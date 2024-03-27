@@ -18,7 +18,7 @@ export default defineConfig({
   plugins: [
     pages({
       previewUrl: {
-        draftMode: {
+        previewMode: {
           enable: '/api/draft',
         },
       },

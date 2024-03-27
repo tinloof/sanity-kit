@@ -11,6 +11,35 @@ import {
 
 const METADATA_SCHEMA_NAME = `translation.metadata`;
 
+/**
+ * The `documentI18n` plugin can be used for projects needing translations.
+ * It uses the Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) plugin under the hood.
+ * The plugin will allow you to create unique translations of a document.
+ * 
+ * @example
+ * 
+ * ```tsx
+ * import { documentI18n } from "@tinloof/sanity-studio";
+ * import schemas from "@/sanity/schemas";
+ * 
+ * const i18nConfig = {
+ *   locales: [
+ *     { id: "en", title: "English" },
+ *     { id: "fr", title: "French" },
+ *   ],
+ *   defaultLocaleId: "en",
+ * };
+ * 
+ * export default defineConfig({
+ *    plugins: [
+ *      documentI18n({
+ *        ...i18nConfig,
+ *        schemas,
+ *      }),
+ *    ],
+ * });
+```
+ */
 export const documentI18n = definePlugin<SanityI18NPluginOptions>((options) => {
   return {
     name: "tinloof-sanity-i18n",
