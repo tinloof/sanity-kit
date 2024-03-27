@@ -1,5 +1,5 @@
 import config from '@/config'
-import { ClientPerspective, createClient } from 'next-sanity'
+import { ClientPerspective, createClient } from '@sanity/client'
 
 const clientConfig = {
   projectId: config.sanity.projectId,
