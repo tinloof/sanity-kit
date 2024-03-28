@@ -1,5 +1,15 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 0.4.1
+
+### Patch Changes
+
+- a09953c: - Add support for preview data, now you can use document schema preview to render pages navigator items preview data
+  - Update README
+  - Update dependencies
+- Updated dependencies [a09953c]
+  - @tinloof/sanity-web@0.1.1
+
 ## 0.4.0
 
 ### Minor Changes
