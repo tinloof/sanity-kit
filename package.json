@@ -5,6 +5,7 @@
     "build-install": "pnpm install --filter='./packages/*'",
     "build": "turbo run build --no-cache --filter='./packages/*'",
     "changeset": "changeset add",
+    "version": "changeset version",
     "dev": "turbo run dev --parallel --filter=./packages/*",
     "dev:all": "turbo run dev",
     "dev:example:hello-world": "turbo run dev --filter=./examples/hello-world",
