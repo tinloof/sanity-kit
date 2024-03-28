@@ -1,10 +1,10 @@
-import React from "react";
-
 import { CopyIcon, EllipsisVerticalIcon, TrashIcon } from "@sanity/icons";
 import { Button, Flex, Menu, MenuButton, MenuItem } from "@sanity/ui";
+import React from "react";
 import { useCallback, useContext } from "react";
 import { type ObjectItemProps } from "sanity";
-import styled from "styled-components";
+import { styled } from "styled-components";
+
 import { SectionsContext } from "./SectionsContext";
 import { generateItemKey } from "./utils";
 

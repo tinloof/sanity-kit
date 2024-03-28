@@ -1,5 +1,5 @@
+import { presentationTool } from "@sanity/presentation";
 import { definePlugin } from "sanity";
-import { presentationTool } from "sanity/presentation";
 
 import { PagesNavigatorPluginOptions } from "../../types";
 import { createPagesNavigator } from "./components/DefaultPagesNavigator";

@@ -1,18 +1,18 @@
 import { EditIcon, EyeOpenIcon, FolderIcon } from "@sanity/icons";
+import {
+  usePresentationNavigate,
+  usePresentationParams,
+} from "@sanity/presentation";
 import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { ObjectFieldProps, SlugValue, set, unset, useFormValue } from "sanity";
-import styled from "styled-components";
-
 import {
   getDocumentPath,
   slugify,
   stringToPathname,
 } from "@tinloof/sanity-web";
-import {
-  usePresentationNavigate,
-  usePresentationParams,
-} from "sanity/presentation";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { ObjectFieldProps, set, SlugValue, unset, useFormValue } from "sanity";
+import { styled } from "styled-components";
+
 import { DocumentWithLocale, PathnameOptions } from "../types";
 
 const UnlockButton = styled(Button)`

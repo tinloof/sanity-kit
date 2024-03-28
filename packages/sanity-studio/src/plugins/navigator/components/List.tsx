@@ -6,16 +6,16 @@ import {
   PublishIcon,
   SearchIcon,
 } from "@sanity/icons";
+import {
+  usePresentationNavigate,
+  usePresentationParams,
+} from "@sanity/presentation";
 import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { localizePathname } from "@tinloof/sanity-web";
 import React, { useRef } from "react";
 import { useColorSchemeValue } from "sanity";
-import {
-  usePresentationNavigate,
-  usePresentationParams,
-} from "sanity/presentation";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 import { ListItemProps, PageTreeNode, TreeNode } from "../../../types";
 import { useNavigator } from "../context";
