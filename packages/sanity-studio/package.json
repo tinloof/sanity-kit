@@ -10,14 +10,14 @@
   "type": "module",
   "author": "Tinloof",
   "scripts": {
-    "dev": "run-s watch",
-    "prebuild": "rimraf dist",
-    "build": "pkg build --strict && pkg --strict",
+    "build": "run-s clean && plugin-kit verify-package --silent && pkg-utils build --strict && pkg-utils --strict",
+    "clean": "rimraf dist",
     "format": "prettier --write --cache --ignore-unknown .",
     "link-watch": "plugin-kit link-watch",
     "lint": "eslint .",
     "prepublishOnly": "run-s build",
-    "watch": "pkg watch --strict"
+    "watch": "pkg-utils watch --strict",
+    "dev": "run-s watch"
   },
   "exports": {
     ".": {
@@ -40,7 +40,9 @@
   "sideEffects": false,
   "sanityPlugin": {
     "verifyPackage": {
-      "tsconfig": false
+      "tsconfig": false,
+      "sanityV2Json": false,
+      "tsc": false
     }
   },
   "dependencies": {
