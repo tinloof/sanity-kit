@@ -2,6 +2,7 @@
   "name": "sanity-kit",
   "private": true,
   "scripts": {
+    "build-install": "pnpm install --filter='./packages/*'",
     "build": "turbo run build --no-cache --filter='./packages/*'",
     "changeset": "changeset add",
     "dev": "turbo run dev --parallel --filter=./packages/*",
