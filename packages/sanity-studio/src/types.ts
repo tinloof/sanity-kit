@@ -1,5 +1,9 @@
 import { Language as Locale } from "@sanity/document-internationalization";
 import {
+  NavigatorOptions as PresentationNavigatorOptions,
+  PresentationPluginOptions,
+} from "@sanity/presentation";
+import {
   ObjectDefinition,
   ObjectOptions,
   ObjectSchemaType,
@@ -7,10 +11,6 @@ import {
   SlugDefinition,
   SlugOptions,
 } from "sanity";
-import {
-  NavigatorOptions as PresentationNavigatorOptions,
-  PresentationPluginOptions,
-} from "sanity/presentation";
 
 export type NormalizedCreatablePage = {
   title: string;

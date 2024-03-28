@@ -8,7 +8,7 @@ import {
 } from "@sanity/ui";
 import React from "react";
 import { useColorSchemeValue } from "sanity";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 import { SectionAddHandler, SectionVariantType } from "../../types";
 

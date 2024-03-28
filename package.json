@@ -10,24 +10,18 @@
     "dev:example:with-i18n": "turbo run dev --filter=./examples/with-i18n",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.27.1",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "prettier": "^3.1.0",
-    "turbo": "^1.12.5"
+    "publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish",
+    "postinstall": "manypkg check",
+    "fix:deps": "manypkg fix && pnpm install"
   },
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@8.15.4",
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
+  "packageManager": "pnpm@8.9.0",
   "dependencies": {
-    "@sanity/document-internationalization": "^2.0.3"
+    "@changesets/cli": "^2.27.1",
+    "@manypkg/cli": "^0.21.3",
+    "prettier": "^3.2.5",
+    "turbo": "^1.13.0"
   }
 }

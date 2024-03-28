@@ -1,6 +1,13 @@
 {
-    "extends": "@repo/typescript-config/base.json",
-    "compilerOptions": {
-        "strict": false
-    }
+  "extends": "./tsconfig.base",
+  "compilerOptions": {
+    "incremental": true,
+    "noEmit": true,
+    "strictNullChecks": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+  ],
+  "exclude": ["dist", "node_modules"]
 }
