@@ -13,10 +13,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
-    "paths": {
-      "@tinloof/sanity-studio": ["../../packages/sanity-studio"]
-    }
+    "incremental": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

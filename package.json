@@ -12,19 +12,13 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish"
   },
-  "devDependencies": {
-    "@changesets/cli": "^2.27.1",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
-    "prettier": "^3.1.0",
-    "turbo": "^1.13.0"
-  },
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@8.15.4",
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ]
+  "packageManager": "pnpm@8.9.0",
+  "dependencies": {
+    "@changesets/cli": "^2.27.1",
+    "prettier": "^3.2.5",
+    "turbo": "^1.13.0"
+  }
 }

@@ -14,7 +14,7 @@ export default defineConfig({
     pages({
       previewUrl: {
         draftMode: {
-          enable: 'http://localhost:3000/api/draft',
+          enable: 'http://localhost:9999/api/draft',
         },
       },
       creatablePages: ['page'],
