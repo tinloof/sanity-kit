@@ -1,4 +1,5 @@
-import { FieldDefinition, SlugValidationContext, defineField } from "sanity";
+import { defineField, FieldDefinition, SlugValidationContext } from "sanity";
+
 import { PathnameFieldComponent } from "../components/PathnameFieldComponent";
 import { PathnameParams } from "../types";
 
@@ -29,12 +30,12 @@ async function isUnique(
 ): Promise<boolean> {
   const { document, getClient } = context;
   const client = getClient({ apiVersion: "2023-06-21" });
-  const id = document._id.replace(/^drafts\./, "");
+  const id = document?._id.replace(/^drafts\./, "");
   const params = {
     draft: `drafts.${id}`,
     published: id,
     slug,
-    locale: document.locale ?? null,
+    locale: document?.locale ?? null,
   };
   const query = `*[!(_id in [$draft, $published]) && pathname.current == $slug && locale == $locale]`;
   const result = await client.fetch(query, params);

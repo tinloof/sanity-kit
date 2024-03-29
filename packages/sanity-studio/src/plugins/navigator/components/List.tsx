@@ -211,7 +211,7 @@ const ListItem = ({
   const innerRef = useRef<HTMLLIElement>(null);
   const listItemId = `item-${idx}`;
   const path = localizePathname({
-    pathname: item.pathname,
+    pathname: item.pathname || "",
     localeId: item.locale,
     isDefault: defaultLocaleId === item.locale,
   });
@@ -229,7 +229,7 @@ const ListItem = ({
         id: item._id,
       });
     } else {
-      setCurrentDir(item.pathname);
+      setCurrentDir(item.pathname || "");
     }
   };
 

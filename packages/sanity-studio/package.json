@@ -17,7 +17,8 @@
     "lint": "eslint .",
     "prepublishOnly": "run-s build",
     "watch": "pkg-utils watch --strict",
-    "dev": "run-s watch"
+    "dev": "run-s watch",
+    "typecheck": "tsc --noEmit"
   },
   "exports": {
     ".": {

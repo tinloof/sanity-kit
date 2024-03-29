@@ -1,13 +1,9 @@
 {
   "extends": "./tsconfig.base",
   "compilerOptions": {
-    "incremental": true,
-    "noEmit": true,
-    "strictNullChecks": true
+    "incremental": false,
+    "noEmit": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-  ],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["dist", "node_modules"]
 }

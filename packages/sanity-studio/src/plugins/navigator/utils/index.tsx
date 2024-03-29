@@ -1,6 +1,6 @@
 import { capitalize } from "lodash";
 import { useMemoObservable } from "react-rx";
-import { useDocumentStore } from "sanity";
+import { QueryParams, useDocumentStore } from "sanity";
 
 import {
   NormalizedCreatablePage,
@@ -15,7 +15,7 @@ export const useSanityFetch = ({
   variables,
 }: {
   query: string;
-  variables?: Record<string, any>;
+  variables: QueryParams;
 }) => {
   const documentStore = useDocumentStore();
   const subscribe = useMemoObservable(
@@ -44,11 +44,11 @@ export function buildTree(list: Page[]): Tree {
   for (const item of list) {
     const isDraft = item._originalId.startsWith("drafts.");
     const segments =
-      item.pathname === "/" ? [""] : item.pathname.split("/").filter(Boolean);
+      item.pathname === "/" ? [""] : item.pathname?.split("/").filter(Boolean);
     let currentFolder = root;
     let pathSoFar = "";
 
-    segments.forEach((segment, index) => {
+    segments?.forEach((segment, index) => {
       const isFolder = index !== segments.length - 1;
       pathSoFar += `/${segment}`;
 

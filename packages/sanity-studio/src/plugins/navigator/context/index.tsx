@@ -125,7 +125,7 @@ export const NavigatorProvider = ({
   const targetTree = findTreeByPath(rootTree, state.currentDir);
   const currentTree = targetTree || rootTree;
   const items = Object.values(currentTree || rootTree).sort((a, b) =>
-    a.pathname.localeCompare(b.pathname)
+    a.pathname && b.pathname ? a.pathname.localeCompare(b.pathname) : 0
   );
 
   useEffect(() => {
@@ -168,12 +168,12 @@ function searchTree({
       const item: TreeNode = tree[key];
       if (
         item.title.toLowerCase().startsWith(q) ||
-        item.pathname.toLowerCase().startsWith(q) ||
+        item.pathname?.toLowerCase().startsWith(q) ||
         item.title
           .split(" ")
           .some((word) => word.toLowerCase().startsWith(q)) ||
         item.pathname
-          .toLowerCase()
+          ?.toLowerCase()
           .split("/")
           .some((word) => {
             return word.startsWith(q);

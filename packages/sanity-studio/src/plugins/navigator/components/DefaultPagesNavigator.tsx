@@ -31,6 +31,7 @@ function DefaultPagesNavigator(props: PagesNavigatorOptions) {
 
   const [data, loading] = useSanityFetch({
     query: pagesRoutesQuery,
+    variables: {},
   });
 
   return (
@@ -38,7 +39,7 @@ function DefaultPagesNavigator(props: PagesNavigatorOptions) {
       <NavigatorProvider i18n={props.i18n} data={data || []}>
         <Header pages={props.creatablePages}>
           <SearchBox />
-          {props.i18n?.locales.length > 1 ? (
+          {props.i18n?.locales?.length && props.i18n.locales.length > 1 ? (
             <LocaleSelect locales={props.i18n.locales} />
           ) : null}
         </Header>

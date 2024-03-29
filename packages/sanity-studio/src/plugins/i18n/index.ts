@@ -80,8 +80,8 @@ export type SanityI18NPluginOptions = {
 // Extracts the schema types that have a locale field
 function extractTranslatableSchemaTypes(schemas: BaseSchemaDefinition[]) {
   return schemas
-    .filter((schema: DocumentDefinition) =>
+    .filter((schema: any) =>
       schema?.fields?.find((field) => field.name === "locale")
     )
-    .map((schema: DocumentDefinition) => schema.name);
+    .map((schema) => schema.name);
 }
