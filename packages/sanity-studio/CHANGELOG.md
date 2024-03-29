@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.0.0
+
+### Major Changes
+
+- 3899f1a: The pages plugin list items now render document icon
+
 ## 0.4.1
 
 ### Patch Changes
