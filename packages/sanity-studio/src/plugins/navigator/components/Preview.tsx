@@ -44,7 +44,8 @@ const PreviewElement = ({
   });
 
   const showPreview =
-    typeof schemaType?.preview?.prepare === "function" && !isLoading;
+    schemaType?.icon ||
+    (typeof schemaType?.preview?.prepare === "function" && !isLoading);
 
   if (type === "media") {
     return showPreview ? (
@@ -52,7 +53,7 @@ const PreviewElement = ({
         {...previewValues}
         isPlaceholder={isLoading ?? true}
         layout="default"
-        icon={schemaType.icon}
+        icon={schemaType?.icon}
       />
     ) : (
       <>{!isLoading ? fallback : null}</>
