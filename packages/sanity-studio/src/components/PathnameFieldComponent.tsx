@@ -94,7 +94,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
       locale: i18nOptions.enabled ? document.locale : undefined,
       pathname: value?.current,
     },
-    i18nOptions.defaultLocaleId
+    i18nOptions.defaultLocaleId || ""
   );
 
   const pathInput = useMemo(() => {
@@ -141,7 +141,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
               disabled={readOnly}
             />
           </Box>
-          <PreviewButton localizedPathname={localizedPathname} />
+          <PreviewButton localizedPathname={localizedPathname || ""} />
         </Flex>
       );
     }
@@ -159,7 +159,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
             style={{ flex: 1 }}
           />
         </Box>
-        <PreviewButton localizedPathname={localizedPathname} />
+        <PreviewButton localizedPathname={localizedPathname || ""} />
       </Flex>
     );
   }, [

@@ -30,11 +30,11 @@ const ListWrapper = styled(Box)`
   border: 2px solid transparent;
   padding: 2px;
   border-radius: 8px;
-  width: 100%;
   height: 88vh;
   overflow-y: auto;
   margin: 0;
   display: flex;
+  gap: 0.25rem;
   flex-direction: column;
 `;
 
@@ -174,44 +174,30 @@ const List = ({ loading }: { loading: boolean }) => {
         aria-label="Pages and folders"
         aria-activedescendant={`item-${activeDescendant}`}
       >
-        <div
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          {virtualizer.getVirtualItems().map((virtualChild) => {
-            const item = items[virtualChild.index];
-            return (
-              <ListItem
-                key={virtualChild.index}
-                item={item}
-                active={activeDescendant}
-                setActive={setActiveDescendant}
-                idx={virtualChild.index}
-                virtualChild={virtualChild}
-              />
-            );
-          })}
-        </div>
+        {virtualizer.getVirtualItems().map((virtualChild) => {
+          const item = items[virtualChild.index];
+          return (
+            <ListItem
+              key={virtualChild.index}
+              item={item}
+              active={activeDescendant}
+              setActive={setActiveDescendant}
+              idx={virtualChild.index}
+              virtualChild={virtualChild}
+            />
+          );
+        })}
       </ListWrapper>
     </Card>
   );
 };
 
-const ListItem = ({
-  item,
-  active,
-  setActive,
-  idx,
-  virtualChild,
-}: ListItemProps) => {
+const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
   const { defaultLocaleId, setCurrentDir, currentDir } = useNavigator();
   const innerRef = useRef<HTMLLIElement>(null);
   const listItemId = `item-${idx}`;
   const path = localizePathname({
-    pathname: item.pathname,
+    pathname: item.pathname || "",
     localeId: item.locale,
     isDefault: defaultLocaleId === item.locale,
   });
@@ -229,7 +215,7 @@ const ListItem = ({
         id: item._id,
       });
     } else {
-      setCurrentDir(item.pathname);
+      setCurrentDir(item.pathname || "");
     }
   };
 
@@ -278,14 +264,6 @@ const ListItem = ({
       aria-selected={listItemId === active}
       currentScheme={scheme}
       isPreviewed={previewed}
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: `${virtualChild?.size}px`,
-        transform: `translateY(${virtualChild?.start}px)`,
-      }}
     >
       <Flex align="center" gap={2} flex={1}>
         <Flex

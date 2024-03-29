@@ -25,7 +25,7 @@ const PreviewElement = ({
   item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
   type: "media" | "title" | "subtitle";
   fallback?: React.ReactNode | string;
-}): React.ReactElement => {
+}): React.ReactElement | null => {
   const schema = useSchema();
   const { _id, _type } = item;
 
@@ -33,7 +33,7 @@ const PreviewElement = ({
   const schemaType = schema.get(_type);
 
   const { draft, published, isLoading } = useMemoObservable(
-    () => getPreviewStateObservable(documentPreviewStore, schemaType, _id, ""),
+    () => getPreviewStateObservable(documentPreviewStore, schemaType!, _id, ""),
     [_id, documentPreviewStore, schemaType]
   )!;
 
@@ -44,7 +44,8 @@ const PreviewElement = ({
   });
 
   const showPreview =
-    typeof schemaType.preview?.prepare === "function" && !isLoading;
+    schemaType?.icon ||
+    (typeof schemaType?.preview?.prepare === "function" && !isLoading);
 
   if (type === "media") {
     return showPreview ? (
@@ -52,7 +53,7 @@ const PreviewElement = ({
         {...previewValues}
         isPlaceholder={isLoading ?? true}
         layout="default"
-        icon={schemaType.icon}
+        icon={schemaType?.icon}
       />
     ) : (
       <>{!isLoading ? fallback : null}</>
@@ -118,10 +119,10 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
               .image(
                 mediaProp as SanityImageSource /*will only enter this code path if it's compatible*/
               )
-              .width(dimensions?.width)
-              .height(dimensions.height)
+              .width(dimensions?.width || 100)
+              .height(dimensions.height || 100)
               .fit(dimensions.fit)
-              .dpr(dimensions.dpr)
+              .dpr(dimensions.dpr || 1)
               .url() || ""
           }
         />
