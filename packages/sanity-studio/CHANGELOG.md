@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.0.2
+
+### Patch Changes
+
+- 5beeb0a: Fix folder ListItem rendering
+
 ## 1.0.1
 
 ### Patch Changes
