@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.0.1
+
+### Patch Changes
+
+- b442ca5: Fix pages plugin issues when schemaType is undefined. From now on, pages navigator ListItem will not render if schemaType is undefined.
+
 ## 1.0.0
 
 ### Major Changes
