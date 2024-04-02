@@ -10,6 +10,7 @@ import {
   ImageUrlFitMode,
   isString,
   SanityDefaultPreviewProps,
+  SchemaType,
   useClient,
   useDocumentPreviewStore,
   useSchema,
@@ -17,25 +18,45 @@ import {
 
 import { FolderTreeNode, TreeNode } from "../../../types";
 
-const PreviewElement = ({
-  item,
-  type,
-  fallback,
-}: {
+const PreviewElement = (props: {
   item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
   type: "media" | "title" | "subtitle";
   fallback?: React.ReactNode | string;
 }): React.ReactElement | null => {
   const schema = useSchema();
-  const { _id, _type } = item;
-
-  const documentPreviewStore = useDocumentPreviewStore();
+  const { _type } = props.item;
   const schemaType = schema.get(_type);
 
-  const { draft, published, isLoading } = useMemoObservable(
-    () => getPreviewStateObservable(documentPreviewStore, schemaType!, _id, ""),
-    [_id, documentPreviewStore, schemaType]
-  )!;
+  if (!schemaType) {
+    return null;
+  }
+
+  return <Preview schemaType={schemaType} {...props} />;
+};
+
+PreviewElement.displayName = "PreviewElement";
+
+const Preview = ({
+  schemaType,
+  item,
+  type,
+  fallback,
+}: {
+  schemaType: SchemaType;
+  item: Exclude<TreeNode, FolderTreeNode>;
+  type: "media" | "title" | "subtitle";
+  fallback?: React.ReactNode | string;
+}) => {
+  const documentPreviewStore = useDocumentPreviewStore();
+  const previewState = useMemoObservable(
+    () =>
+      getPreviewStateObservable(documentPreviewStore, schemaType, item._id, ""),
+    [item._id, documentPreviewStore, schemaType]
+  );
+
+  const draft = previewState?.draft;
+  const published = previewState?.published;
+  const isLoading = previewState?.isLoading;
 
   const previewValues = getPreviewValueWithFallback({
     draft,
@@ -79,7 +100,7 @@ const PreviewElement = ({
   return null;
 };
 
-PreviewElement.displayName = "PreviewElement";
+Preview.displayName = "Preview";
 
 const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
   const { icon, media: mediaProp, imageUrl, title } = props;
