@@ -254,7 +254,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
 
   const schemaType = schema.get(item._type);
 
-  if (!schemaType) {
+  if (item._type !== "folder" && !schemaType) {
     return null;
   }
 
