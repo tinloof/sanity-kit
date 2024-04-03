@@ -1,4 +1,4 @@
-# Sanity kit
+# Sanity Kit
 
 Packages to help developing powerful content management experiences with Sanity.
 
