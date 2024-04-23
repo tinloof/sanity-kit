@@ -1,4 +1,4 @@
-import { EditIcon, EyeOpenIcon, FolderIcon } from "@sanity/icons";
+import { LockIcon, EditIcon, EyeOpenIcon, FolderIcon } from "@sanity/icons";
 import {
   usePresentationNavigate,
   usePresentationParams,
@@ -31,11 +31,10 @@ const FolderText = styled(Text)`
   }
 `;
 
-export function PathnameFieldComponent(
-  props: ObjectFieldProps<SlugValue>
-): JSX.Element {
-  const i18nOptions = (props.schemaType.options as PathnameOptions | undefined)
-    ?.i18n ?? { enabled: false, defaultLocaleId: undefined };
+export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
+  const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
+  const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
+  const i18nOptions = fieldOptions?.i18n ?? { enabled: false, defaultLocaleId: undefined };
   const document = useFormValue([]) as DocumentWithLocale;
   const {
     inputProps: { onChange, value, readOnly },
@@ -46,6 +45,7 @@ export function PathnameFieldComponent(
   const folder = segments?.slice(0, -1).join("/");
   const slug = segments?.slice(-1)[0] || "";
   const [folderLocked, setFolderLocked] = useState(!!folder);
+  const folderCanUnlock = !readOnly && folderOptions.canUnlock;
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
   const pathSegmentInputRef = useRef<HTMLInputElement>(null);
@@ -114,14 +114,14 @@ export function PathnameFieldComponent(
               </Text>
               <FolderText muted>{folder}</FolderText>
               <UnlockButton
-                icon={EditIcon}
+                icon={folderCanUnlock ? EditIcon : LockIcon}
                 onClick={unlockFolder}
-                title="Edit path's folder"
+                title={folderCanUnlock ? "Edit path's folder" : "Folder is locked and cannot be changed"}
                 mode="bleed"
                 tone="primary"
                 padding={2}
                 fontSize={1}
-                disabled={readOnly}
+                disabled={!folderCanUnlock}
               >
                 <span />
               </UnlockButton>

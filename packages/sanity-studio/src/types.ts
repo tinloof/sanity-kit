@@ -158,6 +158,9 @@ export type SectionAddHandler = (params: {
 }) => void;
 
 export type PathnameOptions = SlugOptions & {
+  folder?: {
+    canUnlock?: boolean;
+  };
   i18n?: {
     enabled?: boolean;
     defaultLocaleId?: string;
