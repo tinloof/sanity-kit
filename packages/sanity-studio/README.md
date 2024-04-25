@@ -160,6 +160,29 @@ export default defineType({
 });
 ```
 
+### Lock folder renaming
+
+By default, folders can be renamed. Set the `folder.canUnlock` option to `false` to disable this.
+
+```tsx
+import { definePathname } from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        folder: {
+          canUnlock: false,
+        },
+      },
+    }),
+  ],
+});
+```
+
 ### Customizing pages previews
 
 Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
