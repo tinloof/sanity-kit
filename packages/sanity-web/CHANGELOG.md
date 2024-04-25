@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 0.2.1
+
+### Patch Changes
+
+- 5fe8baf: Fix SanityImage types
+
 ## 0.2.0
 
 ### Minor Changes
