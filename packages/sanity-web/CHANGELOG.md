@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 0.1.2
+
+### Patch Changes
+
+- ec602d8: Update dependencies
+
 ## 0.1.1
 
 ### Patch Changes

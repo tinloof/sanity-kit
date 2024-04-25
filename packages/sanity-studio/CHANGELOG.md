@@ -1,5 +1,13 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.0.3
+
+### Patch Changes
+
+- ec602d8: Update dependencies
+- Updated dependencies [ec602d8]
+  - @tinloof/sanity-web@0.1.2
+
 ## 1.0.2
 
 ### Patch Changes
