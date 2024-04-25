@@ -12,8 +12,11 @@ export function SearchArrayInput({
     ? members
     : members?.filter((member) => {
         if (member.kind === "item") {
-          const memberValue = JSON.stringify(member.item.value).toLowerCase();
-          return memberValue.includes(search.toLowerCase());
+          const itemValues = getAllValues(member.item.value);
+          return itemValues
+            .toString()
+            .toLowerCase()
+            .includes(search.toLowerCase());
         }
         return false;
       });
@@ -36,4 +39,23 @@ export function SearchArrayInput({
       {props.renderDefault({ ...props, members: filteredMembers })}
     </div>
   );
+}
+/**
+ * Recursively get all values from an object
+ */
+function getAllValues<
+  T extends {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
+  },
+>(obj: T): T[keyof T][] {
+  const values: T[keyof T][] = [];
+  Object.values(obj).forEach((value) => {
+    if (typeof value === "object" && !Array.isArray(value)) {
+      values.push(...getAllValues(value));
+    } else {
+      values.push(value);
+    }
+  });
+  return values;
 }
