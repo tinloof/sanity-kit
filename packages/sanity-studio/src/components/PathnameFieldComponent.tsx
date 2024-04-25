@@ -4,11 +4,7 @@ import {
   usePresentationParams,
 } from "@sanity/presentation";
 import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
-import {
-  getDocumentPath,
-  slugify,
-  stringToPathname,
-} from "@tinloof/sanity-web";
+import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { ObjectFieldProps, set, SlugValue, unset, useFormValue } from "sanity";
 import { styled } from "styled-components";
@@ -56,7 +52,7 @@ export function PathnameFieldComponent(
 
   const updateFinalSegment = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
-      const segment = slugify(e.currentTarget.value);
+      const segment = stringToPathname(e.currentTarget.value);
       // When updating only the final path segment, we don't allow slashes / sub-paths.
       // User must unlock the folder before doing so.
       const finalValue = [folder, segment]
