@@ -1,9 +1,24 @@
-import type { ImageUrlBuilder, ImageCrop, ImageHotspot } from "sanity";
+import type { ImageUrlBuilder } from "sanity";
 
 import { getImageDimensions } from "@sanity/asset-utils";
 import imageUrlBuilder from "@sanity/image-url";
 import React from "react";
 
+type ImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+type ImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
 export type SanityImageProps = {
   /** The aspect ratio of the image, in the format of `width/height`.
    *
