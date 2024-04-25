@@ -3,4 +3,5 @@ export type PagePayload = {
   _type: string
   pathname: string
   title?: string
+  image?: any
 }

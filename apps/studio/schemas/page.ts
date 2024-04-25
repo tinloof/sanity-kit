@@ -10,6 +10,13 @@ export default defineType({
       type: 'string',
       name: 'title',
     },
+    {
+      type: 'image',
+      name: 'image',
+      options: {
+        hotspot: true,
+      },
+    },
     definePathname({name: 'pathname'}),
   ],
 })

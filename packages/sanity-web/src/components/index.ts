@@ -1,0 +1,1 @@
+export { SanityImage } from "./SanityImage";

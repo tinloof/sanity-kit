@@ -1,3 +1,5 @@
+import type { SanityImageProps } from "./components/SanityImage";
+
 export interface DocForPath extends MinimalDocForPath {}
 
 export interface MinimalDocForPath {
@@ -22,3 +24,5 @@ export interface LocaleConfiguration {
   title: string;
   isDefault?: boolean;
 }
+
+export { SanityImageProps };
