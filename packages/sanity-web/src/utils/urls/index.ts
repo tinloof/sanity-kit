@@ -123,7 +123,7 @@ export function isExternalUrl(url: string) {
 }
 
 export function pathToAbsUrl(args: {
-  path: Slug | null | string;
+  path: string;
   baseUrl: string;
 }): string | undefined {
   const path = args?.path;
