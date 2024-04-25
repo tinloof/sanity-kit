@@ -12,6 +12,10 @@ export function SearchArrayInput({
     ? members
     : members?.filter((member) => {
         if (member.kind === "item") {
+          if (member.open) {
+            return true;
+          }
+
           const itemValues = getAllValues(member.item.value);
           return itemValues
             .toString()
