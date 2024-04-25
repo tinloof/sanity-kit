@@ -1,4 +1,4 @@
-import { LockIcon, EditIcon, EyeOpenIcon, FolderIcon } from "@sanity/icons";
+import { EditIcon, EyeOpenIcon, FolderIcon, LockIcon } from "@sanity/icons";
 import {
   usePresentationNavigate,
   usePresentationParams,
@@ -31,10 +31,15 @@ const FolderText = styled(Text)`
   }
 `;
 
-export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
+export function PathnameFieldComponent(
+  props: ObjectFieldProps<SlugValue>
+): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
   const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
-  const i18nOptions = fieldOptions?.i18n ?? { enabled: false, defaultLocaleId: undefined };
+  const i18nOptions = fieldOptions?.i18n ?? {
+    enabled: false,
+    defaultLocaleId: undefined,
+  };
   const document = useFormValue([]) as DocumentWithLocale;
   const {
     inputProps: { onChange, value, readOnly },
@@ -116,7 +121,11 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
               <UnlockButton
                 icon={folderCanUnlock ? EditIcon : LockIcon}
                 onClick={unlockFolder}
-                title={folderCanUnlock ? "Edit path's folder" : "Folder is locked and cannot be changed"}
+                title={
+                  folderCanUnlock
+                    ? "Edit path's folder"
+                    : "Folder is locked and cannot be changed"
+                }
                 mode="bleed"
                 tone="primary"
                 padding={2}
@@ -171,6 +180,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
     handleBlur,
     value,
     localizedPathname,
+    folderCanUnlock,
   ]);
 
   return (
