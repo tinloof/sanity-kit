@@ -31,9 +31,9 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
+    "@portabletext/react": "^3.0.18",
     "@sanity/asset-utils": "^1.3.0",
     "@sanity/image-url": "^1.0.2",
-    "@portabletext/react": "^3.0.18",
     "sanity": "^3.39.0",
     "speakingurl": "^14.0.1"
   }
