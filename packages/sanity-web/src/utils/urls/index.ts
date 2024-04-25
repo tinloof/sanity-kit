@@ -1,5 +1,6 @@
 import speakingurl from "speakingurl";
 import { DocForPath } from "../../types";
+import { Slug } from "sanity";
 
 /**
  * Removes leading and trailing slashes from a string.
@@ -113,4 +114,25 @@ export function stringToPathname(
 
 export function slugify(input: string) {
   return speakingurl(input);
+}
+
+export function isExternalUrl(url: string) {
+  const regex =
+    /^((http|https):\/\/)?[a-zA-Z0-9]+([-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z0-9-]{2,}(:[0-9]{1,5})?(\/.*)?$/;
+  return regex.test(url);
+}
+
+export function pathToAbsUrl(args: {
+  path: string;
+  baseUrl: string;
+}): string | undefined {
+  const path = args?.path;
+
+  if (typeof path !== "string") return;
+
+  return (
+    args.baseUrl +
+    // When creating absolute URLs, ensure the homepage doesn't have a trailing slash
+    (path === "/" ? "" : formatPath(path))
+  );
 }
