@@ -41,6 +41,9 @@ importers:
       '@tinloof/sanity-studio':
         specifier: workspace:*
         version: link:../../packages/sanity-studio
+      '@tinloof/sanity-web':
+        specifier: workspace:*
+        version: link:../../packages/sanity-web
       classnames:
         specifier: 2.5.1
         version: 2.5.1
@@ -533,6 +536,15 @@ importers:
 
   packages/sanity-web:
     dependencies:
+      '@sanity/asset-utils':
+        specifier: ^1.3.0
+        version: 1.3.0
+      '@sanity/image-url':
+        specifier: ^1.0.2
+        version: 1.0.2
+      sanity:
+        specifier: ^3.39.0
+        version: 3.39.0(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
       speakingurl:
         specifier: ^14.0.1
         version: 14.0.1
