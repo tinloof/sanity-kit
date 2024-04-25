@@ -35,7 +35,9 @@ const FolderText = styled(Text)`
   }
 `;
 
-export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
+export function PathnameFieldComponent(
+  props: ObjectFieldProps<SlugValue>
+): JSX.Element {
   const i18nOptions = (props.schemaType.options as PathnameOptions | undefined)
     ?.i18n ?? { enabled: false, defaultLocaleId: undefined };
   const document = useFormValue([]) as DocumentWithLocale;
@@ -86,7 +88,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
   const handleBlur: React.FocusEventHandler<HTMLInputElement> =
     useCallback(() => {
       setFolderLocked(!!folder);
-    }, [onChange, folder, setFolderLocked]);
+    }, [folder, setFolderLocked]);
 
   const localizedPathname = getDocumentPath(
     {
@@ -165,14 +167,14 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
   }, [
     folder,
     folderLocked,
-    onChange,
     slug,
     readOnly,
-    value?.current,
     unlockFolder,
     updateFullPath,
     updateFinalSegment,
     handleBlur,
+    value,
+    localizedPathname,
   ]);
 
   return (
@@ -196,7 +198,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
   );
 }
 
-function runChange(onChange: (patch: any) => void, value?: string) {
+function runChange(onChange: (patch) => void, value?: string) {
   // We use stringToPathname to ensure that the value is a valid pathname.
   // We also allow trailing slashes to make it possible to create folders
   const finalValue = value
@@ -217,6 +219,14 @@ function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
   const navigate = useSafeNavigate();
   const preview = useSafePreview();
 
+  const handleClick = useCallback(() => {
+    if (!navigate || typeof localizedPathname !== "string") {
+      return;
+    }
+
+    navigate(localizedPathname);
+  }, [navigate, localizedPathname]);
+
   return (
     <Button
       text="Preview"
@@ -231,7 +241,7 @@ function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
         preview === localizedPathname
       }
       title="Preview page"
-      onClick={!navigate ? undefined : () => navigate(localizedPathname)}
+      onClick={handleClick}
     />
   );
 }
@@ -247,7 +257,8 @@ function useSafeNavigate() {
 
 function useSafePreview() {
   try {
-    const { preview } = usePresentationParams();
+    const presentationParams = usePresentationParams();
+    const { preview } = presentationParams;
     return preview;
   } catch (e) {
     return null;
