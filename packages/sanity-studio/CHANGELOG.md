@@ -1,5 +1,24 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.1.0
+
+### Minor Changes
+
+- e48e6e5: Add `folder.canUnlock` options to `definePathname` helper. Thanks @Jamiewarb for the PR.
+
+  Update `README` with `folder.canUnlock` example.
+
+  Fix `<PathnameFieldComponent />` component trailing dash issue. Thanks @Jamiewarb and @tamaccount.
+
+  Add `<SearchArrayInput />` component to filter array fields.
+
+### Patch Changes
+
+- ec602d8: Update dependencies
+- Updated dependencies [e48e6e5]
+- Updated dependencies [ec602d8]
+  - @tinloof/sanity-web@0.2.0
+
 ## 1.0.2
 
 ### Patch Changes
