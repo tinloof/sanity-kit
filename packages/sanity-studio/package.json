@@ -6,6 +6,11 @@
     "sanity",
     "sanity-plugin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tinloof/sanity-kit.git",
+    "directory": "packages/sanity-studio"
+  },
   "license": "MIT",
   "type": "module",
   "author": "Tinloof",
