@@ -1,5 +1,12 @@
 # @tinloof/sanity-web
 
+## 0.3.0
+
+### Minor Changes
+
+- 0696902: Update `<SanityImage />` component to fix LQIP background issues with png images.
+  Also add a `lqip` prop of type `boolean` (`true` by default) to `<SanityImage />` to enable/disable LQIP background image.
+
 ## 0.2.1
 
 ### Patch Changes

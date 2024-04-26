@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- @tinloof/sanity-studio@1.1.2
+
+## null
+
+### Patch Changes
+
 - @tinloof/sanity-studio@1.1.1
 
 ## null
