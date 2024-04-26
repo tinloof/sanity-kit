@@ -1,6 +1,6 @@
 import type { ImageUrlBuilder } from "sanity";
 
-import { getImageDimensions } from "@sanity/asset-utils";
+import { getImageDimensions, getExtension } from "@sanity/asset-utils";
 import imageUrlBuilder from "@sanity/image-url";
 import React from "react";
 
@@ -33,6 +33,7 @@ export type SanityImageProps = {
     projectId: string;
   };
   className?: string;
+  lqip?: boolean;
   data: {
     _type: "image";
     alt?: string;
@@ -47,7 +48,15 @@ export type SanityImageProps = {
 
 const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
   (
-    { aspectRatio, className, data, style, config, ...passthroughProps },
+    {
+      aspectRatio,
+      className,
+      data,
+      style,
+      config,
+      lqip = true,
+      ...passthroughProps
+    },
     ref
   ) => {
     if (!data || !data.asset || !config) {
@@ -56,6 +65,7 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
 
     const _ref = data.asset._ref;
     const { height, width } = getImageDimensions(_ref);
+    const extension = getExtension(_ref);
     const aspectRatioValues = aspectRatio?.split("/");
 
     if (aspectRatio && aspectRatioValues?.length !== 2) {
@@ -123,13 +133,17 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
       width: 30,
     });
 
-    const LQIP = {
-      background: `url(${blurDataUrl})`,
-      backgroundPositionX: `var(--focalX)`,
-      backgroundPositionY: `var(--focalY)`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-    } as React.CSSProperties;
+    const LQIP =
+      lqip &&
+      extension !== "svg" &&
+      extension !== "png" &&
+      ({
+        background: `url(${blurDataUrl})`,
+        backgroundPositionX: `var(--focalX)`,
+        backgroundPositionY: `var(--focalY)`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+      } as React.CSSProperties);
 
     const focalCoords = data.hotspot?.x &&
       data.hotspot?.y && {
