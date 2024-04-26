@@ -158,7 +158,7 @@ function getPathname({
     return initialValue;
   }
 
-  return "";
+  return "/";
 }
 
 function resolveTitle(currentDir: string) {
