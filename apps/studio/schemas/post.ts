@@ -3,19 +3,18 @@ import {defineType} from 'sanity'
 
 export default defineType({
   type: 'document',
-  name: 'page',
+  name: 'post',
   fields: [
     {
       type: 'string',
       name: 'title',
     },
-    {
-      type: 'image',
-      name: 'image',
-      options: {
-        hotspot: true,
+    definePathname({
+      name: 'pathname',
+      initialValue: {
+        current: '/blog/',
       },
-    },
-    definePathname({name: 'pathname'}),
+      options: {folder: {canUnlock: false}},
+    }),
   ],
 })
