@@ -2,6 +2,11 @@
   "name": "@tinloof/sanity-web",
   "version": "0.2.1",
   "description": "Sanity-related utilities for web development",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tinloof/sanity-kit.git",
+    "directory": "packages/sanity-web"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
