@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.1.3
+
+### Patch Changes
+
+- c96e9f7: Fix: `definePathname` initialValue is now used when creating new documents from the pages navigator.
+
 ## 1.1.2
 
 ### Patch Changes
