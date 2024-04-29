@@ -5,30 +5,30 @@ import {
   Flex,
   Menu,
   MenuButton,
-  MenuItem,
+  MenuItem as MenuItemComponent,
   Text,
 } from "@sanity/ui";
-import React from "react";
-
-import { HeaderProps } from "../../../types";
-import { useNavigator } from "../context";
-
+import { useCallback } from "react";
+import { useSchema } from "sanity";
 import { useIntentLink } from "sanity/router";
+
+import { HeaderProps, NormalizedCreatablePage } from "../../../types";
+import { useNavigator } from "../context";
 import { getTemplateName, pathnameToTitle } from "../utils";
 import TooltipWrapper from "./ToolTipWrapper";
 
-const Header = ({ pages, domRef, children }: HeaderProps) => {
+const Header = ({ pages, domRef, children }: HeaderProps): JSX.Element => {
   const { currentDir, setCurrentDir, locale } = useNavigator();
 
-  const back = () => {
+  const back = useCallback(() => {
     if (currentDir) {
       setCurrentDir(currentDir.split("/").slice(0, -1).join("/") || "");
     }
-  };
+  }, [currentDir, setCurrentDir]);
 
-  const backToRoot = () => {
+  const backToRoot = useCallback(() => {
     setCurrentDir("");
-  };
+  }, [setCurrentDir]);
 
   return (
     <>
@@ -78,24 +78,11 @@ const Header = ({ pages, domRef, children }: HeaderProps) => {
                   <Menu>
                     {pages?.map(({ type, title }) => (
                       <MenuItem
+                        page={{ type, title }}
+                        locale={locale}
+                        currentDir={currentDir}
                         key={type}
-                        {...useIntentLink({
-                          intent: "create",
-                          params: [
-                            {
-                              type,
-                              template: getTemplateName(type),
-                            },
-                            {
-                              pathname: `${currentDir}/`,
-                              locale,
-                            },
-                          ],
-                        })}
-                        as="a"
-                      >
-                        <Text size={1}>{title}</Text>
-                      </MenuItem>
+                      />
                     ))}
                   </Menu>
                 }
@@ -114,6 +101,65 @@ const Header = ({ pages, domRef, children }: HeaderProps) => {
 Header.displayName = "Header";
 
 export default Header;
+
+function MenuItem(props: {
+  locale: string | undefined;
+  currentDir: string;
+  page: NormalizedCreatablePage;
+}) {
+  const { locale, currentDir, page } = props;
+  const { type, title } = page;
+  const schema = useSchema();
+  const schemaType = schema.get(type);
+  const pathnameField =
+    schemaType?.jsonType === "object"
+      ? schemaType.fields.find((field) => field.name === "pathname")
+      : null;
+  const pathnameCurrentInitialValue: string | undefined =
+    pathnameField?.type.initialValue?.current;
+
+  return (
+    <MenuItemComponent
+      {...useIntentLink({
+        intent: "create",
+        params: [
+          {
+            type,
+            template: getTemplateName(type),
+          },
+          {
+            pathname: getPathname({
+              currentDir,
+              initialValue: pathnameCurrentInitialValue,
+            }),
+            locale,
+          },
+        ],
+      })}
+      as="a"
+    >
+      <Text size={1}>{title}</Text>
+    </MenuItemComponent>
+  );
+}
+
+function getPathname({
+  currentDir,
+  initialValue,
+}: {
+  currentDir: string;
+  initialValue: string | undefined;
+}) {
+  if (currentDir) {
+    return `${currentDir}/`;
+  }
+
+  if (initialValue) {
+    return initialValue;
+  }
+
+  return "/";
+}
 
 function resolveTitle(currentDir: string) {
   if (!currentDir) {

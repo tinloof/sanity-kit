@@ -17,7 +17,7 @@ export default defineConfig({
           enable: 'http://localhost:9999/api/draft',
         },
       },
-      creatablePages: ['page'],
+      creatablePages: ['page', 'post', 'author'],
     }),
     visionTool(),
   ],
