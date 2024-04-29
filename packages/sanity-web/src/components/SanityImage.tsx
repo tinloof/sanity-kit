@@ -4,6 +4,8 @@ import { getImageDimensions, getExtension } from "@sanity/asset-utils";
 import imageUrlBuilder from "@sanity/image-url";
 import React from "react";
 
+const isDev = process.env.NODE_ENV === "development";
+
 type ImageCrop = {
   _type: "sanity.imageCrop";
   top?: number;
@@ -33,6 +35,12 @@ export type SanityImageProps = {
     projectId: string;
   };
   className?: string;
+  /**
+   * Set to `true` to enable LQIP (Low Quality Image Placeholder).
+   * The LQIP image is used as a placeholder for images that are too large to load and
+   * is cropped to the aspect ratio of the original image.
+   * It renders as a blurred background while the original image is loading.
+   */
   lqip?: boolean;
   data: {
     _type: "image";
@@ -46,12 +54,39 @@ export type SanityImageProps = {
   } | null;
 } & React.ComponentPropsWithRef<"img">;
 
+/**
+ * Sanity’s Image component is a wrapper around the HTML image element.
+ * It supports the same props as the HTML `img` element, but automatically
+ * generates the srcSet and sizes attributes for you. For most use cases,
+ * you’ll want to set the `aspectRatio` prop to ensure the image is sized
+ * correctly.
+ *
+ * @remarks
+ * - `decoding` is set to `async` by default.
+ * - `loading` is set to `lazy` by default.
+ * - `alt` will automatically be set to the `altText` if passed in the `data` prop.
+ * - `src` will automatically be set to the `url` if passed in the `data` prop.
+ * - `lqip` is set to `true` by default.
+ *
+ * @example
+ * A responsive image with a 4:5 aspect ratio:
+ * ```
+ * <SanityImage
+ *   data={data.image}
+ *   aspectRatio="4/5"
+ *   sizes="(min-width: 45em) 40vw, 100vw"
+ * />
+ * ```
+ */
 const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
   (
     {
       aspectRatio,
       className,
       data,
+      decoding = "async",
+      loading = "lazy",
+      sizes,
       style,
       config,
       lqip = true,
@@ -68,7 +103,7 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
     const extension = getExtension(_ref);
     const aspectRatioValues = aspectRatio?.split("/");
 
-    if (aspectRatio && aspectRatioValues?.length !== 2) {
+    if (aspectRatio && aspectRatioValues?.length !== 2 && isDev) {
       console.warn(
         `Invalid aspect ratio: ${aspectRatio}. Using the original aspect ratio. The aspect ratio should be in the format "width/height".`
       );
@@ -105,6 +140,16 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
       width,
     });
 
+    if (isDev && !sizes) {
+      console.warn(
+        [
+          "No sizes prop provided to SanityImage component,",
+          "you may be loading unnecessarily large images.",
+          `Image used is ${urlDefault || _ref || "unknown"}`,
+        ].join(" ")
+      );
+    }
+
     // Create srcset attribute
     const srcSet = srcSetValues
       .filter((value) => value < width)
@@ -133,10 +178,13 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
       width: 30,
     });
 
+    // Don't use LQIP if the image is a PNG or SVG
+    if (extension === "svg" || extension === "png") {
+      lqip = false;
+    }
+
     const LQIP =
       lqip &&
-      extension !== "svg" &&
-      extension !== "png" &&
       ({
         background: `url(${blurDataUrl})`,
         backgroundPositionX: `var(--focalX)`,
@@ -162,6 +210,8 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
     return (
       <img
         alt={data.alt || ""}
+        decoding={decoding}
+        loading={loading}
         className={className}
         height={aspectRatioHeight ? aspectRatioHeight * 100 : height}
         ref={ref}
@@ -180,6 +230,7 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
           } as React.CSSProperties
         }
         width={aspectRatioWidth ? aspectRatioWidth * 100 : width}
+        sizes={sizes}
         {...passthroughProps}
       />
     );
