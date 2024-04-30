@@ -6,7 +6,7 @@ import {
 import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
 import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { ObjectFieldProps, set, SlugValue, unset, useFormValue } from "sanity";
+import { ObjectFieldProps, set, SlugValue, unset, useFormValue, FormFieldValidationStatus } from "sanity";
 import { styled } from "styled-components";
 
 import { DocumentWithLocale, PathnameOptions } from "../types";
@@ -45,6 +45,7 @@ export function PathnameFieldComponent(
     inputProps: { onChange, value, readOnly },
     title,
     description,
+    validation = [],
   } = props;
   const segments = value?.current?.split("/").slice(0);
   const folder = segments?.slice(0, -1).join("/");
@@ -54,6 +55,10 @@ export function PathnameFieldComponent(
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
   const pathSegmentInputRef = useRef<HTMLInputElement>(null);
+
+  const inputValidationProps = validation.length ? {
+    customValidity: validation[0].message,
+  } : {};
 
   const updateFinalSegment = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
@@ -146,6 +151,7 @@ export function PathnameFieldComponent(
               ref={pathSegmentInputRef}
               onBlur={handleBlur}
               disabled={readOnly}
+              {...inputValidationProps}
             />
           </Box>
           <PreviewButton localizedPathname={localizedPathname || ""} />
@@ -164,6 +170,7 @@ export function PathnameFieldComponent(
             onBlur={handleBlur}
             disabled={readOnly}
             style={{ flex: 1 }}
+            {...inputValidationProps}
           />
         </Box>
         <PreviewButton localizedPathname={localizedPathname || ""} />
@@ -186,9 +193,16 @@ export function PathnameFieldComponent(
   return (
     <Stack space={3}>
       <Stack space={2} flex={1}>
-        <Text size={1} weight="semibold">
-          {title}
-        </Text>
+        <Flex align="center" paddingY={1}>
+          <Text size={1} weight="semibold">
+            {title}
+          </Text>
+          {validation.length > 0 && (
+            <Box marginLeft={2}>
+              <FormFieldValidationStatus fontSize={1} placement="top" validation={validation} />
+            </Box>
+          )}
+        </Flex>
         {description && <Text size={1}>{description}</Text>}
       </Stack>
 
