@@ -1,5 +1,17 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.2.0
+
+### Minor Changes
+
+- e5aa2a8: Add prefix option to definePathname. Thanks @Jamiewarb!
+
+### Patch Changes
+
+- 08efb47: Add validation UI to input. Thanks @tamaccount.
+- Updated dependencies [8575999]
+  - @tinloof/sanity-web@0.3.1
+
 ## 1.1.3
 
 ### Patch Changes

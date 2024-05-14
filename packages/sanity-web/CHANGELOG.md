@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 0.3.1
+
+### Patch Changes
+
+- 8575999: Add SanityImage jsdoc
+
 ## 0.3.0
 
 ### Minor Changes
