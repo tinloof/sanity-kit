@@ -6,17 +6,15 @@ import {
 import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
 import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import {
-  FormFieldValidationStatus,
-  ObjectFieldProps,
-  set,
-  SlugValue,
-  unset,
-  useFormValue,
-} from "sanity";
+import { FormFieldValidationStatus, set, unset, useFormValue } from "sanity";
 import { styled } from "styled-components";
 
-import { DocumentWithLocale, PathnameOptions } from "../types";
+import { usePathnamePrefix } from "../hooks/usePathnamePrefix";
+import {
+  DocumentWithLocale,
+  PathnameInputProps,
+  PathnameOptions,
+} from "../types";
 
 const UnlockButton = styled(Button)`
   position: static !important;
@@ -38,10 +36,9 @@ const FolderText = styled(Text)`
   }
 `;
 
-export function PathnameFieldComponent(
-  props: ObjectFieldProps<SlugValue>
-): JSX.Element {
+export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
+  const { prefix } = usePathnamePrefix(props);
   const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
   const i18nOptions = fieldOptions?.i18n ?? {
     enabled: false,
@@ -226,7 +223,7 @@ export function PathnameFieldComponent(
 
       {typeof value?.current === "string" && (
         <Text muted>
-          {window.location.origin}
+          {prefix}
           {localizedPathname}
         </Text>
       )}
