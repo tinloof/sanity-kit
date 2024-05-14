@@ -174,7 +174,7 @@ export type PathnameOptions = SlugOptions & {
 
 export type PathnameParams = Omit<
   SlugDefinition,
-  'type' | 'options' | 'name'
+  "type" | "options" | "name"
 > & {
   name?: string;
   options?: PathnameOptions;
