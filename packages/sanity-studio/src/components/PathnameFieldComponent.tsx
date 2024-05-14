@@ -42,6 +42,7 @@ export function PathnameFieldComponent(
   props: ObjectFieldProps<SlugValue>
 ): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
+  const prefix = fieldOptions?.prefix ?? window.location.origin;
   const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
   const i18nOptions = fieldOptions?.i18n ?? {
     enabled: false,
@@ -226,7 +227,7 @@ export function PathnameFieldComponent(
 
       {typeof value?.current === "string" && (
         <Text muted>
-          {window.location.origin}
+          {prefix}
           {localizedPathname}
         </Text>
       )}
