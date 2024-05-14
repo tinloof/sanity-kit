@@ -12,6 +12,7 @@ import {
   SlugOptions,
 } from "sanity";
 import { ObjectFieldProps, SlugValue } from "sanity";
+
 import { SlugContext } from "./hooks/usePathnameContext";
 
 export type NormalizedCreatablePage = {
@@ -159,7 +160,9 @@ export type SectionAddHandler = (params: {
   initialValue?: any;
 }) => void;
 
-export type PathnamePrefix = string | ((doc: SanityDocument, context: SlugContext) => Promise<string> | string);
+export type PathnamePrefix =
+  | string
+  | ((doc: SanityDocument, context: SlugContext) => Promise<string> | string);
 
 export type PathnameOptions = SlugOptions & {
   prefix?: PathnamePrefix;
@@ -180,4 +183,6 @@ export type PathnameParams = Omit<
   options?: PathnameOptions;
 };
 
-export type PathnameInputProps = ObjectFieldProps<SlugValue> & { schemaType: { options?: PathnameOptions } };
+export type PathnameInputProps = ObjectFieldProps<SlugValue> & {
+  schemaType: { options?: PathnameOptions };
+};

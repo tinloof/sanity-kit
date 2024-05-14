@@ -6,18 +6,15 @@ import {
 import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
 import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import {
-  FormFieldValidationStatus,
-  ObjectFieldProps,
-  set,
-  SlugValue,
-  unset,
-  useFormValue,
-} from "sanity";
+import { FormFieldValidationStatus, set, unset, useFormValue } from "sanity";
 import { styled } from "styled-components";
 
-import { DocumentWithLocale, PathnameInputProps, PathnameOptions } from '../types';
-import { usePathnamePrefix } from '../hooks/usePathnamePrefix';
+import { usePathnamePrefix } from "../hooks/usePathnamePrefix";
+import {
+  DocumentWithLocale,
+  PathnameInputProps,
+  PathnameOptions,
+} from "../types";
 
 const UnlockButton = styled(Button)`
   position: static !important;
