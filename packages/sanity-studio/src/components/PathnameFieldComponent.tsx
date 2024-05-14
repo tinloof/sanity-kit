@@ -16,7 +16,8 @@ import {
 } from "sanity";
 import { styled } from "styled-components";
 
-import { DocumentWithLocale, PathnameOptions } from "../types";
+import { DocumentWithLocale, PathnameInputProps, PathnameOptions } from '../types';
+import { usePathnamePrefix } from '../hooks/usePathnamePrefix';
 
 const UnlockButton = styled(Button)`
   position: static !important;
@@ -38,11 +39,9 @@ const FolderText = styled(Text)`
   }
 `;
 
-export function PathnameFieldComponent(
-  props: ObjectFieldProps<SlugValue>
-): JSX.Element {
+export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
-  const prefix = fieldOptions?.prefix ?? window.location.origin;
+  const { prefix } = usePathnamePrefix(props);
   const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
   const i18nOptions = fieldOptions?.i18n ?? {
     enabled: false,
