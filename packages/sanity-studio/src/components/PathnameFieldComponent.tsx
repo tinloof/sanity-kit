@@ -6,7 +6,14 @@ import {
 import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
 import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { ObjectFieldProps, set, SlugValue, unset, useFormValue, FormFieldValidationStatus } from "sanity";
+import {
+  FormFieldValidationStatus,
+  ObjectFieldProps,
+  set,
+  SlugValue,
+  unset,
+  useFormValue,
+} from "sanity";
 import { styled } from "styled-components";
 
 import { DocumentWithLocale, PathnameOptions } from "../types";
@@ -56,9 +63,15 @@ export function PathnameFieldComponent(
   const fullPathInputRef = useRef<HTMLInputElement>(null);
   const pathSegmentInputRef = useRef<HTMLInputElement>(null);
 
-  const inputValidationProps = validation.length ? {
-    customValidity: validation[0].message,
-  } : {};
+  const inputValidationProps = useMemo(
+    () =>
+      validation.length
+        ? {
+            customValidity: validation[0].message,
+          }
+        : {},
+    [validation]
+  );
 
   const updateFinalSegment = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
@@ -186,6 +199,7 @@ export function PathnameFieldComponent(
     updateFinalSegment,
     handleBlur,
     value,
+    inputValidationProps,
     localizedPathname,
     folderCanUnlock,
   ]);
@@ -199,7 +213,11 @@ export function PathnameFieldComponent(
           </Text>
           {validation.length > 0 && (
             <Box marginLeft={2}>
-              <FormFieldValidationStatus fontSize={1} placement="top" validation={validation} />
+              <FormFieldValidationStatus
+                fontSize={1}
+                placement="top"
+                validation={validation}
+              />
             </Box>
           )}
         </Flex>
