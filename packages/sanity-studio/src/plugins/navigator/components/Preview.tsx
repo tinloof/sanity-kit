@@ -193,6 +193,10 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
     return <>{media}</>;
   }
 
+  if (typeof media === "object" && React.isValidElement(media)) {
+    return media;
+  }
+
   const Media = media as React.ComponentType<any>;
 
   return <Media />;
