@@ -42,8 +42,7 @@ export function usePathnamePrefix(props: PathnameInputProps) {
         }
       }
 
-      // If it's not a string or a function, then we'll set prefix to undefined to avoid errors.
-      setUrlPrefix(undefined);
+      setUrlPrefix(window.location.origin);
     },
     [setUrlPrefix, optionsPrefix, sourceContext]
   );
