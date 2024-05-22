@@ -4,6 +4,13 @@
 
 ### Patch Changes
 
+- Updated dependencies [a3677bb]
+  - @tinloof/sanity-studio@1.2.1
+
+## null
+
+### Patch Changes
+
 - Updated dependencies [08efb47]
 - Updated dependencies [e5aa2a8]
   - @tinloof/sanity-studio@1.2.0
