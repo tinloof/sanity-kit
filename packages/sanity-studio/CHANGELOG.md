@@ -1,5 +1,12 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.2.1
+
+### Patch Changes
+
+- a3677bb: - fix(pathname): add back `window.location.origin` as default pathname prefix. Thanks @marcusforsberg!
+  - fix(PreviewMedia): add new render condition for when element is of type object. Thanks @gercordero!
+
 ## 1.2.0
 
 ### Minor Changes
