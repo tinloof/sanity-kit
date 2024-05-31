@@ -160,6 +160,23 @@ export default defineType({
 });
 ```
 
+#### Support documents without a locale
+
+By default, when internationalization is enabled, only pages whose `locale` field matches the currently selected locale will be shown in the list. If you have page types that are not translated but you still want them to show up in the list, you can set the `requireLocale` option to false in your `i18n` config:
+
+```ts
+const i18nConfig = {
+  locales: [
+    { id: "en", title: "English" },
+    { id: "fr", title: "French" },
+  ],
+  defaultLocaleId: "en",
+  requireLocale: false,
+};
+```
+
+Now all documents with a `pathname` field will show up in the list regardless of the filtered locale, even if they don't have a `locale` field (or their `locale` is `null`).
+
 ### Lock folder renaming
 
 By default, folders can be renamed. Set the `folder.canUnlock` option to `false` to disable this.

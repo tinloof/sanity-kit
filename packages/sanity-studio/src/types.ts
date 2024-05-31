@@ -24,6 +24,7 @@ export type PagesNavigatorOptions = {
   i18n?: {
     locales: Locale[];
     defaultLocaleId?: string;
+    requireLocale?: boolean;
   };
   creatablePages?: Array<NormalizedCreatablePage>;
 };
