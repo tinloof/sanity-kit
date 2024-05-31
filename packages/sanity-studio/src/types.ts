@@ -33,6 +33,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
   i18n?: {
     locales: Locale[];
     defaultLocaleId?: string;
+    requireLocale?: boolean;
   };
   navigator?: Pick<PresentationNavigatorOptions, "maxWidth" | "minWidth">;
   creatablePages?: Array<NormalizedCreatablePage | string>;
