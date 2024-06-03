@@ -9,6 +9,7 @@ import {
   TreeNode,
 } from "../../../types";
 import { buildTree, findTreeByPath } from "../utils";
+import { localizePathname } from "@tinloof/sanity-web";
 
 const CURRENT_DIR_PARAM = "sw-dir";
 const CURRENT_LOCALE_PARAM = "sw-locale";
@@ -26,6 +27,7 @@ const NavigatorContext = createContext<NavigatorContextType>({
   handleSearch: () => {},
   locale: undefined,
   defaultLocaleId: undefined,
+  localizePathname: localizePathname,
   setLocale: () => {},
   items: [],
 });
@@ -139,6 +141,7 @@ export const NavigatorProvider = ({
       value={{
         items,
         defaultLocaleId: i18n?.defaultLocaleId,
+        localizePathname: i18n?.localizePathname || localizePathname,
         rootTree,
         ...state,
         ...actions,

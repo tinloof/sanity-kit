@@ -12,7 +12,6 @@ import {
 } from "@sanity/presentation";
 import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { localizePathname } from "@tinloof/sanity-web";
 import React, { useRef } from "react";
 import { useColorSchemeValue, useSchema } from "sanity";
 import { styled } from "styled-components";
@@ -193,7 +192,13 @@ const List = ({ loading }: { loading: boolean }) => {
 };
 
 const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
-  const { defaultLocaleId, setCurrentDir, currentDir } = useNavigator();
+  const {
+    defaultLocaleId,
+    setCurrentDir,
+    currentDir,
+    locale,
+    localizePathname,
+  } = useNavigator();
   const schema = useSchema();
   const innerRef = useRef<HTMLLIElement>(null);
   const listItemId = `item-${idx}`;
@@ -201,6 +206,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
     pathname: item.pathname || "",
     localeId: item.locale,
     isDefault: defaultLocaleId === item.locale,
+    fallbackLocaleId: locale,
   });
 
   const scheme = useColorSchemeValue();
