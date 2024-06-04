@@ -87,7 +87,11 @@ export const NavigatorProvider = ({
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const filteredData = i18nEnabled
-    ? data.filter((page) => page.locale === state.locale)
+    ? data.filter(
+        (page) =>
+          page.locale === state.locale ||
+          (!page.locale && i18n.requireLocale === false)
+      )
     : data;
 
   const rootTree = searchTree({

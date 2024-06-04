@@ -25,6 +25,7 @@ export type PagesNavigatorOptions = {
   i18n?: {
     locales: Locale[];
     defaultLocaleId?: string;
+    requireLocale?: boolean;
     localizePathname?: LocalizePathnameFn;
   };
   creatablePages?: Array<NormalizedCreatablePage>;
@@ -34,6 +35,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
   i18n?: {
     locales: Locale[];
     defaultLocaleId?: string;
+    requireLocale?: boolean;
     localizePathname?: LocalizePathnameFn;
   };
   navigator?: Pick<PresentationNavigatorOptions, "maxWidth" | "minWidth">;
