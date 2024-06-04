@@ -43,6 +43,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const i18nOptions = fieldOptions?.i18n ?? {
     enabled: false,
     defaultLocaleId: undefined,
+    localizePathname: undefined,
   };
   const document = useFormValue([]) as DocumentWithLocale;
   const {
@@ -112,7 +113,8 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       locale: i18nOptions.enabled ? document.locale : undefined,
       pathname: value?.current,
     },
-    i18nOptions.defaultLocaleId || ""
+    i18nOptions.defaultLocaleId || "",
+    i18nOptions.localizePathname
   );
 
   const pathInput = useMemo(() => {
