@@ -425,8 +425,8 @@ const SkeletonListItems = ({ items }: { items: number }) => {
   return (
     <Card padding={1}>
       <ListWrapper>
-        {[...Array(items)].map((key) => (
-          <div role="listitem" aria-label="Loading item" key={key}>
+        {[...Array(items)].map((_value, index) => (
+          <div role="listitem" aria-label="Loading item" key={index}>
             <Flex align="center" gap={3} padding={1}>
               <SkeletonIcon currentScheme={scheme} />
               <TextContainer>
