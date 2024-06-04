@@ -14,6 +14,7 @@ import {
 import { ObjectFieldProps, SlugValue } from "sanity";
 
 import { SlugContext } from "./hooks/usePathnameContext";
+import { LocalizePathnameFn } from "@tinloof/sanity-web";
 
 export type NormalizedCreatablePage = {
   title: string;
@@ -25,6 +26,7 @@ export type PagesNavigatorOptions = {
     locales: Locale[];
     defaultLocaleId?: string;
     requireLocale?: boolean;
+    localizePathname?: LocalizePathnameFn;
   };
   creatablePages?: Array<NormalizedCreatablePage>;
 };
@@ -34,6 +36,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
     locales: Locale[];
     defaultLocaleId?: string;
     requireLocale?: boolean;
+    localizePathname?: LocalizePathnameFn;
   };
   navigator?: Pick<PresentationNavigatorOptions, "maxWidth" | "minWidth">;
   creatablePages?: Array<NormalizedCreatablePage | string>;
@@ -75,6 +78,7 @@ export type NavigatorContextType = {
   handleSearch: (value: string) => void;
   locale?: string;
   defaultLocaleId?: string;
+  localizePathname: LocalizePathnameFn;
   setLocale?: (value: string) => void;
   items: TreeNode[];
 };
@@ -174,6 +178,7 @@ export type PathnameOptions = SlugOptions & {
   i18n?: {
     enabled?: boolean;
     defaultLocaleId?: string;
+    localizePathname?: LocalizePathnameFn;
   };
 };
 
