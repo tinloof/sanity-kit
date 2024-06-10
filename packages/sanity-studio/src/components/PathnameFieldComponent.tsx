@@ -9,7 +9,7 @@ import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { FormFieldValidationStatus, set, unset, useFormValue } from "sanity";
 import { styled } from "styled-components";
-import { useDebouncedCallback } from "use-debounce";
+import { useDebounce, useDebouncedCallback } from "use-debounce";
 
 import { usePathnamePrefix } from "../hooks/usePathnamePrefix";
 import {
@@ -37,6 +37,8 @@ const FolderText = styled(Text)`
     text-overflow: ellipsis;
   }
 `;
+
+const pathnameDebounceTime = 1000;
 
 export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
@@ -66,7 +68,9 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
     if (navigate) {
       navigate(preview);
     }
-  }, 1000);
+  }, pathnameDebounceTime);
+  const preview = useSafePreview();
+  const [debouncedValue] = useDebounce(value?.current, pathnameDebounceTime);
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
   const pathSegmentInputRef = useRef<HTMLInputElement>(null);
@@ -92,10 +96,12 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       runChange(
         onChange,
         finalValue,
-        autoNavigate ? debouncedNavigate : undefined
+        debouncedValue,
+        autoNavigate ? debouncedNavigate : undefined,
+        preview
       );
     },
-    [folder, onChange, autoNavigate, debouncedNavigate]
+    [folder, onChange, debouncedValue, autoNavigate, debouncedNavigate, preview]
   );
 
   const updateFullPath = useCallback(
@@ -103,10 +109,12 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       runChange(
         onChange,
         e.currentTarget.value,
-        autoNavigate ? debouncedNavigate : undefined
+        debouncedValue,
+        autoNavigate ? debouncedNavigate : undefined,
+        preview
       );
     },
-    [onChange, autoNavigate, debouncedNavigate]
+    [onChange, debouncedValue, autoNavigate, debouncedNavigate, preview]
   );
 
   const unlockFolder: React.MouseEventHandler<HTMLButtonElement> = useCallback(
@@ -261,7 +269,9 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
 function runChange(
   onChange: (patch) => void,
   value?: string,
-  navigate?: PresentationNavigateContextValue
+  prevValue?: string,
+  navigate?: PresentationNavigateContextValue,
+  preview?: string | null
 ) {
   // We use stringToPathname to ensure that the value is a valid pathname.
   // We also allow trailing slashes to make it possible to create folders
@@ -278,7 +288,7 @@ function runChange(
       : unset()
   );
 
-  if (navigate) {
+  if (navigate && preview === prevValue) {
     navigate(finalValue);
   }
 }
