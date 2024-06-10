@@ -64,12 +64,13 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const folderCanUnlock = !readOnly && folderOptions.canUnlock;
 
   const navigate = useSafeNavigate();
-  const debouncedNavigate = useDebouncedCallback((preview?: string) => {
+  const preview = useSafePreview();
+
+  const debouncedNavigate = useDebouncedCallback((newPreview?: string) => {
     if (navigate) {
-      navigate(preview);
+      navigate(newPreview);
     }
   }, pathnameDebounceTime);
-  const preview = useSafePreview();
   const [debouncedValue] = useDebounce(value?.current, pathnameDebounceTime);
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
