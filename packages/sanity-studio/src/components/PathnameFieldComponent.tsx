@@ -65,13 +65,25 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
 
   const navigate = useSafeNavigate();
   const preview = useSafePreview();
-
   const debouncedNavigate = useDebouncedCallback((newPreview?: string) => {
     if (navigate) {
       navigate(newPreview);
     }
   }, pathnameDebounceTime);
-  const [debouncedValue] = useDebounce(value?.current, pathnameDebounceTime);
+
+  const localizedPathname = getDocumentPath(
+    {
+      ...document,
+      locale: i18nOptions.enabled ? document.locale : undefined,
+      pathname: value?.current,
+    },
+    i18nOptions.defaultLocaleId || "",
+    i18nOptions.localizePathname
+  );
+  const [debouncedLocalizedPathname] = useDebounce(
+    localizedPathname,
+    pathnameDebounceTime
+  );
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
   const pathSegmentInputRef = useRef<HTMLInputElement>(null);
@@ -94,28 +106,50 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       const finalValue = [folder, segment]
         .filter((part) => typeof part === "string")
         .join("/");
-      runChange(
+
+      runChange({
         onChange,
-        finalValue,
-        debouncedValue,
-        autoNavigate ? debouncedNavigate : undefined,
-        preview
-      );
+        value: finalValue,
+        document,
+        i18nOptions,
+        prevLocalizedPathname: debouncedLocalizedPathname,
+        preview,
+        navigate: autoNavigate ? debouncedNavigate : undefined,
+      });
     },
-    [folder, onChange, debouncedValue, autoNavigate, debouncedNavigate, preview]
+    [
+      folder,
+      onChange,
+      document,
+      i18nOptions,
+      debouncedLocalizedPathname,
+      preview,
+      autoNavigate,
+      debouncedNavigate,
+    ]
   );
 
   const updateFullPath = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
-      runChange(
+      runChange({
         onChange,
-        e.currentTarget.value,
-        debouncedValue,
-        autoNavigate ? debouncedNavigate : undefined,
-        preview
-      );
+        value: e.currentTarget.value,
+        document,
+        i18nOptions,
+        prevLocalizedPathname: debouncedLocalizedPathname,
+        preview,
+        navigate: autoNavigate ? debouncedNavigate : undefined,
+      });
     },
-    [onChange, debouncedValue, autoNavigate, debouncedNavigate, preview]
+    [
+      onChange,
+      document,
+      i18nOptions,
+      debouncedLocalizedPathname,
+      preview,
+      autoNavigate,
+      debouncedNavigate,
+    ]
   );
 
   const unlockFolder: React.MouseEventHandler<HTMLButtonElement> = useCallback(
@@ -133,16 +167,6 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
     useCallback(() => {
       setFolderLocked(!!folder);
     }, [folder, setFolderLocked]);
-
-  const localizedPathname = getDocumentPath(
-    {
-      ...document,
-      locale: i18nOptions.enabled ? document.locale : undefined,
-      pathname: value?.current,
-    },
-    i18nOptions.defaultLocaleId || "",
-    i18nOptions.localizePathname
-  );
 
   const pathInput = useMemo(() => {
     if (folderLocked && folder) {
@@ -267,13 +291,23 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   );
 }
 
-function runChange(
-  onChange: (patch) => void,
-  value?: string,
-  prevValue?: string,
-  navigate?: PresentationNavigateContextValue,
-  preview?: string | null
-) {
+function runChange({
+  document,
+  onChange,
+  value,
+  i18nOptions,
+  prevLocalizedPathname,
+  preview,
+  navigate,
+}: {
+  document: DocumentWithLocale;
+  onChange: (patch) => void;
+  value?: string;
+  i18nOptions?: PathnameOptions["i18n"];
+  prevLocalizedPathname?: string;
+  preview?: string | null;
+  navigate?: PresentationNavigateContextValue;
+}) {
   // We use stringToPathname to ensure that the value is a valid pathname.
   // We also allow trailing slashes to make it possible to create folders
   const finalValue = value
@@ -289,8 +323,21 @@ function runChange(
       : unset()
   );
 
-  if (navigate && preview === prevValue) {
-    navigate(finalValue);
+  // Auto-navigate to the updated path in Presentation if enabled
+  if (navigate) {
+    const newLocalizedPathname = getDocumentPath(
+      {
+        ...document,
+        locale: i18nOptions?.enabled ? document.locale : undefined,
+        pathname: finalValue,
+      },
+      i18nOptions?.defaultLocaleId || "",
+      i18nOptions?.localizePathname
+    );
+
+    if (preview === prevLocalizedPathname) {
+      navigate(newLocalizedPathname);
+    }
   }
 }
 
