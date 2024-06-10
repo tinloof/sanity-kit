@@ -1,19 +1,47 @@
-import { EditIcon, EyeOpenIcon, FolderIcon, LockIcon } from "@sanity/icons";
+import {
+  EditIcon,
+  EyeOpenIcon,
+  FolderIcon,
+  LockIcon,
+  RefreshIcon,
+} from "@sanity/icons";
 import {
   usePresentationNavigate,
   usePresentationParams,
 } from "@sanity/presentation";
-import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Spinner,
+  Stack,
+  Text,
+  TextInput,
+} from "@sanity/ui";
+import * as PathUtils from "@sanity/util/paths";
 import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { FormFieldValidationStatus, set, unset, useFormValue } from "sanity";
+import {
+  FormFieldValidationStatus,
+  FormPatch,
+  PatchEvent,
+  Path,
+  SanityDocument,
+  set,
+  unset,
+  useFormValue,
+} from "sanity";
 import { styled } from "styled-components";
 
+import { useAsync } from "../hooks/useAsync";
+import { SlugContext, usePathnameContext } from "../hooks/usePathnameContext";
 import { usePathnamePrefix } from "../hooks/usePathnamePrefix";
 import {
   DocumentWithLocale,
   PathnameInputProps,
   PathnameOptions,
+  PathnameSourceFn,
 } from "../types";
 
 const UnlockButton = styled(Button)`
@@ -57,6 +85,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const slug = segments?.slice(-1)[0] || "";
   const [folderLocked, setFolderLocked] = useState(!!folder);
   const folderCanUnlock = !readOnly && folderOptions.canUnlock;
+  const sourceField = fieldOptions?.source;
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
   const pathSegmentInputRef = useRef<HTMLInputElement>(null);
@@ -166,6 +195,15 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
               {...inputValidationProps}
             />
           </Box>
+          {sourceField && (
+            <GenerateButton
+              sourceField={sourceField}
+              document={document}
+              onChange={onChange}
+              folder={folder}
+              disabled={readOnly}
+            />
+          )}
           <PreviewButton localizedPathname={localizedPathname || ""} />
         </Flex>
       );
@@ -185,22 +223,34 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
             {...inputValidationProps}
           />
         </Box>
+        {sourceField && (
+          <GenerateButton
+            sourceField={sourceField}
+            document={document}
+            onChange={onChange}
+            folder={folder}
+            disabled={readOnly}
+          />
+        )}
         <PreviewButton localizedPathname={localizedPathname || ""} />
       </Flex>
     );
   }, [
-    folder,
     folderLocked,
-    slug,
-    readOnly,
-    unlockFolder,
-    updateFullPath,
-    updateFinalSegment,
-    handleBlur,
+    folder,
     value,
+    updateFullPath,
+    handleBlur,
+    readOnly,
     inputValidationProps,
+    sourceField,
+    document,
+    onChange,
     localizedPathname,
     folderCanUnlock,
+    unlockFolder,
+    slug,
+    updateFinalSegment,
   ]);
 
   return (
@@ -281,6 +331,72 @@ function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
       onClick={handleClick}
     />
   );
+}
+
+function GenerateButton({
+  sourceField,
+  document,
+  onChange,
+  folder,
+  disabled,
+}: {
+  sourceField: string | Path | PathnameSourceFn;
+  document: DocumentWithLocale;
+  onChange: (patch: FormPatch | PatchEvent | FormPatch[]) => void;
+  folder?: string;
+  disabled?: boolean;
+}) {
+  const pathnameContext = usePathnameContext();
+
+  const updatePathname = useCallback(
+    (nextPathname: string) => {
+      const finalValue = [
+        ...(folder ? [folder] : []),
+        stringToPathname(nextPathname),
+      ]
+        .filter((part) => typeof part === "string")
+        .join("/");
+
+      runChange(onChange, finalValue);
+    },
+    [folder, onChange]
+  );
+
+  const [generateState, handleGenerateSlug] = useAsync(() => {
+    return getNewFromSource(sourceField, document, pathnameContext).then(
+      (newFromSource) =>
+        updatePathname(
+          stringToPathname(newFromSource?.trim() || "", {
+            allowTrailingSlash: true,
+          })
+        )
+    );
+  }, [sourceField, pathnameContext, updatePathname]);
+
+  const isUpdating = generateState?.status === "pending";
+
+  return (
+    <Button
+      fontSize={1}
+      height="100%"
+      mode="ghost"
+      tone="default"
+      icon={isUpdating ? Spinner : RefreshIcon}
+      aria-label="Generate"
+      onClick={handleGenerateSlug}
+      disabled={disabled || isUpdating}
+    />
+  );
+}
+
+async function getNewFromSource(
+  source: string | Path | PathnameSourceFn,
+  document: SanityDocument,
+  context: SlugContext
+): Promise<string | undefined> {
+  return typeof source === "function"
+    ? source(document, context)
+    : (PathUtils.get(document, source) as string | undefined);
 }
 
 function useSafeNavigate() {

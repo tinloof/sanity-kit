@@ -57,6 +57,7 @@
     "@sanity/incompatible-plugin": "^1.0.4",
     "@sanity/presentation": "^1.12.8",
     "@sanity/ui": "^2.1.4",
+    "@sanity/util": "^3.45.0",
     "@tanstack/react-virtual": "^3.4.0",
     "@tinloof/sanity-web": "workspace:*",
     "lodash": "^4.17.21",

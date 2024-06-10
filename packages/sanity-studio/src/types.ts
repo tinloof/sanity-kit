@@ -7,9 +7,11 @@ import {
   ObjectDefinition,
   ObjectOptions,
   ObjectSchemaType,
+  Path,
   SanityDocument,
   SlugDefinition,
   SlugOptions,
+  SlugSourceFn,
 } from "sanity";
 import { ObjectFieldProps, SlugValue } from "sanity";
 
@@ -170,7 +172,13 @@ export type PathnamePrefix =
   | string
   | ((doc: SanityDocument, context: SlugContext) => Promise<string> | string);
 
-export type PathnameOptions = SlugOptions & {
+export type PathnameSourceFn = (
+  document: SanityDocument,
+  context: SlugContext
+) => string | Promise<string>;
+
+export type PathnameOptions = Pick<SlugOptions, "isUnique"> & {
+  source?: string | Path | PathnameSourceFn;
   prefix?: PathnamePrefix;
   folder?: {
     canUnlock?: boolean;
