@@ -181,6 +181,7 @@ export type PathnameOptions = SlugOptions & {
     defaultLocaleId?: string;
     localizePathname?: LocalizePathnameFn;
   };
+  autoNavigate?: boolean;
 };
 
 export type PathnameParams = Omit<
