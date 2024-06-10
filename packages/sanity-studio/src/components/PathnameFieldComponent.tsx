@@ -335,7 +335,9 @@ function runChange({
       i18nOptions?.localizePathname
     );
 
-    if (preview === prevLocalizedPathname) {
+    // Auto-navigate if this document is currently being previewed,
+    // or if it's a brand new document being created.
+    if (preview === prevLocalizedPathname || !document._createdAt) {
       navigate(newLocalizedPathname);
     }
   }
