@@ -1,5 +1,6 @@
 import { EditIcon, EyeOpenIcon, FolderIcon, LockIcon } from "@sanity/icons";
 import {
+  PresentationNavigateContextValue,
   usePresentationNavigate,
   usePresentationParams,
 } from "@sanity/presentation";
@@ -8,6 +9,7 @@ import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { FormFieldValidationStatus, set, unset, useFormValue } from "sanity";
 import { styled } from "styled-components";
+import { useDebouncedCallback } from "use-debounce";
 
 import { usePathnamePrefix } from "../hooks/usePathnamePrefix";
 import {
@@ -45,6 +47,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
     defaultLocaleId: undefined,
     localizePathname: undefined,
   };
+  const autoNavigate = fieldOptions?.autoNavigate ?? false;
   const document = useFormValue([]) as DocumentWithLocale;
   const {
     inputProps: { onChange, value, readOnly },
@@ -57,6 +60,13 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const slug = segments?.slice(-1)[0] || "";
   const [folderLocked, setFolderLocked] = useState(!!folder);
   const folderCanUnlock = !readOnly && folderOptions.canUnlock;
+
+  const navigate = useSafeNavigate();
+  const debouncedNavigate = useDebouncedCallback((preview?: string) => {
+    if (navigate) {
+      navigate(preview);
+    }
+  }, 1000);
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
   const pathSegmentInputRef = useRef<HTMLInputElement>(null);
@@ -79,16 +89,24 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       const finalValue = [folder, segment]
         .filter((part) => typeof part === "string")
         .join("/");
-      runChange(onChange, finalValue);
+      runChange(
+        onChange,
+        finalValue,
+        autoNavigate ? debouncedNavigate : undefined
+      );
     },
-    [folder, onChange]
+    [folder, onChange, autoNavigate, debouncedNavigate]
   );
 
   const updateFullPath = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
-      runChange(onChange, e.currentTarget.value);
+      runChange(
+        onChange,
+        e.currentTarget.value,
+        autoNavigate ? debouncedNavigate : undefined
+      );
     },
-    [onChange]
+    [onChange, autoNavigate, debouncedNavigate]
   );
 
   const unlockFolder: React.MouseEventHandler<HTMLButtonElement> = useCallback(
@@ -166,7 +184,9 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
               {...inputValidationProps}
             />
           </Box>
-          <PreviewButton localizedPathname={localizedPathname || ""} />
+          {!autoNavigate && (
+            <PreviewButton localizedPathname={localizedPathname || ""} />
+          )}
         </Flex>
       );
     }
@@ -185,7 +205,9 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
             {...inputValidationProps}
           />
         </Box>
-        <PreviewButton localizedPathname={localizedPathname || ""} />
+        {!autoNavigate && (
+          <PreviewButton localizedPathname={localizedPathname || ""} />
+        )}
       </Flex>
     );
   }, [
@@ -201,6 +223,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
     inputValidationProps,
     localizedPathname,
     folderCanUnlock,
+    autoNavigate,
   ]);
 
   return (
@@ -235,7 +258,11 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   );
 }
 
-function runChange(onChange: (patch) => void, value?: string) {
+function runChange(
+  onChange: (patch) => void,
+  value?: string,
+  navigate?: PresentationNavigateContextValue
+) {
   // We use stringToPathname to ensure that the value is a valid pathname.
   // We also allow trailing slashes to make it possible to create folders
   const finalValue = value
@@ -250,6 +277,10 @@ function runChange(onChange: (patch) => void, value?: string) {
         })
       : unset()
   );
+
+  if (navigate) {
+    navigate(finalValue);
+  }
 }
 
 function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
