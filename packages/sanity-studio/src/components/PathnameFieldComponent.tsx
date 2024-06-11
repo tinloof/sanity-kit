@@ -72,11 +72,17 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
   const { prefix } = usePathnamePrefix(props);
   const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
-  const i18nOptions = fieldOptions?.i18n ?? {
-    enabled: false,
-    defaultLocaleId: undefined,
-    localizePathname: undefined,
-  };
+
+  const i18nOptions = useMemo(
+    () =>
+      fieldOptions?.i18n ?? {
+        enabled: false,
+        defaultLocaleId: undefined,
+        localizePathname: undefined,
+      },
+    [fieldOptions]
+  );
+
   const autoNavigate = fieldOptions?.autoNavigate ?? false;
   const document = useFormValue([]) as DocumentWithLocale;
   const {
