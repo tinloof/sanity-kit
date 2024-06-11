@@ -257,6 +257,29 @@ export default {
 };
 ```
 
+### Automatically navigate on pathname change
+
+By default, the `pathname` field comes with a "Preview" button which is used to navigate to the page within the Presentation iframe when the pathname changes. You can optionally disable this manual button and have the Presentation tool automatically navigate to the new pathname as it changes:
+
+```tsx
+import { definePathname } from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        autoNavigate: true,
+      },
+    }),
+  ],
+});
+```
+
+The Presentation tool will now automatically navigate to the new pathname as the user types, with a 1 second debounce.
+
 ## Sections
 
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.

@@ -463,6 +463,9 @@ importers:
       react-rx:
         specifier: ^2.1.3
         version: 2.1.3(react@18.2.0)(rxjs@7.8.1)
+      use-debounce:
+        specifier: ^10.0.1
+        version: 10.0.1(react@18.2.0)
     devDependencies:
       '@sanity/pkg-utils':
         specifier: ^6.8.6
@@ -11971,6 +11974,15 @@ packages:
       '@types/react': 18.2.79
       react: 18.2.0
       tslib: 2.6.2
+
+  /use-debounce@10.0.1(react@18.2.0):
+    resolution: {integrity: sha512-0uUXjOfm44e6z4LZ/woZvkM8FwV1wiuoB6xnrrOmeAEjRDDzTLQNRFtYHvqUsJdrz1X37j0rVGIVp144GLHGKg==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /use-device-pixel-ratio@1.1.2(react@18.2.0):
     resolution: {integrity: sha512-nFxV0HwLdRUt20kvIgqHYZe6PK/v4mU1X8/eLsT1ti5ck0l2ob0HDRziaJPx+YWzBo6dMm4cTac3mcyk68Gh+A==}

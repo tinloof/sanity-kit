@@ -17,6 +17,7 @@ import { ObjectFieldProps, SlugValue } from "sanity";
 
 import { SlugContext } from "./hooks/usePathnameContext";
 import { LocalizePathnameFn } from "@tinloof/sanity-web";
+import { FieldDefinitionBase } from "sanity";
 
 export type NormalizedCreatablePage = {
   title: string;
@@ -188,10 +189,11 @@ export type PathnameOptions = Pick<SlugOptions, "isUnique"> & {
     defaultLocaleId?: string;
     localizePathname?: LocalizePathnameFn;
   };
+  autoNavigate?: boolean;
 };
 
 export type PathnameParams = Omit<
-  SlugDefinition,
+  SlugDefinition & FieldDefinitionBase,
   "type" | "options" | "name"
 > & {
   name?: string;
