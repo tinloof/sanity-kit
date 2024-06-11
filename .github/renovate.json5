@@ -1,0 +1,41 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended",
+    "schedule:weekly",
+    "group:allNonMajor",
+    ":disablePeerDependencies",
+  ],
+  timezone: "America/Los_Angeles",
+  schedule: ["before 4am on monday"],
+  labels: ["dependencies"],
+  rangeStrategy: "bump",
+  includePaths: ["packages/**", "apps/**", "examples/**"],
+  ignorePaths: ["packages/typescript-config", "packages/eslint-config"],
+  ignoreDeps: [
+    // manually bumping deps
+    "eslint",
+    "@sanity/pkg-utils",
+    "@sanity/plugin-kit",
+
+    // manually bumping workflow actions
+    "actions/labeler",
+
+    // ignore "engines" update
+    "node",
+    "npm",
+    "pnpm",
+  ],
+  packageRules: [
+    {
+      matchPaths: ["apps/**", "examples/**"],
+      groupName: "apps and examples dependencies",
+      enabled: true,
+    },
+    {
+      matchPaths: ["packages/**"],
+      groupName: "packages dependencies",
+      enabled: true,
+    },
+  ],
+}
