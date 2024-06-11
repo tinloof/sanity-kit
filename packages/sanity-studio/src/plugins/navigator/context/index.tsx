@@ -29,6 +29,7 @@ const NavigatorContext = createContext<NavigatorContextType>({
   defaultLocaleId: undefined,
   localizePathname: localizePathname,
   setLocale: () => {},
+  folders: {},
   items: [],
 });
 
@@ -64,9 +65,11 @@ function reducer(state: State, action: ReducerAction) {
 export const NavigatorProvider = ({
   data,
   i18n,
+  folders,
   children,
 }: {
   i18n?: PagesNavigatorOptions["i18n"];
+  folders?: PagesNavigatorOptions["folders"];
   data: Page[];
   children: React.ReactNode;
 }) => {
@@ -146,6 +149,7 @@ export const NavigatorProvider = ({
         items,
         defaultLocaleId: i18n?.defaultLocaleId,
         localizePathname: i18n?.localizePathname || localizePathname,
+        folders,
         rootTree,
         ...state,
         ...actions,

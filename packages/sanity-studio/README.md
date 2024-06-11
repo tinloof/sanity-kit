@@ -257,6 +257,31 @@ export default {
 };
 ```
 
+### Customizing folders
+
+By default, folders will have a folder icon and use the pathname/prefix capitalized as the title. You can customize this for individual folders using the `folders` config option on the plugin:
+
+```tsx
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+      folders: {
+        "/news": {
+          title: "Articles",
+          icon: NewspaperIcon,
+        },
+      },
+    }),
+  ],
+});
+```
+
 ### Automatically navigate on pathname change
 
 By default, the `pathname` field comes with a "Preview" button which is used to navigate to the page within the Presentation iframe when the pathname changes. You can optionally disable this manual button and have the Presentation tool automatically navigate to the new pathname as it changes:

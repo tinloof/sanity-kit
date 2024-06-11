@@ -36,7 +36,11 @@ function DefaultPagesNavigator(props: PagesNavigatorOptions) {
 
   return (
     <ThemeProvider>
-      <NavigatorProvider i18n={props.i18n} data={data || []}>
+      <NavigatorProvider
+        i18n={props.i18n}
+        folders={props.folders}
+        data={data || []}
+      >
         <Header pages={props.creatablePages}>
           <SearchBox />
           {props.i18n?.locales?.length && props.i18n.locales.length > 1 ? (

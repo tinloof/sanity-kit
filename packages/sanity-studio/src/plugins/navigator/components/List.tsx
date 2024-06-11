@@ -12,7 +12,7 @@ import {
 } from "@sanity/presentation";
 import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import React, { useRef } from "react";
+import React, { createElement, useRef } from "react";
 import { useColorSchemeValue, useSchema } from "sanity";
 import { styled } from "styled-components";
 
@@ -198,6 +198,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
     currentDir,
     locale,
     localizePathname,
+    folders,
   } = useNavigator();
   const schema = useSchema();
   const innerRef = useRef<HTMLLIElement>(null);
@@ -310,7 +311,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
             {item._type !== "folder" ? (
               <PreviewElement fallback={item.title} type="title" item={item} />
             ) : (
-              item.title
+              folders?.[path]?.title || item.title
             )}
           </TextElement>
           <TextElement
@@ -411,13 +412,18 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
 };
 
 const ItemIcon = ({ item }: { item: TreeNode }) => {
-  const iconProps = {
-    fontSize: "calc(21 / 16 * 1em)",
-    color: "var(--card-icon-color)",
-  };
+  const { folders } = useNavigator();
 
   if (item._type === "folder") {
-    return <FolderIcon {...iconProps} />;
+    return createElement(
+      item.pathname && folders?.[item.pathname]?.icon
+        ? folders[item.pathname].icon!
+        : FolderIcon,
+      {
+        fontSize: "calc(21 / 16 * 1em)",
+        color: "var(--card-icon-color)",
+      }
+    );
   }
 
   return (
