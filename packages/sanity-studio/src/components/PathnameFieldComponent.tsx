@@ -423,21 +423,21 @@ function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
   }, [navigate, localizedPathname]);
 
   return (
-    <Button
-      text="Preview"
-      fontSize={1}
-      height={"100%"}
-      mode="default"
-      tone="default"
-      icon={EyeOpenIcon}
-      disabled={
-        !navigate ||
-        typeof localizedPathname !== "string" ||
-        preview === localizedPathname
-      }
-      title="Preview page"
-      onClick={handleClick}
-    />
+    !!navigate && (
+      <Button
+        text="Preview"
+        fontSize={1}
+        height={"100%"}
+        mode="default"
+        tone="default"
+        icon={EyeOpenIcon}
+        disabled={
+          typeof localizedPathname !== "string" || preview === localizedPathname
+        }
+        title="Preview page"
+        onClick={handleClick}
+      />
+    )
   );
 }
 
