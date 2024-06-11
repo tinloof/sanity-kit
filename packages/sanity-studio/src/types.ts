@@ -3,6 +3,7 @@ import {
   NavigatorOptions as PresentationNavigatorOptions,
   PresentationPluginOptions,
 } from "@sanity/presentation";
+import { LocalizePathnameFn } from "@tinloof/sanity-web";
 import {
   ObjectDefinition,
   ObjectOptions,
@@ -12,14 +13,20 @@ import {
   SlugOptions,
 } from "sanity";
 import { ObjectFieldProps, SlugValue } from "sanity";
+import { FieldDefinitionBase } from "sanity";
 
 import { SlugContext } from "./hooks/usePathnameContext";
-import { LocalizePathnameFn } from "@tinloof/sanity-web";
-import { FieldDefinitionBase } from "sanity";
 
 export type NormalizedCreatablePage = {
   title: string;
   type: string;
+};
+
+export type FoldersConfig = {
+  [pathname: string]: {
+    title?: string;
+    icon?: React.ElementType;
+  };
 };
 
 export type PagesNavigatorOptions = {
@@ -30,6 +37,7 @@ export type PagesNavigatorOptions = {
     localizePathname?: LocalizePathnameFn;
   };
   creatablePages?: Array<NormalizedCreatablePage>;
+  folders?: FoldersConfig;
 };
 
 export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
@@ -41,6 +49,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
   };
   navigator?: Pick<PresentationNavigatorOptions, "maxWidth" | "minWidth">;
   creatablePages?: Array<NormalizedCreatablePage | string>;
+  folders?: FoldersConfig;
   title?: string;
 };
 
@@ -81,6 +90,7 @@ export type NavigatorContextType = {
   defaultLocaleId?: string;
   localizePathname: LocalizePathnameFn;
   setLocale?: (value: string) => void;
+  folders?: FoldersConfig;
   items: TreeNode[];
 };
 
