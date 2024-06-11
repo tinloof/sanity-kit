@@ -69,6 +69,27 @@ export default defineType({
 
 Documents with a defined `pathname` field value are now recognized as pages and are automatically grouped into directories in the pages navigator.
 
+Like Sanity's native `slug` type, the `pathname` supports a `source` option which can be used to generate the pathname from another field on the document, eg. the title:
+
+```tsx
+import { definePathname } from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        source: "title",
+      },
+    }),
+  ],
+});
+```
+
+The `source` can also be a function (which can be asynchronous), returning the generated pathname.
+
 ### Enabling page creation
 
 Use the `creatablePages` option to define which schema types can be used to create pages.
