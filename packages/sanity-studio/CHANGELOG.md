@@ -1,5 +1,45 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.3.0
+
+### Minor Changes
+
+- a09d24f: Add support for the `source` field, which when set will render a button to generate the pathname similar to Sanity's `Slug` type. Thanks @marcusforsberg!
+- 29a848a: Add option to use a custom `localizePathname` function in the Pages plugin and in pathname fields. Thanks @marcusforsberg!
+- ac331cf: Add requireLocale option to allow working with non-translatable page types even with i18n enabled. Thanks @marcusforsberg!
+- 7dd9046: Add `autoNavigate` option to hide the "Preview" button and automatically navigate as the pathname changes. Thanks @marcusforsberg!
+- ab53988: Add `folders` config option which can be used to customize the icons and titles for individual folders based on their pathnames. Thanks @marcusforsberg!
+
+### Patch Changes
+
+- 2a263d7: Hide the "Preview" button from the `pathname` field when used in the Structure Tool (where it has no effect).
+- 4289934: Add missing "group" and "fieldset" properties to PathnameParams. Thanks @marcusforsberg!
+- 4c92cc8: Updated dependency `@sanity/presentation` to `^1.15.14`.
+  Updated dependency `@sanity/ui` to `^2.3.3`.
+  Updated dependency `@tanstack/react-virtual` to `^3.5.1`.
+  Updated dependency `@types/lodash` to `^4.17.5`.
+  Updated dependency `@types/react` to `^18.3.3`.
+  Updated dependency `@types/react-is` to `^18.3.0`.
+  Updated dependency `@typescript-eslint/eslint-plugin` to `^7.13.0`.
+  Updated dependency `@typescript-eslint/parser` to `^7.13.0`.
+  Updated dependency `eslint-plugin-react` to `^7.34.2`.
+  Updated dependency `eslint-plugin-react-hooks` to `^4.6.2`.
+  Updated dependency `npm-run-all2` to `^5.0.0`.
+  Updated dependency `prettier` to `^3.3.2`.
+  Updated dependency `react` to `^18.3.1`.
+  Updated dependency `react-dom` to `^18.3.1`.
+  Updated dependency `react-is` to `^18.3.1`.
+  Updated dependency `rimraf` to `^5.0.7`.
+  Updated dependency `sanity` to `^3.45.0`.
+  Updated dependency `styled-components` to `^6.1.11`.
+  Updated dependency `@changesets/cli` to `^2.27.5`.
+  Updated dependency `@types/react-dom` to `^18.3.0`.
+  Updated dependency `tsup` to `^8.1.0`.
+  Updated dependency `@portabletext/react` to `^3.1.0`.
+- Updated dependencies [29a848a]
+- Updated dependencies [4c92cc8]
+  - @tinloof/sanity-web@0.4.0
+
 ## 1.2.1
 
 ### Patch Changes
