@@ -13,8 +13,6 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish",
-    "postinstall": "manypkg check",
-    "fix:deps": "manypkg fix && pnpm install",
     "typecheck": "turbo run typecheck"
   },
   "engines": {
@@ -23,7 +21,6 @@
   "packageManager": "pnpm@8.9.0",
   "dependencies": {
     "@changesets/cli": "^2.27.1",
-    "@manypkg/cli": "^0.21.4",
     "prettier": "^3.2.5",
     "turbo": "^1.13.2"
   }
