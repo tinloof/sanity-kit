@@ -311,7 +311,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
             {item._type !== "folder" ? (
               <PreviewElement fallback={item.title} type="title" item={item} />
             ) : (
-              folders?.[path]?.title || item.title
+              folders?.[item.pathname || ""]?.title || item.title
             )}
           </TextElement>
           <TextElement
