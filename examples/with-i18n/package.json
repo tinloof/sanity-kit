@@ -17,16 +17,16 @@
   "dependencies": {
     "@sanity/client": "^6.20.0",
     "@sanity/preview-url-secret": "^1.6.17",
-    "@sanity/vision": "^3.45.0",
+    "@sanity/vision": "^3.46.1",
     "@tailwindcss/typography": "0.5.13",
     "@tinloof/sanity-studio": "workspace:*",
     "classnames": "2.5.1",
-    "lucide-react": "^0.394.0",
+    "lucide-react": "^0.395.0",
     "next": "14.2.4",
     "next-sanity": "^9.3.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "sanity": "^3.45.0",
+    "sanity": "^3.46.1",
     "server-only": "0.0.1"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "postcss": "8.4.38",
     "prettier": "^3.3.2",
     "prettier-plugin-packagejson": "^2.5.0",
-    "prettier-plugin-tailwindcss": "0.6.3",
+    "prettier-plugin-tailwindcss": "0.6.5",
     "tailwindcss": "3.4.4",
     "typescript": "^5.4.5"
   },
