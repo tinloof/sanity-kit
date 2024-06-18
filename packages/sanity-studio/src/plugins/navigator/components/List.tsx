@@ -16,7 +16,12 @@ import React, { createElement, useRef } from "react";
 import { useColorSchemeValue, useSchema } from "sanity";
 import { styled } from "styled-components";
 
-import { ListItemProps, PageTreeNode, TreeNode } from "../../../types";
+import {
+  FoldersConfig,
+  ListItemProps,
+  PageTreeNode,
+  TreeNode,
+} from "../../../types";
 import { useNavigator } from "../context";
 import { PreviewElement } from "./Preview";
 
@@ -311,7 +316,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
             {item._type !== "folder" ? (
               <PreviewElement fallback={item.title} type="title" item={item} />
             ) : (
-              folders?.[path]?.title || item.title
+              <FolderTitle item={item} locale={locale} folders={folders} />
             )}
           </TextElement>
           <TextElement
@@ -409,6 +414,30 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
       ) : null}
     </ListItemWrapper>
   );
+};
+
+const FolderTitle = ({
+  item,
+  locale,
+  folders,
+}: {
+  item: TreeNode;
+  locale: string | undefined;
+  folders: FoldersConfig | undefined;
+}) => {
+  const customTitle = folders?.[item.pathname || ""]?.title;
+
+  if (customTitle) {
+    return (
+      <>
+        {typeof customTitle === "string"
+          ? customTitle
+          : customTitle(item, locale)}
+      </>
+    );
+  }
+
+  return <>{item.title}</>;
 };
 
 const ItemIcon = ({ item }: { item: TreeNode }) => {
