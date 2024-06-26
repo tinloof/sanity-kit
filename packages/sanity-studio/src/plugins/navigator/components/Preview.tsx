@@ -135,6 +135,7 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
         <img
           alt={isString(title) ? title : undefined}
           referrerPolicy="strict-origin-when-cross-origin"
+          style={{ maxWidth: '100%' }}
           src={
             imageBuilder
               .image(
