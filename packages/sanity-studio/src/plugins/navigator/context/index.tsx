@@ -9,6 +9,7 @@ import {
   TreeNode,
 } from "../../../types";
 import { buildTree, findTreeByPath } from "../utils";
+import { localizePathname } from "@tinloof/sanity-web";
 
 const CURRENT_DIR_PARAM = "sw-dir";
 const CURRENT_LOCALE_PARAM = "sw-locale";
@@ -26,7 +27,9 @@ const NavigatorContext = createContext<NavigatorContextType>({
   handleSearch: () => {},
   locale: undefined,
   defaultLocaleId: undefined,
+  localizePathname: localizePathname,
   setLocale: () => {},
+  folders: {},
   items: [],
 });
 
@@ -62,9 +65,11 @@ function reducer(state: State, action: ReducerAction) {
 export const NavigatorProvider = ({
   data,
   i18n,
+  folders,
   children,
 }: {
   i18n?: PagesNavigatorOptions["i18n"];
+  folders?: PagesNavigatorOptions["folders"];
   data: Page[];
   children: React.ReactNode;
 }) => {
@@ -85,7 +90,11 @@ export const NavigatorProvider = ({
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const filteredData = i18nEnabled
-    ? data.filter((page) => page.locale === state.locale)
+    ? data.filter(
+        (page) =>
+          page.locale === state.locale ||
+          (!page.locale && i18n.requireLocale === false)
+      )
     : data;
 
   const rootTree = searchTree({
@@ -139,6 +148,8 @@ export const NavigatorProvider = ({
       value={{
         items,
         defaultLocaleId: i18n?.defaultLocaleId,
+        localizePathname: i18n?.localizePathname || localizePathname,
+        folders,
         rootTree,
         ...state,
         ...actions,

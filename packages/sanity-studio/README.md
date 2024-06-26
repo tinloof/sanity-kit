@@ -69,6 +69,27 @@ export default defineType({
 
 Documents with a defined `pathname` field value are now recognized as pages and are automatically grouped into directories in the pages navigator.
 
+Like Sanity's native `slug` type, the `pathname` supports a `source` option which can be used to generate the pathname from another field on the document, eg. the title:
+
+```tsx
+import { definePathname } from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        source: "title",
+      },
+    }),
+  ],
+});
+```
+
+The `source` can also be a function (which can be asynchronous), returning the generated pathname.
+
 ### Enabling page creation
 
 Use the `creatablePages` option to define which schema types can be used to create pages.
@@ -160,6 +181,23 @@ export default defineType({
 });
 ```
 
+#### Support documents without a locale
+
+By default, when internationalization is enabled, only pages whose `locale` field matches the currently selected locale will be shown in the list. If you have page types that are not translated but you still want them to show up in the list, you can set the `requireLocale` option to false in your `i18n` config:
+
+```ts
+const i18nConfig = {
+  locales: [
+    { id: "en", title: "English" },
+    { id: "fr", title: "French" },
+  ],
+  defaultLocaleId: "en",
+  requireLocale: false,
+};
+```
+
+Now all documents with a `pathname` field will show up in the list regardless of the filtered locale, even if they don't have a `locale` field (or their `locale` is `null`).
+
 ### Lock folder renaming
 
 By default, folders can be renamed. Set the `folder.canUnlock` option to `false` to disable this.
@@ -218,6 +256,54 @@ export default {
   },
 };
 ```
+
+### Customizing folders
+
+By default, folders will have a folder icon and use the pathname/prefix capitalized as the title. You can customize this for individual folders using the `folders` config option on the plugin:
+
+```tsx
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+      folders: {
+        "/news": {
+          title: "Articles",
+          icon: NewspaperIcon,
+        },
+      },
+    }),
+  ],
+});
+```
+
+### Automatically navigate on pathname change
+
+By default, the `pathname` field comes with a "Preview" button which is used to navigate to the page within the Presentation iframe when the pathname changes. You can optionally disable this manual button and have the Presentation tool automatically navigate to the new pathname as it changes:
+
+```tsx
+import { definePathname } from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        autoNavigate: true,
+      },
+    }),
+  ],
+});
+```
+
+The Presentation tool will now automatically navigate to the new pathname as the user types, with a 1 second debounce.
 
 ## Sections
 

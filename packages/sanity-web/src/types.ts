@@ -26,3 +26,10 @@ export interface LocaleConfiguration {
 }
 
 export { SanityImageProps };
+
+export type LocalizePathnameFn = (opts: {
+  pathname: string;
+  localeId?: string;
+  isDefault?: boolean;
+  fallbackLocaleId?: string;
+}) => string;

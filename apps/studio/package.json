@@ -1,7 +1,7 @@
 {
   "name": "vite-studio",
   "private": true,
-  "version": "1.0.10",
+  "version": "1.0.12",
   "main": "package.json",
   "license": "UNLICENSED",
   "scripts": {
@@ -15,19 +15,19 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^3.39.0",
+    "@sanity/vision": "^3.46.1",
     "@tinloof/sanity-studio": "workspace:*",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-is": "^18.2.0",
-    "sanity": "^3.39.0",
-    "styled-components": "^6.1.8"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-is": "^18.3.1",
+    "sanity": "^3.46.1",
+    "styled-components": "^6.1.11"
   },
   "devDependencies": {
     "@sanity/eslint-config-studio": "^3.0.1",
-    "@types/react": "^18.2.79",
+    "@types/react": "^18.3.3",
     "eslint": "^8.57.0",
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.2",
     "typescript": "^5.4.5"
   },
   "prettier": {

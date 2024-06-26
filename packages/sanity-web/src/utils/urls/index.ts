@@ -1,5 +1,5 @@
 import speakingurl from "speakingurl";
-import { DocForPath } from "../../types";
+import { DocForPath, LocalizePathnameFn } from "../../types";
 import { Slug } from "sanity";
 
 /**
@@ -49,14 +49,15 @@ export function formatPath(path: string): string {
 
 export function getDocumentPath(
   doc: DocForPath,
-  defaultLocaleId: string
+  defaultLocaleId: string,
+  localizePathnameFn?: LocalizePathnameFn
 ): string | undefined {
   if (typeof doc.pathname !== "string") return;
 
   const isDefault = doc.locale === defaultLocaleId;
 
   // Localize & format the final path
-  return localizePathname({
+  return (localizePathnameFn || localizePathname)({
     pathname: doc.pathname,
     localeId: doc.locale,
     isDefault,
