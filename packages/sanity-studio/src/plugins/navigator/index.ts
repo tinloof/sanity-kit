@@ -46,6 +46,7 @@ export const pages = definePlugin<PagesNavigatorPluginOptions>((config) => {
             component: createPagesNavigator({
               i18n: config.i18n,
               creatablePages: normalizedCreatablePages,
+              folders: config.folders,
             }),
             minWidth: config.navigator?.minWidth ?? 320,
             maxWidth: config.navigator?.maxWidth ?? 480,

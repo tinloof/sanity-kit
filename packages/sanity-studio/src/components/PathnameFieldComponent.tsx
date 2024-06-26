@@ -1,19 +1,49 @@
-import { EditIcon, EyeOpenIcon, FolderIcon, LockIcon } from "@sanity/icons";
 import {
+  EditIcon,
+  EyeOpenIcon,
+  FolderIcon,
+  LockIcon,
+  RefreshIcon,
+} from "@sanity/icons";
+import {
+  PresentationNavigateContextValue,
   usePresentationNavigate,
   usePresentationParams,
 } from "@sanity/presentation";
-import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Spinner,
+  Stack,
+  Text,
+  TextInput,
+} from "@sanity/ui";
+import * as PathUtils from "@sanity/util/paths";
 import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { FormFieldValidationStatus, set, unset, useFormValue } from "sanity";
+import {
+  FormFieldValidationStatus,
+  FormPatch,
+  PatchEvent,
+  Path,
+  SanityDocument,
+  set,
+  unset,
+  useFormValue,
+} from "sanity";
 import { styled } from "styled-components";
+import { useDebounce, useDebouncedCallback } from "use-debounce";
 
+import { useAsync } from "../hooks/useAsync";
+import { SlugContext, usePathnameContext } from "../hooks/usePathnameContext";
 import { usePathnamePrefix } from "../hooks/usePathnamePrefix";
 import {
   DocumentWithLocale,
   PathnameInputProps,
   PathnameOptions,
+  PathnameSourceFn,
 } from "../types";
 
 const UnlockButton = styled(Button)`
@@ -36,14 +66,24 @@ const FolderText = styled(Text)`
   }
 `;
 
+const pathnameDebounceTime = 1000;
+
 export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
   const { prefix } = usePathnamePrefix(props);
   const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
-  const i18nOptions = fieldOptions?.i18n ?? {
-    enabled: false,
-    defaultLocaleId: undefined,
-  };
+
+  const i18nOptions = useMemo(
+    () =>
+      fieldOptions?.i18n ?? {
+        enabled: false,
+        defaultLocaleId: undefined,
+        localizePathname: undefined,
+      },
+    [fieldOptions]
+  );
+
+  const autoNavigate = fieldOptions?.autoNavigate ?? false;
   const document = useFormValue([]) as DocumentWithLocale;
   const {
     inputProps: { onChange, value, readOnly },
@@ -56,6 +96,29 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const slug = segments?.slice(-1)[0] || "";
   const [folderLocked, setFolderLocked] = useState(!!folder);
   const folderCanUnlock = !readOnly && folderOptions.canUnlock;
+  const sourceField = fieldOptions?.source;
+
+  const navigate = useSafeNavigate();
+  const preview = useSafePreview();
+  const debouncedNavigate = useDebouncedCallback((newPreview?: string) => {
+    if (navigate) {
+      navigate(newPreview);
+    }
+  }, pathnameDebounceTime);
+
+  const localizedPathname = getDocumentPath(
+    {
+      ...document,
+      locale: i18nOptions.enabled ? document.locale : undefined,
+      pathname: value?.current,
+    },
+    i18nOptions.defaultLocaleId || "",
+    i18nOptions.localizePathname
+  );
+  const [debouncedLocalizedPathname] = useDebounce(
+    localizedPathname,
+    pathnameDebounceTime
+  );
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
   const pathSegmentInputRef = useRef<HTMLInputElement>(null);
@@ -78,16 +141,50 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       const finalValue = [folder, segment]
         .filter((part) => typeof part === "string")
         .join("/");
-      runChange(onChange, finalValue);
+
+      runChange({
+        onChange,
+        value: finalValue,
+        document,
+        i18nOptions,
+        prevLocalizedPathname: debouncedLocalizedPathname,
+        preview,
+        navigate: autoNavigate ? debouncedNavigate : undefined,
+      });
     },
-    [folder, onChange]
+    [
+      folder,
+      onChange,
+      document,
+      i18nOptions,
+      debouncedLocalizedPathname,
+      preview,
+      autoNavigate,
+      debouncedNavigate,
+    ]
   );
 
   const updateFullPath = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
-      runChange(onChange, e.currentTarget.value);
+      runChange({
+        onChange,
+        value: e.currentTarget.value,
+        document,
+        i18nOptions,
+        prevLocalizedPathname: debouncedLocalizedPathname,
+        preview,
+        navigate: autoNavigate ? debouncedNavigate : undefined,
+      });
     },
-    [onChange]
+    [
+      onChange,
+      document,
+      i18nOptions,
+      debouncedLocalizedPathname,
+      preview,
+      autoNavigate,
+      debouncedNavigate,
+    ]
   );
 
   const unlockFolder: React.MouseEventHandler<HTMLButtonElement> = useCallback(
@@ -105,15 +202,6 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
     useCallback(() => {
       setFolderLocked(!!folder);
     }, [folder, setFolderLocked]);
-
-  const localizedPathname = getDocumentPath(
-    {
-      ...document,
-      locale: i18nOptions.enabled ? document.locale : undefined,
-      pathname: value?.current,
-    },
-    i18nOptions.defaultLocaleId || ""
-  );
 
   const pathInput = useMemo(() => {
     if (folderLocked && folder) {
@@ -164,7 +252,22 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
               {...inputValidationProps}
             />
           </Box>
-          <PreviewButton localizedPathname={localizedPathname || ""} />
+          {sourceField && (
+            <GenerateButton
+              sourceField={sourceField}
+              document={document}
+              onChange={onChange}
+              folder={folder}
+              disabled={readOnly}
+              localizedPathname={localizedPathname}
+              i18nOptions={i18nOptions}
+              preview={preview}
+              navigate={autoNavigate ? debouncedNavigate : undefined}
+            />
+          )}
+          {!autoNavigate && (
+            <PreviewButton localizedPathname={localizedPathname || ""} />
+          )}
         </Flex>
       );
     }
@@ -183,22 +286,44 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
             {...inputValidationProps}
           />
         </Box>
-        <PreviewButton localizedPathname={localizedPathname || ""} />
+        {sourceField && (
+          <GenerateButton
+            sourceField={sourceField}
+            document={document}
+            onChange={onChange}
+            folder={folder}
+            disabled={readOnly}
+            localizedPathname={localizedPathname}
+            i18nOptions={i18nOptions}
+            preview={preview}
+            navigate={autoNavigate ? debouncedNavigate : undefined}
+          />
+        )}
+        {!autoNavigate && (
+          <PreviewButton localizedPathname={localizedPathname || ""} />
+        )}
       </Flex>
     );
   }, [
+    autoNavigate,
+    debouncedNavigate,
+    document,
     folder,
+    folderCanUnlock,
     folderLocked,
-    slug,
-    readOnly,
-    unlockFolder,
-    updateFullPath,
-    updateFinalSegment,
     handleBlur,
-    value,
+    i18nOptions,
     inputValidationProps,
     localizedPathname,
-    folderCanUnlock,
+    onChange,
+    preview,
+    readOnly,
+    slug,
+    sourceField,
+    unlockFolder,
+    updateFinalSegment,
+    updateFullPath,
+    value,
   ]);
 
   return (
@@ -233,7 +358,23 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   );
 }
 
-function runChange(onChange: (patch) => void, value?: string) {
+function runChange({
+  document,
+  onChange,
+  value,
+  i18nOptions,
+  prevLocalizedPathname,
+  preview,
+  navigate,
+}: {
+  document: DocumentWithLocale;
+  onChange: (patch) => void;
+  value?: string;
+  i18nOptions?: PathnameOptions["i18n"];
+  prevLocalizedPathname?: string;
+  preview?: string | null;
+  navigate?: PresentationNavigateContextValue;
+}) {
   // We use stringToPathname to ensure that the value is a valid pathname.
   // We also allow trailing slashes to make it possible to create folders
   const finalValue = value
@@ -248,6 +389,25 @@ function runChange(onChange: (patch) => void, value?: string) {
         })
       : unset()
   );
+
+  // Auto-navigate to the updated path in Presentation if enabled
+  if (navigate) {
+    const newLocalizedPathname = getDocumentPath(
+      {
+        ...document,
+        locale: i18nOptions?.enabled ? document.locale : undefined,
+        pathname: finalValue,
+      },
+      i18nOptions?.defaultLocaleId || "",
+      i18nOptions?.localizePathname
+    );
+
+    // Auto-navigate if this document is currently being previewed,
+    // or if it's a brand new document being created.
+    if (preview === prevLocalizedPathname || !document._createdAt) {
+      navigate(newLocalizedPathname);
+    }
+  }
 }
 
 function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
@@ -263,22 +423,112 @@ function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
   }, [navigate, localizedPathname]);
 
   return (
+    !!navigate && (
+      <Button
+        text="Preview"
+        fontSize={1}
+        height={"100%"}
+        mode="default"
+        tone="default"
+        icon={EyeOpenIcon}
+        disabled={
+          typeof localizedPathname !== "string" || preview === localizedPathname
+        }
+        title="Preview page"
+        onClick={handleClick}
+      />
+    )
+  );
+}
+
+function GenerateButton({
+  sourceField,
+  document,
+  onChange,
+  folder,
+  disabled,
+  localizedPathname,
+  i18nOptions,
+  preview,
+  navigate,
+}: {
+  sourceField: string | Path | PathnameSourceFn;
+  document: DocumentWithLocale;
+  onChange: (patch: FormPatch | PatchEvent | FormPatch[]) => void;
+  folder?: string;
+  disabled?: boolean;
+  localizedPathname?: string;
+  i18nOptions?: PathnameOptions["i18n"];
+  preview?: string | null;
+  navigate?: PresentationNavigateContextValue;
+}) {
+  const pathnameContext = usePathnameContext();
+
+  const updatePathname = useCallback(
+    (nextPathname: string) => {
+      const finalValue = [
+        ...(folder ? [folder] : []),
+        stringToPathname(nextPathname),
+      ]
+        .filter((part) => typeof part === "string")
+        .join("/");
+
+      runChange({
+        onChange,
+        value: finalValue,
+        document,
+        i18nOptions,
+        prevLocalizedPathname: localizedPathname,
+        preview,
+        navigate,
+      });
+    },
+    [
+      document,
+      folder,
+      i18nOptions,
+      localizedPathname,
+      navigate,
+      onChange,
+      preview,
+    ]
+  );
+
+  const [generateState, handleGenerateSlug] = useAsync(() => {
+    return getNewFromSource(sourceField, document, pathnameContext).then(
+      (newFromSource) =>
+        updatePathname(
+          stringToPathname(newFromSource?.trim() || "", {
+            allowTrailingSlash: true,
+          })
+        )
+    );
+  }, [sourceField, pathnameContext, updatePathname]);
+
+  const isUpdating = generateState?.status === "pending";
+
+  return (
     <Button
-      text="Preview"
       fontSize={1}
-      height={"100%"}
-      mode="default"
+      height="100%"
+      mode="ghost"
       tone="default"
-      icon={EyeOpenIcon}
-      disabled={
-        !navigate ||
-        typeof localizedPathname !== "string" ||
-        preview === localizedPathname
-      }
-      title="Preview page"
-      onClick={handleClick}
+      icon={isUpdating ? Spinner : RefreshIcon}
+      aria-label="Generate"
+      onClick={handleGenerateSlug}
+      disabled={disabled || isUpdating}
     />
   );
+}
+
+async function getNewFromSource(
+  source: string | Path | PathnameSourceFn,
+  document: SanityDocument,
+  context: SlugContext
+): Promise<string | undefined> {
+  return typeof source === "function"
+    ? source(document, context)
+    : (PathUtils.get(document, source) as string | undefined);
 }
 
 function useSafeNavigate() {

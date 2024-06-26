@@ -3,15 +3,19 @@ import {
   NavigatorOptions as PresentationNavigatorOptions,
   PresentationPluginOptions,
 } from "@sanity/presentation";
+import { LocalizePathnameFn } from "@tinloof/sanity-web";
 import {
   ObjectDefinition,
   ObjectOptions,
   ObjectSchemaType,
+  Path,
   SanityDocument,
   SlugDefinition,
   SlugOptions,
+  SlugSourceFn,
 } from "sanity";
 import { ObjectFieldProps, SlugValue } from "sanity";
+import { FieldDefinitionBase } from "sanity";
 
 import { SlugContext } from "./hooks/usePathnameContext";
 
@@ -20,21 +24,36 @@ export type NormalizedCreatablePage = {
   type: string;
 };
 
+export type FolderTitleFn = (item: TreeNode, locale?: string) => string;
+
+export type FoldersConfig = {
+  [pathname: string]: {
+    title?: string | FolderTitleFn;
+    icon?: React.ElementType;
+  };
+};
+
 export type PagesNavigatorOptions = {
   i18n?: {
     locales: Locale[];
     defaultLocaleId?: string;
+    requireLocale?: boolean;
+    localizePathname?: LocalizePathnameFn;
   };
   creatablePages?: Array<NormalizedCreatablePage>;
+  folders?: FoldersConfig;
 };
 
 export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
   i18n?: {
     locales: Locale[];
     defaultLocaleId?: string;
+    requireLocale?: boolean;
+    localizePathname?: LocalizePathnameFn;
   };
   navigator?: Pick<PresentationNavigatorOptions, "maxWidth" | "minWidth">;
   creatablePages?: Array<NormalizedCreatablePage | string>;
+  folders?: FoldersConfig;
   title?: string;
 };
 
@@ -73,7 +92,9 @@ export type NavigatorContextType = {
   handleSearch: (value: string) => void;
   locale?: string;
   defaultLocaleId?: string;
+  localizePathname: LocalizePathnameFn;
   setLocale?: (value: string) => void;
+  folders?: FoldersConfig;
   items: TreeNode[];
 };
 
@@ -164,7 +185,13 @@ export type PathnamePrefix =
   | string
   | ((doc: SanityDocument, context: SlugContext) => Promise<string> | string);
 
-export type PathnameOptions = SlugOptions & {
+export type PathnameSourceFn = (
+  document: SanityDocument,
+  context: SlugContext
+) => string | Promise<string>;
+
+export type PathnameOptions = Pick<SlugOptions, "isUnique"> & {
+  source?: string | Path | PathnameSourceFn;
   prefix?: PathnamePrefix;
   folder?: {
     canUnlock?: boolean;
@@ -172,11 +199,13 @@ export type PathnameOptions = SlugOptions & {
   i18n?: {
     enabled?: boolean;
     defaultLocaleId?: string;
+    localizePathname?: LocalizePathnameFn;
   };
+  autoNavigate?: boolean;
 };
 
 export type PathnameParams = Omit<
-  SlugDefinition,
+  SlugDefinition & FieldDefinitionBase,
   "type" | "options" | "name"
 > & {
   name?: string;

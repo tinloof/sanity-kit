@@ -12,12 +12,16 @@ import {
 } from "@sanity/presentation";
 import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { localizePathname } from "@tinloof/sanity-web";
-import React, { useRef } from "react";
+import React, { createElement, useRef } from "react";
 import { useColorSchemeValue, useSchema } from "sanity";
 import { styled } from "styled-components";
 
-import { ListItemProps, PageTreeNode, TreeNode } from "../../../types";
+import {
+  FoldersConfig,
+  ListItemProps,
+  PageTreeNode,
+  TreeNode,
+} from "../../../types";
 import { useNavigator } from "../context";
 import { PreviewElement } from "./Preview";
 
@@ -193,7 +197,14 @@ const List = ({ loading }: { loading: boolean }) => {
 };
 
 const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
-  const { defaultLocaleId, setCurrentDir, currentDir } = useNavigator();
+  const {
+    defaultLocaleId,
+    setCurrentDir,
+    currentDir,
+    locale,
+    localizePathname,
+    folders,
+  } = useNavigator();
   const schema = useSchema();
   const innerRef = useRef<HTMLLIElement>(null);
   const listItemId = `item-${idx}`;
@@ -201,6 +212,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
     pathname: item.pathname || "",
     localeId: item.locale,
     isDefault: defaultLocaleId === item.locale,
+    fallbackLocaleId: locale,
   });
 
   const scheme = useColorSchemeValue();
@@ -304,7 +316,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
             {item._type !== "folder" ? (
               <PreviewElement fallback={item.title} type="title" item={item} />
             ) : (
-              item.title
+              <FolderTitle item={item} locale={locale} folders={folders} />
             )}
           </TextElement>
           <TextElement
@@ -404,14 +416,43 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
   );
 };
 
+const FolderTitle = ({
+  item,
+  locale,
+  folders,
+}: {
+  item: TreeNode;
+  locale: string | undefined;
+  folders: FoldersConfig | undefined;
+}) => {
+  const customTitle = folders?.[item.pathname || ""]?.title;
+
+  if (customTitle) {
+    return (
+      <>
+        {typeof customTitle === "string"
+          ? customTitle
+          : customTitle(item, locale)}
+      </>
+    );
+  }
+
+  return <>{item.title}</>;
+};
+
 const ItemIcon = ({ item }: { item: TreeNode }) => {
-  const iconProps = {
-    fontSize: "calc(21 / 16 * 1em)",
-    color: "var(--card-icon-color)",
-  };
+  const { folders } = useNavigator();
 
   if (item._type === "folder") {
-    return <FolderIcon {...iconProps} />;
+    return createElement(
+      item.pathname && folders?.[item.pathname]?.icon
+        ? folders[item.pathname].icon!
+        : FolderIcon,
+      {
+        fontSize: "calc(21 / 16 * 1em)",
+        color: "var(--card-icon-color)",
+      }
+    );
   }
 
   return (
