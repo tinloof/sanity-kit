@@ -15,12 +15,12 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^3.46.1",
+    "@sanity/vision": "^3.48.1",
     "@tinloof/sanity-studio": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-is": "^18.3.1",
-    "sanity": "^3.46.1",
+    "sanity": "^3.48.1",
     "styled-components": "^6.1.11"
   },
   "devDependencies": {
@@ -28,7 +28,7 @@
     "@types/react": "^18.3.3",
     "eslint": "^8.57.0",
     "prettier": "^3.3.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   },
   "prettier": {
     "semi": false,
