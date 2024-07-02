@@ -1,6 +1,6 @@
 {
   "name": "@tinloof/sanity-web",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Sanity-related utilities for web development",
   "repository": {
     "type": "git",
