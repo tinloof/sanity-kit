@@ -22,14 +22,14 @@
   "author": "Tinloof",
   "license": "ISC",
   "devDependencies": {
-    "@changesets/cli": "^2.27.5",
+    "@changesets/cli": "^2.27.7",
     "@portabletext/types": "^2.0.13",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.3"
   },
   "peerDependencies": {
     "react": "^18.3.1",
@@ -39,7 +39,7 @@
     "@portabletext/react": "^3.1.0",
     "@sanity/asset-utils": "^1.3.0",
     "@sanity/image-url": "^1.0.2",
-    "sanity": "^3.46.1",
+    "sanity": "^3.48.1",
     "speakingurl": "^14.0.1"
   }
 }
