@@ -4,6 +4,15 @@
 
 ### Patch Changes
 
+- Updated dependencies [754535d]
+- Updated dependencies [55dae45]
+- Updated dependencies [928c529]
+  - @tinloof/sanity-studio@1.3.2
+
+## null
+
+### Patch Changes
+
 - Updated dependencies [95a15b3]
 - Updated dependencies [9e62382]
   - @tinloof/sanity-studio@1.3.1
