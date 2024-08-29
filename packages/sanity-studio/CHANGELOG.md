@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.3.3
+
+### Patch Changes
+
+- 8059797: fix pages navigator scrolling to last item issue
+
 ## 1.3.2
 
 ### Patch Changes
