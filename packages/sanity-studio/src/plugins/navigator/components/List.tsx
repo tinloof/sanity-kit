@@ -34,7 +34,7 @@ const ListWrapper = styled(Box)`
   border: 2px solid transparent;
   padding: 2px;
   border-radius: 8px;
-  height: 88vh;
+  height: calc(100vh - 160px);
   overflow-y: auto;
   margin: 0;
   display: flex;
