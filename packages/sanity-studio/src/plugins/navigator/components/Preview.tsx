@@ -1,7 +1,7 @@
 import { isImageSource, SanityImageSource } from "@sanity/asset-utils";
 import { DocumentIcon } from "@sanity/icons";
 import imageUrlBuilder from "@sanity/image-url";
-import React from "react";
+import React, { useMemo } from "react";
 import { isValidElementType } from "react-is";
 import { useMemoObservable } from "react-rx";
 import {
@@ -10,6 +10,7 @@ import {
   ImageUrlFitMode,
   isString,
   SanityDefaultPreviewProps,
+  SanityDocument,
   SchemaType,
   useClient,
   useDocumentPreviewStore,
@@ -58,10 +59,17 @@ const Preview = ({
   const published = previewState?.published;
   const isLoading = previewState?.isLoading;
 
+  const sanityDocument = useMemo(() => {
+    return {
+      _id: item._id,
+      _type: schemaType.name,
+    } as SanityDocument;
+  }, [item._id, schemaType.name]);
+
   const previewValues = getPreviewValueWithFallback({
     draft,
     published,
-    value: { ...item },
+    value: sanityDocument,
   });
 
   const showPreview =
