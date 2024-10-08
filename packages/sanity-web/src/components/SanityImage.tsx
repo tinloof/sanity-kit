@@ -3,6 +3,8 @@ import type { ImageUrlBuilder } from "sanity";
 import { getImageDimensions, getExtension } from "@sanity/asset-utils";
 import imageUrlBuilder from "@sanity/image-url";
 import React from "react";
+// @ts-ignore
+import { preload } from "react-dom";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -52,7 +54,8 @@ export type SanityImageProps = {
     crop?: ImageCrop;
     hotspot?: ImageHotspot;
   } | null;
-} & React.ComponentPropsWithRef<"img">;
+  fetchPriority?: "high" | "default";
+} & Omit<React.ComponentPropsWithRef<"img">, "loading" | "fetchPriority">;
 
 /**
  * Sanity’s Image component is a wrapper around the HTML image element.
@@ -78,6 +81,7 @@ export type SanityImageProps = {
  * />
  * ```
  */
+
 const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
   (
     {
@@ -85,7 +89,7 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
       className,
       data,
       decoding = "async",
-      loading = "lazy",
+      fetchPriority,
       sizes,
       style,
       config,
@@ -207,11 +211,21 @@ const SanityImage = React.forwardRef<HTMLImageElement, SanityImageProps>(
         objectPosition: `var(--focalX) var(--focalY)`,
       } as React.CSSProperties);
 
+    if (fetchPriority === "high") {
+      preload(urlDefault as string, {
+        fetchPriority: "high",
+        imageSizes: sizes ?? sizes,
+        imageSrcSet: srcSet ?? srcSet,
+        // @ts-ignore
+        as: "image",
+      });
+    }
+
     return (
       <img
         alt={data.alt || ""}
         decoding={decoding}
-        loading={loading}
+        loading={fetchPriority !== "high" ? "lazy" : "eager"}
         className={className}
         height={aspectRatioHeight ? aspectRatioHeight * 100 : height}
         ref={ref}

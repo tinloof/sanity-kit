@@ -7,7 +7,7 @@ import {pages} from '@tinloof/sanity-studio'
 export default defineConfig({
   name: 'default',
   title: 'Vite studio',
-  projectId: 'ptjmyfc9',
+  projectId: 'qfrmq8mg',
   dataset: 'production',
   plugins: [
     structureTool(),
