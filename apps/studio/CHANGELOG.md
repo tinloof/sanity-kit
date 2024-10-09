@@ -1,5 +1,11 @@
 # vite-studio
 
+## 1.0.16
+
+### Patch Changes
+
+- @tinloof/sanity-studio@1.3.5
+
 ## 1.0.15
 
 ### Patch Changes

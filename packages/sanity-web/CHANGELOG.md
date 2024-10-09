@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 0.5.0
+
+### Minor Changes
+
+- f07b1c6: Expose fetchPriority from SanityImage to preload images
+
 ## 0.4.3
 
 ### Patch Changes
