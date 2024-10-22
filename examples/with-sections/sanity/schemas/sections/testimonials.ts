@@ -1,17 +1,9 @@
-import { defineSection } from '@tinloof/sanity-studio'
 import { defineField } from 'sanity'
 
-export default defineSection({
+export default defineField({
   name: 'section.testimonials',
   title: 'Testimonials',
   type: 'object',
-  options: {
-    variants: [
-      {
-        assetUrl: '/images/testimonials.png',
-      },
-    ],
-  },
   fields: [
     defineField({
       name: 'text',

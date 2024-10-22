@@ -1,4 +1,11 @@
-import { defineField, FieldDefinition, SlugValidationContext } from "sanity";
+import { ComponentType } from "react";
+import {
+  defineField,
+  FieldDefinition,
+  ObjectFieldProps,
+  SlugValidationContext,
+  SlugValue,
+} from "sanity";
 
 import { PathnameFieldComponent } from "../components/PathnameFieldComponent";
 import { PathnameParams } from "../types";
@@ -15,7 +22,10 @@ export function definePathname(
     type: "slug",
     components: {
       ...schema.components,
-      field: schema.components?.field ?? PathnameFieldComponent,
+      field: (schema.components?.field ??
+        PathnameFieldComponent) as unknown as ComponentType<
+        ObjectFieldProps<SlugValue>
+      >,
     },
     options: {
       ...(slugOptions ?? {}),
