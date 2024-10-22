@@ -1,10 +1,10 @@
 import 'tailwindcss/tailwind.css'
 
 import { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { draftMode } from 'next/headers'
 import { VisualEditing } from 'next-sanity'
 import { revalidatePath, revalidateTag } from 'next/cache'
+import { Inter } from 'next/font/google'
+import { draftMode } from 'next/headers'
 
 import config from '@/config'
 
@@ -18,21 +18,24 @@ const sans = Inter({
 })
 
 export default async function RootLayout({
-  params: { locale },
+  params,
   children,
 }: {
-  params: { locale: string }
+  params: Promise<{ locale: string }>
   children: React.ReactNode
 }) {
+  const locale = (await params).locale
+  const isDraftModeEnabled = (await draftMode()).isEnabled
+
   return (
     <html lang={locale} className={sans.variable}>
       <body>
         {children}
-        {draftMode().isEnabled && (
+        {isDraftModeEnabled && (
           <VisualEditing
             refresh={async (payload) => {
               'use server'
-              if (!draftMode().isEnabled) {
+              if (!isDraftModeEnabled) {
                 console.debug(
                   'Skipped manual refresh because draft mode is not enabled',
                 )

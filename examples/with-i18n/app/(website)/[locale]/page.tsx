@@ -2,11 +2,11 @@ import { Page } from '@/components/Page'
 import { loadPage } from '@/data/sanity'
 
 export default async function IndexRoute({
-  params: { locale },
+  params,
 }: {
-  params: { locale: string }
+  params: Promise<{ locale: string }>
 }) {
-  const data = await loadPage('/', locale)
+  const data = await loadPage('/', (await params).locale)
 
   return <Page data={data} />
 }
