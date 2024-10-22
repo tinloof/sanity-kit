@@ -4,9 +4,9 @@ import { loadPage } from '@/data/sanity'
 export default async function DynamicRoute({
   params,
 }: {
-  params: { path: string[] }
+  params: Promise<{ path: string[] }>
 }) {
-  const pathname = `/${params.path.join('/')}`
+  const pathname = `/${(await params).path.join('/')}`
   const data = await loadPage(pathname)
 
   return <Page data={data} />
