@@ -1,5 +1,57 @@
 # vite-studio
 
+## 1.0.16
+
+### Patch Changes
+
+- @tinloof/sanity-studio@1.3.5
+
+## 1.0.15
+
+### Patch Changes
+
+- Updated dependencies [89b54ad]
+- Updated dependencies [454a00f]
+  - @tinloof/sanity-studio@1.3.4
+
+## 1.0.14
+
+### Patch Changes
+
+- Updated dependencies [8059797]
+  - @tinloof/sanity-studio@1.3.3
+
+## 1.0.13
+
+### Patch Changes
+
+- Updated dependencies [754535d]
+- Updated dependencies [55dae45]
+- Updated dependencies [928c529]
+  - @tinloof/sanity-studio@1.3.2
+
+## 1.0.12
+
+### Patch Changes
+
+- Updated dependencies [95a15b3]
+- Updated dependencies [9e62382]
+  - @tinloof/sanity-studio@1.3.1
+
+## 1.0.11
+
+### Patch Changes
+
+- Updated dependencies [2a263d7]
+- Updated dependencies [a09d24f]
+- Updated dependencies [29a848a]
+- Updated dependencies [4289934]
+- Updated dependencies [4c92cc8]
+- Updated dependencies [ac331cf]
+- Updated dependencies [7dd9046]
+- Updated dependencies [ab53988]
+  - @tinloof/sanity-studio@1.3.0
+
 ## 1.0.10
 
 ### Patch Changes

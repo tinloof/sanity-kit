@@ -16,7 +16,12 @@ import React, { createElement, useRef } from "react";
 import { useColorSchemeValue, useSchema } from "sanity";
 import { styled } from "styled-components";
 
-import { ListItemProps, PageTreeNode, TreeNode } from "../../../types";
+import {
+  FoldersConfig,
+  ListItemProps,
+  PageTreeNode,
+  TreeNode,
+} from "../../../types";
 import { useNavigator } from "../context";
 import { PreviewElement } from "./Preview";
 
@@ -29,7 +34,7 @@ const ListWrapper = styled(Box)`
   border: 2px solid transparent;
   padding: 2px;
   border-radius: 8px;
-  height: 88vh;
+  height: calc(100vh - 160px);
   overflow-y: auto;
   margin: 0;
   display: flex;
@@ -311,7 +316,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
             {item._type !== "folder" ? (
               <PreviewElement fallback={item.title} type="title" item={item} />
             ) : (
-              folders?.[path]?.title || item.title
+              <FolderTitle item={item} locale={locale} folders={folders} />
             )}
           </TextElement>
           <TextElement
@@ -411,6 +416,30 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
   );
 };
 
+const FolderTitle = ({
+  item,
+  locale,
+  folders,
+}: {
+  item: TreeNode;
+  locale: string | undefined;
+  folders: FoldersConfig | undefined;
+}) => {
+  const customTitle = folders?.[item.pathname || ""]?.title;
+
+  if (customTitle) {
+    return (
+      <>
+        {typeof customTitle === "string"
+          ? customTitle
+          : customTitle(item, locale)}
+      </>
+    );
+  }
+
+  return <>{item.title}</>;
+};
+
 const ItemIcon = ({ item }: { item: TreeNode }) => {
   const { folders } = useNavigator();
 
@@ -437,8 +466,8 @@ const SkeletonListItems = ({ items }: { items: number }) => {
   return (
     <Card padding={1}>
       <ListWrapper>
-        {[...Array(items)].map((key) => (
-          <div role="listitem" aria-label="Loading item" key={key}>
+        {[...Array(items)].map((_value, index) => (
+          <div role="listitem" aria-label="Loading item" key={index}>
             <Flex align="center" gap={3} padding={1}>
               <SkeletonIcon currentScheme={scheme} />
               <TextContainer>

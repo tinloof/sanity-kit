@@ -1,5 +1,121 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.3.5
+
+### Patch Changes
+
+- Updated dependencies [f07b1c6]
+  - @tinloof/sanity-web@0.5.0
+
+## 1.3.4
+
+### Patch Changes
+
+- 89b54ad: Updated dependency `@sanity/document-internationalization` to `^3.0.1`.
+  Updated dependency `@sanity/presentation` to `^1.16.5`.
+  Updated dependency `@sanity/ui` to `^2.8.9`.
+  Updated dependency `@sanity/util` to `^3.57.4`.
+  Updated dependency `@tanstack/react-virtual` to `^3.10.8`.
+  Updated dependency `use-debounce` to `^10.0.3`.
+  Updated dependency `@types/lodash` to `^4.17.7`.
+  Updated dependency `@types/react` to `^18.3.7`.
+  Updated dependency `@typescript-eslint/eslint-plugin` to `^7.18.0`.
+  Updated dependency `@typescript-eslint/parser` to `^7.18.0`.
+  Updated dependency `eslint-plugin-prettier` to `^5.2.1`.
+  Updated dependency `eslint-plugin-react` to `^7.36.1`.
+  Updated dependency `prettier` to `^3.3.3`.
+  Updated dependency `prettier-plugin-packagejson` to `^2.5.2`.
+  Updated dependency `rimraf` to `^5.0.10`.
+  Updated dependency `sanity` to `^3.57.4`.
+  Updated dependency `styled-components` to `^6.1.13`.
+  Updated dependency `typescript` to `^5.6.2`.
+  Updated dependency `@changesets/cli` to `^2.27.8`.
+  Updated dependency `tsup` to `^8.3.0`.
+- 454a00f: Correctly render document titles.
+- Updated dependencies [89b54ad]
+  - @tinloof/sanity-web@0.4.3
+
+## 1.3.3
+
+### Patch Changes
+
+- 8059797: fix pages navigator scrolling to last item issue
+
+## 1.3.2
+
+### Patch Changes
+
+- 754535d: fix skeleton list items error as all keys undefined
+- 55dae45: Updated dependency `@sanity/presentation` to `^1.16.1`.
+  Updated dependency `@sanity/ui` to `^2.6.1`.
+  Updated dependency `@sanity/util` to `^3.48.1`.
+  Updated dependency `@tanstack/react-virtual` to `^3.8.1`.
+  Updated dependency `@types/lodash` to `^4.17.6`.
+  Updated dependency `@typescript-eslint/eslint-plugin` to `^7.15.0`.
+  Updated dependency `@typescript-eslint/parser` to `^7.15.0`.
+  Updated dependency `eslint-plugin-react` to `^7.34.3`.
+  Updated dependency `sanity` to `^3.48.1`.
+  Updated dependency `typescript` to `^5.5.3`.
+  Updated dependency `@changesets/cli` to `^2.27.7`.
+- 928c529: fix navigator preview image being too large
+- Updated dependencies [55dae45]
+  - @tinloof/sanity-web@0.4.2
+
+## 1.3.1
+
+### Patch Changes
+
+- 95a15b3: Properly render custom folder titles when i18n is enabled and add ability to have localized folder titles using a callback function.
+- 9e62382: Updated dependency `@sanity/presentation` to `^1.16.0`.
+  Updated dependency `@sanity/ui` to `^2.4.0`.
+  Updated dependency `@sanity/util` to `^3.46.1`.
+  Updated dependency `@typescript-eslint/eslint-plugin` to `^7.13.1`.
+  Updated dependency `@typescript-eslint/parser` to `^7.13.1`.
+  Updated dependency `npm-run-all2` to `^5.0.2`.
+  Updated dependency `sanity` to `^3.46.1`.
+- Updated dependencies [9e62382]
+  - @tinloof/sanity-web@0.4.1
+
+## 1.3.0
+
+### Minor Changes
+
+- a09d24f: Add support for the `source` field, which when set will render a button to generate the pathname similar to Sanity's `Slug` type. Thanks @marcusforsberg!
+- 29a848a: Add option to use a custom `localizePathname` function in the Pages plugin and in pathname fields. Thanks @marcusforsberg!
+- ac331cf: Add requireLocale option to allow working with non-translatable page types even with i18n enabled. Thanks @marcusforsberg!
+- 7dd9046: Add `autoNavigate` option to hide the "Preview" button and automatically navigate as the pathname changes. Thanks @marcusforsberg!
+- ab53988: Add `folders` config option which can be used to customize the icons and titles for individual folders based on their pathnames. Thanks @marcusforsberg!
+
+### Patch Changes
+
+- 2a263d7: Hide the "Preview" button from the `pathname` field when used in the Structure Tool (where it has no effect).
+- 4289934: Add missing "group" and "fieldset" properties to PathnameParams. Thanks @marcusforsberg!
+- 4c92cc8: Updated dependency `@sanity/presentation` to `^1.15.14`.
+  Updated dependency `@sanity/ui` to `^2.3.3`.
+  Updated dependency `@tanstack/react-virtual` to `^3.5.1`.
+  Updated dependency `@types/lodash` to `^4.17.5`.
+  Updated dependency `@types/react` to `^18.3.3`.
+  Updated dependency `@types/react-is` to `^18.3.0`.
+  Updated dependency `@typescript-eslint/eslint-plugin` to `^7.13.0`.
+  Updated dependency `@typescript-eslint/parser` to `^7.13.0`.
+  Updated dependency `eslint-plugin-react` to `^7.34.2`.
+  Updated dependency `eslint-plugin-react-hooks` to `^4.6.2`.
+  Updated dependency `npm-run-all2` to `^5.0.0`.
+  Updated dependency `prettier` to `^3.3.2`.
+  Updated dependency `react` to `^18.3.1`.
+  Updated dependency `react-dom` to `^18.3.1`.
+  Updated dependency `react-is` to `^18.3.1`.
+  Updated dependency `rimraf` to `^5.0.7`.
+  Updated dependency `sanity` to `^3.45.0`.
+  Updated dependency `styled-components` to `^6.1.11`.
+  Updated dependency `@changesets/cli` to `^2.27.5`.
+  Updated dependency `@types/react-dom` to `^18.3.0`.
+  Updated dependency `tsup` to `^8.1.0`.
+  Updated dependency `@portabletext/react` to `^3.1.0`.
+- Updated dependencies [29a848a]
+- Updated dependencies [4c92cc8]
+  - @tinloof/sanity-web@0.4.0
+
 ## 1.2.1
 
 ### Patch Changes

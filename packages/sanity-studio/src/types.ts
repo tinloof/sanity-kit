@@ -24,9 +24,11 @@ export type NormalizedCreatablePage = {
   type: string;
 };
 
+export type FolderTitleFn = (item: TreeNode, locale?: string) => string;
+
 export type FoldersConfig = {
   [pathname: string]: {
-    title?: string;
+    title?: string | FolderTitleFn;
     icon?: React.ElementType;
   };
 };
