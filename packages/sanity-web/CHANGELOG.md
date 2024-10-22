@@ -1,5 +1,15 @@
 # @tinloof/sanity-web
 
+## 0.6.0
+
+### Minor Changes
+
+- 1f6a3b8: Support Next 15 and React 19
+
+### Patch Changes
+
+- 85e2320: Improve sections
+
 ## 0.5.0
 
 ### Minor Changes
