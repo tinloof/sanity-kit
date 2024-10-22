@@ -1,5 +1,20 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.4.0
+
+### Minor Changes
+
+- 1f6a3b8: Support Next 15 and React 19
+
+### Patch Changes
+
+- 85e2320: Improve sections
+- 21c7dc8: Updated dependency `@sanity/icons` to `^3.2.0`.
+  Updated dependency `react-rx` to `^3.0.0`.
+- Updated dependencies [85e2320]
+- Updated dependencies [1f6a3b8]
+  - @tinloof/sanity-web@0.6.0
+
 ## 1.3.5
 
 ### Patch Changes

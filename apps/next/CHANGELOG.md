@@ -1,5 +1,20 @@
 # next-non-embedded-studio
 
+## 1.1.0
+
+### Minor Changes
+
+- 1f6a3b8: Support Next 15 and React 19
+
+### Patch Changes
+
+- 85e2320: Improve sections
+- Updated dependencies [85e2320]
+- Updated dependencies [21c7dc8]
+- Updated dependencies [1f6a3b8]
+  - @tinloof/sanity-studio@1.4.0
+  - @tinloof/sanity-web@0.6.0
+
 ## null
 
 ### Patch Changes
