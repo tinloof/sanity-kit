@@ -1,11 +1,11 @@
-import type { QueryParams } from 'next-sanity'
 import type { UnfilteredResponseQueryOptions } from '@sanity/client'
+import type { QueryParams } from 'next-sanity'
 
 import { draftMode } from 'next/headers'
 import 'server-only'
 
-import { client } from '@/data/sanity/client'
 import config from '@/config'
+import { client } from '@/data/sanity/client'
 
 const DEFAULT_PARAMS = {} as QueryParams
 
@@ -16,7 +16,7 @@ export async function loadQuery<QueryResponse>({
   query: string
   params?: QueryParams
 }): Promise<QueryResponse> {
-  const isDraftMode = draftMode().isEnabled
+  const isDraftMode = (await draftMode()).isEnabled
   const token = config.sanity.token
 
   if (isDraftMode && !token) {

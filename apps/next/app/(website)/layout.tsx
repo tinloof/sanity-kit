@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
-import { draftMode } from 'next/headers'
 import { VisualEditing } from 'next-sanity'
 import { revalidatePath, revalidateTag } from 'next/cache'
+import { draftMode } from 'next/headers'
 
 import config from '@/config'
 
@@ -9,15 +9,20 @@ export const metadata: Metadata = {
   title: `${config.siteName} - Website`,
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const isDraftModeEnabled = (await draftMode()).isEnabled
   return (
     <>
       {children}
-      {draftMode().isEnabled && (
+      {isDraftModeEnabled && (
         <VisualEditing
           refresh={async (payload) => {
             'use server'
-            if (!draftMode().isEnabled) {
+            if (!isDraftModeEnabled) {
               console.debug(
                 'Skipped manual refresh because draft mode is not enabled',
               )
