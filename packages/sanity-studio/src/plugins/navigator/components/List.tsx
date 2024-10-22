@@ -26,8 +26,8 @@ import { useNavigator } from "../context";
 import { PreviewElement } from "./Preview";
 
 type PreviewStyleProps = {
-  isPreviewed?: boolean;
-  currentScheme?: string;
+  $isPreviewed?: boolean;
+  $currentScheme?: string;
 };
 
 const ListWrapper = styled(Box)`
@@ -44,11 +44,11 @@ const ListWrapper = styled(Box)`
 
 const ListItemWrapper = styled(Stack)<PreviewStyleProps>`
   --bg-selected: ${(props) =>
-    props.currentScheme === "light" ? "#D5E2FB" : "#26344B"};
+    props.$currentScheme === "light" ? "#D5E2FB" : "#26344B"};
   --fg-selected: ${(props) =>
-    props.currentScheme === "light" ? "#20386B" : "#B2CBF9"};
+    props.$currentScheme === "light" ? "#20386B" : "#B2CBF9"};
   --hover-bg: ${(props) =>
-    props.currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
+    props.$currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
 
   padding: 4px;
   border-radius: 4px;
@@ -57,8 +57,8 @@ const ListItemWrapper = styled(Stack)<PreviewStyleProps>`
   justify-content: space-between;
   align-items: center;
   background-color: ${(props) =>
-    !props.isPreviewed ? "var(--card-bg-color)" : "var(--bg-selected)"};
-  color: ${(props) => (!props.isPreviewed ? "inherit" : "var(--fg-selected)")};
+    !props.$isPreviewed ? "var(--card-bg-color)" : "var(--bg-selected)"};
+  color: ${(props) => (!props.$isPreviewed ? "inherit" : "var(--fg-selected)")};
   transition: background-color 0.2s ease-in-out;
   border: 2px solid transparent;
   min-height: 33px;
@@ -96,14 +96,14 @@ const TextContainer = styled(Stack)`
 
 const TextElement = styled(Text)<PreviewStyleProps>`
   --fg-selected: ${(props) =>
-    props.currentScheme === "light" ? "#20386B" : "#B2CBF9"};
+    props.$currentScheme === "light" ? "#20386B" : "#B2CBF9"};
 
-  ${(props) => (!props.isPreviewed ? "" : "color: var(--fg-selected)")};
+  ${(props) => (!props.$isPreviewed ? "" : "color: var(--fg-selected)")};
 `;
 
 const PublishIconContainer = styled(Text)<PreviewStyleProps>`
   --published: ${(props) =>
-    props.currentScheme === "light" ? "#3e7147;" : "#8fd89f"};
+    props.$currentScheme === "light" ? "#3e7147;" : "#8fd89f"};
 
   padding: 0 8px;
   opacity: ${(props) => (props.muted ? 0.3 : 1)};
@@ -111,7 +111,7 @@ const PublishIconContainer = styled(Text)<PreviewStyleProps>`
 `;
 const EditIconContainer = styled(Text)<PreviewStyleProps>`
   --edited: ${(props) =>
-    props.currentScheme === "light" ? "#716327" : "#F5D456"};
+    props.$currentScheme === "light" ? "#716327" : "#F5D456"};
 
   padding: 0 8px;
   opacity: ${(props) => (props.muted ? 0.3 : 1)};
@@ -123,7 +123,7 @@ const SkeletonIcon = styled.div<PreviewStyleProps>`
   height: 44px;
   border-radius: 4px;
   background-color: ${(props) =>
-    props.currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
+    props.$currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
   color: inherit;
 `;
 
@@ -132,7 +132,7 @@ const SkeletonTitle = styled.div<PreviewStyleProps>`
   height: 10px;
   border-radius: 4px;
   background-color: ${(props) =>
-    props.currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
+    props.$currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
   color: inherit;
 `;
 
@@ -141,7 +141,7 @@ const SkeletonSubtitle = styled.div<PreviewStyleProps>`
   height: 8px;
   border-radius: 2px;
   background-color: ${(props) =>
-    props.currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
+    props.$currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
   color: inherit;
 `;
 
@@ -276,13 +276,13 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
       id={listItemId}
       as="li"
       role="option"
-      tabIndex={listItemId === active || item._type === "folder" ? 0 : -1}
+      tab-index={listItemId === active || item._type === "folder" ? 0 : -1}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       aria-label={item.title}
       aria-selected={listItemId === active}
-      currentScheme={scheme}
-      isPreviewed={previewed}
+      $currentScheme={scheme}
+      $isPreviewed={previewed}
     >
       <Flex align="center" gap={2} flex={1}>
         <Flex
@@ -309,8 +309,8 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
           <TextElement
             size={1}
             textOverflow="ellipsis"
-            isPreviewed={previewed}
-            currentScheme={scheme}
+            $isPreviewed={previewed}
+            $currentScheme={scheme}
             weight="medium"
           >
             {item._type !== "folder" ? (
@@ -323,8 +323,8 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
             size={1}
             muted
             textOverflow="ellipsis"
-            isPreviewed={previewed}
-            currentScheme={scheme}
+            $isPreviewed={previewed}
+            $currentScheme={scheme}
           >
             {item._type !== "folder" ? (
               <PreviewElement fallback={path} type="subtitle" item={item} />
@@ -366,7 +366,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
               item._id.startsWith("drafts.") &&
               item?._updatedAt === item?._createdAt
             }
-            currentScheme={scheme}
+            $currentScheme={scheme}
             weight="bold"
           >
             <Tooltip
@@ -390,7 +390,7 @@ const ListItem = ({ item, active, setActive, idx }: ListItemProps) => {
           <EditIconContainer
             size={1}
             muted={!(item as PageTreeNode).edited}
-            currentScheme={scheme}
+            $currentScheme={scheme}
             weight="bold"
           >
             <Tooltip
@@ -469,10 +469,10 @@ const SkeletonListItems = ({ items }: { items: number }) => {
         {[...Array(items)].map((_value, index) => (
           <div role="listitem" aria-label="Loading item" key={index}>
             <Flex align="center" gap={3} padding={1}>
-              <SkeletonIcon currentScheme={scheme} />
+              <SkeletonIcon $currentScheme={scheme} />
               <TextContainer>
-                <SkeletonTitle currentScheme={scheme} />
-                <SkeletonSubtitle currentScheme={scheme} />
+                <SkeletonTitle $currentScheme={scheme} />
+                <SkeletonSubtitle $currentScheme={scheme} />
               </TextContainer>
             </Flex>
           </div>

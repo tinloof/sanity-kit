@@ -5,17 +5,17 @@ import {
 } from "@sanity/presentation";
 import { LocalizePathnameFn } from "@tinloof/sanity-web";
 import {
+  FieldDefinitionBase,
   ObjectDefinition,
+  ObjectFieldProps,
   ObjectOptions,
   ObjectSchemaType,
   Path,
   SanityDocument,
   SlugDefinition,
   SlugOptions,
-  SlugSourceFn,
+  SlugValue,
 } from "sanity";
-import { ObjectFieldProps, SlugValue } from "sanity";
-import { FieldDefinitionBase } from "sanity";
 
 import { SlugContext } from "./hooks/usePathnameContext";
 
