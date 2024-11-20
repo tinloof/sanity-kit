@@ -13,6 +13,10 @@
 /.next/
 /out/
 
+# sanity
+/.sanity/
+/dist/
+
 # production
 /build
 /studio/dist
