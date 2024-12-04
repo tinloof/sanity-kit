@@ -24,6 +24,7 @@ npm install @tinloof/sanity-studio
   - [Add a section picker to your document](#3-add-a-section-picker-to-your-document)
   - [Add sections to your Sanity schema](#4-add-sections-to-your-sanity-schema)
 - [`documentI18n`](#documenti18n)
+- [`localizedItem`](#localizedItem)
 
 ## Pages
 
@@ -34,7 +35,7 @@ Pages is a plugin that wraps [Presentation](https://www.sanity.io/docs/presentat
 #### 1. Configure Pages:
 
 ```tsx
-import { pages } from "@tinloof/sanity-studio";
+import { pages } from '@tinloof/sanity-studio';
 
 export default defineConfig({
   // ... other Sanity Studio config
@@ -43,7 +44,7 @@ export default defineConfig({
       // Presentation's configuration
       previewUrl: {
         previewMode: {
-          enable: "/api/draft",
+          enable: '/api/draft',
         },
       },
     }),
@@ -54,14 +55,14 @@ export default defineConfig({
 #### 2. Add a `pathname` field to page schemas using the `definePage` helper:
 
 ```tsx
-import { definePathname } from "@tinloof/sanity-studio";
+import { definePathname } from '@tinloof/sanity-studio';
 
 export default defineType({
-  type: "document",
-  name: "modularPage",
+  type: 'document',
+  name: 'modularPage',
   fields: [
     definePathname({
-      name: "pathname",
+      name: 'pathname',
     }),
   ],
 });
@@ -72,16 +73,16 @@ Documents with a defined `pathname` field value are now recognized as pages and 
 Like Sanity's native `slug` type, the `pathname` supports a `source` option which can be used to generate the pathname from another field on the document, eg. the title:
 
 ```tsx
-import { definePathname } from "@tinloof/sanity-studio";
+import { definePathname } from '@tinloof/sanity-studio';
 
 export default defineType({
-  type: "document",
-  name: "modularPage",
+  type: 'document',
+  name: 'modularPage',
   fields: [
     definePathname({
-      name: "pathname",
+      name: 'pathname',
       options: {
-        source: "title",
+        source: 'title',
       },
     }),
   ],
@@ -100,17 +101,17 @@ When a page is created, it will automatically have the current folder in its pat
 </video>
 
 ```tsx
-import { pages } from "@tinloof/sanity-studio";
+import { pages } from '@tinloof/sanity-studio';
 
 export default defineConfig({
   // ... other Sanity Studio config
   plugins: [
     pages({
       // Add any documents you want to be creatable from the pages navigator
-      creatablePages: ["page"],
+      creatablePages: ['page'],
       previewUrl: {
         previewMode: {
-          enable: "/api/draft",
+          enable: '/api/draft',
         },
       },
     }),
@@ -130,14 +131,14 @@ Pathnames are automatically validated to be unique accros locales.
 </video>
 
 ```tsx
-import { pages } from "@tinloof/sanity-studio";
+import { pages } from '@tinloof/sanity-studio';
 
 const i18nConfig = {
   locales: [
-    { id: "en", title: "English" },
-    { id: "fr", title: "French" },
+    { id: 'en', title: 'English' },
+    { id: 'fr', title: 'French' },
   ],
-  defaultLocaleId: "en",
+  defaultLocaleId: 'en',
 };
 
 export default defineConfig({
@@ -147,7 +148,7 @@ export default defineConfig({
       i18n: i18nConfig,
       previewUrl: {
         previewMode: {
-          enable: "/api/draft",
+          enable: '/api/draft',
         },
       },
     }),
@@ -158,11 +159,11 @@ export default defineConfig({
  * Don't forget to add i18n options and locale field to your document schema
  */
 export default defineType({
-  type: "document",
-  name: "page",
+  type: 'document',
+  name: 'page',
   fields: [
     definePathname({
-      name: "pathname",
+      name: 'pathname',
       options: {
         // Add i18n options
         i18n: {
@@ -173,8 +174,8 @@ export default defineType({
     }),
     // Add locale field
     defineField({
-      type: "string",
-      name: "locale",
+      type: 'string',
+      name: 'locale',
       hidden: true,
     }),
   ],
@@ -188,10 +189,10 @@ By default, when internationalization is enabled, only pages whose `locale` fiel
 ```ts
 const i18nConfig = {
   locales: [
-    { id: "en", title: "English" },
-    { id: "fr", title: "French" },
+    { id: 'en', title: 'English' },
+    { id: 'fr', title: 'French' },
   ],
-  defaultLocaleId: "en",
+  defaultLocaleId: 'en',
   requireLocale: false,
 };
 ```
@@ -203,14 +204,14 @@ Now all documents with a `pathname` field will show up in the list regardless of
 By default, folders can be renamed. Set the `folder.canUnlock` option to `false` to disable this.
 
 ```tsx
-import { definePathname } from "@tinloof/sanity-studio";
+import { definePathname } from '@tinloof/sanity-studio';
 
 export default defineType({
-  type: "document",
-  name: "modularPage",
+  type: 'document',
+  name: 'modularPage',
   fields: [
     definePathname({
-      name: "pathname",
+      name: 'pathname',
       options: {
         folder: {
           canUnlock: false,
@@ -227,25 +228,25 @@ Documents can have their preview customized on the pages navigator using the [Li
 
 ```tsx
 export default {
-  name: "movie",
-  type: "document",
+  name: 'movie',
+  type: 'document',
   fields: [
     {
-      title: "Title",
-      name: "title",
-      type: "string",
+      title: 'Title',
+      name: 'title',
+      type: 'string',
     },
     {
-      type: "image",
-      name: "image",
-      title: "Image",
+      type: 'image',
+      name: 'image',
+      title: 'Image',
     },
   ],
   // Preview information
   preview: {
     select: {
-      title: "title",
-      media: "image",
+      title: 'title',
+      media: 'image',
     },
     prepare({ title, image }) {
       return {
@@ -268,12 +269,12 @@ export default defineConfig({
     pages({
       previewUrl: {
         previewMode: {
-          enable: "/api/draft",
+          enable: '/api/draft',
         },
       },
       folders: {
-        "/news": {
-          title: "Articles",
+        '/news': {
+          title: 'Articles',
           icon: NewspaperIcon,
         },
       },
@@ -287,14 +288,14 @@ export default defineConfig({
 By default, the `pathname` field comes with a "Preview" button which is used to navigate to the page within the Presentation iframe when the pathname changes. You can optionally disable this manual button and have the Presentation tool automatically navigate to the new pathname as it changes:
 
 ```tsx
-import { definePathname } from "@tinloof/sanity-studio";
+import { definePathname } from '@tinloof/sanity-studio';
 
 export default defineType({
-  type: "document",
-  name: "modularPage",
+  type: 'document',
+  name: 'modularPage',
   fields: [
     definePathname({
-      name: "pathname",
+      name: 'pathname',
       options: {
         autoNavigate: true,
       },
@@ -317,9 +318,9 @@ The `defineSection` field lets you easily define a new section schema. Used in c
 ```tsx
 // @/sanity/schemas/sections/banner.tsx
 export const bannerSection = defineSection({
-  name: "block.banner",
-  title: "Banner",
-  type: "object",
+  name: 'block.banner',
+  title: 'Banner',
+  type: 'object',
   options: {
     variants: [
       {
@@ -327,14 +328,14 @@ export const bannerSection = defineSection({
          * Will be used to display a preview image
          * when opening the section picker
          */
-        assetUrl: "/images/blocks/hero.png",
+        assetUrl: '/images/blocks/hero.png',
       },
     ],
   },
   fields: [
     defineField({
-      name: "bannerSection",
-      type: "string",
+      name: 'bannerSection',
+      type: 'string',
     }),
   ],
 });
@@ -345,7 +346,7 @@ export const bannerSection = defineSection({
 ```tsx
 // @/sanity/schemas/sections/index.tsx
 
-import { bannerSection } from "@/sanity/schemas/sections/banner";
+import { bannerSection } from '@/sanity/schemas/sections/banner';
 
 export const sections = [bannerSection];
 ```
@@ -386,8 +387,8 @@ export const sections = [bannerSection];
 ```tsx
 // @/sanity/schemas/index.tsx
 
-import { sections } from "@sanity/schemas/index";
-import page from "@/sanity/schemas/page";
+import { sections } from '@sanity/schemas/index';
+import page from '@/sanity/schemas/page';
 
 const schemas = [page, ...sections];
 
@@ -400,6 +401,55 @@ The `documentI18n` plugin is an opinionated thin wrapper around Sanity's [Docume
 `documentI18n` enables internationalization on any schema with a `locale` field.
 
 Check the `with-i18n` example for instructions on usage.
+
+## `localizedItem`
+
+The `localizedItem` utility helps create localized document lists in your Sanity Studio's structure. It creates a nested list structure that groups documents by locale, with an "All" option to view all documents regardless of locale.
+
+### Basic usage
+
+```tsx
+import { localizedItem } from '@tinloof/sanity-studio';
+import { StructureResolver } from 'sanity/structure';
+
+const locales = [
+    { id: 'en', title: 'English' },
+    { id: 'fr', title: 'French' },
+  ];
+
+export const structure: StructureResolver = (S) => {
+  return S.list()
+    .title('Content')
+    .items([
+      localizedItem(S, 'blog.post', 'Blog posts', locales),
+    ]);
+```
+
+### Parameters
+
+- `S`: The Sanity Structure Builder instance
+- `name`: The document type name (string)
+- `title`: The display title for the list (string)
+- `locales`: An array of locale objects with `id` and `title` properties
+
+### Example with additional locale properties
+
+You can include additional properties
+
+```tsx
+const locales = [
+  { id: 'en', title: 'English', countryCode: 'US', isDefault: true },
+  { id: 'fr', title: 'French', countryCode: 'FR' },
+];
+
+localizedItem(S, 'blog.post', 'Blog posts', locales);
+```
+
+The utility will create a nested structure with:
+
+- A top-level item with the provided title
+- An "All" option showing all documents of the specified type
+- Individual locale options that filter documents by their `locale` field
 
 ## Examples
 
