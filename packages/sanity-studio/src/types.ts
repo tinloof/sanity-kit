@@ -15,6 +15,9 @@ import {
   SlugDefinition,
   SlugOptions,
   SlugValue,
+  StringDefinition,
+  StringSchemaType,
+  StringInputProps,
 } from "sanity";
 
 import { SlugContext } from "./hooks/usePathnameContext";
@@ -214,4 +217,20 @@ export type PathnameParams = Omit<
 
 export type PathnameInputProps = ObjectFieldProps<SlugValue> & {
   schemaType: { options?: PathnameOptions };
+};
+
+export type IconOptions = {
+  list: { title: string; value: string }[];
+};
+
+export type IconParams = Omit<
+  StringDefinition & FieldDefinitionBase,
+  "type" | "name" | "options"
+> & {
+  name?: string;
+  options?: IconOptions;
+};
+
+export type IconInputProps = StringInputProps<StringSchemaType> & {
+  schemaType: { options?: IconOptions };
 };
