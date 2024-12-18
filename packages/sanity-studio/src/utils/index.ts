@@ -1,2 +1,2 @@
-export { definePathname } from './definePathname';
-export { localizedItem } from './localizedItem';
+export { definePathname } from "./definePathname";
+export { localizedItem } from "./localizedItem";
