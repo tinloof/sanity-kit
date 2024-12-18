@@ -1,5 +1,6 @@
 import { capitalize } from "lodash";
-import { useMemoObservable } from "react-rx";
+import { useMemo } from "react";
+import { useObservable } from "react-rx";
 import { QueryParams, useDocumentStore } from "sanity";
 
 import {
@@ -18,12 +19,14 @@ export const useSanityFetch = ({
   variables: QueryParams;
 }) => {
   const documentStore = useDocumentStore();
-  const subscribe = useMemoObservable(
-    () =>
-      documentStore.listenQuery(query, variables, {
-        perspective: "previewDrafts",
-      }),
-    [documentStore]
+  const subscribe = useObservable(
+    useMemo(
+      () =>
+        documentStore.listenQuery(query, variables, {
+          perspective: "previewDrafts",
+        }),
+      [documentStore, query, variables],
+    ),
   );
 
   const loading = subscribe === undefined;
@@ -152,7 +155,7 @@ export function createPageTemplates(creatablePages: NormalizedCreatablePage[]) {
 }
 
 export function normalizeCreatablePages(
-  creatablePageTypes: PagesNavigatorPluginOptions["creatablePages"]
+  creatablePageTypes: PagesNavigatorPluginOptions["creatablePages"],
 ): NormalizedCreatablePage[] {
   return (
     creatablePageTypes?.map((page) => {

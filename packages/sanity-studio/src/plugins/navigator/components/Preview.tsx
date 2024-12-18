@@ -3,7 +3,7 @@ import { DocumentIcon } from "@sanity/icons";
 import imageUrlBuilder from "@sanity/image-url";
 import React, { useMemo } from "react";
 import { isValidElementType } from "react-is";
-import { useMemoObservable } from "react-rx";
+import { useObservable } from "react-rx";
 import {
   getPreviewStateObservable,
   getPreviewValueWithFallback,
@@ -49,10 +49,17 @@ const Preview = ({
   fallback?: React.ReactNode | string;
 }) => {
   const documentPreviewStore = useDocumentPreviewStore();
-  const previewState = useMemoObservable(
-    () =>
-      getPreviewStateObservable(documentPreviewStore, schemaType, item._id, ""),
-    [item._id, documentPreviewStore, schemaType]
+  const previewState = useObservable(
+    useMemo(
+      () =>
+        getPreviewStateObservable(
+          documentPreviewStore,
+          schemaType,
+          item._id,
+          "",
+        ),
+      [item._id, documentPreviewStore, schemaType],
+    ),
   );
 
   const draft = previewState?.draft;
@@ -147,7 +154,7 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
           src={
             imageBuilder
               .image(
-                mediaProp as SanityImageSource /*will only enter this code path if it's compatible*/
+                mediaProp as SanityImageSource /*will only enter this code path if it's compatible*/,
               )
               .width(dimensions?.width || 100)
               .height(dimensions.height || 100)
@@ -158,7 +165,7 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
         />
       );
     },
-    [imageBuilder, mediaProp, title]
+    [imageBuilder, mediaProp, title],
   );
 
   const renderIcon = React.useCallback(() => {
