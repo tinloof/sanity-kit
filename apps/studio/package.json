@@ -1,7 +1,7 @@
 {
   "name": "vite-studio",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "package.json",
   "license": "UNLICENSED",
   "scripts": {
