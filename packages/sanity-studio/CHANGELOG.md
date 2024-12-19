@@ -1,5 +1,18 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.5.0
+
+### Minor Changes
+
+- 3fe5ab5: Icon schema with custom select component
+- 164b8db: Support React 19
+- aa66ce9: localizedItem utility added to aid with i18n structure organization
+
+### Patch Changes
+
+- Updated dependencies [164b8db]
+  - @tinloof/sanity-web@0.7.0
+
 ## 1.4.0
 
 ### Minor Changes

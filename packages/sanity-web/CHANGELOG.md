@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 0.7.0
+
+### Minor Changes
+
+- 164b8db: Support React 19
+
 ## 0.6.0
 
 ### Minor Changes
