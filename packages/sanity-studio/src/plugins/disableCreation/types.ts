@@ -1,5 +1,3 @@
-import { SchemaTypeDefinition } from "sanity";
-
 export type DisableCreationSchemaOptions = {
   disableCreation?: boolean;
 };
@@ -13,6 +11,6 @@ export type DefaultDocumentActions =
   | "duplicate";
 
 export type DisableCreationPluginOptions = {
-  schemaTypes: SchemaTypeDefinition[];
+  schemas: string[];
   overrideDocumentActions?: DefaultDocumentActions[];
 };
