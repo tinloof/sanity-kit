@@ -26,6 +26,7 @@ npm install @tinloof/sanity-studio
 - [`documentI18n`](#documenti18n)
 - [`localizedItem`](#localizedItem)
 - [`defineIcon`](#defineIcon)
+- [Disable creation plugin](#disable-creation-plugin)
 
 ## Pages
 
@@ -489,6 +490,74 @@ export default defineType({
 - `options.list`: Uses the default string option list type of `{title: string, value: string}[]`
 
 The ultility searches for icons within the folder `/icons/select/[icon-value].svg`, if you have a Next.js embbedded setup then store them under `/public/icons/select/[icon-value].svg`.
+
+## Disable creation plugin
+
+Plugin to disable the creation of doucments with the `disableCreation` option set to true. The plugin does this by:
+
+- limiting the document's action to (these options can be overidden):
+  - publish
+  - restore
+  - discard changes
+- removing document type from create button found on the top left of the Studio
+
+### Basic usage
+
+```tsx
+sanity.config.ts;
+
+import { disableCreation } from "@tinloof/sanity-studio";
+import schemas from "@/sanity/schemas";
+
+export default defineConfig({
+  name: "studio",
+  title: "Studio",
+  projectId: "12345678",
+  dataset: "production",
+  schema: {
+    types: schemas,
+  },
+  plugins: [disableCreation({ schemaTypes: schemas })],
+});
+```
+
+```tsx
+/schemas/egilnnosst / home.ts;
+
+import { defineType } from "sanity";
+export default defineType({
+  type: "document",
+  name: "home",
+  fields: [
+    {
+      type: "string",
+      name: "title",
+    },
+  ],
+  options: {
+    disableCreation: true,
+  },
+});
+```
+
+### Parameters
+
+- `schemaTypes`: array of schemas found within your Studio
+- `overrideDocumentActions`: The document actions to override, defaults to publish, discardChanges, restore
+
+### Important notice
+
+When using this plugin, make sure you placing it after the `stucutureTool()`.
+
+```tsx
+plugins: [
+  structureTool(),
+  visionTool(),
+  disableCreation({
+    schemaTypes: schemaTypes as SchemaTypeDefinition[],
+  }),
+],
+```
 
 ## Examples
 
