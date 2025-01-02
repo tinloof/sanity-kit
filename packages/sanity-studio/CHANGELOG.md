@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.6.0
+
+### Minor Changes
+
+- fe72e4f: Disable creation plugin
+
 ## 1.5.0
 
 ### Minor Changes
