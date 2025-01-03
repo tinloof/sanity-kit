@@ -1,5 +1,12 @@
 # vite-studio
 
+## 1.1.3
+
+### Patch Changes
+
+- Updated dependencies [070b307]
+  - @tinloof/sanity-studio@1.6.1
+
 ## 1.1.2
 
 ### Patch Changes
