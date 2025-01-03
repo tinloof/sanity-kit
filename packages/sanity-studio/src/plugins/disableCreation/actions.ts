@@ -1,7 +1,6 @@
 import { DocumentActionComponent, DocumentActionsContext } from "sanity";
 
 import { DefaultDocumentActions } from "./types";
-import { getIsCreationDisabledDocument } from "./utils";
 
 const defaultActions: DefaultDocumentActions[] = [
   "publish",
@@ -12,10 +11,11 @@ const defaultActions: DefaultDocumentActions[] = [
 // Disable creation actions for documents that have disableCreation set to true
 export const actions = (
   prev: DocumentActionComponent[],
-  { schema, schemaType }: DocumentActionsContext,
+  { schemaType }: DocumentActionsContext,
+  schemas: string[],
   overrideDocumentActions?: DefaultDocumentActions[]
 ): DocumentActionComponent[] => {
-  const isCreationDisabled = getIsCreationDisabledDocument(schema, schemaType);
+  const isCreationDisabled = schemas.includes(schemaType);
 
   const documentActions = overrideDocumentActions?.length
     ? overrideDocumentActions

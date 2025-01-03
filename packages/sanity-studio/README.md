@@ -517,32 +517,13 @@ export default defineConfig({
   schema: {
     types: schemas,
   },
-  plugins: [disableCreation({ schemaTypes: schemas })],
-});
-```
-
-```tsx
-/schemas/egilnnosst / home.ts;
-
-import { defineType } from "sanity";
-export default defineType({
-  type: "document",
-  name: "home",
-  fields: [
-    {
-      type: "string",
-      name: "title",
-    },
-  ],
-  options: {
-    disableCreation: true,
-  },
+  plugins: [disableCreation({ schemas: ["home", "header", "footer"] })],
 });
 ```
 
 ### Parameters
 
-- `schemaTypes`: array of schemas found within your Studio
+- `schemas`: String array of document types
 - `overrideDocumentActions`: The document actions to override, defaults to publish, discardChanges, restore
 
 ### Important notice
