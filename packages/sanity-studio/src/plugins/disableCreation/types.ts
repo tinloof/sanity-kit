@@ -1,7 +1,3 @@
-export type DisableCreationSchemaOptions = {
-  disableCreation?: boolean;
-};
-
 export type DefaultDocumentActions =
   | "publish"
   | "discardChanges"
