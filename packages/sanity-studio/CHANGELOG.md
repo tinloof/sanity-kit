@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.7.0
+
+### Minor Changes
+
+- 281f590: Input with characters count component
+
 ## 1.6.1
 
 ### Patch Changes
