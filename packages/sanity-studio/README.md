@@ -27,6 +27,7 @@ npm install @tinloof/sanity-studio
 - [`localizedItem`](#localizedItem)
 - [`defineIcon`](#defineIcon)
 - [Disable creation plugin](#disable-creation-plugin)
+- [Input with characters count](#input-with-characters-count)
 
 ## Pages
 
@@ -528,7 +529,7 @@ export default defineConfig({
 
 ### Important notice
 
-When using this plugin, make sure you placing it after the `stucutureTool()`.
+When using this plugin, make sure you are placing it after the `stucutureTool()`.
 
 ```tsx
 plugins: [
@@ -539,6 +540,39 @@ plugins: [
   }),
 ],
 ```
+
+## Input with characters count
+
+This is a custom component which shows a characters count below a string input. Requires you to specify the minimum and maximum length of the string in order to render and also show tone states.
+
+### Basic usage
+
+Add as a `input` under `components` and include the options `minLength` and `maxLength`.
+
+```tsx
+{
+  type: 'object',
+  name: 'seo',
+  fields: [
+    {
+      type: 'string',
+      name: 'title',
+      components: {
+        input: InputWithCharacterCount,
+      },
+      options: {
+        maxLength: 100,
+        minLength: 10,
+      },
+    },
+  ],
+},
+```
+
+### Parameters
+
+- `minLength`: Number, minimum length of string
+- `maxLength`: Number, maximum length of string
 
 ## Examples
 
