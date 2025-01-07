@@ -25,8 +25,9 @@ export const useSanityFetch = ({
         documentStore.listenQuery(query, variables, {
           perspective: "previewDrafts",
         }),
-      [documentStore, query, variables],
-    ),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [documentStore]
+    )
   );
 
   const loading = subscribe === undefined;
@@ -155,7 +156,7 @@ export function createPageTemplates(creatablePages: NormalizedCreatablePage[]) {
 }
 
 export function normalizeCreatablePages(
-  creatablePageTypes: PagesNavigatorPluginOptions["creatablePages"],
+  creatablePageTypes: PagesNavigatorPluginOptions["creatablePages"]
 ): NormalizedCreatablePage[] {
   return (
     creatablePageTypes?.map((page) => {
