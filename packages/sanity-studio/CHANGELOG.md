@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.7.1
+
+### Patch Changes
+
+- 120cb3c: Navigator hotfix
+
 ## 1.7.0
 
 ### Minor Changes
