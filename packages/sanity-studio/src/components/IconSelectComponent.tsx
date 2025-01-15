@@ -73,6 +73,11 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
   const iconOptions = options as IconOptions | undefined;
 
   const iconList = iconOptions?.list ?? [];
+  let iconsPath = iconOptions?.pathOverride ?? "/icons/select/";
+  // Add / to the end of the path if it's not there
+  if (!iconsPath.endsWith("/")) {
+    iconsPath += "/";
+  }
 
   const [open, setOpen] = useState(false);
   const onClose = useCallback(() => setOpen(false), []);
@@ -125,7 +130,7 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
                     height: "24px",
                     width: "24px",
                   }}
-                  src={`/icons/select/${value}.svg`}
+                  src={`${iconsPath}${value}.svg`}
                 />
               </IconContainer>
               <Text>{addSpaceBeforeCapitalLetters(value)}</Text>
@@ -175,7 +180,7 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
                     onClick={() => onIconChange(icon.value)}
                     value={icon.value}
                   >
-                    <BlockVariantCard icon={icon.value} />
+                    <BlockVariantCard icon={icon.value} iconsPath={iconsPath} />
                   </Flex>
                 );
               })}
@@ -198,12 +203,18 @@ const IconStyles = {
   width: "32px",
 };
 
-function BlockVariantCard({ icon }: { icon: string }) {
+function BlockVariantCard({
+  icon,
+  iconsPath,
+}: {
+  icon: string;
+  iconsPath: string;
+}) {
   return (
     <BlockVariantCardContainer>
       <img
         className="select-icon"
-        src={`/icons/select/${icon}.svg`}
+        src={`${iconsPath}${icon}.svg`}
         style={IconStyles}
       />
       <Text style={{ textAlign: "center" }} size={0}>

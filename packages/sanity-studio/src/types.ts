@@ -221,6 +221,7 @@ export type PathnameInputProps = ObjectFieldProps<SlugValue> & {
 
 export type IconOptions = {
   list: { title: string; value: string }[];
+  pathOverride?: string;
 };
 
 export type IconParams = Omit<
