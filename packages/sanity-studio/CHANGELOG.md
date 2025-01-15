@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.7.2
+
+### Patch Changes
+
+- 4cf564d: iconSchema path option
+
 ## 1.7.1
 
 ### Patch Changes
