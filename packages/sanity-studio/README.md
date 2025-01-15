@@ -25,7 +25,7 @@ npm install @tinloof/sanity-studio
   - [Add sections to your Sanity schema](#4-add-sections-to-your-sanity-schema)
 - [`documentI18n`](#documenti18n)
 - [`localizedItem`](#localizedItem)
-- [`defineIcon`](#defineIcon)
+- [`iconSchema`](#iconSchema)
 - [Disable creation plugin](#disable-creation-plugin)
 - [Input with characters count](#input-with-characters-count)
 
@@ -454,14 +454,14 @@ The utility will create a nested structure with:
 - An "All" option showing all documents of the specified type
 - Individual locale options that filter documents by their `locale` field
 
-## `defineIcon`
+## `iconSchema`
 
 Builds upon a string field with an options list to show a preview of the icon select as well as other options.
 
 ### Basic usage
 
 ```tsx
-import { defineIcon } from "@tinloof/sanity-studio";
+import { iconSchema } from "@tinloof/sanity-studio";
 import { defineType } from "sanity";
 
 export default defineType({
@@ -472,16 +472,17 @@ export default defineType({
       type: "string",
       name: "title",
     },
-    defineIcon({
-      name: "icon",
+    {
+      ...iconSchema,
       options: {
         list: [
           { title: "Calendar", value: "calendar" },
           { title: "Chat", value: "chat" },
           { title: "Clock", value: "clock" },
         ],
+        path: "/icons/select",
       },
-    }),
+    },
   ],
 });
 ```
@@ -489,8 +490,7 @@ export default defineType({
 ### Parameters
 
 - `options.list`: Uses the default string option list type of `{title: string, value: string}[]`
-
-The ultility searches for icons within the folder `/icons/select/[icon-value].svg`, if you have a Next.js embbedded setup then store them under `/public/icons/select/[icon-value].svg`.
+- `options.path`: Path where icons are located
 
 ## Disable creation plugin
 
