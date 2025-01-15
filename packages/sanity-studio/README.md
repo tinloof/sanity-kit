@@ -480,7 +480,7 @@ export default defineType({
           { title: "Chat", value: "chat" },
           { title: "Clock", value: "clock" },
         ],
-        pathOverride: "static/icons/select",
+        path: "/icons/select",
       },
     },
   ],
@@ -490,9 +490,7 @@ export default defineType({
 ### Parameters
 
 - `options.list`: Uses the default string option list type of `{title: string, value: string}[]`
-- `options.pathOverride`: Override the default path `/icons/select/[icon-value].svg` where icons are looked for
-
-The ultility searches for icons within the folder `/icons/select/[icon-value].svg`, if you have a Next.js embbedded setup then store them under `/public/icons/select/[icon-value].svg`.
+- `options.path`: Path where icons are located
 
 ## Disable creation plugin
 

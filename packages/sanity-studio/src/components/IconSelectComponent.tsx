@@ -73,7 +73,7 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
   const iconOptions = options as IconOptions | undefined;
 
   const iconList = iconOptions?.list ?? [];
-  let iconsPath = iconOptions?.pathOverride ?? "/icons/select/";
+  let iconsPath = iconOptions?.path ?? "";
   // Add / to the end of the path if it's not there
   if (!iconsPath.endsWith("/")) {
     iconsPath += "/";
