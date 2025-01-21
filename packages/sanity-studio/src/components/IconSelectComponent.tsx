@@ -31,6 +31,7 @@ const FlexContainer = styled(Flex)`
 `;
 
 const BlockVariantCardContainer = styled(Card)`
+  box-sizing: content-box;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -208,6 +209,8 @@ const IconStyles = {
   marginBottom: "4px",
   padding: "4px",
   width: "32px",
+  maxWidth: "unset",
+  verticalAlign: "unset",
 };
 
 function BlockVariantCard({
