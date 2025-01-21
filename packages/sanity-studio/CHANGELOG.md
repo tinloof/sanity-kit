@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.7.3
+
+### Patch Changes
+
+- 986ee30: Background color option and override tailwindcss img styles
+
 ## 1.7.2
 
 ### Patch Changes
