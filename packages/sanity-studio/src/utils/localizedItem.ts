@@ -13,7 +13,7 @@ export const localizedItem = (
   name: string,
   title: string,
   locales: Locale[],
-  icon: BaseSchemaDefinition["icon"]
+  icon?: BaseSchemaDefinition["icon"]
 ): ListItemBuilder => {
   // Input validation
   if (!name || typeof name !== "string") {
