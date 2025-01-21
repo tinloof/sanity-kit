@@ -16,7 +16,6 @@ import { styled } from "styled-components";
 import { IconInputProps, IconOptions } from "../types";
 
 const IconContainer = styled(Box)`
-  background-color: white;
   border-radius: 4px;
   cursor: pointer;
 `;
@@ -32,6 +31,7 @@ const FlexContainer = styled(Flex)`
 `;
 
 const BlockVariantCardContainer = styled(Card)`
+  box-sizing: content-box;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -72,6 +72,7 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
 
   const iconOptions = options as IconOptions | undefined;
 
+  const backgroundColor = iconOptions?.backgroundColor ?? "white";
   const iconList = iconOptions?.list ?? [];
   let iconsPath = iconOptions?.path ?? "";
   // Add / to the end of the path if it's not there
@@ -123,7 +124,11 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
             padding={3}
           >
             <Flex align="center" gap={3}>
-              <IconContainer paddingX={2} paddingY={1}>
+              <IconContainer
+                paddingX={2}
+                paddingY={1}
+                style={{ backgroundColor }}
+              >
                 <img
                   alt="icon"
                   style={{
@@ -180,7 +185,11 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
                     onClick={() => onIconChange(icon.value)}
                     value={icon.value}
                   >
-                    <BlockVariantCard icon={icon.value} iconsPath={iconsPath} />
+                    <BlockVariantCard
+                      icon={icon.value}
+                      iconsPath={iconsPath}
+                      backgroundColor={backgroundColor}
+                    />
                   </Flex>
                 );
               })}
@@ -193,7 +202,6 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
 }
 
 const IconStyles = {
-  background: "white",
   borderRadius: 4,
   cursor: "pointer",
   height: "32px",
@@ -201,21 +209,25 @@ const IconStyles = {
   marginBottom: "4px",
   padding: "4px",
   width: "32px",
+  maxWidth: "unset",
+  verticalAlign: "unset",
 };
 
 function BlockVariantCard({
   icon,
   iconsPath,
+  backgroundColor,
 }: {
   icon: string;
   iconsPath: string;
+  backgroundColor: string;
 }) {
   return (
     <BlockVariantCardContainer>
       <img
         className="select-icon"
         src={`${iconsPath}${icon}.svg`}
-        style={IconStyles}
+        style={{ ...IconStyles, backgroundColor }}
       />
       <Text style={{ textAlign: "center" }} size={0}>
         {addSpaceBeforeCapitalLetters(icon)}

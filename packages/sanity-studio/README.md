@@ -481,6 +481,7 @@ export default defineType({
           { title: "Clock", value: "clock" },
         ],
         path: "/icons/select",
+        backgroundColor: "black",
       },
     },
   ],
@@ -491,6 +492,7 @@ export default defineType({
 
 - `options.list`: Uses the default string option list type of `{title: string, value: string}[]`
 - `options.path`: Path where icons are located
+- `options.backgroundColor`: Color value to plug into the CSS style `backgroundColor`. Read [here](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) for possible values.
 
 ## Disable creation plugin
 
