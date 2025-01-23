@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.7.4
+
+### Patch Changes
+
+- 7df28de: Icon option to localizedItem
+
 ## 1.7.3
 
 ### Patch Changes
