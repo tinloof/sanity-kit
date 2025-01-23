@@ -414,6 +414,7 @@ The `localizedItem` utility helps create localized document lists in your Sanity
 ```tsx
 import { localizedItem } from '@tinloof/sanity-studio';
 import { StructureResolver } from 'sanity/structure';
+import { BookIcon } from '@sanity/icons';
 
 const locales = [
     { id: 'en', title: 'English' },
@@ -424,7 +425,7 @@ export const structure: StructureResolver = (S) => {
   return S.list()
     .title('Content')
     .items([
-      localizedItem(S, 'blog.post', 'Blog posts', locales),
+      localizedItem(S, 'blog.post', 'Blog posts', locales, BookIcon),
     ]);
 ```
 
@@ -434,6 +435,7 @@ export const structure: StructureResolver = (S) => {
 - `name`: The document type name (string)
 - `title`: The display title for the list (string)
 - `locales`: An array of locale objects with `id` and `title` properties
+- `icon`: (Optional) Icon to show instead of the default Sanity folder icon to assist with readability
 
 ### Example with additional locale properties
 
@@ -445,7 +447,7 @@ const locales = [
   { id: "fr", title: "French", countryCode: "FR" },
 ];
 
-localizedItem(S, "blog.post", "Blog posts", locales);
+localizedItem(S, "blog.post", "Blog posts", locales, BookIcon);
 ```
 
 The utility will create a nested structure with:
