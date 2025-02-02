@@ -19,25 +19,27 @@ import {
 
 import { FolderTreeNode, TreeNode } from "../../../types";
 
-const PreviewElement = (props: {
-  item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
-  type: "media" | "title" | "subtitle";
-  fallback?: React.ReactNode | string;
-}): React.ReactElement | null => {
-  const schema = useSchema();
-  const { _type } = props.item;
-  const schemaType = schema.get(_type);
+const PreviewElement = React.memo(
+  (props: {
+    item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
+    type: "media" | "title" | "subtitle";
+    fallback?: React.ReactNode | string;
+  }): React.ReactElement | null => {
+    const schema = useSchema();
+    const { _type } = props.item;
+    const schemaType = schema.get(_type);
 
-  if (!schemaType) {
-    return null;
+    if (!schemaType) {
+      return null;
+    }
+
+    return <Preview schemaType={schemaType} {...props} />;
   }
-
-  return <Preview schemaType={schemaType} {...props} />;
-};
+);
 
 PreviewElement.displayName = "PreviewElement";
 
-const Preview = ({
+const Preview = React.memo(function Preview({
   schemaType,
   item,
   type,
@@ -47,7 +49,7 @@ const Preview = ({
   item: Exclude<TreeNode, FolderTreeNode>;
   type: "media" | "title" | "subtitle";
   fallback?: React.ReactNode | string;
-}) => {
+}) {
   const documentPreviewStore = useDocumentPreviewStore();
   const previewState = useObservable(
     useMemo(
@@ -56,10 +58,10 @@ const Preview = ({
           documentPreviewStore,
           schemaType,
           item._id,
-          "",
+          ""
         ),
-      [item._id, documentPreviewStore, schemaType],
-    ),
+      [item._id, documentPreviewStore, schemaType]
+    )
   );
 
   const draft = previewState?.draft;
@@ -113,7 +115,7 @@ const Preview = ({
   }
 
   return null;
-};
+});
 
 Preview.displayName = "Preview";
 
@@ -154,7 +156,7 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
           src={
             imageBuilder
               .image(
-                mediaProp as SanityImageSource /*will only enter this code path if it's compatible*/,
+                mediaProp as SanityImageSource /*will only enter this code path if it's compatible*/
               )
               .width(dimensions?.width || 100)
               .height(dimensions.height || 100)
@@ -165,7 +167,7 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
         />
       );
     },
-    [imageBuilder, mediaProp, title],
+    [imageBuilder, mediaProp, title]
   );
 
   const renderIcon = React.useCallback(() => {
