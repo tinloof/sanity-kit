@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.7.5
+
+### Patch Changes
+
+- a661a98: definePathname uniqueness check updated
+
 ## 1.7.4
 
 ### Patch Changes

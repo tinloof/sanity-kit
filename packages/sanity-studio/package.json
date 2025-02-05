@@ -1,6 +1,6 @@
 {
   "name": "@tinloof/sanity-studio",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "A collection of Sanity studio plugins, fields, and components",
   "keywords": [
     "sanity",
