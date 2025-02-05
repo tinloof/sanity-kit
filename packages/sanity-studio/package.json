@@ -51,18 +51,17 @@
   },
   "dependencies": {
     "@sanity/asset-utils": "^1.3.0",
-    "@sanity/document-internationalization": "^3.2.0",
-    "@sanity/icons": "^3.5.3",
+    "@sanity/document-internationalization": "^3.3.1",
+    "@sanity/icons": "^3.5.7",
     "@sanity/image-url": "^1.1.0",
     "@sanity/incompatible-plugin": "^1.0.5",
-    "@sanity/presentation": "^1.19.13",
-    "@sanity/ui": "^2.10.11",
-    "@sanity/util": "^3.68.1",
+    "@sanity/ui": "^2.11.8",
+    "@sanity/util": "^3.74.0",
     "@tanstack/react-virtual": "^3.10.8",
     "@tinloof/sanity-web": "workspace:*",
     "lodash": "^4.17.21",
     "nanoid": "^5.0.7",
-    "react-rx": "^4.1.9",
+    "react-rx": "^4.1.18",
     "use-debounce": "^10.0.4"
   },
   "devDependencies": {
@@ -85,13 +84,13 @@
     "react-dom": "^18.3.1",
     "react-is": "^18.3.1",
     "rimraf": "^5.0.10",
-    "sanity": "^3.62.0",
+    "sanity": "^3.74.0",
     "styled-components": "^6.1.13",
     "typescript": "^5.6.2"
   },
   "peerDependencies": {
     "react": "^18.3.1 || ^19",
-    "sanity": "^3.68.1"
+    "sanity": "^3.74.0"
   },
   "engines": {
     "node": ">=14"
