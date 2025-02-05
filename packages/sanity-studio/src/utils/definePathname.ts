@@ -45,9 +45,11 @@ async function isUnique(
     draft: `drafts.${id}`,
     published: id,
     slug,
+    slugWithoutSlash: slug.replace(/\/$/, ""),
     locale: document?.locale ?? null,
   };
-  const query = `*[!(_id in [$draft, $published]) && pathname.current == $slug && locale == $locale]`;
+  const query = `*[!(_id in [$draft, $published]) && (pathname.current == $slug || pathname.current == $slugWithoutSlash) && locale == $locale]`;
   const result = await client.fetch(query, params);
+  console.log(result);
   return result.length === 0;
 }
