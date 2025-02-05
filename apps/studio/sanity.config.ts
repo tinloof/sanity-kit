@@ -13,7 +13,7 @@ export default defineConfig({
     structureTool(),
     pages({
       previewUrl: {
-        draftMode: {
+        previewMode: {
           enable: 'http://localhost:9999/api/draft',
         },
       },

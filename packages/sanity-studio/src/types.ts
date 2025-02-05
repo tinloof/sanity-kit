@@ -1,8 +1,4 @@
 import { Language as Locale } from "@sanity/document-internationalization";
-import {
-  NavigatorOptions as PresentationNavigatorOptions,
-  PresentationPluginOptions,
-} from "@sanity/presentation";
 import { LocalizePathnameFn } from "@tinloof/sanity-web";
 import {
   FieldDefinitionBase,
@@ -16,9 +12,13 @@ import {
   SlugOptions,
   SlugValue,
   StringDefinition,
-  StringSchemaType,
   StringInputProps,
+  StringSchemaType,
 } from "sanity";
+import {
+  NavigatorOptions as PresentationNavigatorOptions,
+  PresentationPluginOptions,
+} from "sanity/presentation";
 
 import { SlugContext } from "./hooks/usePathnameContext";
 

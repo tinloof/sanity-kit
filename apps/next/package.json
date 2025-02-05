@@ -15,20 +15,20 @@
     "singleQuote": true
   },
   "dependencies": {
-    "@sanity/client": "^6.24.1",
-    "@sanity/preview-url-secret": "^2.0.5",
-    "@sanity/react-loader": "^1.10.30",
-    "@sanity/vision": "^3.68.1",
+    "@sanity/client": "^6.27.2",
+    "@sanity/preview-url-secret": "^2.1.4",
+    "@sanity/react-loader": "^1.10.41",
+    "@sanity/vision": "^3.74.0",
     "@tailwindcss/typography": "0.5.15",
     "@tinloof/sanity-studio": "workspace:*",
     "@tinloof/sanity-web": "workspace:*",
     "classnames": "2.5.1",
     "lucide-react": "^0.453.0",
     "next": "15.1.1",
-    "next-sanity": "^9.8.27",
+    "next-sanity": "^9.8.51",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sanity": "^3.68.1",
+    "sanity": "^3.74.0",
     "server-only": "0.0.1"
   },
   "devDependencies": {

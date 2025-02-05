@@ -6,11 +6,6 @@ import {
   RefreshIcon,
 } from "@sanity/icons";
 import {
-  PresentationNavigateContextValue,
-  usePresentationNavigate,
-  usePresentationParams,
-} from "@sanity/presentation";
-import {
   Box,
   Button,
   Card,
@@ -33,6 +28,11 @@ import {
   unset,
   useFormValue,
 } from "sanity";
+import {
+  PresentationNavigateContextValue,
+  usePresentationNavigate,
+  usePresentationParams,
+} from "sanity/presentation";
 import { styled } from "styled-components";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 
