@@ -45,9 +45,12 @@ async function isUnique(
     draft: `drafts.${id}`,
     published: id,
     slug,
+    // Remove slash from end of slug if it exists
+    // Handle cases where there is a page with /blog but a new page is created with /blog/
+    slugWithoutSlash: slug.replace(/\/$/, ""),
     locale: document?.locale ?? null,
   };
-  const query = `*[!(_id in [$draft, $published]) && pathname.current == $slug && locale == $locale]`;
+  const query = `*[!(_id in [$draft, $published]) && (pathname.current == $slug || pathname.current == $slugWithoutSlash) && locale == $locale]`;
   const result = await client.fetch(query, params);
   return result.length === 0;
 }
