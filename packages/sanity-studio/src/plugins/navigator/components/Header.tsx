@@ -150,12 +150,12 @@ function getPathname({
   currentDir: string;
   initialValue: string | undefined;
 }) {
-  if (currentDir) {
-    return `${currentDir}/`;
+  if (initialValue !== undefined) {
+    return initialValue;
   }
 
-  if (initialValue) {
-    return initialValue;
+  if (currentDir) {
+    return `${currentDir}/`;
   }
 
   return "/";
