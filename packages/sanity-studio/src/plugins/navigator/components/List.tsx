@@ -9,7 +9,7 @@ import {
 import {
   usePresentationNavigate,
   usePresentationParams,
-} from "@sanity/presentation";
+} from "sanity/presentation";
 import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import React, { createElement, useRef } from "react";
