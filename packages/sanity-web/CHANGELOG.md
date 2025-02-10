@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 0.8.0
+
+### Minor Changes
+
+- 4b7f06a: use `sanity/presentation` instead of `@sanity/presentation`
+
 ## 0.7.0
 
 ### Minor Changes
