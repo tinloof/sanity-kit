@@ -1,5 +1,18 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.8.0
+
+### Minor Changes
+
+- 4b7f06a: use `sanity/presentation` instead of `@sanity/presentation`
+
+### Patch Changes
+
+- 671f87b: Pioritise document initial value over current folder
+- c32a811: Sanity presentation import fix
+- Updated dependencies [4b7f06a]
+  - @tinloof/sanity-web@0.8.0
+
 ## 1.7.5
 
 ### Patch Changes
