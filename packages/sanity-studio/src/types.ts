@@ -1,5 +1,5 @@
-import { Language as Locale } from "@sanity/document-internationalization";
-import { LocalizePathnameFn } from "@tinloof/sanity-web";
+import { Language as Locale } from '@sanity/document-internationalization';
+import { LocalizePathnameFn } from '@tinloof/sanity-web';
 import {
   FieldDefinitionBase,
   ObjectDefinition,
@@ -14,13 +14,13 @@ import {
   StringDefinition,
   StringInputProps,
   StringSchemaType,
-} from "sanity";
+} from 'sanity';
 import {
   NavigatorOptions as PresentationNavigatorOptions,
   PresentationPluginOptions,
-} from "sanity/presentation";
+} from 'sanity/presentation';
 
-import { SlugContext } from "./hooks/usePathnameContext";
+import { SlugContext } from './hooks/usePathnameContext';
 
 export type NormalizedCreatablePage = {
   title: string;
@@ -36,6 +36,11 @@ export type FoldersConfig = {
   };
 };
 
+export type FilterBasedOnRoles = {
+  role: 'all' | 'contributor' | 'editor' | 'administrator' | 'viewer' | string;
+  filter: string;
+};
+
 export type PagesNavigatorOptions = {
   i18n?: {
     locales: Locale[];
@@ -45,6 +50,7 @@ export type PagesNavigatorOptions = {
   };
   creatablePages?: Array<NormalizedCreatablePage>;
   folders?: FoldersConfig;
+  filterBasedOnRoles?: FilterBasedOnRoles[];
 };
 
 export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
@@ -54,17 +60,18 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
     requireLocale?: boolean;
     localizePathname?: LocalizePathnameFn;
   };
-  navigator?: Pick<PresentationNavigatorOptions, "maxWidth" | "minWidth">;
+  navigator?: Pick<PresentationNavigatorOptions, 'maxWidth' | 'minWidth'>;
   creatablePages?: Array<NormalizedCreatablePage | string>;
   folders?: FoldersConfig;
   title?: string;
+  filterBasedOnRoles?: FilterBasedOnRoles[];
 };
 
 export type Page = {
   _rev: string;
   _id: string;
   _originalId: string;
-  _type: Exclude<"string", "folder">;
+  _type: Exclude<'string', 'folder'>;
   _updatedAt: string;
   _createdAt: string;
   pathname: string | null;
@@ -77,8 +84,8 @@ export type PageTreeNode = Page & {
   edited?: boolean;
 };
 
-export type FolderTreeNode = Omit<Page, "_type"> & {
-  _type: "folder";
+export type FolderTreeNode = Omit<Page, '_type'> & {
+  _type: 'folder';
   title: string;
   children: Tree;
 };
@@ -131,7 +138,7 @@ export type ReducerAction = {
 };
 
 export interface DocumentWithLocale extends SanityDocument {
-  locale: Locale["id"];
+  locale: Locale['id'];
 }
 
 export interface SectionOptions extends ObjectOptions {
@@ -143,7 +150,7 @@ export interface SectionOptions extends ObjectOptions {
  *
  * The `custom` property is strictly typed to include what the toolkit needs for scaffolding the website & studio.
  */
-export interface SectionSchema extends Omit<ObjectDefinition, "options"> {
+export interface SectionSchema extends Omit<ObjectDefinition, 'options'> {
   options: SectionOptions;
 }
 
@@ -193,7 +200,7 @@ export type PathnameSourceFn = (
   context: SlugContext
 ) => string | Promise<string>;
 
-export type PathnameOptions = Pick<SlugOptions, "isUnique"> & {
+export type PathnameOptions = Pick<SlugOptions, 'isUnique'> & {
   source?: string | Path | PathnameSourceFn;
   prefix?: PathnamePrefix;
   folder?: {
@@ -209,7 +216,7 @@ export type PathnameOptions = Pick<SlugOptions, "isUnique"> & {
 
 export type PathnameParams = Omit<
   SlugDefinition & FieldDefinitionBase,
-  "type" | "options" | "name"
+  'type' | 'options' | 'name'
 > & {
   name?: string;
   options?: PathnameOptions;
@@ -227,7 +234,7 @@ export type IconOptions = {
 
 export type IconParams = Omit<
   StringDefinition & FieldDefinitionBase,
-  "type" | "name" | "options"
+  'type' | 'name' | 'options'
 > & {
   name?: string;
   options?: IconOptions;
