@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.9.0
+
+### Minor Changes
+
+- 862b9cf: Pages navigator filter
+
 ## 1.8.0
 
 ### Minor Changes
