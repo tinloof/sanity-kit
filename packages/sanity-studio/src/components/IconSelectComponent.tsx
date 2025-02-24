@@ -1,4 +1,4 @@
-import { AddCircleIcon, SearchIcon, TrashIcon } from "@sanity/icons";
+import { AddCircleIcon, SearchIcon, TrashIcon } from '@sanity/icons';
 import {
   Box,
   Button,
@@ -8,12 +8,12 @@ import {
   Grid,
   Text,
   TextInput,
-} from "@sanity/ui";
-import { useCallback, useState } from "react";
-import { set, unset } from "sanity";
-import { styled } from "styled-components";
+} from '@sanity/ui';
+import { useCallback, useState } from 'react';
+import { set, unset } from 'sanity';
+import { styled } from 'styled-components';
 
-import { IconInputProps, IconOptions } from "../types";
+import { IconInputProps, IconOptions } from '../types';
 
 const IconContainer = styled(Box)`
   border-radius: 4px;
@@ -38,27 +38,39 @@ const BlockVariantCardContainer = styled(Card)`
   justify-content: center;
   cursor: pointer;
   max-height: 16rem;
-  max-width: 16rem;
+  max-width: 24rem;
   border-radius: 0.5rem;
   background-color: transparent;
   padding: 0.75rem;
-  &:hover {
-    background-color: var(--card-bg-color);
-  }
 `;
 
 const ButtonStyled = styled(Button)`
   cursor: pointer;
 `;
 
+const ImageGridContainer = styled(Grid)`
+  align-items: start;
+  justify-items: center;
+  grid-template-columns: repeat(2, minmax(0px, 1fr));
+  @container (min-width: 300px) {
+    grid-template-columns: repeat(3, minmax(0px, 1fr));
+  }
+  @container (min-width: 400px) {
+    grid-template-columns: repeat(4, minmax(0px, 1fr));
+  }
+  @container (min-width: 500px) {
+    grid-template-columns: repeat(5, minmax(0px, 1fr));
+  }
+`;
+
 const addSpaceBeforeCapitalLetters = (inputString: string): string =>
   inputString
-    .replace(/([A-Z])/g, " $1")
+    .replace(/([A-Z])/g, ' $1')
     .trim()
     .charAt(0)
     .toUpperCase() +
   inputString
-    .replace(/([A-Z])/g, " $1")
+    .replace(/([A-Z])/g, ' $1')
     .trim()
     .slice(1);
 
@@ -66,25 +78,25 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
   const {
     elementProps,
     onChange,
-    value = "",
+    value = '',
     schemaType: { options },
   } = props;
 
   const iconOptions = options as IconOptions | undefined;
 
-  const backgroundColor = iconOptions?.backgroundColor ?? "white";
+  const backgroundColor = iconOptions?.backgroundColor ?? 'white';
   const iconList = iconOptions?.list ?? [];
-  let iconsPath = iconOptions?.path ?? "";
+  let iconsPath = iconOptions?.path ?? '';
   // Add / to the end of the path if it's not there
-  if (!iconsPath.endsWith("/")) {
-    iconsPath += "/";
+  if (!iconsPath.endsWith('/')) {
+    iconsPath += '/';
   }
 
   const [open, setOpen] = useState(false);
   const onClose = useCallback(() => setOpen(false), []);
   const onOpen = useCallback(() => setOpen(true), []);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   const icons = search
     ? iconList.filter((icon) => icon.value.includes(search.toLowerCase()))
@@ -132,8 +144,8 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
                 <img
                   alt="icon"
                   style={{
-                    height: "24px",
-                    width: "24px",
+                    height: '24px',
+                    width: '24px',
                   }}
                   src={`${iconsPath}${value}.svg`}
                 />
@@ -164,20 +176,21 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
           id="dialog-icons"
           onClose={onClose}
           zOffset={1000}
+          width={100}
         >
-          <Box padding={4}>
+          <Box padding={4} style={{ containerType: 'inline-size' }}>
             <TextInput
               icon={SearchIcon}
               onChange={onSearchChange}
               placeholder="Search for an icon"
               value={search}
             />
-            <Grid columns={[2, 3, 4, 5]} gap={[1, 1, 2, 3]} padding={4}>
+            <ImageGridContainer padding={4}>
               {icons.map((icon) => {
                 if (!icon) return null;
                 return (
                   <Flex
-                    align="center"
+                    align="flex-start"
                     direction="column"
                     gap={4}
                     key={icon.value}
@@ -193,7 +206,7 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
                   </Flex>
                 );
               })}
-            </Grid>
+            </ImageGridContainer>
           </Box>
         </Dialog>
       )}
@@ -202,15 +215,18 @@ export function IconSelectComponent(props: IconInputProps): JSX.Element {
 }
 
 const IconStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   borderRadius: 4,
-  cursor: "pointer",
-  height: "32px",
-  margin: "0 auto",
-  marginBottom: "4px",
-  padding: "4px",
-  width: "32px",
-  maxWidth: "unset",
-  verticalAlign: "unset",
+  cursor: 'pointer',
+  height: '32px',
+  margin: '0 auto',
+  marginBottom: '8px',
+  padding: '4px',
+  width: '32px',
+  maxWidth: 'unset',
+  verticalAlign: 'unset',
 };
 
 function BlockVariantCard({
@@ -229,7 +245,7 @@ function BlockVariantCard({
         src={`${iconsPath}${icon}.svg`}
         style={{ ...IconStyles, backgroundColor }}
       />
-      <Text style={{ textAlign: "center" }} size={0}>
+      <Text style={{ textAlign: 'center' }} size={0}>
         {addSpaceBeforeCapitalLetters(icon)}
       </Text>
     </BlockVariantCardContainer>
