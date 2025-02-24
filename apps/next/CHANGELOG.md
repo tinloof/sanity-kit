@@ -1,5 +1,12 @@
 # next-non-embedded-studio
 
+## 1.1.12
+
+### Patch Changes
+
+- Updated dependencies [4dab9d0]
+  - @tinloof/sanity-studio@1.9.1
+
 ## 1.1.11
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.9.1
+
+### Patch Changes
+
+- 4dab9d0: Icon select component styles update
+
 ## 1.9.0
 
 ### Minor Changes
