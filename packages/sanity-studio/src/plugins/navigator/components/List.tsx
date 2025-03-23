@@ -5,25 +5,26 @@ import {
   FolderIcon,
   PublishIcon,
   SearchIcon,
-} from "@sanity/icons";
+} from '@sanity/icons';
+import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from '@sanity/ui';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import React, { createElement, useRef } from 'react';
+import { useColorSchemeValue, useSchema } from 'sanity';
 import {
   usePresentationNavigate,
   usePresentationParams,
-} from "sanity/presentation";
-import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import React, { createElement, useRef } from "react";
-import { useColorSchemeValue, useSchema } from "sanity";
-import { styled } from "styled-components";
+} from 'sanity/presentation';
+import { styled } from 'styled-components';
 
 import {
   FoldersConfig,
   ListItemProps,
   PageTreeNode,
   TreeNode,
-} from "../../../types";
-import { useNavigator } from "../context";
-import { PreviewElement } from "./Preview";
+} from '../../../types';
+import { useNavigator } from '../context';
+import { countValidChildren } from '../utils';
+import { PreviewElement } from './Preview';
 
 type PreviewStyleProps = {
   $isPreviewed?: boolean;
@@ -47,11 +48,11 @@ const ListWrapper = styled(Box)`
 
 const ListItemWrapper = styled(Stack)<PreviewStyleProps>`
   --bg-selected: ${(props) =>
-    props.$currentScheme === "light" ? "#D5E2FB" : "#26344B"};
+    props.$currentScheme === 'light' ? '#D5E2FB' : '#26344B'};
   --fg-selected: ${(props) =>
-    props.$currentScheme === "light" ? "#20386B" : "#B2CBF9"};
+    props.$currentScheme === 'light' ? '#20386B' : '#B2CBF9'};
   --hover-bg: ${(props) =>
-    props.$currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
+    props.$currentScheme === 'light' ? '#F2F3F5' : '#2A2C30'};
 
   position: absolute;
   padding: 4px;
@@ -61,8 +62,8 @@ const ListItemWrapper = styled(Stack)<PreviewStyleProps>`
   justify-content: space-between;
   align-items: center;
   background-color: ${(props) =>
-    !props.$isPreviewed ? "var(--card-bg-color)" : "var(--bg-selected)"};
-  color: ${(props) => (!props.$isPreviewed ? "inherit" : "var(--fg-selected)")};
+    !props.$isPreviewed ? 'var(--card-bg-color)' : 'var(--bg-selected)'};
+  color: ${(props) => (!props.$isPreviewed ? 'inherit' : 'var(--fg-selected)')};
   transition: background-color 0.2s ease-in-out;
   border: 2px solid transparent;
   min-height: 33px;
@@ -100,26 +101,26 @@ const TextContainer = styled(Stack)`
 
 const TextElement = styled(Text)<PreviewStyleProps>`
   --fg-selected: ${(props) =>
-    props.$currentScheme === "light" ? "#20386B" : "#B2CBF9"};
+    props.$currentScheme === 'light' ? '#20386B' : '#B2CBF9'};
 
-  ${(props) => (!props.$isPreviewed ? "" : "color: var(--fg-selected)")};
+  ${(props) => (!props.$isPreviewed ? '' : 'color: var(--fg-selected)')};
 `;
 
 const PublishIconContainer = styled(Text)<PreviewStyleProps>`
   --published: ${(props) =>
-    props.$currentScheme === "light" ? "#3e7147;" : "#8fd89f"};
+    props.$currentScheme === 'light' ? '#3e7147;' : '#8fd89f'};
 
   padding: 0 8px;
   opacity: ${(props) => (props.muted ? 0.3 : 1)};
-  color: ${(props) => (props.muted ? "inherit" : "var(--published)")};
+  color: ${(props) => (props.muted ? 'inherit' : 'var(--published)')};
 `;
 const EditIconContainer = styled(Text)<PreviewStyleProps>`
   --edited: ${(props) =>
-    props.$currentScheme === "light" ? "#716327" : "#F5D456"};
+    props.$currentScheme === 'light' ? '#716327' : '#F5D456'};
 
   padding: 0 8px;
   opacity: ${(props) => (props.muted ? 0.3 : 1)};
-  color: ${(props) => (props.muted ? "inherit" : "var(--edited)")};
+  color: ${(props) => (props.muted ? 'inherit' : 'var(--edited)')};
 `;
 
 const SkeletonIcon = styled.div<PreviewStyleProps>`
@@ -127,7 +128,7 @@ const SkeletonIcon = styled.div<PreviewStyleProps>`
   height: 44px;
   border-radius: 4px;
   background-color: ${(props) =>
-    props.$currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
+    props.$currentScheme === 'light' ? '#F2F3F5' : '#2A2C30'};
   color: inherit;
 `;
 
@@ -136,7 +137,7 @@ const SkeletonTitle = styled.div<PreviewStyleProps>`
   height: 10px;
   border-radius: 4px;
   background-color: ${(props) =>
-    props.$currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
+    props.$currentScheme === 'light' ? '#F2F3F5' : '#2A2C30'};
   color: inherit;
 `;
 
@@ -145,22 +146,33 @@ const SkeletonSubtitle = styled.div<PreviewStyleProps>`
   height: 8px;
   border-radius: 2px;
   background-color: ${(props) =>
-    props.$currentScheme === "light" ? "#F2F3F5" : "#2A2C30"};
+    props.$currentScheme === 'light' ? '#F2F3F5' : '#2A2C30'};
   color: inherit;
 `;
 
 const List = ({ loading }: { loading: boolean }) => {
   const { items } = useNavigator();
+  const schema = useSchema();
   const innerRef = useRef<HTMLUListElement>(null);
   const { preview } = usePresentationParams();
+
+  const documentSchemasNames =
+    schema._original?.types
+      .filter(({ type }) => type === 'document')
+      .map(({ name }) => name) ?? [];
+
+  const filteredItemsAndFolders = items.filter(
+    (item) => countValidChildren(item, documentSchemasNames) > 0
+  );
+
   const activeDescendantIndex =
-    items.findIndex((item) => item.pathname === preview) ?? 0;
+    filteredItemsAndFolders.findIndex((item) => item.pathname === preview) ?? 0;
   const [activeDescendant, setActiveDescendant] = React.useState(
     `item-${activeDescendantIndex}`
   );
 
   const virtualizer = useVirtualizer({
-    count: items.length,
+    count: filteredItemsAndFolders.length,
     estimateSize: () => 40, // estimate individual item size
     getScrollElement: () => innerRef.current,
     overscan: 25,
@@ -170,7 +182,7 @@ const List = ({ loading }: { loading: boolean }) => {
     return <SkeletonListItems items={40} />;
   }
 
-  return !items.length ? (
+  return !filteredItemsAndFolders.length ? (
     <EmptySearchResults />
   ) : (
     <ListWrapperParent padding={1} ref={innerRef}>
@@ -182,12 +194,12 @@ const List = ({ loading }: { loading: boolean }) => {
         aria-activedescendant={`item-${activeDescendant}`}
         style={{
           height: `${virtualizer.getTotalSize()}px`,
-          width: "100%",
-          position: "relative",
+          width: '100%',
+          position: 'relative',
         }}
       >
         {virtualizer.getVirtualItems().map((virtualChild) => {
-          const item = items[virtualChild.index];
+          const item = filteredItemsAndFolders[virtualChild.index];
           return (
             <ListItem
               key={virtualChild.index}
@@ -196,6 +208,7 @@ const List = ({ loading }: { loading: boolean }) => {
               setActive={setActiveDescendant}
               idx={virtualChild.index}
               virtualChild={virtualChild}
+              documentSchemasNames={documentSchemasNames}
             />
           );
         })}
@@ -205,7 +218,14 @@ const List = ({ loading }: { loading: boolean }) => {
 };
 
 const ListItem = React.memo(
-  ({ item, active, setActive, idx, virtualChild }: ListItemProps) => {
+  ({
+    item,
+    active,
+    setActive,
+    idx,
+    virtualChild,
+    documentSchemasNames = [],
+  }: ListItemProps) => {
     const {
       defaultLocaleId,
       setCurrentDir,
@@ -218,7 +238,7 @@ const ListItem = React.memo(
     const innerRef = useRef<HTMLLIElement>(null);
     const listItemId = `item-${idx}`;
     const path = localizePathname({
-      pathname: item.pathname || "",
+      pathname: item.pathname || '',
       localeId: item.locale,
       isDefault: defaultLocaleId === item.locale,
       fallbackLocaleId: locale,
@@ -231,32 +251,32 @@ const ListItem = React.memo(
 
     const handleClick = (e: React.MouseEvent<HTMLLIElement>) => {
       e.preventDefault();
-      if (item._type !== "folder") {
+      if (item._type !== 'folder') {
         navigate(path, {
           type: item._type,
           id: item._id,
         });
       } else {
-        setCurrentDir(item.pathname || "");
+        setCurrentDir(item.pathname || '');
       }
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLLIElement>) => {
-      if (event.key === "Enter" || event.key === " ") {
+      if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        if (item._type !== "folder") {
+        if (item._type !== 'folder') {
           navigate(path);
         } else {
           setCurrentDir(path);
         }
       }
 
-      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
         event.preventDefault();
         const target =
-          event.key === "ArrowUp"
-            ? "previousElementSibling"
-            : "nextElementSibling";
+          event.key === 'ArrowUp'
+            ? 'previousElementSibling'
+            : 'nextElementSibling';
         const sibling = event.currentTarget[target] as HTMLLIElement;
 
         if (!sibling) return;
@@ -265,17 +285,17 @@ const ListItem = React.memo(
         sibling.focus();
       }
 
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         event.preventDefault();
-        if (currentDir !== "") {
-          setCurrentDir(currentDir.split("/").slice(0, -1).join("/"));
+        if (currentDir !== '') {
+          setCurrentDir(currentDir.split('/').slice(0, -1).join('/'));
         }
       }
     };
 
     const schemaType = schema.get(item._type);
 
-    if (item._type !== "folder" && !schemaType) {
+    if (item._type !== 'folder' && !schemaType) {
       return null;
     }
 
@@ -285,7 +305,7 @@ const ListItem = React.memo(
         id={listItemId}
         as="li"
         role="option"
-        tab-index={listItemId === active || item._type === "folder" ? 0 : -1}
+        tab-index={listItemId === active || item._type === 'folder' ? 0 : -1}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         aria-label={item.title}
@@ -295,10 +315,10 @@ const ListItem = React.memo(
         style={{
           height: `${virtualChild?.size}px`,
           transform: `translateY(${virtualChild?.start}px)`,
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           left: 0,
-          width: "100%",
+          width: '100%',
         }}
       >
         <Flex align="center" gap={2} flex={1}>
@@ -306,7 +326,7 @@ const ListItem = React.memo(
             align="center"
             justify="center"
             style={{
-              position: "relative",
+              position: 'relative',
               width: 33,
               height: 33,
               flexShrink: 0,
@@ -315,15 +335,15 @@ const ListItem = React.memo(
             <ItemIcon item={item} />
             <div
               style={{
-                boxShadow: "inset 0 0 0 1px var(--card-fg-color)",
+                boxShadow: 'inset 0 0 0 1px var(--card-fg-color)',
                 opacity: 0.1,
-                position: "absolute",
+                position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                pointerEvents: "none",
-                display: "block",
+                pointerEvents: 'none',
+                display: 'block',
               }}
             />
           </Flex>
@@ -335,7 +355,7 @@ const ListItem = React.memo(
               $currentScheme={scheme}
               weight="medium"
             >
-              {item._type !== "folder" ? (
+              {item._type !== 'folder' ? (
                 <PreviewElement
                   fallback={item.title}
                   type="title"
@@ -352,7 +372,7 @@ const ListItem = React.memo(
               $isPreviewed={previewed}
               $currentScheme={scheme}
             >
-              {item._type !== "folder" ? (
+              {item._type !== 'folder' ? (
                 <PreviewElement fallback={path} type="subtitle" item={item} />
               ) : (
                 path
@@ -362,11 +382,11 @@ const ListItem = React.memo(
         </Flex>
         {
           // If the item is a folder, show the chevron icon
-          item._type === "folder" && (
+          item._type === 'folder' && (
             <Flex gap={2}>
               {Object.keys(item.children).length === 0 ? null : (
-                <Badge mode="outline" fontSize={0}>
-                  {Object.keys(item.children).length}
+                <Badge fontSize={0}>
+                  {countValidChildren(item, documentSchemasNames)}
                 </Badge>
               )}
               <Tooltip
@@ -375,7 +395,7 @@ const ListItem = React.memo(
                     <Text size={1}>Open folder</Text>
                   </Box>
                 }
-                fallbackPlacements={["right", "left"]}
+                fallbackPlacements={['right', 'left']}
                 placement="top"
                 portal
               >
@@ -384,12 +404,12 @@ const ListItem = React.memo(
             </Flex>
           )
         }
-        {item._type !== "folder" ? (
+        {item._type !== 'folder' ? (
           <Flex gap={2}>
             <PublishIconContainer
               size={1}
               muted={
-                item._id.startsWith("drafts.") &&
+                item._id.startsWith('drafts.') &&
                 item?._updatedAt === item?._createdAt
               }
               $currentScheme={scheme}
@@ -399,14 +419,14 @@ const ListItem = React.memo(
                 content={
                   <Box padding={2}>
                     <Text size={1}>
-                      {item._id.startsWith("drafts.") &&
+                      {item._id.startsWith('drafts.') &&
                       item?._updatedAt === item?._createdAt
-                        ? "Not published yet"
-                        : "Published"}
+                        ? 'Not published yet'
+                        : 'Published'}
                     </Text>
                   </Box>
                 }
-                fallbackPlacements={["right", "left"]}
+                fallbackPlacements={['right', 'left']}
                 placement="top"
                 portal
               >
@@ -424,12 +444,12 @@ const ListItem = React.memo(
                   <Box padding={2}>
                     <Text size={1}>
                       {(item as PageTreeNode).edited
-                        ? "Edited"
-                        : "No unpublished edits"}
+                        ? 'Edited'
+                        : 'No unpublished edits'}
                     </Text>
                   </Box>
                 }
-                fallbackPlacements={["right", "left"]}
+                fallbackPlacements={['right', 'left']}
                 placement="top"
                 portal
               >
@@ -443,7 +463,7 @@ const ListItem = React.memo(
   }
 );
 
-ListItem.displayName = "ListItem";
+ListItem.displayName = 'ListItem';
 
 const FolderTitle = ({
   item,
@@ -454,12 +474,12 @@ const FolderTitle = ({
   locale: string | undefined;
   folders: FoldersConfig | undefined;
 }) => {
-  const customTitle = folders?.[item.pathname || ""]?.title;
+  const customTitle = folders?.[item.pathname || '']?.title;
 
   if (customTitle) {
     return (
       <>
-        {typeof customTitle === "string"
+        {typeof customTitle === 'string'
           ? customTitle
           : customTitle(item, locale)}
       </>
@@ -472,14 +492,14 @@ const FolderTitle = ({
 const ItemIcon = ({ item }: { item: TreeNode }) => {
   const { folders } = useNavigator();
 
-  if (item._type === "folder") {
+  if (item._type === 'folder') {
     return createElement(
       item.pathname && folders?.[item.pathname]?.icon
         ? folders[item.pathname].icon!
         : FolderIcon,
       {
-        fontSize: "calc(21 / 16 * 1em)",
-        color: "var(--card-icon-color)",
+        fontSize: 'calc(21 / 16 * 1em)',
+        color: 'var(--card-icon-color)',
       }
     );
   }
@@ -511,7 +531,7 @@ const SkeletonListItems = ({ items }: { items: number }) => {
   );
 };
 
-SkeletonListItems.displayName = "SkeletonListItems";
+SkeletonListItems.displayName = 'SkeletonListItems';
 
 const EmptySearchResults = (_props: any) => {
   return (
@@ -528,6 +548,6 @@ const EmptySearchResults = (_props: any) => {
   );
 };
 
-EmptySearchResults.displayName = "EmptySearchResults";
+EmptySearchResults.displayName = 'EmptySearchResults';
 
 export { EmptySearchResults, List, SkeletonListItems };
