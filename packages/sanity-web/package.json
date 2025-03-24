@@ -17,7 +17,8 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --outDir dist",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --outDir dist --watch"
+    "dev": "tsup src/index.ts --format cjs,esm --dts --outDir dist --watch",
+    "typecheck": "tsc --noEmit"
   },
   "author": "Tinloof",
   "license": "ISC",
@@ -37,7 +38,7 @@
     "@portabletext/react": "^3.2.0",
     "@sanity/asset-utils": "^1.3.0",
     "@sanity/image-url": "^1.1.0",
-    "sanity": "^3.74.0",
+    "sanity": "^3.80.1",
     "speakingurl": "^14.0.1"
   }
 }
