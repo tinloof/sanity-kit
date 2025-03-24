@@ -84,13 +84,13 @@
     "react-dom": "^18.3.1",
     "react-is": "^18.3.1",
     "rimraf": "^5.0.10",
-    "sanity": "^3.74.0",
-    "styled-components": "^6.1.13",
+    "sanity": "^3.80.1",
+    "styled-components": "^6.1.16",
     "typescript": "^5.6.2"
   },
   "peerDependencies": {
     "react": "^18.3.1 || ^19",
-    "sanity": "^3.74.0"
+    "sanity": "^3.80.1"
   },
   "engines": {
     "node": ">=14"
