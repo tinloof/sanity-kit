@@ -121,6 +121,7 @@ export type ListItemProps = {
   setActive?: (value: string) => void;
   idx?: number;
   virtualChild?: Record<string, any>;
+  documentSchemasNames?: string[];
 };
 
 export type SkeletonListItemsProps = {
