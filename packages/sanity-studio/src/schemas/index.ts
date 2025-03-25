@@ -1,1 +1,1 @@
-export { default as iconSchema } from "./icon";
+export {default as iconSchema} from "./icon";

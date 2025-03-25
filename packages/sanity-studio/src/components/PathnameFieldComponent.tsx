@@ -16,8 +16,8 @@ import {
   TextInput,
 } from "@sanity/ui";
 import * as PathUtils from "@sanity/util/paths";
-import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import {getDocumentPath, stringToPathname} from "@tinloof/sanity-web";
+import React, {useCallback, useMemo, useRef, useState} from "react";
 import {
   FormFieldValidationStatus,
   FormPatch,
@@ -33,12 +33,12 @@ import {
   usePresentationNavigate,
   usePresentationParams,
 } from "sanity/presentation";
-import { styled } from "styled-components";
-import { useDebounce, useDebouncedCallback } from "use-debounce";
+import {styled} from "styled-components";
+import {useDebounce, useDebouncedCallback} from "use-debounce";
 
-import { useAsync } from "../hooks/useAsync";
-import { SlugContext, usePathnameContext } from "../hooks/usePathnameContext";
-import { usePathnamePrefix } from "../hooks/usePathnamePrefix";
+import {useAsync} from "../hooks/useAsync";
+import {SlugContext, usePathnameContext} from "../hooks/usePathnameContext";
+import {usePathnamePrefix} from "../hooks/usePathnamePrefix";
 import {
   DocumentWithLocale,
   PathnameInputProps,
@@ -70,8 +70,8 @@ const pathnameDebounceTime = 1000;
 
 export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
-  const { prefix } = usePathnamePrefix(props);
-  const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
+  const {prefix} = usePathnamePrefix(props);
+  const folderOptions = fieldOptions?.folder ?? {canUnlock: true};
 
   const i18nOptions = useMemo(
     () =>
@@ -80,13 +80,13 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
         defaultLocaleId: undefined,
         localizePathname: undefined,
       },
-    [fieldOptions]
+    [fieldOptions],
   );
 
   const autoNavigate = fieldOptions?.autoNavigate ?? false;
   const document = useFormValue([]) as DocumentWithLocale;
   const {
-    inputProps: { onChange, value, readOnly },
+    inputProps: {onChange, value, readOnly},
     title,
     description,
     validation = [],
@@ -113,11 +113,11 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       pathname: value?.current,
     },
     i18nOptions.defaultLocaleId || "",
-    i18nOptions.localizePathname
+    i18nOptions.localizePathname,
   );
   const [debouncedLocalizedPathname] = useDebounce(
     localizedPathname,
-    pathnameDebounceTime
+    pathnameDebounceTime,
   );
 
   const fullPathInputRef = useRef<HTMLInputElement>(null);
@@ -130,7 +130,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
             customValidity: validation[0].message,
           }
         : {},
-    [validation]
+    [validation],
   );
 
   const updateFinalSegment = useCallback(
@@ -161,7 +161,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       preview,
       autoNavigate,
       debouncedNavigate,
-    ]
+    ],
   );
 
   const updateFullPath = useCallback(
@@ -184,7 +184,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
       preview,
       autoNavigate,
       debouncedNavigate,
-    ]
+    ],
   );
 
   const unlockFolder: React.MouseEventHandler<HTMLButtonElement> = useCallback(
@@ -195,7 +195,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
         fullPathInputRef?.current?.focus?.();
       });
     },
-    [setFolderLocked, fullPathInputRef]
+    [setFolderLocked, fullPathInputRef],
   );
 
   const handleBlur: React.FocusEventHandler<HTMLInputElement> =
@@ -214,7 +214,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
             border
             radius={1}
             tone="transparent"
-            style={{ position: "relative" }}
+            style={{position: "relative"}}
           >
             <Flex gap={2} align="center">
               <Text muted>
@@ -282,7 +282,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
             ref={fullPathInputRef}
             onBlur={handleBlur}
             disabled={readOnly}
-            style={{ flex: 1 }}
+            style={{flex: 1}}
             {...inputValidationProps}
           />
         </Box>
@@ -378,7 +378,7 @@ function runChange({
   // We use stringToPathname to ensure that the value is a valid pathname.
   // We also allow trailing slashes to make it possible to create folders
   const finalValue = value
-    ? stringToPathname(value, { allowTrailingSlash: true })
+    ? stringToPathname(value, {allowTrailingSlash: true})
     : undefined;
 
   onChange(
@@ -387,7 +387,7 @@ function runChange({
           current: finalValue,
           _type: "slug",
         })
-      : unset()
+      : unset(),
   );
 
   // Auto-navigate to the updated path in Presentation if enabled
@@ -399,7 +399,7 @@ function runChange({
         pathname: finalValue,
       },
       i18nOptions?.defaultLocaleId || "",
-      i18nOptions?.localizePathname
+      i18nOptions?.localizePathname,
     );
 
     // Auto-navigate if this document is currently being previewed,
@@ -410,7 +410,7 @@ function runChange({
   }
 }
 
-function PreviewButton({ localizedPathname }: { localizedPathname: string }) {
+function PreviewButton({localizedPathname}: {localizedPathname: string}) {
   const navigate = useSafeNavigate();
   const preview = useSafePreview();
 
@@ -491,7 +491,7 @@ function GenerateButton({
       navigate,
       onChange,
       preview,
-    ]
+    ],
   );
 
   const [generateState, handleGenerateSlug] = useAsync(() => {
@@ -500,8 +500,8 @@ function GenerateButton({
         updatePathname(
           stringToPathname(newFromSource?.trim() || "", {
             allowTrailingSlash: true,
-          })
-        )
+          }),
+        ),
     );
   }, [sourceField, pathnameContext, updatePathname]);
 
@@ -524,7 +524,7 @@ function GenerateButton({
 async function getNewFromSource(
   source: string | Path | PathnameSourceFn,
   document: SanityDocument,
-  context: SlugContext
+  context: SlugContext,
 ): Promise<string | undefined> {
   return typeof source === "function"
     ? source(document, context)
@@ -543,7 +543,7 @@ function useSafeNavigate() {
 function useSafePreview() {
   try {
     const presentationParams = usePresentationParams();
-    const { preview } = presentationParams;
+    const {preview} = presentationParams;
     return preview;
   } catch (e) {
     return null;

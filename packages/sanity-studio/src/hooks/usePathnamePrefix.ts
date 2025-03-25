@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { SanityDocument, useFormValue } from "sanity";
+import {useCallback, useEffect, useState} from "react";
+import {SanityDocument, useFormValue} from "sanity";
 
-import { PathnameInputProps, PathnamePrefix } from "../types";
-import { usePathnameContext } from "./usePathnameContext";
+import {PathnameInputProps, PathnamePrefix} from "../types";
+import {usePathnameContext} from "./usePathnameContext";
 
 /**
  * Returns the prefix specified on this pathname field, via options.prefix.
@@ -30,21 +30,21 @@ export function usePathnamePrefix(props: PathnameInputProps) {
       if (typeof optionsPrefix === "function") {
         try {
           const value = await Promise.resolve(
-            optionsPrefix(doc, sourceContext)
+            optionsPrefix(doc, sourceContext),
           );
           setUrlPrefix(value);
           return;
         } catch (error) {
           console.error(
             `[prefixed-slug] Couldn't generate URL prefix: `,
-            error
+            error,
           );
         }
       }
 
       setUrlPrefix(window.location.origin);
     },
-    [setUrlPrefix, optionsPrefix, sourceContext]
+    [setUrlPrefix, optionsPrefix, sourceContext],
   );
 
   // Re-create the prefix whenever the document changes

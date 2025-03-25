@@ -21,7 +21,6 @@
   "packageManager": "pnpm@9.15.0",
   "dependencies": {
     "@changesets/cli": "^2.27.1",
-    "prettier": "^3.2.5",
     "turbo": "^1.13.2"
   },
   "pnpm": {
@@ -30,5 +29,8 @@
       "@types/react-dom": "^18.3.1",
       "@sanity/types": "^3.80.1"
     }
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
   }
 }

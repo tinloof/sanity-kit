@@ -1,9 +1,9 @@
-import { definePlugin } from 'sanity';
-import { presentationTool } from 'sanity/presentation';
+import {definePlugin} from "sanity";
+import {presentationTool} from "sanity/presentation";
 
-import { PagesNavigatorPluginOptions } from '../../types';
-import { createPagesNavigator } from './components/DefaultPagesNavigator';
-import { createPageTemplates, normalizeCreatablePages } from './utils';
+import {PagesNavigatorPluginOptions} from "../../types";
+import {createPagesNavigator} from "./components/DefaultPagesNavigator";
+import {createPageTemplates, normalizeCreatablePages} from "./utils";
 /**
  * The `pages` plugin is a wrapper around Sanity's `presentation` plugin.
  * When enabled, it will add Tinloof's pages navigator to the prensentation view.
@@ -30,17 +30,17 @@ import { createPageTemplates, normalizeCreatablePages } from './utils';
  */
 export const pages = definePlugin<PagesNavigatorPluginOptions>((config) => {
   const normalizedCreatablePages = normalizeCreatablePages(
-    config.creatablePages
+    config.creatablePages,
   );
   return {
-    name: 'tinloof-pages-navigator',
+    name: "tinloof-pages-navigator",
     schema: {
       templates: createPageTemplates(normalizedCreatablePages),
     },
     plugins: [
       presentationTool({
         ...config,
-        title: config.title ?? 'Pages',
+        title: config.title ?? "Pages",
         components: {
           unstable_navigator: {
             component: createPagesNavigator({

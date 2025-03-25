@@ -1,10 +1,10 @@
-import type { ImageUrlBuilder } from "sanity";
+import type {ImageUrlBuilder} from "sanity";
 
-import { getExtension, getImageDimensions } from "@sanity/asset-utils";
+import {getExtension, getImageDimensions} from "@sanity/asset-utils";
 import imageUrlBuilder from "@sanity/image-url";
 import React from "react";
 // @ts-ignore
-import { preload } from "react-dom";
+import {preload} from "react-dom";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -99,13 +99,13 @@ function SanityImage({
   }
 
   const _ref = data.asset._ref;
-  const { height, width } = getImageDimensions(_ref);
+  const {height, width} = getImageDimensions(_ref);
   const extension = getExtension(_ref);
   const aspectRatioValues = aspectRatio?.split("/");
 
   if (aspectRatio && aspectRatioValues?.length !== 2 && isDev) {
     console.warn(
-      `Invalid aspect ratio: ${aspectRatio}. Using the original aspect ratio. The aspect ratio should be in the format "width/height".`
+      `Invalid aspect ratio: ${aspectRatio}. Using the original aspect ratio. The aspect ratio should be in the format "width/height".`,
     );
   }
 
@@ -146,7 +146,7 @@ function SanityImage({
         "No sizes prop provided to SanityImage component,",
         "you may be loading unnecessarily large images.",
         `Image used is ${urlDefault || _ref || "unknown"}`,
-      ].join(" ")
+      ].join(" "),
     );
   }
 
@@ -247,7 +247,7 @@ function SanityImage({
 
 SanityImage.displayName = "SanityImage";
 
-export { SanityImage };
+export {SanityImage};
 
 function generateImageUrl(args: {
   aspectRatioHeight?: number;
