@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.10.0
+
+### Minor Changes
+
+- 558a726: Only show valid items and folders
+
 ## 1.9.1
 
 ### Patch Changes
