@@ -1,1 +1,1 @@
-export { SanityImage } from "./SanityImage";
+export {SanityImage} from "./SanityImage";

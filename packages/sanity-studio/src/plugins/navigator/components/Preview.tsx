@@ -1,9 +1,9 @@
-import { isImageSource, SanityImageSource } from '@sanity/asset-utils';
-import { DocumentIcon } from '@sanity/icons';
-import imageUrlBuilder from '@sanity/image-url';
-import React, { useMemo } from 'react';
-import { isValidElementType } from 'react-is';
-import { useObservable } from 'react-rx';
+import {isImageSource, SanityImageSource} from "@sanity/asset-utils";
+import {DocumentIcon} from "@sanity/icons";
+import imageUrlBuilder from "@sanity/image-url";
+import React, {useMemo} from "react";
+import {isValidElementType} from "react-is";
+import {useObservable} from "react-rx";
 import {
   getPreviewStateObservable,
   getPreviewValueWithFallback,
@@ -15,18 +15,18 @@ import {
   useClient,
   useDocumentPreviewStore,
   useSchema,
-} from 'sanity';
+} from "sanity";
 
-import { FolderTreeNode, TreeNode } from '../../../types';
+import {FolderTreeNode, TreeNode} from "../../../types";
 
 const PreviewElement = React.memo(
   (props: {
     item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
-    type: 'media' | 'title' | 'subtitle';
+    type: "media" | "title" | "subtitle";
     fallback?: React.ReactNode | string;
   }): React.ReactElement | null => {
     const schema = useSchema();
-    const { _type } = props.item;
+    const {_type} = props.item;
     const schemaType = schema.get(_type);
 
     if (!schemaType) {
@@ -34,10 +34,10 @@ const PreviewElement = React.memo(
     }
 
     return <Preview schemaType={schemaType} {...props} />;
-  }
+  },
 );
 
-PreviewElement.displayName = 'PreviewElement';
+PreviewElement.displayName = "PreviewElement";
 
 const Preview = React.memo(function Preview({
   schemaType,
@@ -47,7 +47,7 @@ const Preview = React.memo(function Preview({
 }: {
   schemaType: SchemaType;
   item: Exclude<TreeNode, FolderTreeNode>;
-  type: 'media' | 'title' | 'subtitle';
+  type: "media" | "title" | "subtitle";
   fallback?: React.ReactNode | string;
 }) {
   const documentPreviewStore = useDocumentPreviewStore();
@@ -55,12 +55,12 @@ const Preview = React.memo(function Preview({
     useMemo(
       () =>
         getPreviewStateObservable(documentPreviewStore, schemaType, item._id),
-      [item._id, documentPreviewStore, schemaType]
-    )
+      [item._id, documentPreviewStore, schemaType],
+    ),
   );
 
-  const draft = previewState?.draft;
-  const published = previewState?.published;
+  const draft = previewState?.snapshot;
+  const published = previewState?.original;
   const isLoading = previewState?.isLoading;
 
   const sanityDocument = useMemo(() => {
@@ -78,9 +78,9 @@ const Preview = React.memo(function Preview({
 
   const showPreview =
     schemaType?.icon ||
-    (typeof schemaType?.preview?.prepare === 'function' && !isLoading);
+    (typeof schemaType?.preview?.prepare === "function" && !isLoading);
 
-  if (type === 'media') {
+  if (type === "media") {
     return showPreview ? (
       <PreviewMedia
         {...previewValues}
@@ -93,7 +93,7 @@ const Preview = React.memo(function Preview({
     );
   }
 
-  if (type === 'title') {
+  if (type === "title") {
     return showPreview && previewValues?.title ? (
       <>{previewValues?.title}</>
     ) : (
@@ -101,7 +101,7 @@ const Preview = React.memo(function Preview({
     );
   }
 
-  if (type === 'subtitle') {
+  if (type === "subtitle") {
     return showPreview && previewValues?.subtitle ? (
       <>{previewValues?.subtitle}</>
     ) : (
@@ -112,13 +112,13 @@ const Preview = React.memo(function Preview({
   return null;
 });
 
-Preview.displayName = 'Preview';
+Preview.displayName = "Preview";
 
 const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
-  const { icon, media: mediaProp, imageUrl, title } = props;
+  const {icon, media: mediaProp, imageUrl, title} = props;
 
   const client = useClient({
-    apiVersion: '2024-03-12',
+    apiVersion: "2024-03-12",
   });
   const imageBuilder = React.useMemo(() => imageUrlBuilder(client), [client]);
 
@@ -138,7 +138,7 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
         : {
             width: 100,
             height: 100,
-            fit: 'max' as ImageUrlFitMode,
+            fit: "max" as ImageUrlFitMode,
             dpr: 1,
           };
 
@@ -147,22 +147,22 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
         <img
           alt={isString(title) ? title : undefined}
           referrerPolicy="strict-origin-when-cross-origin"
-          style={{ maxWidth: '100%' }}
+          style={{maxWidth: "100%"}}
           src={
             imageBuilder
               .image(
-                mediaProp as SanityImageSource /*will only enter this code path if it's compatible*/
+                mediaProp as SanityImageSource /*will only enter this code path if it's compatible*/,
               )
               .width(dimensions?.width || 100)
               .height(dimensions.height || 100)
               .fit(dimensions.fit)
               .dpr(dimensions.dpr || 1)
-              .url() || ''
+              .url() || ""
           }
         />
       );
     },
-    [imageBuilder, mediaProp, title]
+    [imageBuilder, mediaProp, title],
   );
 
   const renderIcon = React.useCallback(() => {
@@ -202,11 +202,11 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
     return renderIcon;
   }, [icon, imageUrl, mediaProp, renderIcon, renderMedia, title]);
 
-  if (typeof media === 'number' || typeof media === 'string') {
+  if (typeof media === "number" || typeof media === "string") {
     return <>{media}</>;
   }
 
-  if (typeof media === 'object' && React.isValidElement(media)) {
+  if (typeof media === "object" && React.isValidElement(media)) {
     return media;
   }
 
@@ -215,6 +215,6 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
   return <Media />;
 };
 
-PreviewMedia.displayName = 'PreviewMedia';
+PreviewMedia.displayName = "PreviewMedia";
 
-export { PreviewElement };
+export {PreviewElement};

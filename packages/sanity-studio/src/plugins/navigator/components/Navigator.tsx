@@ -1,7 +1,7 @@
-import Header from './Header'
-import { EmptySearchResults, List, SkeletonListItems } from './List'
-import LocaleSelect from './LocaleSelect'
-import SearchBox from './SearchBox'
+import Header from "./Header";
+import {EmptySearchResults, List, SkeletonListItems} from "./List";
+import LocaleSelect from "./LocaleSelect";
+import SearchBox from "./SearchBox";
 
 const Navigator = Object.assign({
   Header,
@@ -10,6 +10,6 @@ const Navigator = Object.assign({
   LocaleSelect,
   SkeletonListItems,
   EmptySearchResults,
-})
+});
 
-export default Navigator
+export default Navigator;

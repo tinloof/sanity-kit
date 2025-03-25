@@ -45,16 +45,16 @@ export const documentI18n = definePlugin<SanityI18NPluginOptions>((options) => {
     name: "tinloof-sanity-i18n",
     title: "Sanity i18n",
     document: {
-      newDocumentOptions: (prev: TemplateItem[], { schema }) => {
+      newDocumentOptions: (prev: TemplateItem[], {schema}) => {
         // Filter out:
         //  - The translations meta document
         //  - Default templates that have a locale field but no locale parameter, so only sanity-document-internationalization templates are shown
         return prev.filter((templateItem) => {
           const schemaDefinition = schema.get(
-            templateItem.templateId
+            templateItem.templateId,
           ) as unknown as DocumentDefinition;
           const schemaHasLocaleField = schemaDefinition?.fields?.some(
-            (field) => field.name === "locale"
+            (field) => field.name === "locale",
           );
           const isMetadataSchema =
             schemaDefinition?.name === METADATA_SCHEMA_NAME;
@@ -81,7 +81,7 @@ export type SanityI18NPluginOptions = {
 function extractTranslatableSchemaTypes(schemas: BaseSchemaDefinition[]) {
   return schemas
     .filter((schema: any) =>
-      schema?.fields?.find((field) => field.name === "locale")
+      schema?.fields?.find((field) => field.name === "locale"),
     )
     .map((schema) => schema.name);
 }

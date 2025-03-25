@@ -1,5 +1,5 @@
-import { ThemeProvider } from "@sanity/ui";
-import { buildTheme } from "@sanity/ui/theme";
+import {ThemeProvider} from "@sanity/ui";
+import {buildTheme} from "@sanity/ui/theme";
 import React from "react";
 
 const NavigatorProvider = ({

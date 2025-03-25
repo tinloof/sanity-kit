@@ -1,7 +1,7 @@
-import React from 'react'
-import { Box, Text, Tooltip } from '@sanity/ui'
+import React from "react";
+import {Box, Text, Tooltip} from "@sanity/ui";
 
-export default function TooltipWrapper({ children, tooltipText, ...rest }) {
+export default function TooltipWrapper({children, tooltipText, ...rest}) {
   return (
     <Tooltip
       content={
@@ -11,11 +11,11 @@ export default function TooltipWrapper({ children, tooltipText, ...rest }) {
           </Text>
         </Box>
       }
-      fallbackPlacements={['right', 'left']}
+      fallbackPlacements={["right", "left"]}
       placement="top"
       portal
     >
       {children}
     </Tooltip>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import type { SanityImageProps } from "./components/SanityImage";
+import type {SanityImageProps} from "./components/SanityImage";
 
 export interface DocForPath extends MinimalDocForPath {}
 
@@ -25,7 +25,7 @@ export interface LocaleConfiguration {
   isDefault?: boolean;
 }
 
-export { SanityImageProps };
+export {SanityImageProps};
 
 export type LocalizePathnameFn = (opts: {
   pathname: string;
