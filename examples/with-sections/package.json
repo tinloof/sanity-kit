@@ -23,7 +23,7 @@
     "@tinloof/sanity-studio": "workspace:*",
     "classnames": "2.5.1",
     "lucide-react": "^0.453.0",
-    "next": "15.1.1",
+    "next": "15.2.3",
     "next-sanity": "^9.8.51",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
