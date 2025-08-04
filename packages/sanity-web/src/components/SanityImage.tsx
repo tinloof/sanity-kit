@@ -69,7 +69,7 @@ export type SanityImageProps = {
  * - `loading` is set to `lazy` by default.
  * - `alt` will automatically be set to the `altText` if passed in the `data` prop.
  * - `src` will automatically be set to the `url` if passed in the `data` prop.
- * - `lqip` is set to `true` by default.
+ * - `lqip` is set to `false` by default.
  *
  * @example
  * A responsive image with a 4:5 aspect ratio:
@@ -91,7 +91,7 @@ function SanityImage({
   sizes,
   style,
   config,
-  lqip = true,
+  lqip = false,
   ...passthroughProps
 }: SanityImageProps) {
   if (!data || !data.asset || !config) {
