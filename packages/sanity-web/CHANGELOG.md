@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 0.8.1
+
+### Patch Changes
+
+- f826214: Disable default lqip
+
 ## 0.8.0
 
 ### Minor Changes
