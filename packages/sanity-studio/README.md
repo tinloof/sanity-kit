@@ -25,6 +25,7 @@ npm install @tinloof/sanity-studio
   - [Add sections to your Sanity schema](#4-add-sections-to-your-sanity-schema)
 - [`documentI18n`](#documenti18n)
 - [`localizedItem`](#localizedItem)
+- [`singletonListItem`](#singletonlistitem)
 - [`iconSchema`](#iconSchema)
 - [Disable creation plugin](#disable-creation-plugin)
 - [Input with characters count](#input-with-characters-count)
@@ -485,6 +486,49 @@ The utility will create a nested structure with:
 - A top-level item with the provided title
 - An "All" option showing all documents of the specified type
 - Individual locale options that filter documents by their `locale` field
+
+## `singletonListItem`
+
+The `singletonListItem` utility helps create singleton document list items in your Sanity Studio's structure. This is useful for documents that should only have one instance, such as site settings, home pages, or global configuration documents.
+
+### Basic usage
+
+```tsx
+import {singletonListItem} from "@tinloof/sanity-studio";
+import {StructureResolver} from "sanity/structure";
+import {HomeIcon, CogIcon} from "@sanity/icons";
+
+export const structure: StructureResolver = (S) => {
+  return S.list()
+    .title("Content")
+    .items([
+      singletonListItem(S, "home", "Home Page"),
+      singletonListItem(S, "settings", "Site Settings"),
+      // Other list items...
+    ]);
+};
+```
+
+### Parameters
+
+- `S`: The Sanity Structure Builder instance
+- `type`: The document type name (string)
+- `title`: The display title for the singleton document (string)
+
+### What it does
+
+The `singletonListItem` utility creates a list item that:
+
+- Links directly to a single document of the specified type
+- Displays the document in form view only (no list view)
+- Uses the provided title as the document title in the interface
+- Automatically handles the document creation if it doesn't exist
+
+This is particularly useful for documents like:
+
+- Site settings and configuration
+- Home page content
+- Global navigation
 
 ## `iconSchema`
 
