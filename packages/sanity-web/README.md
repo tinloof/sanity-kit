@@ -65,9 +65,11 @@ export async function disableDraftMode() {
 
 #### Props
 
-| Prop               | Type                  | Description                                                                                              |
-| ------------------ | --------------------- | -------------------------------------------------------------------------------------------------------- |
-| `disableDraftMode` | `() => Promise<void>` | A function that disables draft mode. This should handle clearing preview cookies and revalidating paths. |
+| Prop               | Type                             | Description                                                                                              |
+| ------------------ | -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `disableDraftMode` | `() => Promise<void>`            | A function that disables draft mode. This should handle clearing preview cookies and revalidating paths. |
+| `className`        | `string` (optional)              | CSS class name to apply to the button. When provided, default styles are not applied.                    |
+| `styles`           | `React.CSSProperties` (optional) | Additional inline styles to merge with default styles. Only applied when `className` is not provided.    |
 
 #### Features
 
@@ -79,7 +81,27 @@ export async function disableDraftMode() {
 
 #### Styling
 
-The component uses inline styles for a black button with white text, positioned fixed at the bottom center of the screen. You can override these styles by wrapping the component or using CSS-in-JS solutions.
+The component provides flexible styling options:
+
+**Default styling**: When no `className` is provided, the component uses inline styles for a black button with white text, positioned fixed at the bottom center of the screen.
+
+**Custom styles with `styles` prop**: You can merge additional styles with the defaults:
+
+```tsx
+<ExitPreview
+  disableDraftMode={disableDraftMode}
+  styles={{backgroundColor: "blue", borderRadius: "8px"}}
+/>
+```
+
+**Custom styling with `className` prop**: For complete control, provide a `className`. This disables all default styles:
+
+```tsx
+<ExitPreview
+  disableDraftMode={disableDraftMode}
+  className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-blue-500 text-white rounded-md py-2 px-4"
+/>
+```
 
 #### Dependencies
 

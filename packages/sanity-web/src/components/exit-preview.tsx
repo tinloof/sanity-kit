@@ -6,9 +6,15 @@ import React, {useTransition} from "react";
 
 export type ExitPreviewProps = {
   disableDraftMode: () => Promise<void>;
+  styles?: React.CSSProperties;
+  className?: string;
 };
 
-export function ExitPreview({disableDraftMode}: ExitPreviewProps) {
+export function ExitPreview({
+  disableDraftMode,
+  styles,
+  className,
+}: ExitPreviewProps) {
   const isPresentationTool = useIsPresentationTool();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -23,27 +29,28 @@ export function ExitPreview({disableDraftMode}: ExitPreviewProps) {
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: "16px",
-        left: "50%",
-        zIndex: 50,
-        transform: "translateX(-50%)",
-      }}
+    <button
+      style={
+        !className
+          ? {
+              backgroundColor: "black",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: "16px",
+              position: "fixed",
+              bottom: "16px",
+              left: "50%",
+              zIndex: 50,
+              transform: "translateX(-50%)",
+              ...styles,
+            }
+          : {}
+      }
+      className={className}
+      disabled={pending}
+      onClick={handleDisableDraftMode}
     >
-      <button
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          padding: "8px 16px",
-          borderRadius: "16px",
-        }}
-        disabled={pending}
-        onClick={handleDisableDraftMode}
-      >
-        {pending ? "Disabling..." : "Disable draft mode"}
-      </button>
-    </div>
+      {pending ? "Disabling..." : "Disable draft mode"}
+    </button>
   );
 }
