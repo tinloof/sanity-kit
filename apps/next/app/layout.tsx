@@ -1,6 +1,10 @@
 import 'tailwindcss/tailwind.css'
 
+import { ExitPreview } from '@tinloof/sanity-web'
+
 import { Inter } from 'next/font/google'
+
+import { disableDraftMode } from '@/app/actions'
 
 const sans = Inter({
   variable: '--font-sans',
@@ -14,7 +18,10 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className={sans.variable}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ExitPreview disableDraftMode={disableDraftMode} />
+      </body>
     </html>
   )
 }
