@@ -1,5 +1,3 @@
-"use client";
-
 import {useIsPresentationTool} from "next-sanity/hooks";
 import {useRouter} from "next/navigation";
 import React, {useTransition} from "react";
