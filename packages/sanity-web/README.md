@@ -30,7 +30,7 @@ A React component that provides a UI for exiting Sanity's draft mode/preview mod
 #### Usage
 
 ```tsx
-import {ExitPreview} from "@tinloof/sanity-web";
+import ExitPreviewClient from "./components/exit-preview-client";
 import {disableDraftMode} from "./actions";
 
 // In your app/layout.tsx or similar
@@ -39,10 +39,22 @@ export default function RootLayout({children}) {
     <html>
       <body>
         {children}
-        <ExitPreview disableDraftMode={disableDraftMode} />
+        <ExitPreviewClient disableDraftMode={disableDraftMode} />
       </body>
     </html>
   );
+}
+```
+
+Create a client component wrapper in `app/components/exit-preview-client.tsx`:
+
+```tsx
+"use client";
+
+import {ExitPreview, ExitPreviewProps} from "@tinloof/sanity-web";
+
+export default function ExitPreviewClient(props: ExitPreviewProps) {
+  return <ExitPreview {...props} />;
 }
 ```
 
