@@ -9,9 +9,9 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -32,7 +32,9 @@
   },
   "peerDependencies": {
     "react": "^18.3.1 || ^19",
-    "react-dom": "^18.3.1 || ^19"
+    "react-dom": "^18.3.1 || ^19",
+    "next": "^14^ || ^15",
+    "next-sanity": "^9 || ^10"
   },
   "dependencies": {
     "@portabletext/react": "^3.2.0",
