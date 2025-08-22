@@ -15,21 +15,21 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^3.80.1",
+    "@sanity/vision": "^3.99.0",
     "@tinloof/sanity-studio": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-is": "^18.3.1",
-    "sanity": "^3.80.1",
-    "styled-components": "^6.1.15"
+    "sanity": "^3.99.0",
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
     "@sanity/eslint-config-studio": "^4.0.0",
-    "@sanity/types": "^3.80.1",
-    "@types/react": "^18.3.11",
+    "@sanity/types": "^3.99.0",
+    "@types/react": "^18.3.24",
     "eslint": "^8.57.0",
-    "prettier": "^3.3.3",
-    "typescript": "^5.6.3"
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2"
   },
   "prettier": {
     "semi": false,
