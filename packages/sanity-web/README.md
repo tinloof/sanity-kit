@@ -12,6 +12,8 @@ A collection of Sanity-related utilities for web development.
     - [Features](#features)
     - [Styling](#styling)
     - [Dependencies](#dependencies)
+- [Fragments](#fragments)
+  - [TRANSLATIONS_FRAGMENT](#translations_fragment)
 - [License](#license)
 - [Develop & test](#develop--test)
 
@@ -120,6 +122,54 @@ The component provides flexible styling options:
 - Requires `next-sanity/hooks` for `useIsPresentationTool`
 - Requires `next/navigation` for `useRouter`
 - Built for Next.js App Router with React 18+ (uses `useTransition`)
+
+## Fragments
+
+### TRANSLATIONS_FRAGMENT
+
+A GROQ fragment that fetches translation metadata for a document. This fragment retrieves all translations associated with a document through the translation metadata system.
+
+```groq
+"translations": *[_type == "translation.metadata" && references(^._id)].translations[].value->{
+  "pathname": pathname.current,
+  locale
+}
+```
+
+#### Usage examples
+
+Here are some common usage patterns for the `TRANSLATIONS_FRAGMENT`:
+
+**Modular page query:**
+
+```tsx
+import {TRANSLATIONS_FRAGMENT} from "@tinloof/sanity-web";
+
+export const MODULAR_PAGE_QUERY = defineQuery(`
+  *[_type == "modular.page" && pathname.current == $pathname && locale == $locale][0] {
+    ...,
+    sections[] ${SECTIONS_BODY_FRAGMENT},
+    ${TRANSLATIONS_FRAGMENT},
+  }`);
+```
+
+**Sitemap query:**
+
+```tsx
+import {TRANSLATIONS_FRAGMENT} from "@tinloof/sanity-web";
+
+export const SITEMAP_QUERY = defineQuery(`
+  *[((pathname.current != null || _type == "home") && indexable && locale == $defaultLocale)] {
+    pathname,
+    "lastModified": _updatedAt,
+    locale,
+    _type,
+    "translations": *[_type == "translation.metadata" && references(^._id)].translations[].value->{
+      "pathname": pathname.current,
+      locale
+    },
+  }`);
+```
 
 ## License
 
