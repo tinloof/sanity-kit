@@ -6,6 +6,7 @@ import 'server-only'
 
 import config from '@/config'
 import { client } from '@/data/sanity/client'
+import { token } from './token'
 
 const DEFAULT_PARAMS = {} as QueryParams
 
@@ -17,7 +18,6 @@ export async function loadQuery<QueryResponse>({
   params?: QueryParams
 }): Promise<QueryResponse> {
   const isDraftMode = (await draftMode()).isEnabled
-  const token = config.sanity.token
 
   if (isDraftMode && !token) {
     throw new Error(
