@@ -4,18 +4,18 @@ A collection of Sanity-related utilities for web development.
 
 ## Table of Contents
 
-- [Features](#features)
 - [Installation](#installation)
-- [Utilities](#utilities)
-  - [Sitemap Generation](#sitemap-generation)
+- [Components](#components)
+  - [ExitPreview](#exitpreview)
+    - [Usage](#usage)
+    - [Props](#props)
+    - [Features](#features)
+    - [Styling](#styling)
+    - [Dependencies](#dependencies)
+- [Fragments](#fragments)
+  - [TRANSLATIONS_FRAGMENT](#translations_fragment)
 - [License](#license)
 - [Develop & test](#develop--test)
-
-## Features
-
-- **Sitemap Generation**: Automatically generate XML sitemaps from your Sanity content
-- **Internationalization Support**: Generate i18n-aware sitemaps with alternate language URLs
-- **SEO Optimization**: Include last modified dates and proper URL structures
 
 ## Installation
 
@@ -23,121 +23,153 @@ A collection of Sanity-related utilities for web development.
 npm install @tinloof/sanity-web
 ```
 
-## Utilities
+## Components
 
-### Sitemap Generation
+### ExitPreview
 
-This package provides utilities to generate XML sitemaps for your Next.js application using Sanity CMS data.
+A React component that provides a UI for exiting Sanity's draft mode/preview mode. The component renders a fixed-position button that allows users to disable draft mode and refresh the page.
 
-#### Basic Sitemap
+#### Usage
 
-For single-language sites, use `GenerateSanitySitemap`:
+```tsx
+import ExitPreviewClient from "./components/exit-preview-client";
+import {disableDraftMode} from "./actions";
 
-```ts
-// app/sitemap.ts
-import {GenerateSanitySitemap} from "@tinloof/sanity-web";
-import {sanityFetch} from "@/data/sanity/live";
-
-export default async function sitemap() {
-  return GenerateSanitySitemap({
-    sanityFetch,
-    websiteBaseURL: "https://yoursite.com",
-  });
+// In your app/layout.tsx or similar
+export default function RootLayout({children}) {
+  return (
+    <html>
+      <body>
+        {children}
+        <ExitPreviewClient disableDraftMode={disableDraftMode} />
+      </body>
+    </html>
+  );
 }
 ```
 
-#### Internationalized Sitemap
+Create a client component wrapper in `app/components/exit-preview-client.tsx`:
 
-For multi-language sites, use `GenerateSanityI18nSitemap`:
+```tsx
+"use client";
 
-```ts
-// app/sitemap.ts
-import {GenerateSanityI18nSitemap} from "@tinloof/sanity-web";
-import i18n from "@/config/i18n";
-import website from "@/config/website";
-import {sanityFetch} from "@/data/sanity/live";
+import {ExitPreview, ExitPreviewProps} from "@tinloof/sanity-web";
 
-export default async function sitemap() {
-  return GenerateSanityI18nSitemap({
-    sanityFetch,
-    websiteBaseURL: website.baseUrl,
-    i18n,
-  });
+export default function ExitPreviewClient(props: ExitPreviewProps) {
+  return <ExitPreview {...props} />;
 }
 ```
 
-### Required Sanity Schema Fields
+Create the server action in `app/actions.ts`:
 
-Your Sanity documents need these fields for the sitemap to work:
+```tsx
+"use server";
 
-```ts
-// In your document schemas
-{
-  name: 'pathname',
-  title: 'Pathname',
-  type: 'slug',
-},
-{
-  name: 'indexable',
-  title: 'Include in sitemap',
-  type: 'boolean',
-  initialValue: true,
-},
-// For i18n support
-{
-  name: 'locale',
-  title: 'Locale',
-  type: 'string',
+import {draftMode} from "next/headers";
+
+export async function disableDraftMode() {
+  "use server";
+  await Promise.allSettled([
+    (await draftMode()).disable(),
+    // Simulate a delay to show the loading state
+    new Promise((resolve) => setTimeout(resolve, 1000)),
+  ]);
 }
 ```
 
-### i18n Configuration
+#### Props
 
-The i18n configuration object should follow this structure:
+| Prop               | Type                             | Description                                                                                              |
+| ------------------ | -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `disableDraftMode` | `() => Promise<void>`            | A function that disables draft mode. This should handle clearing preview cookies and revalidating paths. |
+| `className`        | `string` (optional)              | CSS class name to apply to the button. When provided, default styles are not applied.                    |
+| `styles`           | `React.CSSProperties` (optional) | Additional inline styles to merge with default styles. Only applied when `className` is not provided.    |
 
-```ts
-// config/i18n.ts
-export default {
-  defaultLocaleId: "en",
-  locales: [
-    {id: "en", title: "English"},
-    {id: "es", title: "Spanish"},
-    {id: "fr", title: "French"},
-  ],
-};
+#### Features
+
+- **Conditional rendering**: Only shows when not in Sanity's Presentation Tool
+- **Loading state**: Shows "Disabling..." text while the draft mode is being disabled
+- **Auto-refresh**: Automatically refreshes the page after disabling draft mode
+- **Fixed positioning**: Positioned at the bottom center of the screen with high z-index
+- **Accessible**: Properly disabled during loading state
+
+#### Styling
+
+The component provides flexible styling options:
+
+**Default styling**: When no `className` is provided, the component uses inline styles for a black button with white text, positioned fixed at the bottom center of the screen.
+
+**Custom styles with `styles` prop**: You can merge additional styles with the defaults:
+
+```tsx
+<ExitPreview
+  disableDraftMode={disableDraftMode}
+  styles={{backgroundColor: "blue", borderRadius: "8px"}}
+/>
 ```
 
-#### API Reference
+**Custom styling with `className` prop**: For complete control, provide a `className`. This disables all default styles:
 
-##### GenerateSanitySitemap
+```tsx
+<ExitPreview
+  disableDraftMode={disableDraftMode}
+  className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-blue-500 text-white rounded-md py-2 px-4"
+/>
+```
 
-Generates a basic sitemap for single-language sites.
+#### Dependencies
 
-**Parameters:**
+- Requires `next-sanity/hooks` for `useIsPresentationTool`
+- Requires `next/navigation` for `useRouter`
+- Built for Next.js App Router with React 18+ (uses `useTransition`)
 
-- `sanityFetch`: Your configured Sanity fetch function
-- `websiteBaseURL`: The base URL of your website (e.g., "https://example.com")
+## Fragments
 
-**Returns:** Promise<MetadataRoute.Sitemap>
+### TRANSLATIONS_FRAGMENT
 
-##### GenerateSanityI18nSitemap
+A GROQ fragment that fetches translation metadata for a document. This fragment retrieves all translations associated with a document through the translation metadata system.
 
-Generates an internationalized sitemap with alternate language URLs.
+```groq
+"translations": *[_type == "translation.metadata" && references(^._id)].translations[].value->{
+  "pathname": pathname.current,
+  locale
+}
+```
 
-**Parameters:**
+#### Usage examples
 
-- `sanityFetch`: Your configured Sanity fetch function
-- `websiteBaseURL`: The base URL of your website
-- `i18n`: Internationalization configuration object
+Here are some common usage patterns for the `TRANSLATIONS_FRAGMENT`:
 
-**Returns:** Promise<MetadataRoute.Sitemap>
+**Modular page query:**
 
-The generated sitemap includes:
+```tsx
+import {TRANSLATIONS_FRAGMENT} from "@tinloof/sanity-web";
 
-- Proper URL structure for each locale
-- `hreflang` alternate URLs for translations
-- `x-default` URLs pointing to the default locale
-- Last modified dates from Sanity's `_updatedAt` field
+export const MODULAR_PAGE_QUERY = defineQuery(`
+  *[_type == "modular.page" && pathname.current == $pathname && locale == $locale][0] {
+    ...,
+    sections[] ${SECTIONS_BODY_FRAGMENT},
+    ${TRANSLATIONS_FRAGMENT},
+  }`);
+```
+
+**Sitemap query:**
+
+```tsx
+import {TRANSLATIONS_FRAGMENT} from "@tinloof/sanity-web";
+
+export const SITEMAP_QUERY = defineQuery(`
+  *[((pathname.current != null || _type == "home") && indexable && locale == $defaultLocale)] {
+    pathname,
+    "lastModified": _updatedAt,
+    locale,
+    _type,
+    "translations": *[_type == "translation.metadata" && references(^._id)].translations[].value->{
+      "pathname": pathname.current,
+      locale
+    },
+  }`);
+```
 
 ## License
 
