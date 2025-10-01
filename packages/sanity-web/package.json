@@ -33,7 +33,7 @@
   "peerDependencies": {
     "react": "^18.3.1 || ^19",
     "react-dom": "^18.3.1 || ^19",
-    "next": "^15",
+    "next": "^15.5.4",
     "next-sanity": "^9"
   },
   "dependencies": {
