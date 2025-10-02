@@ -4,6 +4,8 @@ import type {DefinedSanityFetchType} from "next-sanity";
 import {localizePathname, pathToAbsUrl} from "./urls";
 import {i18nConfig} from "../types";
 
+const HOME_TYPE = "home";
+
 export type GenerateSanitySitemapProps = {
   websiteBaseURL: string;
   sanityFetch: DefinedSanityFetchType;
@@ -32,7 +34,7 @@ export async function GenerateSanitySitemap({
   websiteBaseURL,
 }: GenerateSanitySitemapProps) {
   const SITEMAP_QUERY = /* groq */ `
-    *[((pathname.current != null || _type == "home") && indexable)] {
+    *[((pathname.current != null || _type == ${HOME_TYPE}) && indexable)] {
       "pathname": pathname.current,
       "lastModified": _updatedAt,
       _type,
@@ -46,7 +48,7 @@ export async function GenerateSanitySitemap({
 
   return (
     routes?.map((route) => {
-      const isHomePage = route._type === "home";
+      const isHomePage = route._type === HOME_TYPE;
       const baseUrl = websiteBaseURL;
       let url = websiteBaseURL;
       if (isHomePage) {
@@ -68,7 +70,7 @@ export async function GenerateSanityI18nSitemap({
   i18n,
 }: GenerateSanityI18nSitemapProps): Promise<MetadataRoute.Sitemap> {
   const I18N_SITEMAP_QUERY = /* groq */ `
-    *[(pathname.current != null || _type == "home") && indexable && locale == $locale] {
+    *[(pathname.current != null || _type == ${HOME_TYPE}) && indexable && locale == $locale] {
       "pathname": pathname.current,
       "lastModified": _updatedAt,
       _type,
@@ -81,6 +83,7 @@ export async function GenerateSanityI18nSitemap({
 
   const allRoutes: I18N_SITEMAP_QUERYResult[] = [];
 
+  // Fetch all routes for all locales
   await Promise.all(
     i18n.locales.map(async (locale) => {
       const {data: routes}: {data: I18N_SITEMAP_QUERYResult[]} =
@@ -96,83 +99,62 @@ export async function GenerateSanityI18nSitemap({
     }),
   );
 
-  const uniqueRoutes = Array.from(
-    new Map(allRoutes.map((r) => [`${r.pathname}-${r.locale}`, r])).values(),
-  );
+  return allRoutes?.map((route) => {
+    const alternatesLanguages: Record<string, string> = {};
+    const isHomePage = route._type === HOME_TYPE;
+    const baseUrl = websiteBaseURL;
 
-  return (
-    uniqueRoutes.filter(Boolean)?.map((route) => {
-      const alternatesLanguages: Record<string, string> = {};
-      const isHomePage = route._type === "home";
-      const baseUrl = websiteBaseURL;
+    let url = websiteBaseURL;
 
-      let url: string;
+    if (isHomePage) {
+      url =
+        i18n.defaultLocaleId === route.locale
+          ? `${baseUrl}`
+          : `${baseUrl}/${route.locale}`;
+    } else {
+      url = `${baseUrl}${
+        localizePathname({
+          pathname: route?.pathname ?? "/",
+          localeId: route?.locale ?? i18n.defaultLocaleId,
+          isDefault: route?.locale === i18n.defaultLocaleId,
+        }) || ""
+      }`;
+    }
 
-      if (isHomePage) {
-        url = localizePathname({
-          pathname: "/",
-          localeId: route.locale,
-          isDefault: route.locale === i18n.defaultLocaleId,
-        })
-          ? pathToAbsUrl({
-              baseUrl,
-              path: localizePathname({
-                pathname: "/",
-                localeId: route.locale,
-                isDefault: route.locale === i18n.defaultLocaleId,
-              }),
-            }) || ""
-          : baseUrl;
-      } else {
-        url =
+    for (const translation of route.translations) {
+      // Add locale slug if it's not the default locale
+      if (translation?.locale) {
+        const pathname = localizePathname({
+          pathname: translation?.pathname ?? "",
+          localeId: translation.locale,
+          isDefault: translation.locale === i18n.defaultLocaleId,
+        });
+        alternatesLanguages[translation.locale] =
           pathToAbsUrl({
             baseUrl,
-            path:
-              localizePathname({
-                pathname: route.pathname ?? "",
-                localeId: route.locale,
-                isDefault: route.locale === i18n.defaultLocaleId,
-              }) || "",
+            path: pathname,
           }) || "";
       }
-
-      const currentRoutePathname = localizePathname({
-        pathname: isHomePage ? "/" : (route.pathname ?? ""),
-        localeId: route.locale,
-        isDefault: route.locale === i18n.defaultLocaleId,
+      const pathname = localizePathname({
+        pathname: translation?.pathname ?? "",
+        localeId: i18n.defaultLocaleId,
+        isDefault: true,
       });
-
-      alternatesLanguages[route.locale] =
-        pathToAbsUrl({baseUrl, path: currentRoutePathname}) || "";
-
-      if (route.translations?.length) {
-        for (const translation of route.translations) {
-          if (
-            translation.pathname !== null &&
-            translation.locale !== route.locale
-          ) {
-            const pathname = localizePathname({
-              pathname: translation.pathname ?? (isHomePage ? "/" : ""),
-              localeId: translation.locale,
-              isDefault: translation.locale === i18n.defaultLocaleId,
-            });
-
-            alternatesLanguages[translation.locale] =
-              pathToAbsUrl({baseUrl, path: pathname}) || "";
-          }
-        }
-      }
-
       alternatesLanguages["x-default"] =
-        alternatesLanguages[i18n.defaultLocaleId];
+        pathToAbsUrl({
+          baseUrl,
+          path: pathname,
+        }) || "";
+    }
 
-      return {
-        alternates: {
-          languages: alternatesLanguages,
-        },
-        lastModified: route.lastModified || undefined,
-        url,
-      };
-    }) ?? []
-  );
+    console.log("url", url);
+
+    return {
+      alternates: {
+        languages: alternatesLanguages,
+      },
+      lastModified: route.lastModified || undefined,
+      url,
+    };
+  });
 }
