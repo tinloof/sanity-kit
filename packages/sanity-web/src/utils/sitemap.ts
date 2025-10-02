@@ -29,7 +29,7 @@ type I18N_SITEMAP_QUERYResult = SITEMAP_QUERYResult & {
   locale: string;
 };
 
-export async function GenerateSanitySitemap({
+export async function generateSanitySitemap({
   sanityFetch,
   websiteBaseURL,
 }: GenerateSanitySitemapProps) {
@@ -64,7 +64,7 @@ export async function GenerateSanitySitemap({
   );
 }
 
-export async function GenerateSanityI18nSitemap({
+export async function generateSanityI18nSitemap({
   websiteBaseURL,
   sanityFetch,
   i18n,

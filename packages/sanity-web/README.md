@@ -14,8 +14,8 @@ A collection of Sanity-related utilities for web development.
     - [Dependencies](#dependencies)
 - [Utils](#utils)
   - [Sitemap](#sitemap)
-    - [GenerateSanitySitemap](#generatesanitysitemap)
-    - [GenerateSanityI18nSitemap](#generatesanityi18nsitemap)
+    - [generateSanitySitemap](#generatesanitysitemap)
+    - [generateSanityI18nSitemap](#generatesanityi18nsitemap)
 - [Fragments](#fragments)
   - [TRANSLATIONS_FRAGMENT](#translations_fragment)
 - [License](#license)
@@ -133,17 +133,17 @@ The component provides flexible styling options:
 
 Utilities for generating sitemaps from Sanity content for Next.js applications. These functions help create dynamic sitemaps that include all indexable pages from your Sanity CMS.
 
-#### GenerateSanitySitemap
+#### generateSanitySitemap
 
 Generates a sitemap for single-language Next.js applications using Sanity content.
 
 ```tsx
-import {GenerateSanitySitemap} from "@tinloof/sanity-web";
+import {generateSanitySitemap} from "@tinloof/sanity-web";
 
 import {sanityFetch} from "@/data/sanity/live";
 
 export default function Sitemap() {
-  return GenerateSanitySitemap({
+  return generateSanitySitemap({
     sanityFetch,
     websiteBaseURL: "https://tinloof.com",
   });
@@ -159,12 +159,12 @@ export default function Sitemap() {
 
 **Returns:** Array of sitemap entries with `url` and `lastModified` properties.
 
-#### GenerateSanityI18nSitemap
+#### generateSanityI18nSitemap
 
 Generates a sitemap for multi-language Next.js applications using Sanity content with internationalization support.
 
 ```tsx
-import {GenerateSanityI18nSitemap} from "@tinloof/sanity-web";
+import {generateSanityI18nSitemap} from "@tinloof/sanity-web";
 
 import {sanityFetch} from "@/data/sanity/live";
 
@@ -177,7 +177,7 @@ const i18n = {
 };
 
 export default function Sitemap() {
-  return GenerateSanityI18nSitemap({
+  return generateSanityI18nSitemap({
     sanityFetch,
     websiteBaseURL: "https://tinloof.com",
     i18n,
