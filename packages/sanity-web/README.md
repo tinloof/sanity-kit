@@ -12,6 +12,10 @@ A collection of Sanity-related utilities for web development.
     - [Features](#features)
     - [Styling](#styling)
     - [Dependencies](#dependencies)
+- [Utils](#utils)
+  - [Sitemap](#sitemap)
+    - [generateSanitySitemap](#generatesanitysitemap)
+    - [generateSanityI18nSitemap](#generatesanityi18nsitemap)
 - [Fragments](#fragments)
   - [TRANSLATIONS_FRAGMENT](#translations_fragment)
 - [License](#license)
@@ -122,6 +126,82 @@ The component provides flexible styling options:
 - Requires `next-sanity/hooks` for `useIsPresentationTool`
 - Requires `next/navigation` for `useRouter`
 - Built for Next.js App Router with React 18+ (uses `useTransition`)
+
+## Utils
+
+### Sitemap
+
+Utilities for generating sitemaps from Sanity content for Next.js applications. These functions help create dynamic sitemaps that include all indexable pages from your Sanity CMS.
+
+#### generateSanitySitemap
+
+Generates a sitemap for single-language Next.js applications using Sanity content.
+
+```tsx
+import {generateSanitySitemap} from "@tinloof/sanity-web";
+
+import {sanityFetch} from "@/data/sanity/live";
+
+export default function Sitemap() {
+  return generateSanitySitemap({
+    sanityFetch,
+    websiteBaseURL: "https://tinloof.com",
+  });
+}
+```
+
+**Props:**
+
+| Prop             | Type                     | Description                            |
+| ---------------- | ------------------------ | -------------------------------------- |
+| `websiteBaseURL` | `string`                 | The base URL of your website           |
+| `sanityFetch`    | `DefinedSanityFetchType` | Sanity fetch function from next-sanity |
+
+**Returns:** Array of sitemap entries with `url` and `lastModified` properties.
+
+#### generateSanityI18nSitemap
+
+Generates a sitemap for multi-language Next.js applications using Sanity content with internationalization support.
+
+```tsx
+import {generateSanityI18nSitemap} from "@tinloof/sanity-web";
+
+import {sanityFetch} from "@/data/sanity/live";
+
+const i18n = {
+  defaultLocaleId: "en",
+  locales: [
+    {id: "en", title: "English"},
+    {id: "fr", title: "Français"},
+  ],
+};
+
+export default function Sitemap() {
+  return generateSanityI18nSitemap({
+    sanityFetch,
+    websiteBaseURL: "https://tinloof.com",
+    i18n,
+  });
+}
+```
+
+**Props:**
+
+| Prop             | Type                     | Description                               |
+| ---------------- | ------------------------ | ----------------------------------------- |
+| `websiteBaseURL` | `string`                 | The base URL of your website              |
+| `sanityFetch`    | `DefinedSanityFetchType` | Sanity fetch function from next-sanity    |
+| `i18n`           | `i18nConfig`             | Internationalization configuration object |
+
+**Returns:** Array of sitemap entries with `url`, `lastModified`, and `alternates.languages` properties for multi-language support.
+
+**Requirements:**
+
+- Documents must have a boolean field called `indexable` set to `true` to be included in the sitemap
+- Documents must have a slug field called `pathname` (typically `pathname.current`) containing the URL path, or be of type "home"
+- For i18n sitemaps, documents must have a `locale` field
+- Translation metadata must be properly configured for alternate language URLs
+- The sitemap functions should be used in a `sitemap.ts` file in your Next.js app directory
 
 ## Fragments
 

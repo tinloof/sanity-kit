@@ -33,3 +33,13 @@ export type LocalizePathnameFn = (opts: {
   isDefault?: boolean;
   fallbackLocaleId?: string;
 }) => string;
+
+export type Locale = {
+  id: string;
+  title: string;
+};
+
+export type i18nConfig<T extends readonly Locale[] = Locale[]> = {
+  locales: T;
+  defaultLocaleId?: T[number]["id"];
+};
