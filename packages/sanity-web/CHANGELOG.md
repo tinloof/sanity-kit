@@ -1,5 +1,13 @@
 # @tinloof/sanity-web
 
+## 0.9.0
+
+### Minor Changes
+
+- 1105a25: Sitemap utility
+- 13921cd: Translations fragment
+- 6f18d6c: ExitPreview component
+
 ## 0.8.1
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # next-non-embedded-studio
 
+## 1.2.0
+
+### Minor Changes
+
+- 6f18d6c: ExitPreview component
+
+### Patch Changes
+
+- Updated dependencies [1105a25]
+- Updated dependencies [13921cd]
+- Updated dependencies [6f18d6c]
+- Updated dependencies [90ad106]
+  - @tinloof/sanity-web@0.9.0
+  - @tinloof/sanity-studio@1.11.0
+
 ## 1.1.14
 
 ### Patch Changes
