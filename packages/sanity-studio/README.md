@@ -596,8 +596,8 @@ export default defineType({
 #### Features
 
 - **Search functionality**: Filter redirects by source or destination URL
-- **Permanent vs temporary redirects**: Toggle between 307 and 308 redirects
-- **Visual preview**: Shows redirect type (307/308) and destination in the list view
+- **Permanent vs temporary redirects**: Toggle between 301 and 302 redirects
+- **Visual preview**: Shows redirect type (301/302) and destination in the list view
 - **Required validation**: Both source and destination fields are required
 
 #### Field structure

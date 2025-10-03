@@ -13,6 +13,11 @@ A collection of Sanity-related utilities for web development.
     - [Styling](#styling)
     - [Dependencies](#dependencies)
 - [Utils](#utils)
+  - [Redirects](#redirects)
+    - [getRedirect](#getredirect)
+    - [getPathVariations](#getpathvariations)
+    - [REDIRECT_QUERY](#redirect_query)
+    - [Schema Setup](#schema-setup)
   - [Sitemap](#sitemap)
     - [generateSanitySitemap](#generatesanitysitemap)
     - [generateSanityI18nSitemap](#generatesanityi18nsitemap)
@@ -128,6 +133,98 @@ The component provides flexible styling options:
 - Built for Next.js App Router with React 18+ (uses `useTransition`)
 
 ## Utils
+
+### Redirects
+
+Utilities for handling URL redirects managed through Sanity CMS. These functions help you implement dynamic redirects that can be managed by content editors without code changes.
+
+#### getRedirect
+
+Fetches redirect configuration from Sanity for a given source path. This function automatically generates path variations to handle different URL formats and queries Sanity to find matching redirect rules.
+
+```tsx
+import {getRedirect} from "@tinloof/sanity-web";
+import {sanityFetch} from "@/data/sanity/client";
+
+// In Next.js middleware
+export async function middleware(request: NextRequest) {
+  const redirect = await getRedirect({
+    source: request.nextUrl.pathname,
+    sanityFetch,
+  });
+
+  if (redirect) {
+    return NextResponse.redirect(new URL(redirect.destination, request.url), {
+      status: redirect.permanent ? 301 : 302,
+    });
+  }
+}
+```
+
+**Props:**
+
+| Prop          | Type                     | Description                                    |
+| ------------- | ------------------------ | ---------------------------------------------- |
+| `source`      | `string`                 | The source path to look up (e.g., "/old-page") |
+| `sanityFetch` | `DefinedSanityFetchType` | Sanity fetch function from next-sanity         |
+| `query`       | `string` (optional)      | Custom GROQ query (defaults to REDIRECT_QUERY) |
+
+**Returns:** Promise that resolves to redirect data or null if no redirect found.
+
+**Redirect Data:**
+
+| Property      | Type      | Description                                                   |
+| ------------- | --------- | ------------------------------------------------------------- |
+| `source`      | `string`  | The source path that triggers the redirect                    |
+| `destination` | `string`  | The destination URL to redirect to                            |
+| `permanent`   | `boolean` | Whether this is a permanent (301) or temporary (302) redirect |
+
+#### getPathVariations
+
+Generates path variations for flexible redirect matching. This function creates multiple variations of a path to handle different URL formats that users might access.
+
+```tsx
+import {getPathVariations} from "@tinloof/sanity-web";
+
+getPathVariations("/about-us/");
+// Returns: ["about-us", "/about-us/", "about-us/", "/about-us"]
+
+getPathVariations("contact");
+// Returns: ["contact", "/contact/", "contact/", "/contact"]
+```
+
+**Props:**
+
+| Prop   | Type     | Description                               |
+| ------ | -------- | ----------------------------------------- |
+| `path` | `string` | The input path to generate variations for |
+
+**Returns:** Array of path variations to match against redirect rules.
+
+#### REDIRECT_QUERY
+
+A GROQ query constant for fetching redirect configuration from Sanity settings.
+
+```groq
+*[_type == "settings"][0].redirects[@.source in $paths][0]
+```
+
+#### Schema Setup
+
+For the best experience, use the `redirectsSchema` from `@tinloof/sanity-studio` which provides a searchable interface and validation for managing redirects. See the [redirectsSchema documentation](../../packages/sanity-studio/README.md#redirectsschema) for setup instructions.
+
+```tsx
+import {redirectsSchema} from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "settings",
+  fields: [
+    redirectsSchema,
+    // ... other fields
+  ],
+});
+```
 
 ### Sitemap
 

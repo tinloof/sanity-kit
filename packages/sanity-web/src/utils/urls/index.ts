@@ -18,8 +18,32 @@ export function removeDoubleSlashes(path: string): string {
 }
 
 /**
- * As we can't be 100% sure editors will always format their paths/slugs properly (without leading or trailing slashes),
- * we run queries against a set of possible slash variations.
+ * Generates path variations for flexible redirect matching.
+ *
+ * This function creates multiple variations of a path to handle different
+ * URL formats that users might access. It normalizes the input and generates
+ * variations with different slash combinations.
+ *
+ * @param path - The input path to generate variations for
+ * @returns Array of path variations to match against redirect rules
+ *
+ * @example
+ * ```tsx
+ * getPathVariations("/about-us/")
+ * // Returns: ["about-us", "/about-us/", "about-us/", "/about-us"]
+ *
+ * getPathVariations("contact")
+ * // Returns: ["contact", "/contact/", "contact/", "/contact"]
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // The variations help match redirects regardless of how users access URLs:
+ * // - "/about-us" (no trailing slash)
+ * // - "/about-us/" (with trailing slash)
+ * // - "about-us" (no leading slash)
+ * // - "about-us/" (no leading slash, with trailing slash)
+ * ```
  */
 export function getPathVariations(path: string): string[] {
   if (typeof path !== "string") return [];
