@@ -4,8 +4,8 @@ import {ArrayOfObjectsInputProps, defineArrayMember, defineField} from "sanity";
 
 // Constants
 const REDIRECT_CODES = {
-  PERMANENT: "308",
-  TEMPORARY: "307",
+  PERMANENT: "301",
+  TEMPORARY: "302",
 } as const;
 
 const REDIRECT_STATUS = {
@@ -125,8 +125,7 @@ export default defineField({
         defineField({
           name: "permanent",
           title: "Permanent redirect",
-          description:
-            "Permanent redirects (308) tell browsers and search engines this change is permanent. Use temporary (307) for testing or when you might change the destination later.",
+          description: `Permanent redirects (${REDIRECT_CODES.PERMANENT}) tell browsers and search engines this change is permanent. Use temporary (${REDIRECT_CODES.TEMPORARY}) for testing or when you might change the destination later.`,
           initialValue: true,
           type: "boolean",
           validation: (Rule) => Rule.required(),
