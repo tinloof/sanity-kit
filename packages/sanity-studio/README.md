@@ -26,7 +26,9 @@ npm install @tinloof/sanity-studio
 - [`documentI18n`](#documenti18n)
 - [`localizedItem`](#localizedItem)
 - [`singletonListItem`](#singletonlistitem)
-- [`iconSchema`](#iconSchema)
+- [Schemas](#schemas)
+  - [`iconSchema`](#iconschema)
+  - [`redirectsSchema`](#redirectsschema)
 - [Disable creation plugin](#disable-creation-plugin)
 - [Input with characters count](#input-with-characters-count)
 
@@ -530,11 +532,13 @@ This is particularly useful for documents like:
 - Home page content
 - Global navigation
 
-## `iconSchema`
+## Schemas
+
+### `iconSchema`
 
 Builds upon a string field with an options list to show a preview of the icon select as well as other options.
 
-### Basic usage
+#### Basic usage
 
 ```tsx
 import {iconSchema} from "@tinloof/sanity-studio";
@@ -564,11 +568,53 @@ export default defineType({
 });
 ```
 
-### Parameters
+#### Parameters
 
 - `options.list`: Uses the default string option list type of `{title: string, value: string}[]`
 - `options.path`: Path where icons are located
 - `options.backgroundColor`: Color value to plug into the CSS style `backgroundColor`. Read [here](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) for possible values.
+
+### `redirectsSchema`
+
+The `redirectsSchema` field provides a convenient way to manage URL redirects in your Sanity Studio. It includes a searchable interface to filter redirects by source or destination URLs.
+
+#### Basic usage
+
+```tsx
+import {redirectsSchema} from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "settings",
+  fields: [
+    redirectsSchema,
+    // ... other fields
+  ],
+});
+```
+
+#### Features
+
+- **Search functionality**: Filter redirects by source or destination URL
+- **Permanent vs temporary redirects**: Toggle between 307 and 308 redirects
+- **Visual preview**: Shows redirect type (307/308) and destination in the list view
+- **Required validation**: Both source and destination fields are required
+
+#### Field structure
+
+Each redirect object contains:
+
+- `source` (string, required): The original URL path
+- `destination` (string, required): The target URL to redirect to
+- `permanent` (boolean, required): Whether the redirect is permanent or temporary
+
+#### Preview
+
+The redirects are displayed in a list format with:
+
+- **Title**: Shows the source URL
+- **Subtitle**: Shows the destination URL
+- **Media**: Displays the redirect status code
 
 ## Disable creation plugin
 
