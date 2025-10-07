@@ -1,6 +1,5 @@
 import speakingurl from "speakingurl";
-import {DocForPath, LocalizePathnameFn} from "../../types";
-import {Slug} from "sanity";
+import type {DocForPath, LocalizePathnameFn} from "../../types";
 
 /**
  * Removes leading and trailing slashes from a string.

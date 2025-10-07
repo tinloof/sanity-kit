@@ -1,2 +1,2 @@
-export {SanityImage} from "./SanityImage";
-export {ExitPreview} from "./exit-preview";
+export {default as SanityImage} from "./sanity-image";
+export {default as ExitPreview} from "./exit-preview";
