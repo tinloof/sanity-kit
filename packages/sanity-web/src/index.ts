@@ -1,4 +1,3 @@
 export * from "./types";
 export * from "./utils";
-export * from "./components";
-export * from "./fragments";
+export {default as SanityImage} from "./components/sanity-image";

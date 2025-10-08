@@ -26,7 +26,9 @@ npm install @tinloof/sanity-studio
 - [`documentI18n`](#documenti18n)
 - [`localizedItem`](#localizedItem)
 - [`singletonListItem`](#singletonlistitem)
-- [`iconSchema`](#iconSchema)
+- [Schemas](#schemas)
+  - [`iconSchema`](#iconschema)
+  - [`redirectsSchema`](#redirectsschema)
 - [Disable creation plugin](#disable-creation-plugin)
 - [Input with characters count](#input-with-characters-count)
 
@@ -129,7 +131,7 @@ The `i18n` option can be used to support filtering pages by a `locale` field and
 
 When page creation is enabled, the currently selected `locale` is also used as an initial value to create new pages.
 
-Pathnames are automatically validated to be unique accros locales.
+Path names are automatically validated to be unique across locales.
 
 <video controls src="https://github.com/tinloof/sanity-kit/assets/10447155/5f6a063d-833c-4e96-8c3b-58e7611f4b43">
 </video>
@@ -530,11 +532,13 @@ This is particularly useful for documents like:
 - Home page content
 - Global navigation
 
-## `iconSchema`
+## Schemas
+
+### `iconSchema`
 
 Builds upon a string field with an options list to show a preview of the icon select as well as other options.
 
-### Basic usage
+#### Basic usage
 
 ```tsx
 import {iconSchema} from "@tinloof/sanity-studio";
@@ -564,17 +568,59 @@ export default defineType({
 });
 ```
 
-### Parameters
+#### Parameters
 
 - `options.list`: Uses the default string option list type of `{title: string, value: string}[]`
 - `options.path`: Path where icons are located
 - `options.backgroundColor`: Color value to plug into the CSS style `backgroundColor`. Read [here](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) for possible values.
 
+### `redirectsSchema`
+
+The `redirectsSchema` field provides a convenient way to manage URL redirects in your Sanity Studio. It includes a searchable interface to filter redirects by source or destination URLs.
+
+#### Basic usage
+
+```tsx
+import {redirectsSchema} from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "settings",
+  fields: [
+    redirectsSchema,
+    // ... other fields
+  ],
+});
+```
+
+#### Features
+
+- **Search functionality**: Filter redirects by source or destination URL
+- **Permanent vs temporary redirects**: Toggle between permanent and temporary redirects
+- **Visual preview**: Shows redirect type (permanent/temporary) and destination in the list view
+- **Required validation**: Both source and destination fields are required
+
+#### Field structure
+
+Each redirect object contains:
+
+- `source` (string, required): The original URL path
+- `destination` (string, required): The target URL to redirect to
+- `permanent` (boolean, required): Whether the redirect is permanent or temporary
+
+#### Preview
+
+The redirects are displayed in a list format with:
+
+- **Title**: Shows the source URL
+- **Subtitle**: Shows the destination URL
+- **Media**: Displays the redirect status code
+
 ## Disable creation plugin
 
-Plugin to disable the creation of doucments with the `disableCreation` option set to true. The plugin does this by:
+Plugin to disable the creation of documents with the `disableCreation` option set to true. The plugin does this by:
 
-- limiting the document's action to (these options can be overidden):
+- limiting the document's action to (these options can be overridden):
   - publish
   - restore
   - discard changes
@@ -607,7 +653,7 @@ export default defineConfig({
 
 ### Important notice
 
-When using this plugin, make sure you are placing it after the `stucutureTool()`.
+When using this plugin, make sure you are placing it after the `structureTool()`.
 
 ```tsx
 plugins: [
@@ -666,4 +712,4 @@ This plugin uses [@sanity/plugin-kit](https://github.com/sanity-io/plugin-kit)
 with default configuration for build & watch scripts.
 
 See [Testing a plugin in Sanity Studio](https://github.com/sanity-io/plugin-kit#testing-a-plugin-in-sanity-studio)
-on how to run this plugin with hotreload in the studio.
+on how to run this plugin with hot reload in the studio.
