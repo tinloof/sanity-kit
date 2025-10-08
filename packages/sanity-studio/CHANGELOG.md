@@ -1,5 +1,23 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.11.0
+
+### Minor Changes
+
+- b1b4195: getRedirects util
+- 01ba52b: Redirects Schema
+- 90ad106: Singleton list item structure utility
+
+### Patch Changes
+
+- 3c7a78f: README updated
+- Updated dependencies [1105a25]
+- Updated dependencies [13921cd]
+- Updated dependencies [6f18d6c]
+- Updated dependencies [b1b4195]
+- Updated dependencies [3c7a78f]
+  - @tinloof/sanity-web@0.9.0
+
 ## 1.10.1
 
 ### Patch Changes
