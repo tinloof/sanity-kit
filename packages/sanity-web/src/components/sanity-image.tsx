@@ -82,7 +82,7 @@ export type SanityImageProps = {
  * ```
  */
 
-function SanityImage({
+export default function SanityImage({
   aspectRatio,
   className,
   data,
@@ -244,10 +244,6 @@ function SanityImage({
     />
   );
 }
-
-SanityImage.displayName = "SanityImage";
-
-export {SanityImage};
 
 function generateImageUrl(args: {
   aspectRatioHeight?: number;

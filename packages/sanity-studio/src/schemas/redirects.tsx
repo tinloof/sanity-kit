@@ -1,12 +1,7 @@
+import {SearchIcon} from "@sanity/icons";
 import {TextInput} from "@sanity/ui";
 import React from "react";
 import {ArrayOfObjectsInputProps, defineArrayMember, defineField} from "sanity";
-
-// Constants
-const REDIRECT_CODES = {
-  PERMANENT: "301",
-  TEMPORARY: "302",
-} as const;
 
 const REDIRECT_STATUS = {
   PERMANENT: "permanent",
@@ -20,13 +15,8 @@ const BOOLEAN_VALUES = {
 
 const SEARCH_PLACEHOLDER =
   "Search redirects by source, destination, or status...";
-const FONT_SIZE = 12;
 
 // Helper functions
-function getRedirectCode(permanent: boolean): string {
-  return permanent ? REDIRECT_CODES.PERMANENT : REDIRECT_CODES.TEMPORARY;
-}
-
 function getRedirectStatus(permanent: boolean): string {
   return permanent ? REDIRECT_STATUS.PERMANENT : REDIRECT_STATUS.TEMPORARY;
 }
@@ -46,7 +36,6 @@ function matchesSearch(
     item.source.toLowerCase().includes(searchLower) ||
     item.destination.toLowerCase().includes(searchLower) ||
     getRedirectStatus(item.permanent).includes(searchLower) ||
-    getRedirectCode(item.permanent).includes(searchLower) ||
     getBooleanString(item.permanent).includes(searchLower)
   );
 }
@@ -125,7 +114,8 @@ export default defineField({
         defineField({
           name: "permanent",
           title: "Permanent redirect",
-          description: `Permanent redirects (${REDIRECT_CODES.PERMANENT}) tell browsers and search engines this change is permanent. Use temporary (${REDIRECT_CODES.TEMPORARY}) for testing or when you might change the destination later.`,
+          description:
+            "Permanent redirects tell browsers and search engines this change is permanent. Use temporary for testing or when you might change the destination later.",
           initialValue: true,
           type: "boolean",
           validation: (Rule) => Rule.required(),
@@ -135,15 +125,7 @@ export default defineField({
       preview: {
         prepare({destination, permanent, source}) {
           return {
-            media: (
-              <div
-                style={{
-                  fontSize: FONT_SIZE,
-                }}
-              >
-                {getRedirectCode(permanent)}
-              </div>
-            ),
+            media: <div>{permanent ? "P" : "T"}</div>,
             subtitle: `Redirects to: ${destination}`,
             title: `${source} →`,
           };
@@ -192,6 +174,7 @@ function ArrayInput({members, ...props}: ArrayOfObjectsInputProps) {
           placeholder={SEARCH_PLACEHOLDER}
           type="text"
           value={search}
+          icon={SearchIcon}
         />
         {isFiltered && (
           <div style={{fontSize: 12, color: "#666"}}>

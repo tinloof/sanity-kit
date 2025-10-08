@@ -173,11 +173,11 @@ export async function middleware(request: NextRequest) {
 
 **Redirect Data:**
 
-| Property      | Type      | Description                                                   |
-| ------------- | --------- | ------------------------------------------------------------- |
-| `source`      | `string`  | The source path that triggers the redirect                    |
-| `destination` | `string`  | The destination URL to redirect to                            |
-| `permanent`   | `boolean` | Whether this is a permanent (301) or temporary (302) redirect |
+| Property      | Type      | Description                                       |
+| ------------- | --------- | ------------------------------------------------- |
+| `source`      | `string`  | The source path that triggers the redirect        |
+| `destination` | `string`  | The destination URL to redirect to                |
+| `permanent`   | `boolean` | Whether this is a permanent or temporary redirect |
 
 #### getPathVariations
 

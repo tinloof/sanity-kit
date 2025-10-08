@@ -8,7 +8,7 @@ export type ExitPreviewProps = {
   className?: string;
 };
 
-export function ExitPreview({
+export default function ExitPreview({
   disableDraftMode,
   styles,
   className,

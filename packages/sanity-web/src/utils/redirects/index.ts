@@ -1,19 +1,6 @@
-import {DefinedSanityFetchType, defineQuery} from "next-sanity";
-import {getPathVariations} from "./urls";
-
-/**
- * GROQ query to fetch redirect configuration from Sanity.
- *
- * This query looks for a settings document and finds the first redirect
- * where the source path matches any of the provided path variations.
- *
- * @example
- * ```groq
- * *[_type == "settings"][0].redirects[@.source in $paths][0]
- * ```
- */
-export const REDIRECT_QUERY = defineQuery(`
-  *[_type == "settings"][0].redirects[@.source in $paths][0]`);
+import {DefinedSanityFetchType} from "next-sanity";
+import {REDIRECT_QUERY} from "../../queries";
+import {getPathVariations} from "../urls";
 
 /**
  * Parameters for the getRedirect function.
@@ -35,7 +22,7 @@ export type RedirectData = {
   source: string;
   /** The destination URL to redirect to */
   destination: string;
-  /** Whether this is a permanent (301) or temporary (302) redirect */
+  /** Whether this is a permanent or temporary redirect */
   permanent: boolean;
 } | null;
 

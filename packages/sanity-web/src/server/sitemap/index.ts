@@ -1,8 +1,9 @@
 import type {MetadataRoute} from "next";
 import type {DefinedSanityFetchType} from "next-sanity";
 
-import {localizePathname, pathToAbsUrl} from "./urls";
-import {i18nConfig} from "../types";
+import {localizePathname, pathToAbsUrl} from "../../utils/urls";
+import {i18nConfig} from "../../types";
+import {I18N_SITEMAP_QUERY, SITEMAP_QUERY} from "../../queries";
 
 const HOME_TYPE = "home";
 
@@ -33,15 +34,11 @@ export async function generateSanitySitemap({
   sanityFetch,
   websiteBaseURL,
 }: GenerateSanitySitemapProps) {
-  const SITEMAP_QUERY = /* groq */ `
-    *[((pathname.current != null || _type == ${HOME_TYPE}) && indexable)] {
-      "pathname": pathname.current,
-      "lastModified": _updatedAt,
-      _type,
-    }`;
-
   const {data: routes}: {data: SITEMAP_QUERYResult[]} = await sanityFetch({
     query: SITEMAP_QUERY,
+    params: {
+      homeType: HOME_TYPE,
+    },
     perspective: "published",
     stega: false,
   });
@@ -69,18 +66,6 @@ export async function generateSanityI18nSitemap({
   sanityFetch,
   i18n,
 }: GenerateSanityI18nSitemapProps): Promise<MetadataRoute.Sitemap> {
-  const I18N_SITEMAP_QUERY = /* groq */ `
-    *[(pathname.current != null || _type == ${HOME_TYPE}) && indexable && locale == $locale] {
-      "pathname": pathname.current,
-      "lastModified": _updatedAt,
-      _type,
-      locale,
-      "translations": *[_type == "translation.metadata" && references(^._id)].translations[].value->{
-        "pathname": pathname.current,
-        locale,
-      },
-    }`;
-
   const allRoutes: I18N_SITEMAP_QUERYResult[] = [];
 
   // Fetch all routes for all locales
@@ -93,6 +78,7 @@ export async function generateSanityI18nSitemap({
           stega: false,
           params: {
             locale: locale.id,
+            homeType: HOME_TYPE,
           },
         });
       if (routes) allRoutes.push(...routes);

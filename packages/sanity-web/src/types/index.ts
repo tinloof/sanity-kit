@@ -1,4 +1,4 @@
-import type {SanityImageProps} from "./components/SanityImage";
+import type {SanityImageProps} from "../components/sanity-image";
 
 export interface DocForPath extends MinimalDocForPath {}
 
