@@ -11,7 +11,7 @@ The package now supports both top-level imports and deep imports following popul
 ```typescript
 // These continue to work as before
 import {SanityImage, ExitPreview} from "@tinloof/sanity-web";
-import {getRedirect, handleRedirect} from "@tinloof/sanity-web";
+import {getRedirect, redirectIfNeeded} from "@tinloof/sanity-web";
 import {generateSanitySitemap} from "@tinloof/sanity-web";
 ```
 
@@ -37,7 +37,7 @@ import {generateSanitySitemap} from "@tinloof/sanity-web/server";
 
 ```typescript
 // Import middleware utilities
-import {handleRedirect} from "@tinloof/sanity-web/middleware";
+import {redirectIfNeeded} from "@tinloof/sanity-web/middleware";
 ```
 
 #### Shared Utilities
@@ -71,7 +71,7 @@ import {TRANSLATIONS_FRAGMENT} from "@tinloof/sanity-web/fragments";
 
 ```typescript
 import {SanityImage, ExitPreview} from "@tinloof/sanity-web";
-import {getRedirect, handleRedirect} from "@tinloof/sanity-web";
+import {getRedirect, redirectIfNeeded} from "@tinloof/sanity-web";
 import {generateSanitySitemap} from "@tinloof/sanity-web";
 ```
 
@@ -85,7 +85,7 @@ import {SanityImage, ExitPreview} from "@tinloof/sanity-web/components";
 import {generateSanitySitemap} from "@tinloof/sanity-web/server";
 
 // Middleware utilities
-import {handleRedirect} from "@tinloof/sanity-web/middleware";
+import {redirectIfNeeded} from "@tinloof/sanity-web/middleware";
 
 // Or use deep imports for better tree-shaking
 import {SanityImage} from "@tinloof/sanity-web/components/sanity-image";
@@ -153,7 +153,7 @@ import {getRedirect} from "@tinloof/sanity-web/utils/redirects";
 import {generateSanitySitemap} from "@tinloof/sanity-web";
 
 // middleware.ts
-import {handleRedirect} from "@tinloof/sanity-web";
+import {redirectIfNeeded} from "@tinloof/sanity-web";
 
 // components/Image.tsx
 import {SanityImage} from "@tinloof/sanity-web";
@@ -166,7 +166,7 @@ import {SanityImage} from "@tinloof/sanity-web";
 import {generateSanitySitemap} from "@tinloof/sanity-web/server";
 
 // middleware.ts
-import {handleRedirect} from "@tinloof/sanity-web/middleware";
+import {redirectIfNeeded} from "@tinloof/sanity-web/middleware";
 
 // components/Image.tsx
 import {SanityImage} from "@tinloof/sanity-web/client";

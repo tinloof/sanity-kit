@@ -131,7 +131,7 @@ The `i18n` option can be used to support filtering pages by a `locale` field and
 
 When page creation is enabled, the currently selected `locale` is also used as an initial value to create new pages.
 
-Pathnames are automatically validated to be unique accros locales.
+Path names are automatically validated to be unique across locales.
 
 <video controls src="https://github.com/tinloof/sanity-kit/assets/10447155/5f6a063d-833c-4e96-8c3b-58e7611f4b43">
 </video>
@@ -596,8 +596,8 @@ export default defineType({
 #### Features
 
 - **Search functionality**: Filter redirects by source or destination URL
-- **Permanent vs temporary redirects**: Toggle between 301 and 302 redirects
-- **Visual preview**: Shows redirect type (301/302) and destination in the list view
+- **Permanent vs temporary redirects**: Toggle between permanent and temporary redirects
+- **Visual preview**: Shows redirect type (permanent/temporary) and destination in the list view
 - **Required validation**: Both source and destination fields are required
 
 #### Field structure
@@ -618,9 +618,9 @@ The redirects are displayed in a list format with:
 
 ## Disable creation plugin
 
-Plugin to disable the creation of doucments with the `disableCreation` option set to true. The plugin does this by:
+Plugin to disable the creation of documents with the `disableCreation` option set to true. The plugin does this by:
 
-- limiting the document's action to (these options can be overidden):
+- limiting the document's action to (these options can be overridden):
   - publish
   - restore
   - discard changes
@@ -653,7 +653,7 @@ export default defineConfig({
 
 ### Important notice
 
-When using this plugin, make sure you are placing it after the `stucutureTool()`.
+When using this plugin, make sure you are placing it after the `structureTool()`.
 
 ```tsx
 plugins: [
@@ -712,4 +712,4 @@ This plugin uses [@sanity/plugin-kit](https://github.com/sanity-io/plugin-kit)
 with default configuration for build & watch scripts.
 
 See [Testing a plugin in Sanity Studio](https://github.com/sanity-io/plugin-kit#testing-a-plugin-in-sanity-studio)
-on how to run this plugin with hotreload in the studio.
+on how to run this plugin with hot reload in the studio.

@@ -22,7 +22,7 @@ export type RedirectData = {
   source: string;
   /** The destination URL to redirect to */
   destination: string;
-  /** Whether this is a permanent (301) or temporary (302) redirect */
+  /** Whether this is a permanent or temporary redirect */
   permanent: boolean;
 } | null;
 
