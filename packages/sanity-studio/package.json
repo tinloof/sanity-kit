@@ -90,7 +90,7 @@
   },
   "peerDependencies": {
     "react": "^18.3.1 || ^19",
-    "sanity": "^3.80.1"
+    "sanity": "^3.80.1 || ^4"
   },
   "engines": {
     "node": ">=14"
