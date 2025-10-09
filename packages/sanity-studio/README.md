@@ -14,6 +14,9 @@ npm install @tinloof/sanity-studio
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
+- [Schema utilities](#schema-utilities)
+  - [`definePage`](#definepage)
+  - [`defineSchema`](#defineschema)
 - [Pages](#pages)
   - [Basic usage](#basic-usage)
   - [Enabling page creation](#enabling-page-creation)
@@ -31,6 +34,125 @@ npm install @tinloof/sanity-studio
   - [`redirectsSchema`](#redirectsschema)
 - [Disable creation plugin](#disable-creation-plugin)
 - [Input with characters count](#input-with-characters-count)
+
+## Schema utilities
+
+These utilities help you create document schemas with common fields and configurations automatically applied.
+
+### `definePage`
+
+The `definePage` utility creates page document schemas with automatic pathname, SEO, and indexable fields. It's perfect for creating page schemas that need URL routing and search engine optimization.
+
+#### Basic usage
+
+```tsx
+import {definePage} from "@tinloof/sanity-studio";
+
+export default definePage({
+  name: "page",
+  title: "Page",
+  type: "document",
+  fields: [
+    {
+      name: "title",
+      type: "string",
+      title: "Title",
+    },
+    {
+      name: "content",
+      type: "array",
+      of: [{type: "block"}],
+    },
+  ],
+});
+```
+
+This automatically adds:
+
+- **Pathname field**: For URL routing with i18n support
+- **SEO field**: For search engine optimization
+- **Indexable field**: To control search engine indexing
+- **Internal title field**: For internal document identification
+- **Field groups**: Content and settings groups
+
+#### Options
+
+```tsx
+export default definePage({
+  name: "page",
+  title: "Page",
+  type: "document",
+  options: {
+    disableCreation: true, // Disable document creation
+    hidePathnameField: false, // Hide the pathname field
+    hideSeo: false, // Hide the SEO field
+    hideInternalTitle: false, // Hide the internal title field
+    localized: true, // Enable internationalization
+    defaultLocaleId: "en", // Default locale for i18n
+  },
+  pathnameOptions: {
+    initialValue: "/", // Initial pathname value
+    autoNavigate: true, // Auto-navigate in Presentation
+  },
+  fields: [
+    // Your custom fields
+  ],
+});
+```
+
+### `defineSchema`
+
+The `defineSchema` utility creates document schemas with automatic internal title, locale fields (for i18n), and orderable document list support. It includes content and settings field groups by default. Use this for schemas that do not require SEO or pathname fields.
+
+#### Basic usage
+
+```tsx
+import {defineSchema} from "@tinloof/sanity-studio";
+
+export default defineSchema({
+  name: "post",
+  title: "Blog Post",
+  type: "document",
+  fields: [
+    {
+      name: "title",
+      type: "string",
+      title: "Title",
+    },
+    {
+      name: "content",
+      type: "array",
+      of: [{type: "block"}],
+    },
+  ],
+});
+```
+
+This automatically adds:
+
+- **Internal title field**: For internal document identification
+- **Locale field**: For internationalization (when enabled)
+- **Order rank field**: For document ordering (when enabled)
+- **Field groups**: Content and settings groups
+
+#### Options
+
+```tsx
+export default defineSchema({
+  name: "tag",
+  title: "Blog Tag",
+  type: "document",
+  options: {
+    disableCreation: true, // Disable document creation
+    hideInternalTitle: false, // Hide the internal title field
+    localized: true, // Enable internationalization
+    orderable: true, // Enable document ordering
+  },
+  fields: [
+    // Your custom fields
+  ],
+});
+```
 
 ## Pages
 
