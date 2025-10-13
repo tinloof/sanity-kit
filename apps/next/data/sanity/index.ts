@@ -1,10 +1,11 @@
-import { PagePayload } from '@/types'
-import { loadQuery } from './loadQuery'
-import { PAGE_QUERY } from './queries'
+import {sanityFetch} from "./live";
+import {PAGE_QUERY} from "./queries";
 
 export async function loadPage(pathname: string) {
-  return loadQuery<PagePayload | null>({
+  const {data} = await sanityFetch({
     query: PAGE_QUERY,
-    params: { pathname },
-  })
+    params: {pathname},
+  });
+
+  return data;
 }

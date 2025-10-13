@@ -1,13 +1,13 @@
-import type { SanityImageProps } from '@tinloof/sanity-web'
+import type {SanityImageProps} from "@tinloof/sanity-web";
 
-import { SanityImage as SanityImageBase } from '@tinloof/sanity-web'
+import {SanityImage as SanityImageBase} from "@tinloof/sanity-web";
 
-import config from '@/config'
+import config from "@/config";
 
 export function SanityImage({
   data,
   ...props
-}: Omit<SanityImageProps, 'config'>) {
+}: Omit<SanityImageProps, "config">) {
   return (
     <SanityImageBase
       data={data}
@@ -17,5 +17,5 @@ export function SanityImage({
       }}
       {...props}
     />
-  )
+  );
 }
