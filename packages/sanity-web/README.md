@@ -134,6 +134,76 @@ The component provides flexible styling options:
 
 ## Utils
 
+### Metadata Resolution
+
+Utilities for generating Next.js metadata from Sanity CMS content. These functions help create comprehensive metadata including SEO tags, Open Graph images, canonical URLs, and internationalization support.
+
+#### createSanityMetadataResolver
+
+Creates a configured metadata resolver function that can be reused across multiple pages.
+
+```typescript
+import {createSanityMetadataResolver} from "@tinloof/sanity-web";
+import {client} from "./sanity/client";
+
+// Create a configured metadata resolver
+export const resolveSanityMetadata = createSanityMetadataResolver({
+  client,
+  websiteBaseURL: "https://example.com",
+  defaultLocaleId: "en",
+});
+```
+
+#### Usage in Next.js Pages
+
+Use the metadata resolver in your page or layout components:
+
+```typescript
+import {resolveSanityMetadata} from "@/lib/sanity/metadata";
+import {loadHome} from "@/data/sanity";
+import {notFound} from "next/navigation";
+
+type IndexRouteProps = {
+  params: Promise<{locale: string}>;
+};
+
+export async function generateMetadata(
+  props: IndexRouteProps,
+  parentPromise: ResolvingMetadata,
+) {
+  const parent = await parentPromise;
+  const locale = (await props.params).locale;
+
+  const initialData = await loadHome({locale});
+
+  if (!initialData) return notFound();
+
+  return resolveSanityMetadata({...initialData, parent});
+}
+```
+
+**Props for resolveSanityMetadata:**
+
+| Prop           | Type                        | Description                                       |
+| -------------- | --------------------------- | ------------------------------------------------- |
+| `parent`       | `ResolvedMetadata`          | Parent metadata from Next.js                      |
+| `title`        | `string` (optional)         | Page title                                        |
+| `seo`          | `object` (optional)         | SEO configuration with title, description, images |
+| `pathname`     | `string\|object` (optional) | Page pathname (string or slug object)             |
+| `locale`       | `string` (optional)         | Current locale                                    |
+| `translations` | `array` (optional)          | Array of translation objects                      |
+| `indexable`    | `boolean` (optional)        | Whether page should be indexed by search engines  |
+
+**SEO Object Structure:**
+
+```typescript
+type Seo = {
+  title?: string;
+  description?: string;
+  image?: Image; // Sanity image asset
+};
+```
+
 ### Redirects
 
 Utilities for handling URL redirects managed through Sanity CMS. These functions help you implement dynamic redirects that can be managed by content editors without code changes.
