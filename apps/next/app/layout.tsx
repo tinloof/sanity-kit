@@ -8,6 +8,8 @@ import {draftMode} from "next/headers";
 import {Metadata} from "next";
 import config from "@/config";
 
+import "@/styles/index.css";
+
 const sans = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
