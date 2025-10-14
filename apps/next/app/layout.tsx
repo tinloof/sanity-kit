@@ -9,15 +9,31 @@ import {Metadata} from "next";
 import config from "@/config";
 
 import "@/styles/index.css";
+import {getOgImages} from "@tinloof/sanity-web";
+import {loadGlobalData} from "@/data/sanity";
+import {client} from "@/data/sanity/client";
 
 const sans = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: `${config.siteName}`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await loadGlobalData();
+  return {
+    openGraph: {
+      images: !data?.fallbackSEO?.image
+        ? undefined
+        : getOgImages({client, image: data.fallbackSEO.image}),
+      title: config.siteName,
+    },
+    title: {
+      template: `%s | ${config.siteName}`,
+      default: data?.fallbackSEO?.title || config.siteName,
+    },
+    description: data?.fallbackSEO?.description,
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -28,13 +44,14 @@ export default async function RootLayout({
     <html lang="en" className={sans.variable}>
       <body>
         {children}
-        <ExitPreviewClient disableDraftMode={disableDraftMode} />
+
         {(await draftMode()).isEnabled && (
           <>
             <VisualEditing />
-            <SanityLive refreshOnFocus={false} />
+            <ExitPreviewClient disableDraftMode={disableDraftMode} />
           </>
         )}
+        <SanityLive refreshOnFocus={false} />
       </body>
     </html>
   );

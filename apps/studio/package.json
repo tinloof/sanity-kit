@@ -1,5 +1,5 @@
 {
-  "name": "vite-studio",
+  "name": "sanity-basic-studio",
   "private": true,
   "version": "1.1.15",
   "main": "package.json",
@@ -7,34 +7,34 @@
   "scripts": {
     "dev": "sanity dev",
     "start": "sanity start",
-    "build": "sanity build",
-    "deploy": "sanity deploy",
-    "deploy-graphql": "sanity graphql deploy"
+    "build": "sanity build"
   },
   "keywords": [
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^3.80.1",
+    "@sanity/vision": "^4.10.2",
     "@tinloof/sanity-studio": "workspace:*",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-is": "^18.3.1",
-    "sanity": "^3.80.1",
-    "styled-components": "^6.1.15"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-is": "^19.2.0",
+    "sanity": "^4.10.2",
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
-    "@sanity/eslint-config-studio": "^4.0.0",
-    "@sanity/types": "^3.80.1",
-    "@types/react": "^18.3.11",
-    "eslint": "^8.57.0",
-    "prettier": "^3.3.3",
-    "typescript": "^5.6.3"
+    "@sanity/eslint-config-studio": "^5.0.2",
+    "@sanity/types": "^4.10.2",
+    "@types/react": "^19.2.2",
+    "eslint": "^9.37.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3"
   },
   "prettier": {
-    "semi": false,
-    "printWidth": 100,
+    "arrowParens": "always",
     "bracketSpacing": false,
-    "singleQuote": true
+    "semi": true,
+    "singleQuote": false,
+    "tabWidth": 2,
+    "trailingComma": "all"
   }
 }

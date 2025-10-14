@@ -1,10 +1,16 @@
 export type DefaultDocumentActions =
-  | "publish"
-  | "discardChanges"
-  | "restore"
-  | "unpublish"
   | "delete"
-  | "duplicate";
+  | "discardChanges"
+  | "discardVersion"
+  | "duplicate"
+  | "restore"
+  | "publish"
+  | "unpublish"
+  | "unpublishVersion"
+  | "linkToCanvas"
+  | "editInCanvas"
+  | "unlinkFromCanvas"
+  | "schedule";
 
 export type DisableCreationPluginOptions = {
   schemas: string[];
