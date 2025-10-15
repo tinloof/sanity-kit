@@ -2,7 +2,7 @@ import {isDev} from "sanity";
 import documents from "./schemas/documents";
 import {StructureResolver} from "sanity/structure";
 import {
-  DefineSchemaDefinition,
+  DefineDocumentDefinition,
   singletonListItem,
 } from "@tinloof/sanity-studio";
 
@@ -18,7 +18,7 @@ export const structure: StructureResolver = (S) => {
 };
 
 const disableCreationDocuments = documents.filter((document) => {
-  const schema = document as DefineSchemaDefinition;
+  const schema = document as DefineDocumentDefinition;
   return schema.options?.disableCreation;
 });
 

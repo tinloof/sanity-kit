@@ -8,7 +8,7 @@ import {Image, SanityClient} from "sanity";
 type Seo = {
   title?: string;
   description?: string;
-  image?: Omit<Image, "crop" | "hotspot">;
+  ogImage?: Omit<Image, "crop" | "hotspot">;
 };
 
 type Translation = null | {locale: null | string; pathname: null | string};
@@ -141,15 +141,15 @@ export async function resolveSanityRouteMetadata(
   });
 
   // Fallback logic for ogImages:
-  // 1. First try seo?.image (if provided and has asset)
+  // 1. First try seo?.ogImage (if provided and has asset)
   // 2. Fall back to parent.openGraph?.images (if available)
   // 3. Default to empty array
 
   let ogImages;
 
-  if (seo?.image?.asset) {
+  if (seo?.ogImage?.asset) {
     try {
-      ogImages = getOgImages({image: seo.image, client});
+      ogImages = getOgImages({image: seo.ogImage, client});
     } catch (error) {
       console.warn("Failed to generate OG images from SEO image:", error);
       ogImages = parent?.openGraph?.images || [];

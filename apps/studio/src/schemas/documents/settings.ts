@@ -1,6 +1,6 @@
-import {defineSchema, redirectsSchema} from "@tinloof/sanity-studio";
+import {defineDocument, redirectsSchema} from "@tinloof/sanity-studio";
 
-export default defineSchema({
+export default defineDocument({
   name: "settings",
   title: "Settings",
   type: "document",
