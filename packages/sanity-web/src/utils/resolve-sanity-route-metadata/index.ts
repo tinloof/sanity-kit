@@ -9,6 +9,7 @@ type Seo = {
   title?: string;
   description?: string;
   ogImage?: Omit<Image, "crop" | "hotspot">;
+  indexable?: boolean;
 };
 
 type Translation = null | {locale: null | string; pathname: null | string};
@@ -47,7 +48,6 @@ export type ResolveSanityRouteMetadataProps = {
   parent: ResolvedMetadata;
   websiteBaseURL: string;
   defaultLocaleId?: string;
-  indexable?: boolean;
   client: SanityClient;
   pathname?:
     | {
@@ -94,7 +94,6 @@ export async function resolveSanityRouteMetadata(
 ) {
   const {
     title,
-    indexable,
     pathname,
     seo,
     translations,
@@ -195,7 +194,7 @@ export async function resolveSanityRouteMetadata(
       url: canonicalUrl,
       ...(seo?.title ? {title: seo.title} : title ? {title} : {}),
     },
-    robots: !indexable ? "noindex nofollow" : undefined,
+    robots: !seo?.indexable ? "noindex nofollow" : undefined,
   };
 }
 
