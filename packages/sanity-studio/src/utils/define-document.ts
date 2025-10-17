@@ -1,10 +1,13 @@
-import {CogIcon, ComposeIcon} from "@sanity/icons";
 import {
   orderRankField,
   orderRankOrdering,
 } from "@sanity/orderable-document-list";
 import {uniqBy} from "lodash";
-import {defineField, type DocumentDefinition, type SortOrdering} from "sanity";
+import {type DocumentDefinition, type SortOrdering} from "sanity";
+
+import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";
+import {internalTitleStringField, localeStringField} from "../schemas/strings";
+import {FieldOptions} from "../types";
 
 export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
   /** Schema options for various features */
@@ -16,7 +19,7 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
     /** Enable document ordering with orderRank field */
     orderable?: boolean;
     /** Hide the internal title field */
-    hideInternalTitle?: boolean;
+    internalTitle?: FieldOptions;
   };
 };
 
@@ -55,14 +58,10 @@ export default function defineDocument(
   const groups = uniqBy(
     [
       {
+        ...contentSchemaGroup,
         default: schema?.groups?.some((group) => group.default),
-        icon: ComposeIcon,
-        name: "content",
       },
-      {
-        icon: CogIcon,
-        name: "settings",
-      },
+      settingsSchemaGroup,
       ...(schema.groups || []),
     ].filter(Boolean),
     "name",
@@ -70,26 +69,14 @@ export default function defineDocument(
 
   const {options, ...schemaWithoutOptions} = schema;
 
+  const {localized, internalTitle, orderable, ...restOfOptions} = options || {};
+
   const defaultFields = [
-    ...(options?.orderable ? [orderRankField({type: schema.name})] : []),
-    ...(options?.localized
-      ? [
-          defineField({
-            hidden: true,
-            name: "locale",
-            type: "string",
-          }),
-        ]
+    ...(orderable ? [orderRankField({type: schema.name})] : []),
+    ...(localized ? [localeStringField] : []),
+    ...(internalTitle !== false
+      ? [{...internalTitleStringField, hidden: internalTitle === "hidden"}]
       : []),
-    defineField({
-      description:
-        "This title is only used internally in Sanity, it won't be displayed on the website.",
-      group: "settings",
-      hidden: options?.hideInternalTitle,
-      name: "internalTitle",
-      title: "Internal Title",
-      type: "string",
-    }),
   ].filter(Boolean);
 
   const allFields = [...defaultFields, ...schema.fields];
@@ -102,6 +89,9 @@ export default function defineDocument(
 
   return {
     ...schemaWithoutOptions,
+    options: {
+      ...restOfOptions,
+    },
     fields: uniqBy(allFields, "name"),
     groups,
     orderings: options?.orderable

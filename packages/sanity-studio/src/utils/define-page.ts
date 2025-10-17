@@ -1,10 +1,18 @@
 import type {DocumentDefinition} from "sanity";
-import {defineField, isDev} from "sanity";
 
-import {InputWithCharacterCount} from "../components/input-with-characters-count";
-import type {PathnameParams} from "../types";
+import seoObjectField from "../schemas/objects/seo";
+import pathnameSlugField from "../schemas/slugs/pathname";
+import {FieldOptions} from "../types";
 import defineDocument, {DefineDocumentDefinition} from "./define-document";
-import {definePathname} from "./definePathname";
+
+type PathnameOptions = NonNullable<
+  Parameters<typeof pathnameSlugField>[0]
+>["options"];
+
+type SEOOptions = Pick<
+  NonNullable<Parameters<typeof seoObjectField>[0]>,
+  "description" | "ogImage" | "indexableStatus" | "title"
+>;
 
 /**
  * Configuration options for defining a page document schema
@@ -12,19 +20,12 @@ import {definePathname} from "./definePathname";
 type PageDefinition = Omit<DocumentDefinition, "options" | "type"> & {
   /** Schema options including localization and field visibility settings */
   options?: DefineDocumentDefinition["options"] & {
-    /** Hide the indexable status field in SEO settings */
-    hideIndexableStatus?: boolean;
     /** Hide the pathname field */
-    hidePathnameField?: boolean;
+    pathname?: FieldOptions | PathnameOptions;
     /** Hide the entire SEO settings field */
-    hideSeo?: boolean;
+    seo?: FieldOptions | SEOOptions;
     /** Default locale ID for localization */
     defaultLocaleId?: string;
-  };
-  /** Options for the pathname field behavior */
-  pathnameOptions?: PathnameParams["options"] & {
-    /** Initial value for the pathname field */
-    initialValue?: string;
   };
 };
 
@@ -56,91 +57,44 @@ type PageDefinition = Omit<DocumentDefinition, "options" | "type"> & {
  * ```
  */
 export default function definePage(schema: PageDefinition): DocumentDefinition {
-  const {initialValue, ...pathnameOptions} = schema.pathnameOptions || {};
   const {options, preview, fields, ...schemaWithoutOptions} = schema;
+
+  const {
+    defaultLocaleId,
+    disableCreation,
+    pathname,
+    localized,
+    seo,
+    internalTitle,
+    orderable,
+  } = options || {};
 
   return defineDocument({
     ...schemaWithoutOptions,
     type: "document",
     fields: [
-      defineField({
-        ...definePathname({
-          options: {
-            i18n:
-              options?.localized && options?.defaultLocaleId
-                ? {
-                    defaultLocaleId: options?.defaultLocaleId,
-                    enabled: true,
-                  }
-                : undefined,
-            ...pathnameOptions,
-          },
-        }),
-        group: "settings",
-        readOnly: options?.disableCreation && !isDev,
-        hidden: options?.hidePathnameField,
-        initialValue: {current: initialValue},
-      }),
-      defineField({
-        name: "seo",
-        title: "SEO",
-        type: "object",
-        group: "settings",
-        hidden: options?.hideSeo,
-        options: {collapsed: false, collapsible: true},
-        fields: [
-          defineField({
-            description:
-              "Won't show up in search engines if set to false, but accessible through URL.",
-            initialValue: true,
-            name: "indexable",
-            type: "boolean",
-            validation: options?.hideIndexableStatus
-              ? undefined
-              : (Rule) => Rule.required(),
-            hidden: options?.hideIndexableStatus,
-          }),
-          {
-            components: {
-              input: InputWithCharacterCount,
-            },
-            name: "title",
-            options: {
-              maxLength: 70,
-              minLength: 15,
-            },
-            type: "string",
-          },
-          {
-            components: {
-              input: InputWithCharacterCount,
-            },
-            name: "description",
-            options: {
-              maxLength: 160,
-              minLength: 50,
-            },
-            rows: 2,
-            title:
-              "Short description for SEO & social sharing (meta description)",
-            type: "text",
-          },
-          {
-            description:
-              "Highly encouraged for increasing conversion rates for links to this page shared in social media.",
-            name: "ogImage",
-            options: {
-              hotspot: true,
-            },
-            title: "Social Sharing Image",
-            type: "image",
-          },
-        ],
-      }),
+      pathname !== false
+        ? pathnameSlugField({
+            options: typeof pathname === "object" ? pathname : {},
+            defaultLocaleId,
+            disableCreation,
+            hidden: pathname === "hidden",
+            localized,
+          })
+        : undefined,
+      seo !== false
+        ? seoObjectField({
+            hidden: seo === "hidden",
+            ...(typeof seo === "object" ? seo : {}),
+          })
+        : undefined,
       ...fields,
-    ].filter(Boolean),
+    ].filter(Boolean) as DocumentDefinition["fields"],
     options: {
-      ...(options ?? {}),
+      disableCreation,
+      localized,
+      orderable,
+      internalTitle,
     },
     preview: {
       select: {

@@ -1,4 +1,8 @@
-import {defineDocument, redirectsSchema} from "@tinloof/sanity-studio";
+import {
+  defineDocument,
+  redirectsSchema,
+  seoObjectField,
+} from "@tinloof/sanity-studio";
 
 export default defineDocument({
   name: "settings",
@@ -6,16 +10,14 @@ export default defineDocument({
   type: "document",
   options: {
     disableCreation: true,
-    hideInternalTitle: true,
-    localized: true,
+    internalTitle: false,
   },
   fields: [
     {
+      ...seoObjectField({indexableStatus: false}),
       title: "Global fallback SEO",
       description:
         "Will be used as the fallback SEO for all pages that don't define a custom SEO in their SEO fields.",
-      name: "seo",
-      type: "seo",
     },
     {...redirectsSchema},
   ],

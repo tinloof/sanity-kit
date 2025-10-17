@@ -22,9 +22,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const data = await loadGlobalData();
   return {
     openGraph: {
-      images: !data?.fallbackSEO?.image
+      images: !data?.fallbackSEO?.ogImage
         ? undefined
-        : getOgImages({client, image: data.fallbackSEO.image}),
+        : getOgImages({client, image: data.fallbackSEO.ogImage}),
       title: config.siteName,
     },
     title: {

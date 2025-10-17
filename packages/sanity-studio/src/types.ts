@@ -244,3 +244,20 @@ export type IconParams = Omit<
 export type IconInputProps = StringInputProps<StringSchemaType> & {
   schemaType: {options?: IconOptions};
 };
+
+export type FieldOptions = boolean | "hidden";
+
+declare module "sanity" {
+  interface DocumentOptions {
+    /** Disable document creation, used with the disableCreation plugin */
+    disableCreation?: boolean;
+  }
+  interface TextOptions {
+    maxLength?: number;
+    minLength?: number;
+  }
+  interface StringOptions {
+    maxLength?: number;
+    minLength?: number;
+  }
+}
