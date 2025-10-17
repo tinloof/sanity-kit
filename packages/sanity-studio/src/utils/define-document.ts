@@ -6,16 +6,6 @@ import {
 import {uniqBy} from "lodash";
 import {defineField, type DocumentDefinition, type SortOrdering} from "sanity";
 
-import {applyFieldOverrides, FieldOverride} from "./apply-field-overrides";
-
-/**
- * Names of default fields that can be overridden in defineDocument
- */
-export type DefaultDocumentFieldNames =
-  | "orderRank"
-  | "locale"
-  | "internalTitle";
-
 export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
   /** Schema options for various features */
   options?: {
@@ -28,8 +18,6 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
     /** Hide the internal title field */
     hideInternalTitle?: boolean;
   };
-  /** Field overrides for customizing or removing default fields */
-  fieldOverrides?: Partial<Record<DefaultDocumentFieldNames, FieldOverride>>;
 };
 
 /**
@@ -60,27 +48,6 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
  *   ],
  * });
  * ```
- *
- * @example
- * ```typescript
- * // With options and field overrides
- * export default defineDocument({
- *   name: "post",
- *   title: "Blog Post",
- *   type: "document",
- *   options: {
- *     localized: true,
- *     orderable: true,
- *   },
- *   fieldOverrides: {
- *     orderRank: false, // Remove order rank field
- *     internalTitle: { title: "Post Name" }, // Customize internal title
- *   },
- *   fields: [
- *     // Your custom fields
- *   ],
- * });
- * ```
  */
 export default function defineDocument(
   schema: DefineDocumentDefinition,
@@ -101,7 +68,7 @@ export default function defineDocument(
     "name",
   );
 
-  const {options, fieldOverrides, ...schemaWithoutOptions} = schema;
+  const {options, ...schemaWithoutOptions} = schema;
 
   const defaultFields = [
     ...(options?.orderable ? [orderRankField({type: schema.name})] : []),
@@ -127,11 +94,7 @@ export default function defineDocument(
 
   const allFields = [...defaultFields, ...schema.fields];
 
-  const mergedFields = fieldOverrides
-    ? applyFieldOverrides(allFields, fieldOverrides)
-    : allFields;
-
-  if (mergedFields.length === 0) {
+  if (allFields.length === 0) {
     throw new Error(
       `[defineDocument] "${schema.name}" must define at least one field.`,
     );
@@ -139,7 +102,7 @@ export default function defineDocument(
 
   return {
     ...schemaWithoutOptions,
-    fields: uniqBy(mergedFields, "name"),
+    fields: uniqBy(allFields, "name"),
     groups,
     orderings: options?.orderable
       ? [...(schema.orderings || []), orderRankOrdering as SortOrdering]

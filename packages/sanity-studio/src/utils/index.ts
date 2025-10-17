@@ -1,4 +1,3 @@
-export {applyFieldOverrides} from "./apply-field-overrides";
 export {
   default as defineDocument,
   type DefineDocumentDefinition,

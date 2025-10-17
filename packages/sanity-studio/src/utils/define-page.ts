@@ -3,17 +3,8 @@ import {defineField, isDev} from "sanity";
 
 import {InputWithCharacterCount} from "../components/input-with-characters-count";
 import type {PathnameParams} from "../types";
-import {FieldOverride} from "./apply-field-overrides";
-import defineDocument, {
-  DefaultDocumentFieldNames,
-  DefineDocumentDefinition,
-} from "./define-document";
+import defineDocument, {DefineDocumentDefinition} from "./define-document";
 import {definePathname} from "./definePathname";
-
-/**
- * Names of default fields that can be overridden in definePage
- */
-type DefaultFieldsNames = "pathname" | "seo" | DefaultDocumentFieldNames;
 
 /**
  * Configuration options for defining a page document schema
@@ -35,8 +26,6 @@ type PageDefinition = Omit<DocumentDefinition, "options" | "type"> & {
     /** Initial value for the pathname field */
     initialValue?: string;
   };
-  /** Field overrides for customizing or removing default fields */
-  fieldOverrides?: Partial<Record<DefaultFieldsNames, FieldOverride>>;
 };
 
 /**
@@ -62,22 +51,6 @@ type PageDefinition = Omit<DocumentDefinition, "options" | "type"> & {
  *       type: "string",
  *       title: "Title",
  *     },
- *   ],
- * });
- * ```
- *
- * @example
- * ```typescript
- * // With field overrides
- * export default definePage({
- *   name: "page",
- *   title: "Page",
- *   fieldOverrides: {
- *     pathname: false, // Remove pathname field
- *     seo: { title: "Custom SEO" }, // Customize SEO field
- *   },
- *   fields: [
- *     // Your custom fields
  *   ],
  * });
  * ```
