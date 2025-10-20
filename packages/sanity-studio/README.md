@@ -104,15 +104,32 @@ export default definePage({
     localized: true, // Enable internationalization
     defaultLocaleId: "en", // Default locale for i18n
     orderable: false, // Enable document ordering
-    internalTitle: false, // Hide the internal title field (false, "hidden", or true)
+
+    // Field customization options
+    internalTitle: "hidden", // Hide internal title (FieldCustomization)
+
+    // Pathname field - can be FieldCustomization or configuration object
+    pathname: true, // Show with defaults (FieldCustomization)
+    // OR
     pathname: {
-      // Pathname field options
-      initialValue: "/", // Initial pathname value
-      autoNavigate: true, // Auto-navigate in Presentation
-      prefix: "/blog", // Pathname prefix
-      folder: {
-        canUnlock: false, // Disable folder renaming
+      // Direct configuration (PathnameSlugFieldOptions)
+      localized: true,
+      options: {
+        source: "title",
+        initialValue: "/",
       },
+      hidden: false,
+    },
+
+    // SEO field - can be FieldCustomization or configuration object
+    seo: "hidden", // Hide entire SEO field (FieldCustomization)
+    // OR
+    seo: {
+      // Configure individual SEO sub-fields (SEOOptions)
+      title: "hidden", // Hide SEO title
+      description: true, // Show SEO description
+      ogImage: false, // Remove OG image completely
+      indexableStatus: true, // Show indexable status
     },
   },
   fields: [
@@ -165,9 +182,16 @@ export default defineDocument({
   type: "document",
   options: {
     disableCreation: true, // Disable document creation
-    localized: true, // Enable internationalization
-    orderable: true, // Enable document ordering
-    internalTitle: false, // Hide the internal title field (false, "hidden", or true)
+
+    // Field customization with FieldCustomization type
+    localized: true, // Show locale field (FieldCustomization)
+    orderable: "hidden", // Hide order rank field (FieldCustomization)
+    internalTitle: (field) =>
+      defineField({
+        ...field,
+        title: "Tag Name",
+        validation: (Rule) => Rule.required(),
+      }), // Custom field transformation (FieldCustomization)
   },
   fields: [
     // Your custom fields
@@ -179,15 +203,58 @@ export default defineDocument({
 
 The package now provides modular schema components that can be used independently or as part of the `definePage` and `defineDocument` utilities. These components are organized into categories for better organization and reusability.
 
-### Field Options
+### Field Customization
 
-Many schema components support a `FieldOptions` type that allows you to control field visibility:
+The package introduces a `FieldCustomization` system that allows you to control and customize fields in multiple ways.
 
-- `true` - Show the field (default)
-- `false` - Completely remove the field
-- `"hidden"` - Hide the field but keep it in the schema
+#### Field Customization Types
 
-This provides fine-grained control over which fields are displayed in your Sanity Studio interface.
+- **`true`** - (default) - Show the field with default configuration
+- **`false`** - Completely remove the field from the schema
+- **`"hidden"`** - Hide the field but keep it in the schema
+- **`(field) => defineField({...field, ...changes})`** - Transform the field with a custom function (always wrap in `defineField` for type safety)
+
+#### Usage Examples
+
+```tsx
+// Basic visibility control
+internalTitle: true,        // Show field
+internalTitle: false,       // Remove field
+internalTitle: "hidden",    // Hide field
+
+// Custom transformation - ALWAYS wrap in defineField for type safety
+internalTitle: (field) => defineField({
+  ...field,
+  title: "Custom Internal Title",
+  validation: (Rule) => Rule.required(),
+}),
+
+// For object fields like SEO, you can also pass configuration options directly
+seo: {
+  title: "hidden",           // Hide SEO title field
+  description: true,         // Show SEO description
+  ogImage: false,           // Remove OG image field
+  indexableStatus: true,    // Show indexable status
+},
+```
+
+This system provides fine-grained control over field visibility, configuration, and behavior throughout your Sanity Studio.
+
+**⚠️ Important**: When using the function callback approach, **always wrap your return value in `defineField`** for maximum type safety:
+
+```tsx
+// ✅ Correct - wrapped in defineField
+myField: (field) => defineField({
+  ...field,
+  title: "Custom Title",
+}),
+
+// ❌ Incorrect - missing defineField wrapper
+myField: (field) => ({
+  ...field,
+  title: "Custom Title",
+}),
+```
 
 ### Field groups
 
@@ -443,7 +510,7 @@ Reusable object field definitions for common use cases.
 
 #### `seoObjectField`
 
-A comprehensive SEO object field with configurable sub-fields.
+A comprehensive SEO object field with configurable sub-fields using the `FieldCustomization` system.
 
 ```tsx
 import {seoObjectField} from "@tinloof/sanity-studio";
@@ -453,15 +520,28 @@ export default defineType({
   type: "document",
   fields: [
     seoObjectField({
-      hidden: false, // Show/hide the entire SEO field
-      indexableStatus: true, // Show indexable status field (true, "hidden", or false)
-      title: true, // Show SEO title field (true, "hidden", or false)
-      description: true, // Show SEO description field (true, "hidden", or false)
-      ogImage: true, // Show social sharing image field (true, "hidden", or false)
+      indexableStatus: true, // Show indexable status (FieldCustomization)
+      title: "hidden", // Hide SEO title (FieldCustomization)
+      description: (field) =>
+        defineField({
+          ...field,
+          title: "Meta Description",
+          validation: (Rule) => Rule.max(160).required(),
+        }), // Custom field transformation (FieldCustomization)
+      ogImage: false, // Remove OG image completely (FieldCustomization)
     }),
   ],
 });
 ```
+
+The field includes:
+
+- **Indexable status** - Controls search engine indexing
+- **SEO title** - With character count validation (15-70 chars)
+- **SEO description** - With character count validation (50-160 chars)
+- **Social sharing image** - For Open Graph and social media
+
+Each sub-field supports the full `FieldCustomization` system (true, false, "hidden", or transform function).
 
 ### Slug fields
 

@@ -7,7 +7,10 @@ import {type DocumentDefinition, type SortOrdering} from "sanity";
 
 import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";
 import {internalTitleStringField, localeStringField} from "../schemas/strings";
-import {FieldOptions} from "../types";
+import {
+  applyFieldCustomization,
+  FieldCustomization,
+} from "./apply-field-customization";
 
 export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
   /** Schema options for various features */
@@ -15,11 +18,11 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
     /** Disable document creation, used with the disableCreation plugin */
     disableCreation?: boolean;
     /** Enable localization with locale field */
-    localized?: boolean;
+    localized?: FieldCustomization<typeof localeStringField>;
     /** Enable document ordering with orderRank field */
-    orderable?: boolean;
+    orderable?: FieldCustomization<ReturnType<typeof orderRankField>>;
     /** Hide the internal title field */
-    internalTitle?: FieldOptions;
+    internalTitle?: FieldCustomization<typeof internalTitleStringField>;
   };
 };
 
@@ -67,17 +70,32 @@ export default function defineDocument(
     "name",
   );
 
-  const {options, ...schemaWithoutOptions} = schema;
+  const {options, preview, ...schemaWithoutOptions} = schema;
 
-  const {localized, internalTitle, orderable, ...restOfOptions} = options || {};
+  const {
+    localized = false,
+    internalTitle = false,
+    orderable = false,
+    ...restOfOptions
+  } = options || {};
+
+  const internalTitleField = internalTitle
+    ? applyFieldCustomization(internalTitleStringField, internalTitle)
+    : null;
+
+  const localizedField = localized
+    ? applyFieldCustomization(localeStringField, localized)
+    : null;
+
+  const orderRankFieldInstance = orderable
+    ? orderRankField({type: schema.name})
+    : null;
 
   const defaultFields = [
-    ...(orderable ? [orderRankField({type: schema.name})] : []),
-    ...(localized ? [localeStringField] : []),
-    ...(internalTitle !== false
-      ? [{...internalTitleStringField, hidden: internalTitle === "hidden"}]
-      : []),
-  ].filter(Boolean);
+    ...(orderRankFieldInstance ? [orderRankFieldInstance] : []),
+    ...(localizedField ? [localizedField] : []),
+    ...(internalTitleField ? [internalTitleField] : []),
+  ];
 
   const allFields = [...defaultFields, ...schema.fields];
 
@@ -97,5 +115,13 @@ export default function defineDocument(
     orderings: options?.orderable
       ? [...(schema.orderings || []), orderRankOrdering as SortOrdering]
       : schema.orderings,
+    preview: preview ?? {
+      select: {
+        title: "internalTitle",
+      },
+      prepare: ({title}) => ({
+        title: title ?? schema?.title,
+      }),
+    },
   };
 }
