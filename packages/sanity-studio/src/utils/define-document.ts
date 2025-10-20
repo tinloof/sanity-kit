@@ -5,8 +5,12 @@ import {
 import {uniqBy} from "lodash";
 import {type DocumentDefinition, type SortOrdering} from "sanity";
 
-import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";
-import {internalTitleStringField, localeStringField} from "../schemas/strings";
+import {
+  contentSchemaGroup,
+  internalTitleStringField,
+  localeStringField,
+  settingsSchemaGroup,
+} from "../schemas";
 import {FieldOptions} from "../types";
 
 export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
@@ -69,7 +73,7 @@ export default function defineDocument(
 
   const {options, ...schemaWithoutOptions} = schema;
 
-  const {localized, internalTitle, orderable, ...restOfOptions} = options || {};
+  const {localized, orderable, internalTitle, ...restOfOptions} = options || {};
 
   const defaultFields = [
     ...(orderable ? [orderRankField({type: schema.name})] : []),
