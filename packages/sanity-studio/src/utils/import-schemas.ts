@@ -9,16 +9,50 @@ type SanitySchemaExport = SchemaTypeDefinition | (() => SchemaTypeDefinition);
  * Type for modules loaded via import.meta.glob
  */
 type GlobModule = () => Promise<{
-  default?: SanitySchemaExport | unknown;
-  [key: string]: unknown;
+  default?: SanitySchemaExport;
+  [key: string]: SanitySchemaExport | unknown;
 }>;
+
+/**
+ * Helper function to process imported modules and extract schemas.
+ * Handles both default exports and named exports.
+ *
+ * @param modules - The modules object from import.meta.glob
+ * @returns A promise that resolves to an array of Sanity schema type definitions
+ */
+async function processSchemaModules(
+  modules: Record<string, GlobModule>,
+): Promise<SchemaTypeDefinition[]> {
+  const schemas = await Promise.all(
+    Object.values(modules).map(async (mod: GlobModule) => {
+      const module = await mod();
+      // Handle default exports
+      if (module.default) {
+        const schema = module.default;
+        return typeof schema === "function" ? schema() : schema;
+      }
+      // Handle named exports - collect all non-default exports
+      const namedExports = Object.keys(module).filter(
+        (key) => key !== "default" && typeof module[key] === "object",
+      );
+      return namedExports.map((key) => {
+        const schema = module[key];
+        return typeof schema === "function" ? schema() : schema;
+      });
+    }),
+  );
+
+  // Flatten the array since we might have multiple exports per module
+  return schemas.flat().filter(Boolean) as SchemaTypeDefinition[];
+}
 
 /**
  * Imports all schemas from all schema directories using dynamic imports.
  *
- * This function uses Vite's `import.meta.glob()` to dynamically import all TypeScript files
+ * This function uses Vite's `import.meta.glob()` to dynamically import all TypeScript and TSX files
  * from the `/src/schemas/` directory and its subdirectories. It handles both default exports
- * and factory function exports commonly used in Sanity schema definitions.
+ * and named exports (like `export const home = ...`) as well as factory function exports
+ * commonly used in Sanity schema definitions.
  *
  * @returns A promise that resolves to an array of Sanity schema type definitions
  *
@@ -33,25 +67,27 @@ type GlobModule = () => Promise<{
  *   },
  * });
  * ```
+ *
+ * @example
+ * ```typescript
+ * // Both export styles are supported:
+ *
+ * // Default export
+ * export default defineDocument({ name: 'page', ... });
+ *
+ * // Named export
+ * export const home = defineDocument({ name: 'home', ... });
+ * ```
  */
 export async function importAllSchemas(): Promise<SchemaTypeDefinition[]> {
-  // Must use a static glob literal, relative to this file
-  const modules = import.meta.glob("/src/schemas/**/*.ts");
-  const schemas = await Promise.all(
-    Object.values(modules).map(async (mod: GlobModule) => {
-      const module = await mod();
-      const schema = module.default || module;
-      return typeof schema === "function" ? schema() : schema;
-    }),
-  );
-
-  return schemas as SchemaTypeDefinition[];
+  const modules = import.meta.glob("/src/schemas/**/*.{ts,tsx}");
+  return processSchemaModules(modules);
 }
 
 /**
  * Imports schemas specifically from the documents directory.
  *
- * This function dynamically imports all TypeScript files from the `/src/schemas/documents/`
+ * This function dynamically imports all TypeScript and TSX files from the `/src/schemas/documents/`
  * directory. Document schemas typically represent the main content types in your Sanity
  * project (like pages, posts, products, etc.).
  *
@@ -83,23 +119,14 @@ export async function importAllSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importDocumentSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/documents/*.ts");
-
-  const schemas = await Promise.all(
-    Object.values(modules).map(async (mod: GlobModule) => {
-      const module = await mod();
-      const schema = module.default || module;
-      return typeof schema === "function" ? schema() : schema;
-    }),
-  );
-
-  return schemas as SchemaTypeDefinition[];
+  const modules = import.meta.glob("/src/schemas/documents/*.{ts,tsx}");
+  return processSchemaModules(modules);
 }
 
 /**
  * Imports schemas from the sections directory.
  *
- * This function dynamically imports all TypeScript files from the `/src/schemas/sections/`
+ * This function dynamically imports all TypeScript and TSX files from the `/src/schemas/sections/`
  * directory. Section schemas are typically used for modular page building, representing
  * reusable content blocks like heroes, testimonials, galleries, etc.
  *
@@ -129,23 +156,14 @@ export async function importDocumentSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importSectionSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/sections/*.ts");
-
-  const schemas = await Promise.all(
-    Object.values(modules).map(async (mod: GlobModule) => {
-      const module = await mod();
-      const schema = module.default || module;
-      return typeof schema === "function" ? schema() : schema;
-    }),
-  );
-
-  return schemas as SchemaTypeDefinition[];
+  const modules = import.meta.glob("/src/schemas/sections/*.{ts,tsx}");
+  return processSchemaModules(modules);
 }
 
 /**
  * Imports schemas from the objects directory.
  *
- * This function dynamically imports all TypeScript files from the `/src/schemas/objects/`
+ * This function dynamically imports all TypeScript and TSX files from the `/src/schemas/objects/`
  * directory. Object schemas represent reusable field groups and complex data structures
  * that can be embedded in documents (like SEO objects, address objects, etc.).
  *
@@ -175,23 +193,14 @@ export async function importSectionSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importObjectSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/objects/*.ts");
-
-  const schemas = await Promise.all(
-    Object.values(modules).map(async (mod: GlobModule) => {
-      const module = await mod();
-      const schema = module.default || module;
-      return typeof schema === "function" ? schema() : schema;
-    }),
-  );
-
-  return schemas as SchemaTypeDefinition[];
+  const modules = import.meta.glob("/src/schemas/objects/*.{ts,tsx}");
+  return processSchemaModules(modules);
 }
 
 /**
  * Imports schemas from the singletons directory.
  *
- * This function dynamically imports all TypeScript files from the `/src/schemas/singletons/`
+ * This function dynamically imports all TypeScript and TSX files from the `/src/schemas/singletons/`
  * directory. Singleton schemas represent unique documents that should only have one instance
  * (like site settings, global configuration, etc.).
  *
@@ -225,15 +234,6 @@ export async function importObjectSchemas(): Promise<SchemaTypeDefinition[]> {
 export async function importSingletonSchemas(): Promise<
   SchemaTypeDefinition[]
 > {
-  const modules = import.meta.glob("/src/schemas/singletons/*.ts");
-
-  const schemas = await Promise.all(
-    Object.values(modules).map(async (mod: GlobModule) => {
-      const module = await mod();
-      const schema = module.default || module;
-      return typeof schema === "function" ? schema() : schema;
-    }),
-  );
-
-  return schemas as SchemaTypeDefinition[];
+  const modules = import.meta.glob("/src/schemas/singletons/*.{ts,tsx}");
+  return processSchemaModules(modules);
 }
