@@ -406,7 +406,7 @@ export const MODULAR_PAGE_QUERY = defineQuery(`
 import {TRANSLATIONS_FRAGMENT} from "@tinloof/sanity-web";
 
 export const SITEMAP_QUERY = defineQuery(`
-  *[((pathname.current != null || _type == "home") && indexable && locale == $defaultLocale)] {
+  *[((pathname.current != null || _type == "home") && seo.indexable && locale == $defaultLocale)] {
     pathname,
     "lastModified": _updatedAt,
     locale,

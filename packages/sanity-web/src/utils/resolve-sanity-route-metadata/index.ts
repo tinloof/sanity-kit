@@ -8,7 +8,8 @@ import {Image, SanityClient} from "sanity";
 type Seo = {
   title?: string;
   description?: string;
-  image?: Omit<Image, "crop" | "hotspot">;
+  ogImage?: Omit<Image, "crop" | "hotspot">;
+  indexable?: boolean;
 };
 
 type Translation = null | {locale: null | string; pathname: null | string};
@@ -47,7 +48,6 @@ export type ResolveSanityRouteMetadataProps = {
   parent: ResolvedMetadata;
   websiteBaseURL: string;
   defaultLocaleId?: string;
-  indexable?: boolean;
   client: SanityClient;
   pathname?:
     | {
@@ -94,7 +94,6 @@ export async function resolveSanityRouteMetadata(
 ) {
   const {
     title,
-    indexable,
     pathname,
     seo,
     translations,
@@ -141,15 +140,15 @@ export async function resolveSanityRouteMetadata(
   });
 
   // Fallback logic for ogImages:
-  // 1. First try seo?.image (if provided and has asset)
+  // 1. First try seo?.ogImage (if provided and has asset)
   // 2. Fall back to parent.openGraph?.images (if available)
   // 3. Default to empty array
 
   let ogImages;
 
-  if (seo?.image?.asset) {
+  if (seo?.ogImage?.asset) {
     try {
-      ogImages = getOgImages({image: seo.image, client});
+      ogImages = getOgImages({image: seo.ogImage, client});
     } catch (error) {
       console.warn("Failed to generate OG images from SEO image:", error);
       ogImages = parent?.openGraph?.images || [];
@@ -195,7 +194,7 @@ export async function resolveSanityRouteMetadata(
       url: canonicalUrl,
       ...(seo?.title ? {title: seo.title} : title ? {title} : {}),
     },
-    robots: !indexable ? "noindex nofollow" : undefined,
+    robots: !seo?.indexable ? "noindex nofollow" : undefined,
   };
 }
 

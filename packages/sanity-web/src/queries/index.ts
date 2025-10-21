@@ -16,7 +16,7 @@ export const REDIRECT_QUERY = defineQuery(`
  * This query looks for all documents that are indexable and have a pathname or are of type "home" and have a locale.
  */
 export const I18N_SITEMAP_QUERY = defineQuery(`
-  *[(pathname.current != null || _type == $homeType) && indexable && locale == $locale] {
+  *[(pathname.current != null || _type == $homeType) && seo.indexable && locale == $locale] {
     "pathname": pathname.current,
     "lastModified": _updatedAt,
     _type,
@@ -30,7 +30,7 @@ export const I18N_SITEMAP_QUERY = defineQuery(`
  * This query looks for all documents that are indexable and have a pathname or are of type "home".
  */
 export const SITEMAP_QUERY = defineQuery(`
-  *[((pathname.current != null || _type == $homeType) && indexable)] {
+  *[((pathname.current != null || _type == $homeType) && seo.indexable)] {
     "pathname": pathname.current,
     "lastModified": _updatedAt,
     _type,

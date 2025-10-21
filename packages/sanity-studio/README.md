@@ -1,6 +1,6 @@
 # @tinloof/sanity-studio
 
-A collection of studio plugins, fields, and components to boost your Sanity studio.
+A collection of studio plugins, fields, and components to boost your Sanity studio. This package provides both high-level utilities for rapid development and modular schema components for fine-grained control over your Sanity schemas.
 
 <video controls src="https://github.com/tinloof/sanity-kit/assets/10447155/467e32d2-ded1-47ad-b7f1-85007a941785">
 </video>
@@ -16,7 +16,24 @@ npm install @tinloof/sanity-studio
 - [Table of contents](#table-of-contents)
 - [Schema utilities](#schema-utilities)
   - [`definePage`](#definepage)
-  - [`defineSchema`](#defineschema)
+  - [`defineDocument`](#definedocument)
+- [Schema components](#schema-components)
+  - [Field groups](#field-groups)
+    - [`contentSchemaGroup`](#contentschemagroup)
+    - [`settingsSchemaGroup`](#settingsschemagroup)
+    - [`mediaSchemaGroup`](#mediaschemagroup)
+    - [`navigationSchemaGroup`](#navigationschemagroup)
+    - [`ecommerceSchemaGroup`](#ecommerceschemagroup)
+    - [`eventsSchemaGroup`](#eventsschemagroup)
+    - [`formsSchemaGroup`](#formsschemagroup)
+    - [`analyticsSchemaGroup`](#analyticsschemagroup)
+    - [`socialSchemaGroup`](#socialschemagroup)
+    - [`localizationSchemaGroup`](#localizationschemagroup)
+    - [`locationSchemaGroup`](#locationschemagroup)
+    - [`themingSchemaGroup`](#themingschemagroup)
+  - [Object fields](#object-fields)
+  - [Slug fields](#slug-fields)
+  - [String fields](#string-fields)
 - [Pages](#pages)
   - [Basic usage](#basic-usage)
   - [Enabling page creation](#enabling-page-creation)
@@ -84,15 +101,36 @@ export default definePage({
   type: "document",
   options: {
     disableCreation: true, // Disable document creation
-    hidePathnameField: false, // Hide the pathname field
-    hideSeo: false, // Hide the SEO field
-    hideInternalTitle: false, // Hide the internal title field
     localized: true, // Enable internationalization
     defaultLocaleId: "en", // Default locale for i18n
-  },
-  pathnameOptions: {
-    initialValue: "/", // Initial pathname value
-    autoNavigate: true, // Auto-navigate in Presentation
+    orderable: false, // Enable document ordering
+
+    // Field customization options
+    internalTitle: "hidden", // Hide internal title (FieldCustomization)
+
+    // Pathname field - can be FieldCustomization or configuration object
+    pathname: true, // Show with defaults (FieldCustomization)
+    // OR
+    pathname: {
+      // Direct configuration (PathnameSlugFieldOptions)
+      localized: true,
+      options: {
+        source: "title",
+        initialValue: "/",
+      },
+      hidden: false,
+    },
+
+    // SEO field - can be FieldCustomization or configuration object
+    seo: "hidden", // Hide entire SEO field (FieldCustomization)
+    // OR
+    seo: {
+      // Configure individual SEO sub-fields (SEOOptions)
+      title: "hidden", // Hide SEO title
+      description: true, // Show SEO description
+      ogImage: false, // Remove OG image completely
+      indexableStatus: true, // Show indexable status
+    },
   },
   fields: [
     // Your custom fields
@@ -100,16 +138,16 @@ export default definePage({
 });
 ```
 
-### `defineSchema`
+### `defineDocument`
 
-The `defineSchema` utility creates document schemas with automatic internal title, locale fields (for i18n), and orderable document list support. It includes content and settings field groups by default. Use this for schemas that do not require SEO or pathname fields.
+The `defineDocument` utility creates document schemas with automatic internal title, locale fields (for i18n), and orderable document list support. It includes content and settings field groups by default. Use this for schemas that do not require SEO or pathname fields.
 
 #### Basic usage
 
 ```tsx
-import {defineSchema} from "@tinloof/sanity-studio";
+import {defineDocument} from "@tinloof/sanity-studio";
 
-export default defineSchema({
+export default defineDocument({
   name: "post",
   title: "Blog Post",
   type: "document",
@@ -138,18 +176,438 @@ This automatically adds:
 #### Options
 
 ```tsx
-export default defineSchema({
+export default defineDocument({
   name: "tag",
   title: "Blog Tag",
   type: "document",
   options: {
     disableCreation: true, // Disable document creation
-    hideInternalTitle: false, // Hide the internal title field
-    localized: true, // Enable internationalization
-    orderable: true, // Enable document ordering
+
+    // Field customization with FieldCustomization type
+    localized: true, // Show locale field (FieldCustomization)
+    orderable: "hidden", // Hide order rank field (FieldCustomization)
+    internalTitle: (field) =>
+      defineField({
+        ...field,
+        title: "Tag Name",
+        validation: (Rule) => Rule.required(),
+      }), // Custom field transformation (FieldCustomization)
   },
   fields: [
     // Your custom fields
+  ],
+});
+```
+
+## Schema components
+
+The package now provides modular schema components that can be used independently or as part of the `definePage` and `defineDocument` utilities. These components are organized into categories for better organization and reusability.
+
+### Field Customization
+
+The package introduces a `FieldCustomization` system that allows you to control and customize fields in multiple ways.
+
+#### Field Customization Types
+
+- **`true`** - (default) - Show the field with default configuration
+- **`false`** - Completely remove the field from the schema
+- **`"hidden"`** - Hide the field but keep it in the schema
+- **`(field) => defineField({...field, ...changes})`** - Transform the field with a custom function (always wrap in `defineField` for type safety)
+
+#### Usage Examples
+
+```tsx
+// Basic visibility control
+internalTitle: true,        // Show field
+internalTitle: false,       // Remove field
+internalTitle: "hidden",    // Hide field
+
+// Custom transformation - ALWAYS wrap in defineField for type safety
+internalTitle: (field) => defineField({
+  ...field,
+  title: "Custom Internal Title",
+  validation: (Rule) => Rule.required(),
+}),
+
+// For object fields like SEO, you can also pass configuration options directly
+seo: {
+  title: "hidden",           // Hide SEO title field
+  description: true,         // Show SEO description
+  ogImage: false,           // Remove OG image field
+  indexableStatus: true,    // Show indexable status
+},
+```
+
+This system provides fine-grained control over field visibility, configuration, and behavior throughout your Sanity Studio.
+
+**⚠️ Important**: When using the function callback approach, **always wrap your return value in `defineField`** for maximum type safety:
+
+```tsx
+// ✅ Correct - wrapped in defineField
+myField: (field) => defineField({
+  ...field,
+  title: "Custom Title",
+}),
+
+// ❌ Incorrect - missing defineField wrapper
+myField: (field) => ({
+  ...field,
+  title: "Custom Title",
+}),
+```
+
+### Field groups
+
+Pre-configured field groups for organizing document fields.
+
+#### `contentSchemaGroup`
+
+A field group for content-related fields with a compose icon.
+
+```tsx
+import {contentSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "post",
+  type: "document",
+  groups: [contentSchemaGroup],
+  fields: [
+    // Your content fields
+  ],
+});
+```
+
+#### `settingsSchemaGroup`
+
+A field group for settings-related fields with a cog icon.
+
+```tsx
+import {settingsSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "post",
+  type: "document",
+  groups: [settingsSchemaGroup],
+  fields: [
+    // Your settings fields
+  ],
+});
+```
+
+#### `mediaSchemaGroup`
+
+A field group for media-related fields with an image icon.
+
+```tsx
+import {mediaSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "post",
+  type: "document",
+  groups: [mediaSchemaGroup],
+  fields: [
+    defineField({
+      name: "featuredImage",
+      type: "image",
+      group: "media",
+    }),
+  ],
+});
+```
+
+#### `navigationSchemaGroup`
+
+A field group for navigation-related fields with a link icon.
+
+```tsx
+import {navigationSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "page",
+  type: "document",
+  groups: [navigationSchemaGroup],
+  fields: [
+    defineField({
+      name: "menuItems",
+      type: "array",
+      group: "navigation",
+    }),
+  ],
+});
+```
+
+#### `ecommerceSchemaGroup`
+
+A field group for e-commerce-related fields with a tag icon.
+
+```tsx
+import {ecommerceSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "product",
+  type: "document",
+  groups: [ecommerceSchemaGroup],
+  fields: [
+    defineField({
+      name: "price",
+      type: "number",
+      group: "ecommerce",
+    }),
+  ],
+});
+```
+
+#### `eventsSchemaGroup`
+
+A field group for event-related fields with a calendar icon.
+
+```tsx
+import {eventsSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "event",
+  type: "document",
+  groups: [eventsSchemaGroup],
+  fields: [
+    defineField({
+      name: "eventDate",
+      type: "datetime",
+      group: "events",
+    }),
+  ],
+});
+```
+
+#### `formsSchemaGroup`
+
+A field group for form-related fields with a document icon.
+
+```tsx
+import {formsSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "contactForm",
+  type: "document",
+  groups: [formsSchemaGroup],
+  fields: [
+    defineField({
+      name: "formFields",
+      type: "array",
+      group: "forms",
+    }),
+  ],
+});
+```
+
+#### `analyticsSchemaGroup`
+
+A field group for analytics-related fields with a chart icon.
+
+```tsx
+import {analyticsSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "page",
+  type: "document",
+  groups: [analyticsSchemaGroup],
+  fields: [
+    defineField({
+      name: "trackingCode",
+      type: "string",
+      group: "analytics",
+    }),
+  ],
+});
+```
+
+#### `socialSchemaGroup`
+
+A field group for social media-related fields with a share icon.
+
+```tsx
+import {socialSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "post",
+  type: "document",
+  groups: [socialSchemaGroup],
+  fields: [
+    defineField({
+      name: "socialLinks",
+      type: "array",
+      group: "social",
+    }),
+  ],
+});
+```
+
+#### `localizationSchemaGroup`
+
+A field group for localization-related fields with an earth globe icon.
+
+```tsx
+import {localizationSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "page",
+  type: "document",
+  groups: [localizationSchemaGroup],
+  fields: [
+    defineField({
+      name: "translations",
+      type: "array",
+      group: "localization",
+    }),
+  ],
+});
+```
+
+#### `locationSchemaGroup`
+
+A field group for location-related fields with a pin icon.
+
+```tsx
+import {locationSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "venue",
+  type: "document",
+  groups: [locationSchemaGroup],
+  fields: [
+    defineField({
+      name: "address",
+      type: "string",
+      group: "location",
+    }),
+  ],
+});
+```
+
+#### `themingSchemaGroup`
+
+A field group for theming-related fields with a color wheel icon.
+
+```tsx
+import {themingSchemaGroup} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "theme",
+  type: "document",
+  groups: [themingSchemaGroup],
+  fields: [
+    defineField({
+      name: "primaryColor",
+      type: "string",
+      group: "theming",
+    }),
+  ],
+});
+```
+
+### Object fields
+
+Reusable object field definitions for common use cases.
+
+#### `seoObjectField`
+
+A comprehensive SEO object field with configurable sub-fields using the `FieldCustomization` system.
+
+```tsx
+import {seoObjectField} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "post",
+  type: "document",
+  fields: [
+    seoObjectField({
+      indexableStatus: true, // Show indexable status (FieldCustomization)
+      title: "hidden", // Hide SEO title (FieldCustomization)
+      description: (field) =>
+        defineField({
+          ...field,
+          title: "Meta Description",
+          validation: (Rule) => Rule.max(160).required(),
+        }), // Custom field transformation (FieldCustomization)
+      ogImage: false, // Remove OG image completely (FieldCustomization)
+    }),
+  ],
+});
+```
+
+The field includes:
+
+- **Indexable status** - Controls search engine indexing
+- **SEO title** - With character count validation (15-70 chars)
+- **SEO description** - With character count validation (50-160 chars)
+- **Social sharing image** - For Open Graph and social media
+
+Each sub-field supports the full `FieldCustomization` system (true, false, "hidden", or transform function).
+
+### Slug fields
+
+Specialized slug field definitions with enhanced functionality.
+
+#### `pathnameSlugField`
+
+A pathname slug field with internationalization and folder support.
+
+```tsx
+import {pathnameSlugField} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "page",
+  type: "document",
+  fields: [
+    pathnameSlugField({
+      localized: true, // Enable internationalization
+      defaultLocaleId: "en", // Default locale for i18n
+      hidden: false, // Show/hide the field
+      disableCreation: false, // Disable editing in production
+      options: {
+        initialValue: "/", // Initial pathname value
+        autoNavigate: true, // Auto-navigate in Presentation
+        prefix: "/blog", // Pathname prefix
+        folder: {
+          canUnlock: false, // Disable folder renaming
+        },
+      },
+    }),
+  ],
+});
+```
+
+### String fields
+
+Common string field definitions for document metadata.
+
+#### `internalTitleStringField`
+
+A string field for internal document identification.
+
+```tsx
+import {internalTitleStringField} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "post",
+  type: "document",
+  fields: [
+    internalTitleStringField, // Always includes description and group settings
+  ],
+});
+```
+
+#### `localeStringField`
+
+A hidden string field for locale identification in internationalized documents.
+
+```tsx
+import {localeStringField} from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "post",
+  type: "document",
+  fields: [
+    localeStringField, // Hidden field for locale tracking
   ],
 });
 ```
