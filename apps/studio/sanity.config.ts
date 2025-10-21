@@ -1,10 +1,10 @@
 import {defineConfig, isDev} from "sanity";
 import {structureTool} from "sanity/structure";
 import {visionTool} from "@sanity/vision";
-import {schemaTypes} from "./src/schemas";
-import {pages} from "@tinloof/sanity-studio";
+
+import {disableCreation, importAllSchemas, pages} from "@tinloof/sanity-studio";
 import config from "./config";
-import {structure} from "./src/structure";
+import {disableCreationDocumentTypes, structure} from "./src/structure";
 
 export default defineConfig({
   name: "sanity-basic-studio",
@@ -24,8 +24,11 @@ export default defineConfig({
       allowOrigins: isDev ? ["http://localhost:3000"] : undefined,
     }),
     visionTool({defaultApiVersion: config.apiVersion}),
+    disableCreation({
+      schemas: disableCreationDocumentTypes,
+    }),
   ],
   schema: {
-    types: schemaTypes,
+    types: await importAllSchemas(),
   },
 });

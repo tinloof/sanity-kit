@@ -17,6 +17,12 @@ npm install @tinloof/sanity-studio
 - [Schema utilities](#schema-utilities)
   - [`definePage`](#definepage)
   - [`defineDocument`](#definedocument)
+- [Schema importing utilities](#schema-importing-utilities)
+  - [`importAllSchemas`](#importallschemas)
+  - [`importDocumentSchemas`](#importdocumentschemas)
+  - [`importSectionSchemas`](#importsectionschemas)
+  - [`importObjectSchemas`](#importobjectschemas)
+  - [`importSingletonSchemas`](#importsingletonschemas)
 - [Schema components](#schema-components)
   - [Field groups](#field-groups)
     - [`contentSchemaGroup`](#contentschemagroup)
@@ -198,6 +204,100 @@ export default defineDocument({
   ],
 });
 ```
+
+## Schema importing utilities
+
+The package provides utilities for dynamically importing Sanity schemas using Vite's `import.meta.glob()` functionality. These utilities help organize and load schemas from different directories in your project.
+
+**⚠️ Compatibility Notice:** These utilities only work in standalone Sanity Studio projects. They are **not compatible** with embedded setups (e.g., Sanity Studio embedded in Next.js apps) as they depend on Vite's build system and `import.meta.glob()` functionality. If you're using Sanity Studio in an embedded setup, you'll need to import your schemas manually.
+
+### `importAllSchemas`
+
+Imports all schemas from all schema directories (`/src/schemas/**/*.ts`).
+
+```typescript
+import {importAllSchemas} from "@tinloof/sanity-studio";
+
+// Use in Sanity config
+const allSchemas = await importAllSchemas();
+
+export default defineConfig({
+  schema: {
+    types: allSchemas,
+  },
+});
+```
+
+### `importDocumentSchemas`
+
+Imports schemas specifically from the documents directory (`/src/schemas/documents/*.ts`).
+
+```typescript
+import {importDocumentSchemas} from "@tinloof/sanity-studio";
+
+const documentSchemas = await importDocumentSchemas();
+```
+
+### `importSectionSchemas`
+
+Imports schemas from the sections directory (`/src/schemas/sections/*.ts`). Useful for page builders and modular content.
+
+```typescript
+import {importSectionSchemas} from "@tinloof/sanity-studio";
+
+const sectionSchemas = await importSectionSchemas();
+
+// Use in a sections array field
+defineField({
+  name: "sections",
+  type: "array",
+  of: sectionSchemas.map((schema) => ({
+    type: schema.name,
+  })),
+});
+```
+
+### `importObjectSchemas`
+
+Imports schemas from the objects directory (`/src/schemas/objects/*.ts`). These represent reusable field groups and complex data structures.
+
+```typescript
+import {importObjectSchemas} from "@tinloof/sanity-studio";
+
+const objectSchemas = await importObjectSchemas();
+```
+
+### `importSingletonSchemas`
+
+Imports schemas from the singletons directory (`/src/schemas/singletons/*.ts`). These represent unique documents that should only have one instance.
+
+```typescript
+import {importSingletonSchemas} from "@tinloof/sanity-studio";
+
+const singletonSchemas = await importSingletonSchemas();
+
+// Use with disable creation plugin
+export default defineConfig({
+  schema: {
+    types: singletonSchemas,
+  },
+  plugins: [
+    disableCreation({
+      types: singletonSchemas.map((s) => s.name),
+    }),
+  ],
+});
+```
+
+#### Requirements
+
+All schema importing utilities require:
+
+- A standalone Sanity Studio project (not embedded)
+- Vite as the build tool (default for Sanity Studio projects)
+- Schema files with proper TypeScript/JavaScript exports
+
+These utilities will not work in projects where Sanity Studio is embedded into other frameworks that don't use Vite or support `import.meta.glob()`.
 
 ## Schema components
 

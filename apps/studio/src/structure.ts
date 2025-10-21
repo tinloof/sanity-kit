@@ -1,10 +1,6 @@
 import {isDev} from "sanity";
-import documents from "./schemas/documents";
 import {StructureResolver} from "sanity/structure";
-import {
-  DefineDocumentDefinition,
-  singletonListItem,
-} from "@tinloof/sanity-studio";
+import {importDocumentSchemas, singletonListItem} from "@tinloof/sanity-studio";
 
 export const structure: StructureResolver = (S) => {
   return S.list()
@@ -17,10 +13,9 @@ export const structure: StructureResolver = (S) => {
     ]);
 };
 
-const disableCreationDocuments = documents.filter((document) => {
-  const schema = document as DefineDocumentDefinition;
-  return schema.options?.disableCreation;
-});
+const disableCreationDocuments = (await importDocumentSchemas()).filter(
+  (document) => document.options?.disableCreation,
+);
 
 const disabledSingletons = () => {
   if (!isDev) {
