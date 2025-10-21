@@ -209,6 +209,8 @@ export default defineDocument({
 
 The package provides utilities for dynamically importing Sanity schemas using Vite's `import.meta.glob()` functionality. These utilities help organize and load schemas from different directories in your project.
 
+**⚠️ Compatibility Notice:** These utilities only work in standalone Sanity Studio projects. They are **not compatible** with embedded setups (e.g., Sanity Studio embedded in Next.js apps) as they depend on Vite's build system and `import.meta.glob()` functionality. If you're using Sanity Studio in an embedded setup, you'll need to import your schemas manually.
+
 ### `importAllSchemas`
 
 Imports all schemas from all schema directories (`/src/schemas/**/*.ts`).
@@ -286,6 +288,16 @@ export default defineConfig({
   ],
 });
 ```
+
+#### Requirements
+
+All schema importing utilities require:
+
+- A standalone Sanity Studio project (not embedded)
+- Vite as the build tool (default for Sanity Studio projects)
+- Schema files with proper TypeScript/JavaScript exports
+
+These utilities will not work in projects where Sanity Studio is embedded into other frameworks that don't use Vite or support `import.meta.glob()`.
 
 ## Schema components
 
