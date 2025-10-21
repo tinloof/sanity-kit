@@ -55,6 +55,7 @@
     "@sanity/icons": "^3.5.7",
     "@sanity/image-url": "^1.1.0",
     "@sanity/incompatible-plugin": "^1.0.5",
+    "@sanity/orderable-document-list": "^1.4.0",
     "@sanity/ui": "^2.11.8",
     "@sanity/util": "^3.74.0",
     "@tanstack/react-virtual": "^3.10.8",
