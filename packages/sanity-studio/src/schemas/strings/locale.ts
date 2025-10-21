@@ -18,7 +18,6 @@ import {defineField} from "sanity";
  * localeStringField
  */
 export default defineField({
-  hidden: true,
   name: "locale",
   type: "string",
 });

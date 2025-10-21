@@ -2,12 +2,15 @@ import type {DocumentDefinition} from "sanity";
 
 import seoObjectField from "../schemas/objects/seo";
 import pathnameSlugField from "../schemas/slugs/pathname";
-import {FieldOptions} from "../types";
+import {
+  applyFieldCustomization,
+  FieldCustomization,
+} from "./apply-field-customization";
 import defineDocument, {DefineDocumentDefinition} from "./define-document";
 
-type PathnameOptions = NonNullable<
+type PathnameSlugFieldOptions = NonNullable<
   Parameters<typeof pathnameSlugField>[0]
->["options"];
+>;
 
 type SEOOptions = Pick<
   NonNullable<Parameters<typeof seoObjectField>[0]>,
@@ -21,9 +24,11 @@ type PageDefinition = Omit<DocumentDefinition, "options" | "type"> & {
   /** Schema options including localization and field visibility settings */
   options?: DefineDocumentDefinition["options"] & {
     /** Hide the pathname field */
-    pathname?: FieldOptions | PathnameOptions;
+    pathname?:
+      | FieldCustomization<ReturnType<typeof pathnameSlugField>>
+      | PathnameSlugFieldOptions;
     /** Hide the entire SEO settings field */
-    seo?: FieldOptions | SEOOptions;
+    seo?: FieldCustomization<ReturnType<typeof seoObjectField>> | SEOOptions;
     /** Default locale ID for localization */
     defaultLocaleId?: string;
   };
@@ -69,24 +74,97 @@ export default function definePage(schema: PageDefinition): DocumentDefinition {
     orderable,
   } = options || {};
 
+  const isPathnameFieldCustomization = (
+    value:
+      | FieldCustomization<ReturnType<typeof pathnameSlugField>>
+      | PathnameSlugFieldOptions
+      | undefined,
+  ): value is FieldCustomization<ReturnType<typeof pathnameSlugField>> => {
+    // If it's a function, boolean, or "hidden", it's FieldCustomization
+    if (
+      typeof value === "function" ||
+      typeof value === "boolean" ||
+      value === "hidden"
+    ) {
+      return true;
+    }
+    // If it's an object, check if it has PathnameSlugFieldOptions properties
+    if (typeof value === "object" && value !== null) {
+      const hasPathnameProp =
+        "localized" in value ||
+        "defaultLocaleId" in value ||
+        "options" in value ||
+        "hidden" in value ||
+        "disableCreation" in value;
+      return !hasPathnameProp; // If no pathname props, treat as FieldCustomization
+    }
+    return false;
+  };
+
+  const isSeoFieldCustomization = (
+    value:
+      | FieldCustomization<ReturnType<typeof seoObjectField>>
+      | SEOOptions
+      | undefined,
+  ): value is FieldCustomization<ReturnType<typeof seoObjectField>> => {
+    // If it's a function, boolean, or "hidden", it's FieldCustomization
+    if (
+      typeof value === "function" ||
+      typeof value === "boolean" ||
+      value === "hidden"
+    ) {
+      return true;
+    }
+    // If it's an object, check if it has SEOOptions properties
+    if (typeof value === "object" && value !== null) {
+      const hasSeoProp =
+        "title" in value ||
+        "description" in value ||
+        "ogImage" in value ||
+        "indexableStatus" in value;
+      return !hasSeoProp; // If no SEO props, treat as FieldCustomization
+    }
+    return false;
+  };
+
   return defineDocument({
     ...schemaWithoutOptions,
     type: "document",
     fields: [
       pathname !== false
-        ? pathnameSlugField({
-            options: typeof pathname === "object" ? pathname : {},
-            defaultLocaleId,
-            disableCreation,
-            hidden: pathname === "hidden",
-            localized,
-          })
+        ? (() => {
+            if (isPathnameFieldCustomization(pathname)) {
+              return applyFieldCustomization(
+                pathnameSlugField({
+                  defaultLocaleId,
+                  disableCreation,
+                  localized: localized !== false,
+                }),
+                pathname,
+              );
+            }
+            return pathnameSlugField(
+              typeof pathname === "object" && pathname !== null
+                ? (pathname as PathnameSlugFieldOptions)
+                : {
+                    defaultLocaleId,
+                    disableCreation,
+                    localized: localized !== false,
+                  },
+            );
+          })()
         : undefined,
       seo !== false
-        ? seoObjectField({
-            hidden: seo === "hidden",
-            ...(typeof seo === "object" ? seo : {}),
-          })
+        ? (() => {
+            if (isSeoFieldCustomization(seo)) {
+              return applyFieldCustomization(seoObjectField({}), seo);
+            }
+            return seoObjectField(
+              typeof seo === "object" && seo !== null
+                ? (seo as SEOOptions)
+                : {},
+            );
+          })()
         : undefined,
       ...fields,
     ].filter(Boolean) as DocumentDefinition["fields"],
@@ -96,12 +174,11 @@ export default function definePage(schema: PageDefinition): DocumentDefinition {
       orderable,
       internalTitle,
     },
-    preview: {
+    preview: preview ?? {
       select: {
-        subtitle: "pathname.current",
         title: "internalTitle",
+        subtitle: "pathname.current",
       },
-      ...preview,
     },
   });
 }
