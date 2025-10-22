@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {ComponentType} from "react";
 import {
   defineField,
@@ -38,19 +39,68 @@ async function isUnique(
   slug: string,
   context: SlugValidationContext,
 ): Promise<boolean> {
-  const {document, getClient} = context;
+  const {document, getClient, schema} = context;
+
   const client = getClient({apiVersion: "2023-06-21"});
   const id = document?._id.replace(/^drafts\./, "");
+
+  // Get documents whose pathname field has a prefix
+  const documentSchemasWithPrefix =
+    schema?._original?.types?.flatMap(
+      (type: any) =>
+        type.fields
+          ?.filter(
+            (field) => field.options?.prefix && field.name === "pathname",
+          )
+          .map((field) => ({
+            type: type.name,
+            prefix: field.options!.prefix!,
+          })) ?? [],
+    ) ?? [];
+
+  // Map the document schemas with prefix to a groq filter
+  const prefixFilters =
+    documentSchemasWithPrefix.length > 0
+      ? documentSchemasWithPrefix.map(
+          (doc) => /* groq */ `(
+        _type == "${doc.type}" &&
+        (
+          ("/" + "${doc.prefix}" + pathname.current) == $slug ||
+          ("/" + "${doc.prefix}" + pathname.current) == $slugWithoutSlash
+        )
+      )`,
+        )
+      : [];
+
+  // Find the pathname field which is getting unique validation done
+  const documentPathnameField = documentSchemasWithPrefix.find(
+    (field) => field.type === document?._type,
+  );
+
+  // Create a pathname with prefix if the document has a pathname field with a prefix
+  const pathnameWithPrefix = documentPathnameField
+    ? `/${documentPathnameField.prefix}${slug}`
+    : slug;
+
   const params = {
     draft: `drafts.${id}`,
     published: id,
-    slug,
+    slug: pathnameWithPrefix,
     // Remove slash from end of slug if it exists
     // Handle cases where there is a page with /blog but a new page is created with /blog/
-    slugWithoutSlash: slug.replace(/\/$/, ""),
+    slugWithoutSlash: pathnameWithPrefix.replace(/\/$/, ""),
     locale: document?.locale ?? null,
   };
-  const query = `*[!(_id in [$draft, $published]) && (pathname.current == $slug || pathname.current == $slugWithoutSlash) && locale == $locale]`;
+
+  const query = /* groq */ `*[!
+    (_id in [$draft, $published])
+    && (
+      (pathname.current == $slug || pathname.current == $slugWithoutSlash)
+      ${prefixFilters.length > 0 ? `|| (${prefixFilters.join(" || ")})` : ""}
+    )
+    && locale == $locale
+    ]`;
+
   const result = await client.fetch(query, params);
   return result.length === 0;
 }
