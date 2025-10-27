@@ -614,6 +614,8 @@ Reusable array field definitions for common use cases.
 
 Creates a sections body array field schema for Sanity Studio. This function generates a field definition for an array of sections that can be used in document schemas. It supports both synchronous and asynchronous operation modes depending on whether sections are provided directly or need to be imported dynamically.
 
+**⚠️ Compatibility Notice:** The async version (without `sections` parameter) only works in standalone Sanity Studio projects. It is **not compatible** with embedded setups (e.g., Sanity Studio embedded in Next.js apps) as it depends on Vite's build system and `import.meta.glob()` functionality. For embedded setups, provide the `sections` array directly.
+
 ##### Basic usage
 
 ```tsx
@@ -626,19 +628,14 @@ export default defineType({
   fields: [await sectionsBodyArraySchema()],
 });
 
-// With custom options
+// With custom preview image function
 export default defineType({
   name: "page",
   type: "document",
   fields: [
     await sectionsBodyArraySchema({
-      options: {
-        previewImage: {
-          basePath: "/static/sections/",
-          extension: ".png",
-          stripPrefix: "section.",
-        },
-      },
+      previewImage: (type) =>
+        `/static/sections/${type.replace("section.", "")}.png`,
     }),
   ],
 });
@@ -654,12 +651,8 @@ const field = sectionsBodyArraySchema({
     {name: "hero", title: "Hero Section"},
     {name: "banner", title: "Banner Section"},
   ],
-  options: {
-    previewImage: {
-      basePath: "/static/sections/",
-      extension: ".png",
-    },
-  },
+  previewImage: (type) =>
+    `/static/sections/${type.replace("section.", "")}.png`,
 });
 ```
 
@@ -669,16 +662,14 @@ const field = sectionsBodyArraySchema({
 import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
 
 const field = await sectionsBodyArraySchema({
-  options: {
-    previewImage: (type) => `/custom/path/${type.replace("section.", "")}.jpg`,
-  },
+  previewImage: (type) => `/custom/path/${type.replace("section.", "")}.jpg`,
 });
 ```
 
 ##### Parameters
 
 - `props.sections` - Optional array of section schemas. When provided, the function returns synchronously. When omitted, it returns a Promise that imports sections dynamically.
-- `props.options.previewImage` - Configuration for section preview images in the insert menu. Can be a function, config object, or undefined for default behavior.
+- `props.previewImage` - Function to generate preview image URLs for sections in the insert menu. Takes the section type as a parameter and returns the image URL.
 
 The field includes:
 

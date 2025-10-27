@@ -11,6 +11,6 @@ export default definePage({
       name: "title",
       type: "string",
     },
-    await sectionsBodyArraySchema({}),
+    await sectionsBodyArraySchema(),
   ],
 });
