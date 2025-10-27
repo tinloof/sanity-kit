@@ -1,3 +1,4 @@
+export * from "./arrays";
 export * from "./booleans";
 export * from "./groups";
 export {default as iconSchema} from "./icon";
