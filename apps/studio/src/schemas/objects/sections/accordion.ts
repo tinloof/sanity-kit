@@ -1,5 +1,5 @@
 import {defineArrayMember, defineField, defineType} from "sanity";
-import createPtBody from "../../helpers/create-pt-body";
+import createPtBody from "../../../helpers/create-pt-body";
 
 export default defineType({
   name: "section.accordion",

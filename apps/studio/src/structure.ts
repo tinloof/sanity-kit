@@ -18,7 +18,7 @@ const disableCreationDocuments = (await importDocumentSchemas()).filter(
 );
 
 const disabledSingletons = () => {
-  if (!isDev) {
+  if (isDev) {
     return [...disableCreationDocuments.map((document) => document.name)];
   }
   return [];

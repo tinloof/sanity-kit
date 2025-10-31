@@ -11,5 +11,6 @@ export default definePage({
       name: "title",
       type: "string",
     },
+    {name: "sectionsBody", type: "sectionsBody"},
   ],
 });
