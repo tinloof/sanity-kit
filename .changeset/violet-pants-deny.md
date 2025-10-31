@@ -5,28 +5,33 @@
 
 Add `sectionsBodyArraySchema` function for creating sections body array fields
 
-This new function provides a convenient way to create array fields for sections in Sanity Studio documents. It supports both synchronous and asynchronous operation modes with a simplified API for customizable preview images.
-
-**⚠️ Compatibility Notice:** The async version (without `sections` parameter) only works in standalone Sanity Studio projects. It is **not compatible** with embedded setups (e.g., Sanity Studio embedded in Next.js apps) as it depends on Vite's build system and `import.meta.glob()` functionality. For embedded setups, provide the `sections` array directly.
+This new function provides a convenient way to create array fields for sections in Sanity Studio documents. It operates synchronously and requires a `sections` array to be provided for maximum compatibility across all Sanity Studio setups.
 
 ## Features
 
-- **Parameterless usage**: Call `await sectionsBodyArraySchema()` with no parameters for default behavior
-- **Dynamic section import**: Automatically imports all available section schemas when no sections are provided
+- **Required sections parameter**: Must provide a `sections` array containing the section schemas to use
 - **Simple preview image configuration**: Pass a function to customize image URLs for section insert menus
 - **Grid view insert menu**: Visual section picker with preview images
 - **Type-safe configuration**: Full TypeScript support with proper return types
+- **Universal compatibility**: Works in all Sanity Studio setups (standalone and embedded)
 
 ## Usage
 
 ```typescript
 import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
 
-// Basic usage with defaults
+// Basic usage
 export default defineType({
   name: "page",
   type: "document",
-  fields: [await sectionsBodyArraySchema()],
+  fields: [
+    sectionsBodyArraySchema({
+      sections: [
+        {name: "hero", title: "Hero Section"},
+        {name: "banner", title: "Banner Section"},
+      ],
+    }),
+  ],
 });
 
 // With custom preview image function
@@ -34,7 +39,11 @@ export default defineType({
   name: "page",
   type: "document",
   fields: [
-    await sectionsBodyArraySchema({
+    sectionsBodyArraySchema({
+      sections: [
+        {name: "hero", title: "Hero Section"},
+        {name: "banner", title: "Banner Section"},
+      ],
       previewImage: (type) =>
         `/static/sections/${type.replace("section.", "")}.png`,
     }),

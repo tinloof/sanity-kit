@@ -1,4 +1,4 @@
-import {definePage, sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+import {definePage} from "@tinloof/sanity-studio";
 
 export default definePage({
   name: "home",
@@ -11,6 +11,6 @@ export default definePage({
       name: "title",
       type: "string",
     },
-    await sectionsBodyArraySchema(),
+    {name: "sectionsBody", type: "sectionsBody"},
   ],
 });
