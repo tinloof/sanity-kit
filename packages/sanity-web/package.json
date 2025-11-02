@@ -73,10 +73,7 @@
   "author": "Tinloof",
   "license": "ISC",
   "devDependencies": {
-    "@changesets/cli": "^2.27.8",
     "@portabletext/types": "^2.0.13",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "tsup": "^8.3.0",
     "typescript": "^5.6.2"
   },
