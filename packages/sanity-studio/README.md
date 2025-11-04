@@ -188,7 +188,6 @@ export default defineDocument({
   type: "document",
   options: {
     disableCreation: true, // Disable document creation
-
     // Field customization with FieldCustomization type
     localized: true, // Show locale field (FieldCustomization)
     orderable: "hidden", // Hide order rank field (FieldCustomization)
@@ -198,6 +197,7 @@ export default defineDocument({
         title: "Tag Name",
         validation: (Rule) => Rule.required(),
       }), // Custom field transformation (FieldCustomization)
+    globalSearch: false, // Hide from Sanity's global omnisearch (defaults to true)
   },
   fields: [
     // Your custom fields

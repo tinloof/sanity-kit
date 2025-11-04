@@ -23,6 +23,7 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
     orderable?: FieldCustomization<ReturnType<typeof orderRankField>>;
     /** Hide the internal title field */
     internalTitle?: FieldCustomization<typeof internalTitleStringField>;
+    globalSearch?: boolean;
   };
 };
 
@@ -35,6 +36,7 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
  * - Locale field for internationalization (when enabled)
  * - Order rank field for document ordering (when enabled)
  * - Proper field groups (content and settings)
+ * - Global search visibility control (enabled by default)
  *
  * @param schema - The document schema configuration
  * @returns A complete Sanity document definition with standard fields
@@ -76,6 +78,7 @@ export default function defineDocument(
     localized = false,
     internalTitle = false,
     orderable = false,
+    globalSearch = true,
     ...restOfOptions
   } = options || {};
 
@@ -123,5 +126,7 @@ export default function defineDocument(
         title: title ?? schema?.title,
       }),
     },
+    // eslint-disable-next-line camelcase
+    __experimental_omnisearch_visibility: globalSearch,
   };
 }
