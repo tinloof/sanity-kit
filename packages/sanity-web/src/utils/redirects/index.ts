@@ -1,4 +1,4 @@
-import {DefinedSanityFetchType} from "next-sanity";
+import type {DefinedSanityFetchType} from "next-sanity/live";
 import {REDIRECT_QUERY} from "../../queries";
 import {getPathVariations} from "../urls";
 

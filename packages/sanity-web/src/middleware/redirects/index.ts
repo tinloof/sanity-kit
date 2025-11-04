@@ -1,4 +1,4 @@
-import {DefinedSanityFetchType} from "next-sanity";
+import {DefinedSanityFetchType} from "next-sanity/live";
 import {NextResponse, NextRequest} from "next/server";
 import {getRedirect} from "../../utils/redirects";
 
