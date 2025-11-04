@@ -131,6 +131,7 @@ export default function SectionsRenderer({
           <Component
             key={sectionKey}
             {...section}
+            _key={sectionKey}
             _sectionIndex={index}
             _sections={sectionsData}
             rootHtmlAttributes={{
