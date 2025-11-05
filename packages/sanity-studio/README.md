@@ -17,6 +17,7 @@ npm install @tinloof/sanity-studio
 - [Schema utilities](#schema-utilities)
   - [`definePage`](#definepage)
   - [`defineDocument`](#definedocument)
+  - [Document Actions Configuration](#document-actions-configuration)
 - [Schema importing utilities](#schema-importing-utilities)
   - [`importAllSchemas`](#importallschemas)
   - [`importDocumentSchemas`](#importdocumentschemas)
@@ -137,12 +138,19 @@ export default definePage({
       ogImage: false, // Remove OG image completely
       indexableStatus: true, // Show indexable status
     },
+
+    // Configure which document actions are available (same as defineDocument)
+    documentActions: {
+      deny: ["delete"], // Deny specific actions
+    },
   },
   fields: [
     // Your custom fields
   ],
 });
 ```
+
+**Note:** The `documentActions` option works the same way as in `defineDocument`. See the [Document Actions Configuration](#document-actions-configuration) section below for detailed documentation.
 
 ### `defineDocument`
 
@@ -198,12 +206,91 @@ export default defineDocument({
         title: "Tag Name",
         validation: (Rule) => Rule.required(),
       }), // Custom field transformation (FieldCustomization)
+
+    // Configure which document actions are available
+    documentActions: {
+      deny: ["delete", "duplicate"], // Deny specific actions
+    },
   },
   fields: [
     // Your custom fields
   ],
 });
 ```
+
+#### Document Actions Configuration
+
+The `documentActions` option allows you to control which document actions (publish, delete, duplicate, etc.) are available in the Sanity Studio for each document type. This is useful for enforcing business rules, creating read-only documents, or implementing role-based access control.
+
+You can use a policy object with **one** of these mutually exclusive properties: `allow`, `deny`, `toggles`, or `byRole`.
+
+**Using `allow` (whitelist):**
+
+```tsx
+documentActions: {
+  allow: ["publish", "discardChanges"], // Only these actions are allowed
+}
+```
+
+**Using `deny` (blacklist):**
+
+```tsx
+documentActions: {
+  deny: ["delete", "duplicate"], // Remove these actions
+}
+```
+
+**Using `toggles` (fine-grained control):**
+
+```tsx
+documentActions: {
+  toggles: {
+    publish: true, // Explicitly enable
+    delete: false, // Explicitly disable
+    duplicate: false,
+  },
+}
+```
+
+**Using `byRole` (role-based access):**
+
+```tsx
+documentActions: {
+  byRole: {
+    editor: {
+      allow: ["publish", "delete", "duplicate"], // Editors get these actions
+    },
+    contributor: {
+      allow: ["publish"], // Contributors can only publish
+    },
+    viewer: {
+      allow: [], // Viewers have no actions (read-only)
+    },
+  },
+}
+```
+
+**Important:** The `allow`, `deny`, `toggles`, and `byRole` properties are mutually exclusive. Only one can be specified per policy object. If multiple are provided, a runtime error will be thrown with a clear error message.
+
+**Placeholder Actions:** When no actions remain after filtering, a placeholder action with the label "No actions available" will be shown. This prevents Sanity Studio from showing an empty actions menu.
+
+##### Setup
+
+To enable document actions filtering, add the `defineActions` resolver to your Sanity Studio configuration:
+
+```tsx
+// sanity.config.ts
+import {defineActions} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other config
+  document: {
+    actions: defineActions, // Automatically applies documentActions from schemas
+  },
+});
+```
+
+The `defineActions` resolver automatically reads the `documentActions` configuration from your document schemas and filters the available actions accordingly. No additional setup is required once added to your config.
 
 ## Schema importing utilities
 

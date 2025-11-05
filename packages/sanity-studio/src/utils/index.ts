@@ -1,3 +1,4 @@
+export {default as defineActions} from "./define-actions";
 export {
   default as defineDocument,
   type DefineDocumentDefinition,
