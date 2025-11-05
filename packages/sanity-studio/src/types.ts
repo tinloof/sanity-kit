@@ -37,8 +37,15 @@ export type FoldersConfig = {
   };
 };
 
+type DefaultSanityRoles =
+  | "contributor"
+  | "editor"
+  | "administrator"
+  | "viewer"
+  | "developer";
+
 export type FilterBasedOnRoles = {
-  role: "all" | "contributor" | "editor" | "administrator" | "viewer" | string;
+  role: "all" | DefaultSanityRoles | string;
   filter: string;
 };
 
@@ -252,6 +259,7 @@ declare module "sanity" {
   interface DocumentOptions {
     /** Disable document creation, used with the disableCreation plugin */
     disableCreation?: boolean;
+    newDocumentOptions?: NewDocumentOptions;
   }
   interface TextOptions {
     maxLength?: number;
@@ -415,3 +423,5 @@ export type DocumentActionPolicy =
  * ```
  */
 export type SanityActions = DocumentActionPolicy;
+
+export type NewDocumentOptions = boolean | DefaultSanityRoles[] | string[];

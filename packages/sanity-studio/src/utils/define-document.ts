@@ -7,7 +7,7 @@ import {type DocumentDefinition, type SortOrdering} from "sanity";
 
 import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";
 import {internalTitleStringField, localeStringField} from "../schemas/strings";
-import {SanityActions} from "../types";
+import {NewDocumentOptions, SanityActions} from "../types";
 import {
   applyFieldCustomization,
   FieldCustomization,
@@ -26,6 +26,7 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
     internalTitle?: FieldCustomization<typeof internalTitleStringField>;
     /** Configure which document actions are available in the Sanity Studio */
     documentActions?: SanityActions;
+    newDocumentOptions?: NewDocumentOptions;
   };
 };
 
@@ -80,6 +81,7 @@ export default function defineDocument(
     internalTitle = false,
     orderable = false,
     documentActions = "default",
+    newDocumentOptions = true,
     ...restOfOptions
   } = options || {};
 
@@ -112,6 +114,7 @@ export default function defineDocument(
   return {
     ...schemaWithoutOptions,
     options: {
+      newDocumentOptions,
       ...(documentActions ? {documentActions} : {}),
       ...restOfOptions,
     },

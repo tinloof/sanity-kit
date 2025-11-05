@@ -2,7 +2,11 @@ import {defineConfig, isDev} from "sanity";
 import {structureTool} from "sanity/structure";
 import {visionTool} from "@sanity/vision";
 
-import {defineActions, pages} from "@tinloof/sanity-studio";
+import {
+  defineActions,
+  defineNewDocumentOptions,
+  pages,
+} from "@tinloof/sanity-studio";
 import config from "./config";
 import {structure} from "./src/structure";
 import schemas from "./src/schemas";
@@ -31,5 +35,6 @@ export default defineConfig({
   },
   document: {
     actions: defineActions,
+    newDocumentOptions: defineNewDocumentOptions,
   },
 });

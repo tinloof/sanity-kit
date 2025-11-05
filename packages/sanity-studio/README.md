@@ -17,6 +17,7 @@ npm install @tinloof/sanity-studio
 - [Schema utilities](#schema-utilities)
   - [`definePage`](#definepage)
   - [`defineDocument`](#definedocument)
+  - [New Document Options Configuration](#new-document-options-configuration)
   - [Document Actions Configuration](#document-actions-configuration)
 - [Schema importing utilities](#schema-importing-utilities)
   - [`importAllSchemas`](#importallschemas)
@@ -143,6 +144,9 @@ export default definePage({
     documentActions: {
       deny: ["delete"], // Deny specific actions
     },
+
+    // Control document creation visibility (same as defineDocument)
+    newDocumentOptions: ["editor", "administrator"], // Allow only specific roles
   },
   fields: [
     // Your custom fields
@@ -150,7 +154,7 @@ export default definePage({
 });
 ```
 
-**Note:** The `documentActions` option works the same way as in `defineDocument`. See the [Document Actions Configuration](#document-actions-configuration) section below for detailed documentation.
+**Note:** The `documentActions` and `newDocumentOptions` options work the same way as in `defineDocument`. See the [Document Actions Configuration](#document-actions-configuration) and [New Document Options Configuration](#new-document-options-configuration) sections below for detailed documentation.
 
 ### `defineDocument`
 
@@ -211,12 +215,71 @@ export default defineDocument({
     documentActions: {
       deny: ["delete", "duplicate"], // Deny specific actions
     },
+
+    // Control document creation visibility
+    newDocumentOptions: true, // Allow all users to create (default)
+    // OR
+    newDocumentOptions: false, // Hide from create menu and reference fields
+    // OR
+    newDocumentOptions: ["editor", "administrator"], // Allow only specific roles
   },
   fields: [
     // Your custom fields
   ],
 });
 ```
+
+#### New Document Options Configuration
+
+The `newDocumentOptions` option controls whether a document type appears in the new document creation menu, including the global Create button and the create button that appears in reference fields for specific document types.
+
+**Available values:**
+
+- `true` (default) - Allow all users to create this document type
+- `false` - Hide this document type from all create menus
+- `string[]` - Array of role names that can create this document type (e.g., `["editor", "administrator"]`)
+
+**Example:**
+
+```tsx
+export default defineDocument({
+  name: "settings",
+  title: "Site Settings",
+  type: "document",
+  options: {
+    // Only administrators can create settings documents
+    newDocumentOptions: ["administrator"],
+  },
+  fields: [
+    // Your fields
+  ],
+});
+```
+
+**Setup:**
+
+To enable `newDocumentOptions` filtering, add the `defineNewDocumentOptions` resolver to your Sanity Studio configuration:
+
+```tsx
+// sanity.config.ts
+import {defineNewDocumentOptions} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other config
+  document: {
+    newDocumentOptions: defineNewDocumentOptions,
+  },
+});
+```
+
+The `defineNewDocumentOptions` resolver automatically reads the `newDocumentOptions` configuration from your document schemas and filters the available templates accordingly based on the current user's roles.
+
+**Important:** This configuration affects both:
+
+- The global Create button in the top-left of Sanity Studio
+- The create button that appears in reference fields when selecting a document
+
+For more details, see the [Sanity Documentation: New Document Options](https://www.sanity.io/docs/studio/new-document-options#dd286e30bb2e).
 
 #### Document Actions Configuration
 
