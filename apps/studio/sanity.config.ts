@@ -5,6 +5,8 @@ import {visionTool} from "@sanity/vision";
 import {
   defineActions,
   defineNewDocumentOptions,
+  defineSchemaTemplates,
+  documentI18n,
   pages,
 } from "@tinloof/sanity-studio";
 import config from "./config";
@@ -26,12 +28,15 @@ export default defineConfig({
           enable: "/api/draft",
         },
       },
+      i18n: config.i18n,
       allowOrigins: isDev ? ["http://localhost:3000"] : undefined,
     }),
+    documentI18n({schemas, locales: config.i18n.locales}),
     visionTool({defaultApiVersion: config.apiVersion}),
   ],
   schema: {
     types: schemas,
+    templates: defineSchemaTemplates,
   },
   document: {
     actions: defineActions,

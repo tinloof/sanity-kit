@@ -355,6 +355,160 @@ export default defineConfig({
 
 The `defineActions` resolver automatically reads the `documentActions` configuration from your document schemas and filters the available actions accordingly. No additional setup is required once added to your config.
 
+#### Templates Configuration
+
+The `templates` option allows you to control which templates are available when creating new documents of a specific type. This is useful for restricting template options, modifying template values, or implementing role-based template access.
+
+You can use a boolean value or a policy object with `include`, `modify`, `add`, and `byRole` properties.
+
+**Using boolean values:**
+
+```tsx
+templates: true,  // Keep all templates (default)
+templates: false, // Remove all templates
+```
+
+**Using `include` (whitelist):**
+
+```tsx
+templates: {
+  include: ["template-id-1", "template-id-2"], // Only these templates are available
+}
+```
+
+**Using `modify` to transform templates:**
+
+```tsx
+templates: {
+  modify: {
+    // Using a callback function to modify template values
+    "template-id": (template) => ({
+      ...template,
+      value: {
+        ...template.value,
+        customField: "value",
+      },
+    }),
+    // Or replace the template completely
+    "another-id": {
+      id: "another-id",
+      title: "Replaced Template",
+      schemaType: "page",
+      value: {title: "Replaced"},
+    },
+  },
+}
+```
+
+**Using `add` to add new templates:**
+
+```tsx
+templates: {
+  add: [
+    {
+      id: "new-template",
+      title: "New Template",
+      schemaType: "page",
+      value: {title: "New Page"},
+    },
+  ],
+}
+```
+
+**Using `byRole` for role-based access:**
+
+```tsx
+templates: {
+  byRole: {
+    administrator: false, // Remove all templates for administrators
+    editor: {
+      include: ["template-id-1"], // Editors only see specific templates
+    },
+    contributor: true, // Contributors see all templates
+  },
+}
+```
+
+**Combining options:**
+
+```tsx
+templates: {
+  include: ["template-id-1", "template-id-2"], // Whitelist
+  modify: {
+    "template-id-1": (template) => ({
+      ...template,
+      value: {...template.value, locale: "en"},
+    }),
+  },
+  add: [
+    {
+      id: "custom-template",
+      title: "Custom Template",
+      schemaType: "page",
+      value: {title: "Custom"},
+    },
+  ],
+  byRole: {
+    administrator: false,
+    editor: {include: ["template-id-1"]},
+  },
+}
+```
+
+**Important:** Templates are processed in the following order:
+
+1. Filter with `include` (whitelist)
+2. Modify templates using `modify`
+3. Add new templates using `add`
+4. Apply role-based policies from `byRole`
+
+##### Setup
+
+To enable templates filtering, add the `defineSchemaTemplates` resolver to your Sanity Studio configuration:
+
+```tsx
+// sanity.config.ts
+import {defineSchemaTemplates} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other config
+  schema: {
+    types: schemas,
+    templates: defineSchemaTemplates,
+  },
+});
+```
+
+The `defineSchemaTemplates` resolver automatically reads the `templates` configuration from your document schemas and filters, modifies, or adds templates accordingly based on the configuration and the current user's roles.
+
+**Note:** The `templates` option works with both `defineDocument` and `definePage` utilities:
+
+```tsx
+// In defineDocument
+export default defineDocument({
+  name: "page",
+  options: {
+    templates: {
+      include: ["template-id-1"],
+    },
+  },
+  fields: [...],
+});
+
+// In definePage
+export default definePage({
+  name: "page",
+  options: {
+    templates: {
+      byRole: {
+        administrator: false,
+      },
+    },
+  },
+  fields: [...],
+});
+```
+
 ## Schema importing utilities
 
 The package provides utilities for dynamically importing Sanity schemas using Vite's `import.meta.glob()` functionality. These utilities help organize and load schemas from different directories in your project.

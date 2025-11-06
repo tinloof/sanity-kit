@@ -15,6 +15,7 @@ import {
   StringDefinition,
   StringInputProps,
   StringSchemaType,
+  Template,
 } from "sanity";
 import {
   NavigatorOptions as PresentationNavigatorOptions,
@@ -260,6 +261,7 @@ declare module "sanity" {
     /** Disable document creation, used with the disableCreation plugin */
     disableCreation?: boolean;
     newDocumentOptions?: NewDocumentOptions;
+    templates?: TemplatesPolicy;
   }
   interface TextOptions {
     maxLength?: number;
@@ -425,3 +427,105 @@ export type DocumentActionPolicy =
 export type SanityActions = DocumentActionPolicy;
 
 export type NewDocumentOptions = boolean | DefaultSanityRoles[] | string[];
+
+/**
+ * Policy configuration for controlling which templates are available for a document type.
+ *
+ * This type allows fine-grained control over templates when creating new documents,
+ * including filtering, modification, and role-based access control.
+ *
+ * @example
+ * ```typescript
+ * // Remove all templates
+ * templates: false
+ *
+ * // Keep all templates (default)
+ * templates: true
+ *
+ * // Whitelist specific templates
+ * templates: {
+ *   include: ["template-id-1", "template-id-2"],
+ * }
+ *
+ * // Modify existing templates
+ * templates: {
+ *   modify: {
+ *     "template-id": (template) => ({
+ *       ...template,
+ *       value: {...template.value, customField: "value"},
+ *     }),
+ *   },
+ * }
+ *
+ * // Add new templates
+ * templates: {
+ *   add: [
+ *     {
+ *       id: "new-template",
+ *       title: "New Template",
+ *       schemaType: "page",
+ *       value: {title: "New"},
+ *     },
+ *   ],
+ * }
+ *
+ * // Role-based policies
+ * templates: {
+ *   byRole: {
+ *     administrator: false,
+ *     editor: {include: ["template-id-1"]},
+ *   },
+ * }
+ * ```
+ */
+export type TemplatesPolicy =
+  | boolean // true = keep all, false = remove all (for this schemaType)
+  | {
+      /** List of template IDs to include (whitelist). Only templates with IDs in this list will be available. */
+      include?: string[];
+      /** Add new templates for this type. These templates will be added to the available templates. */
+      add?: Template[];
+      /**
+       * Modify specific templates by ID.
+       *
+       * Keys are template IDs to modify, values can be either:
+       * - A Template object (replaces the template completely)
+       * - A callback function that receives the current template and returns a modified version
+       *
+       * @example
+       * ```typescript
+       * modify: {
+       *   "template-id": (template) => ({
+       *     ...template,
+       *     value: {...template.value, customField: "value"},
+       *   }),
+       *   "another-id": {
+       *     id: "another-id",
+       *     title: "Replaced Template",
+       *     schemaType: "page",
+       *     value: {title: "Replaced"},
+       *   },
+       * }
+       * ```
+       */
+      modify?: Record<string, Template | ((template: Template) => Template)>;
+      /**
+       * Role-based template policies.
+       *
+       * Keys are role names, values are template policies specific to that role.
+       * The first matching role policy is applied (roles are checked in order).
+       * Role policies can be booleans or objects, and they override the base config.
+       *
+       * @example
+       * ```typescript
+       * byRole: {
+       *   administrator: false, // Remove all templates for administrators
+       *   editor: {
+       *     include: ["template-id-1"], // Editors only see specific templates
+       *   },
+       *   contributor: true, // Contributors see all templates
+       * }
+       * ```
+       */
+      byRole?: Record<string, Omit<TemplatesPolicy, "byRole">>;
+    };

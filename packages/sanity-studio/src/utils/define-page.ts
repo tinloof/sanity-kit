@@ -74,6 +74,7 @@ export default function definePage(schema: PageDefinition): DocumentDefinition {
     orderable,
     documentActions,
     newDocumentOptions,
+    templates,
   } = options || {};
 
   const isPathnameFieldCustomization = (
@@ -177,6 +178,7 @@ export default function definePage(schema: PageDefinition): DocumentDefinition {
       internalTitle,
       documentActions,
       newDocumentOptions,
+      templates,
     },
     preview: preview ?? {
       select: {
