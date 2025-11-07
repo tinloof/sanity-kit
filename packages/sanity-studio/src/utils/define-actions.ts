@@ -176,6 +176,8 @@ function defineActions(
     types: [],
   };
 
+  console.log({context, prev});
+
   // Get the documentActions configuration for this schema type
   const actionsConfig = getDocumentActionsConfig(schemas, schemaType);
 

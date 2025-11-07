@@ -13,6 +13,7 @@
     "sanity"
   ],
   "dependencies": {
+    "@sanity/icons": "^3.7.4",
     "@sanity/vision": "^4.10.2",
     "@tinloof/sanity-studio": "workspace:*",
     "react": "^19.2.0",

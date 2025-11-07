@@ -4,7 +4,12 @@ export const singletonListItem = (
   S: StructureBuilder,
   type: string,
   title: string,
+  id?: string,
 ): ListItemBuilder =>
-  S.documentTypeListItem(type).child(
-    S.document().title(title).schemaType(type).views([S.view.form()]),
-  );
+  S.listItem()
+    .title(title)
+    .child(
+      S.document()
+        .schemaType(type)
+        .documentId(id ?? type),
+    );

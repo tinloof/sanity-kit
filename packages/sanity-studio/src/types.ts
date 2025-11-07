@@ -262,6 +262,12 @@ declare module "sanity" {
     disableCreation?: boolean;
     newDocumentOptions?: NewDocumentOptions;
     templates?: TemplatesPolicy;
+    /** Enable localization with locale field */
+    localized?: boolean;
+    /** Enable document ordering with orderRank field */
+    orderable?: boolean;
+    /** Document structure configuration */
+    structure?: DocumentStructureOptions;
   }
   interface TextOptions {
     maxLength?: number;
@@ -272,6 +278,25 @@ declare module "sanity" {
     minLength?: number;
   }
 }
+
+/**
+ * Configuration options for document structure in the Sanity Studio.
+ * Used to control how documents appear in the studio's structure builder.
+ */
+export type DocumentStructureOptions = {
+  /**
+   * Group(s) to place the document in within the studio structure.
+   * Can be a single group name or array of group names.
+   * Defaults to undefined if not specified.
+   */
+  group?: string;
+
+  singleton?: boolean;
+
+  icon?: React.ComponentType | React.ReactNode;
+
+  title?: string;
+};
 
 declare global {
   interface ImportMeta {
@@ -367,7 +392,6 @@ type DocumentActionPolicyWithByRole = {
  * ```typescript
  * // Use toggles for fine-grained control
  * documentActions: {
- *   preset: "default",
  *   toggles: {
  *     publish: true,
  *     delete: false,
@@ -529,3 +553,8 @@ export type TemplatesPolicy =
        */
       byRole?: Record<string, Omit<TemplatesPolicy, "byRole">>;
     };
+
+export type i18nConfig<T extends readonly Locale[] = Locale[]> = {
+  locales: T;
+  defaultLocaleId?: T[number]["id"];
+};

@@ -2,6 +2,8 @@ import {FolderIcon} from "@sanity/icons";
 import {BaseSchemaDefinition} from "sanity";
 import {ListItemBuilder, StructureBuilder} from "sanity/structure";
 
+import {pluralize} from "./pluralize";
+
 export type Locale = {
   id: string;
   title: string;
@@ -32,28 +34,35 @@ export const localizedItem = (
   }
 
   return S.listItem()
-    .title(title)
+    .title(pluralize(title))
     .icon(icon || FolderIcon)
     .child(
       S.list()
         .id(name)
-        .title(`${title} by locale`)
+        .title(`${pluralize(title)} by locale`)
         .items([
           S.listItem()
             .id(`${name}-all`)
             .title("All")
             .child(
-              S.documentTypeList(name).filter(`_type == $name`).params({name}),
+              S.documentTypeList(name)
+                .filter(`_type == $name`)
+                .params({name})
+                .title(`All ${pluralize(title).toLowerCase()}`),
             ),
           S.divider(),
           ...locales.map((locale) =>
             S.listItem()
               .id(locale.id)
-              .title(locale.title)
+              .title(`${locale.title} (${locale.id})`)
               .child(
                 S.documentTypeList(name)
+                  .title(`${locale.title} ${pluralize(title).toLowerCase()}`)
                   .filter(`_type == $name && locale == $locale`)
-                  .params({locale: locale.id, name}),
+                  .params({locale: locale.id, name})
+                  .initialValueTemplates(
+                    S.initialValueTemplateItem(`${name}-${locale.id}`),
+                  ),
               ),
           ),
         ]),

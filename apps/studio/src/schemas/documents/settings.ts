@@ -4,14 +4,17 @@ import {
   redirectsSchema,
   seoObjectField,
 } from "@tinloof/sanity-studio";
+import {CogIcon} from "@sanity/icons";
 
 export default defineDocument({
   name: "settings",
   title: "Settings",
+  icon: CogIcon,
   type: "document",
   options: {
-    disableCreation: true,
     internalTitle: false,
+    structure: {singleton: true},
+    localized: true,
   },
   fields: [
     defineField({

@@ -6,11 +6,11 @@ import {
   defineActions,
   defineNewDocumentOptions,
   defineSchemaTemplates,
+  defineStructure,
   documentI18n,
   pages,
 } from "@tinloof/sanity-studio";
 import config from "./config";
-import {structure} from "./src/structure";
 import schemas from "./src/schemas";
 
 export default defineConfig({
@@ -19,7 +19,14 @@ export default defineConfig({
   projectId: config.projectId,
   dataset: config.dataset,
   plugins: [
-    structureTool({title: "General", structure}),
+    structureTool({
+      title: "General",
+      structure: (S, context) =>
+        defineStructure(S, context, {
+          locales: config.i18n.locales,
+          hide: ["translation.metadata"],
+        }),
+    }),
     pages({
       creatablePages: ["page"],
       previewUrl: {

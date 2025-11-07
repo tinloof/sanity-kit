@@ -4,15 +4,16 @@ export default definePage({
   name: "page",
   title: "Page",
   options: {
-    localized: true,
-    templates: {
-      byRole: {administrator: false},
+    structure: {
+      group: "pages",
     },
+    orderable: true,
   },
   fields: [
     {
       name: "title",
       type: "string",
     },
+    {name: "adadw", type: "reference", to: [{type: "home"}]},
   ],
 });
