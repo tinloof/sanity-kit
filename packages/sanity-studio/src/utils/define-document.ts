@@ -29,6 +29,7 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
     internalTitle?: FieldCustomization<typeof internalTitleStringField>;
     /** Configure which document actions are available in the Sanity Studio */
     actions?: DocumentPluginOptions["actions"];
+    newDocumentOptions?: DocumentPluginOptions["newDocumentOptions"];
   };
 };
 
@@ -83,6 +84,7 @@ export default function defineDocument(
     internalTitle = false,
     orderable = false,
     actions,
+    newDocumentOptions,
     ...restOfOptions
   } = options || {};
 
@@ -116,6 +118,7 @@ export default function defineDocument(
     ...schemaWithoutOptions,
     options: {
       actions,
+      newDocumentOptions,
       ...restOfOptions,
     },
     fields: uniqBy(allFields, "name"),

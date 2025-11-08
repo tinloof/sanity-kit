@@ -3,6 +3,7 @@ import {LocalizePathnameFn} from "@tinloof/sanity-web";
 import {
   DocumentActionComponent,
   FieldDefinitionBase,
+  NewDocumentCreationContext,
   ObjectDefinition,
   ObjectFieldProps,
   ObjectOptions,
@@ -260,6 +261,7 @@ declare module "sanity" {
     /** Disable document creation, used with the disableCreation plugin */
     disableCreation?: boolean;
     actions?: any;
+    newDocumentOptions?: DocumentPluginOptions["newDocumentOptions"];
   }
   interface TextOptions {
     maxLength?: number;
@@ -284,3 +286,5 @@ declare global {
 export type SanityDocumentActions =
   | NonNullable<DocumentActionComponent["action"]>
   | "TaskCreateAction";
+
+export type NewDocumentCreationContextType = NewDocumentCreationContext["type"];

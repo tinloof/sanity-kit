@@ -220,34 +220,11 @@ export default defineDocument({
 
 #### New Document Options Configuration
 
-The `newDocumentOptions` option controls whether a document type appears in the new document creation menu, including the global Create button and the create button that appears in reference fields for specific document types.
-
-**Available values:**
-
-- `true` (default) - Allow all users to create this document type
-- `false` - Hide this document type from all create menus
-- `string[]` - Array of role names that can create this document type (e.g., `["editor", "administrator"]`)
-
-**Example:**
-
-```tsx
-export default defineDocument({
-  name: "settings",
-  title: "Site Settings",
-  type: "document",
-  options: {
-    // Only administrators can create settings documents
-    newDocumentOptions: ["administrator"],
-  },
-  fields: [
-    // Your fields
-  ],
-});
-```
+The `newDocumentOptions` option controls when and where a document type can be created in Sanity Studio. Use the provided utility functions to restrict document creation based on creation context and user roles.
 
 **Setup:**
 
-To enable `newDocumentOptions` filtering, add the `defineNewDocumentOptions` resolver to your Sanity Studio configuration:
+First, add the `defineNewDocumentOptions` resolver to your Sanity Studio configuration:
 
 ```tsx
 // sanity.config.ts
@@ -261,12 +238,138 @@ export default defineConfig({
 });
 ```
 
-The `defineNewDocumentOptions` resolver automatically reads the `newDocumentOptions` configuration from your document schemas and filters the available templates accordingly based on the current user's roles.
+**Available Utilities:**
 
-**Important:** This configuration affects both:
+Import the utility functions from the package:
 
-- The global Create button in the top-left of Sanity Studio
-- The create button that appears in reference fields when selecting a document
+```tsx
+import {
+  newDocumentOptionsRemove,
+  newDocumentOptionsRemoveByRole,
+} from "@tinloof/sanity-studio";
+```
+
+**`newDocumentOptionsRemove(contexts, schemaName)`**
+
+Removes the document template from specific creation contexts.
+
+Creation contexts:
+
+- `"global"` - Global "+ Create" button
+- `"structure"` - Structure tool
+- `"document"` - Creating from within documents (references, etc.)
+
+```tsx
+export default defineDocument({
+  name: "settings",
+  title: "Site Settings",
+  type: "document",
+  options: {
+    // Hide settings from global and structure creation menus
+    newDocumentOptions: newDocumentOptionsRemove(
+      ["global", "structure"],
+      "settings",
+    ),
+  },
+  fields: [
+    // Your fields
+  ],
+});
+```
+
+**`newDocumentOptionsRemoveByRole(schemaName, roleContextMap)`**
+
+Removes the document template when specific roles try to create in specified contexts.
+
+```tsx
+export default defineDocument({
+  name: "blogPost",
+  title: "Blog Post",
+  options: {
+    newDocumentOptions: newDocumentOptionsRemoveByRole("blogPost", {
+      contributor: ["global"], // Contributors cannot create from global menu
+      editor: ["document"], // Editors cannot create from within documents
+    }),
+  },
+  fields: [
+    // Your fields
+  ],
+});
+```
+
+**Combining Utilities:**
+
+You can combine multiple utilities for complex filtering:
+
+```tsx
+export default defineDocument({
+  name: "restrictedDoc",
+  title: "Restricted Document",
+  options: {
+    newDocumentOptions: (prev, context) => {
+      // First remove from global context
+      let filtered = newDocumentOptionsRemove(["global"], "restrictedDoc")(
+        prev,
+        context,
+      );
+
+      // Then apply role-based restrictions
+      filtered = newDocumentOptionsRemoveByRole("restrictedDoc", {
+        contributor: ["structure"],
+      })(filtered, context);
+
+      return filtered;
+    },
+  },
+  fields: [
+    // Your fields
+  ],
+});
+```
+
+**Combining with Existing Sanity API:**
+
+You can also combine these utilities with Sanity's existing `newDocumentOptions` functionality using custom logic:
+
+```tsx
+export default defineDocument({
+  name: "blogPost",
+  title: "Blog Post",
+  options: {
+    newDocumentOptions: (prev, context) => {
+      const {currentUser, creationContext} = context;
+
+      // Use Sanity's native filtering - hide from everyone initially
+      let filtered = prev.filter((item) => item.templateId !== "blogPost");
+
+      // Then conditionally show based on custom logic
+      const userRole = currentUser?.roles?.[0]?.name;
+      const isAllowedContext = creationContext.type !== "document";
+
+      if (
+        userRole === "administrator" ||
+        (userRole === "editor" && isAllowedContext)
+      ) {
+        // Add the template back for allowed users/contexts
+        const blogPostTemplate = prev.find(
+          (item) => item.templateId === "blogPost",
+        );
+        if (blogPostTemplate) {
+          filtered.push(blogPostTemplate);
+        }
+      }
+
+      // Apply additional utility-based filtering
+      return newDocumentOptionsRemoveByRole("blogPost", {
+        contributor: ["global"], // Contributors still can't create from global
+      })(filtered, context);
+    },
+  },
+  fields: [
+    // Your fields
+  ],
+});
+```
 
 For more details, see the [Sanity Documentation: New Document Options](https://www.sanity.io/docs/studio/new-document-options#dd286e30bb2e).
 
