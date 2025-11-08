@@ -18,6 +18,8 @@ npm install @tinloof/sanity-studio
   - [`definePage`](#definepage)
   - [`defineDocument`](#definedocument)
   - [Document Actions Configuration](#document-actions-configuration)
+  - [`defineActions`](#defineactions)
+  - [Action Presets](#action-presets)
 - [Schema importing utilities](#schema-importing-utilities)
   - [`importAllSchemas`](#importallschemas)
   - [`importDocumentSchemas`](#importdocumentschemas)
@@ -140,9 +142,7 @@ export default definePage({
     },
 
     // Configure which document actions are available (same as defineDocument)
-    documentActions: {
-      deny: ["delete"], // Deny specific actions
-    },
+    actions: (prev) => prev.filter((action) => action.action !== "delete"),
   },
   fields: [
     // Your custom fields
@@ -150,7 +150,7 @@ export default definePage({
 });
 ```
 
-**Note:** The `documentActions` option works the same way as in `defineDocument`. See the [Document Actions Configuration](#document-actions-configuration) section below for detailed documentation.
+**Note:** The `actions` option works the same way as in `defineDocument`. See the [Document Actions Configuration](#document-actions-configuration) section below for detailed documentation.
 
 ### `defineDocument`
 
@@ -208,9 +208,8 @@ export default defineDocument({
       }), // Custom field transformation (FieldCustomization)
 
     // Configure which document actions are available
-    documentActions: {
-      deny: ["delete", "duplicate"], // Deny specific actions
-    },
+    actions: (prev) =>
+      prev.filter((action) => !["delete", "duplicate"].includes(action.action)),
   },
   fields: [
     // Your custom fields
@@ -220,63 +219,104 @@ export default defineDocument({
 
 #### Document Actions Configuration
 
-The `documentActions` option allows you to control which document actions (publish, delete, duplicate, etc.) are available in the Sanity Studio for each document type. This is useful for enforcing business rules, creating read-only documents, or implementing role-based access control.
+The `actions` option allows you to customize which document actions (publish, delete, duplicate, etc.) are available in the Sanity Studio for each document type. This is useful for enforcing business rules, adding custom actions, or implementing role-based access control.
 
-You can use a policy object with **one** of these mutually exclusive properties: `allow`, `deny`, `toggles`, or `byRole`.
+You can configure actions using:
 
-**Using `allow` (whitelist):**
-
-```tsx
-documentActions: {
-  allow: ["publish", "discardChanges"], // Only these actions are allowed
-}
-```
-
-**Using `deny` (blacklist):**
+1. **Pre-built presets** (recommended for common use cases):
 
 ```tsx
-documentActions: {
-  deny: ["delete", "duplicate"], // Remove these actions
-}
-```
+import {defineDocument, readOnlyActionsPreset, singletonActionsPreset, noDeleteActionsPreset} from "@tinloof/sanity-studio";
 
-**Using `toggles` (fine-grained control):**
-
-```tsx
-documentActions: {
-  toggles: {
-    publish: true, // Explicitly enable
-    delete: false, // Explicitly disable
-    duplicate: false,
+defineDocument({
+  name: "settings",
+  title: "Settings",
+  fields: [...],
+  options: {
+    actions: readOnlyActionsPreset, // Makes document completely read-only
   },
-}
+});
+
+defineDocument({
+  name: "homePage",
+  title: "Home Page",
+  fields: [...],
+  options: {
+    actions: singletonActionsPreset, // Removes delete/duplicate for singleton docs
+  },
+});
 ```
 
-**Using `byRole` (role-based access):**
+See [Action Presets](#action-presets) section for all available presets.
+
+2. **Custom function** (for dynamic filtering/modification):
 
 ```tsx
-documentActions: {
-  byRole: {
-    editor: {
-      allow: ["publish", "delete", "duplicate"], // Editors get these actions
-    },
-    contributor: {
-      allow: ["publish"], // Contributors can only publish
-    },
-    viewer: {
-      allow: [], // Viewers have no actions (read-only)
+defineDocument({
+  name: "post",
+  title: "Post",
+  fields: [
+    // ... your fields
+  ],
+  options: {
+    actions: (prev, context) => {
+      // Remove delete action for published documents
+      if (context.published) {
+        return prev.filter((action) => action.action !== "delete");
+      }
+      return prev;
     },
   },
-}
+});
 ```
 
-**Important:** The `allow`, `deny`, `toggles`, and `byRole` properties are mutually exclusive. Only one can be specified per policy object. If multiple are provided, a runtime error will be thrown with a clear error message.
+3. **Array of custom actions** (to add additional actions):
 
-**Placeholder Actions:** When no actions remain after filtering, a placeholder action with the label "No actions available" will be shown. This prevents Sanity Studio from showing an empty actions menu.
+```tsx
+import {customPreviewAction, customAnalyticsAction} from "./actions";
+
+defineDocument({
+  name: "page",
+  title: "Page",
+  fields: [
+    // ... your fields
+  ],
+  options: {
+    actions: [customPreviewAction, customAnalyticsAction],
+  },
+});
+```
+
+**Function signature:**
+
+- `prev`: Array of existing document action components from Sanity and other plugins
+- `context`: Document actions context containing schema information and document data
+- **Returns**: Array of document action components
+
+**Common use cases:**
+
+```tsx
+// Remove specific actions
+actions: (prev) => prev.filter(action => action.action !== 'delete'),
+
+// Add conditional logic
+actions: (prev, context) => {
+  if (context.currentUser?.role === 'editor') {
+    return prev; // Editors get all actions
+  }
+  return prev.filter(action => action.action !== 'delete');
+},
+
+// Combine filtering and custom actions
+actions: (prev, context) => [
+  ...prev.filter(action => action.action !== 'duplicate'),
+  customAction,
+],
+```
 
 ##### Setup
 
-To enable document actions filtering, add the `defineActions` resolver to your Sanity Studio configuration:
+To enable automatic actions configuration, add the `defineActions` resolver to your Sanity Studio configuration:
 
 ```tsx
 // sanity.config.ts
@@ -285,12 +325,224 @@ import {defineActions} from "@tinloof/sanity-studio";
 export default defineConfig({
   // ... other config
   document: {
-    actions: defineActions, // Automatically applies documentActions from schemas
+    actions: defineActions, // Automatically applies actions from schema options
   },
 });
 ```
 
-The `defineActions` resolver automatically reads the `documentActions` configuration from your document schemas and filters the available actions accordingly. No additional setup is required once added to your config.
+The `defineActions` resolver automatically reads the `actions` configuration from your document schemas (created with `defineDocument` or `definePage`) and applies the appropriate filtering/customization. No additional setup is required once added to your config.
+
+### `defineActions`
+
+A utility function that automatically applies document actions configuration from your schemas to Sanity Studio. This is the resolver function that reads the `actions` option from document schemas created with `defineDocument` and `definePage` and applies the appropriate filtering or customization.
+
+#### Basic usage
+
+```tsx
+// sanity.config.ts
+import {defineActions} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other config
+  document: {
+    actions: defineActions,
+  },
+});
+```
+
+#### How it works
+
+1. **Reads schema configuration**: Automatically detects the `actions` option in your document schemas
+2. **Applies function-based config**: If `actions` is a function, calls it with existing actions and context
+3. **Appends array-based config**: If `actions` is an array, adds those actions to existing ones
+4. **Preserves default behavior**: If no `actions` config exists, leaves actions unchanged
+
+#### Parameters
+
+- `prev`: Array of existing document action components from Sanity and other plugins
+- `context`: Document actions context containing schema information and document data
+
+#### Returns
+
+Array of document action components after applying the schema-based configuration.
+
+#### Example with custom logic
+
+```tsx
+// In your document schema
+defineDocument({
+  name: "article",
+  title: "Article",
+  fields: [...],
+  options: {
+    actions: (prev, context) => {
+      // Remove delete for published articles
+      if (context.published) {
+        return prev.filter(action => action.action !== 'delete');
+      }
+
+      // Remove duplicate for draft articles
+      return prev.filter(action => action.action !== 'duplicate');
+    },
+  },
+});
+
+// In your sanity.config.ts
+export default defineConfig({
+  document: {
+    actions: defineActions, // Automatically applies the above logic
+  },
+});
+```
+
+### Action Presets
+
+The package provides several pre-built action presets for common use cases. These presets can be used directly in your `options.actions` configuration without writing custom logic.
+
+#### Available Presets
+
+##### `readOnlyActionsPreset`
+
+Removes all document actions, making the document completely read-only through the Studio UI.
+
+```tsx
+import {defineDocument, readOnlyActionsPreset} from "@tinloof/sanity-studio";
+
+defineDocument({
+  name: "settings",
+  title: "Site Settings",
+  fields: [...],
+  options: {
+    actions: readOnlyActionsPreset,
+  },
+});
+```
+
+##### `singletonActionsPreset`
+
+Perfect for singleton documents (like settings, home page). Removes actions that don't make sense for single-instance documents: `delete`, `duplicate`, and `unpublish`. Keeps `publish`, `discardChanges`, and `restore`.
+
+```tsx
+import {defineDocument, singletonActionsPreset} from "@tinloof/sanity-studio";
+
+defineDocument({
+  name: "homePage",
+  title: "Home Page",
+  fields: [...],
+  options: {
+    actions: singletonActionsPreset,
+  },
+});
+```
+
+##### `noDeleteActionsPreset`
+
+Removes only the delete action while preserving all others. Useful for protecting important documents from accidental deletion.
+
+```tsx
+import {defineDocument, noDeleteActionsPreset} from "@tinloof/sanity-studio";
+
+defineDocument({
+  name: "article",
+  title: "Article",
+  fields: [...],
+  options: {
+    actions: noDeleteActionsPreset,
+  },
+});
+```
+
+##### `publishOnlyActionsPreset`
+
+Only allows publish-related actions: `publish`, `unpublish`, `discardChanges`, and `restore`. Removes management actions like `delete` and `duplicate`. Ideal for content-focused workflows.
+
+```tsx
+import {defineDocument, publishOnlyActionsPreset} from "@tinloof/sanity-studio";
+
+defineDocument({
+  name: "blogPost",
+  title: "Blog Post",
+  fields: [...],
+  options: {
+    actions: publishOnlyActionsPreset,
+  },
+});
+```
+
+##### `byRoleActions`
+
+A preset factory that creates role-based action filtering. Configure different action presets for different user roles.
+
+```tsx
+import {
+  defineDocument,
+  byRoleActions,
+  readOnlyActionsPreset,
+  publishOnlyActionsPreset,
+  singletonActionsPreset
+} from "@tinloof/sanity-studio";
+
+const roleBasedActions = byRoleActions({
+  administrator: readOnlyActionsPreset,
+  editor: (prev, context) => prev, // All actions
+  contributor: publishOnlyActionsPreset,
+  viewer: singletonActionsPreset,
+});
+
+defineDocument({
+  name: "article",
+  title: "Article",
+  fields: [...],
+  options: {
+    actions: roleBasedActions,
+  },
+});
+```
+
+You can also use custom inline functions for more complex logic:
+
+```tsx
+const roleBasedActions = byRoleActions({
+  editor: (prev, context) => {
+    // Custom logic for editors
+    return prev.filter((action) => action.action !== "delete");
+  },
+  viewer: (prev, context) => {
+    // Viewers can only see publish actions
+    return prev.filter((action) =>
+      ["publish", "unpublish", "discardChanges"].includes(action.action || ""),
+    );
+  },
+});
+```
+
+#### Combining Presets
+
+You can also combine presets with custom logic:
+
+```tsx
+import {defineDocument, singletonActionsPreset} from "@tinloof/sanity-studio";
+
+defineDocument({
+  name: "homePage",
+  title: "Home Page",
+  fields: [...],
+  options: {
+    actions: (prev, context) => {
+      // First apply singleton preset
+      const singletonActions = singletonActionsPreset(prev, context);
+
+      // Then add custom logic
+      if (context.currentUser?.role === 'admin') {
+        return singletonActions; // Admins get all singleton actions
+      }
+
+      // Non-admins can't publish
+      return singletonActions.filter(action => action.action !== 'publish');
+    },
+  },
+});
+```
 
 ## Schema importing utilities
 

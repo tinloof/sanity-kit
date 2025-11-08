@@ -3,11 +3,14 @@ import {
   orderRankOrdering,
 } from "@sanity/orderable-document-list";
 import {uniqBy} from "lodash";
-import {type DocumentDefinition, type SortOrdering} from "sanity";
+import {
+  type DocumentDefinition,
+  DocumentPluginOptions,
+  type SortOrdering,
+} from "sanity";
 
 import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";
 import {internalTitleStringField, localeStringField} from "../schemas/strings";
-import {SanityActions} from "../types";
 import {
   applyFieldCustomization,
   FieldCustomization,
@@ -25,7 +28,7 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
     /** Hide the internal title field */
     internalTitle?: FieldCustomization<typeof internalTitleStringField>;
     /** Configure which document actions are available in the Sanity Studio */
-    documentActions?: SanityActions;
+    actions?: DocumentPluginOptions["actions"];
   };
 };
 
@@ -79,7 +82,7 @@ export default function defineDocument(
     localized = false,
     internalTitle = false,
     orderable = false,
-    documentActions = "default",
+    actions,
     ...restOfOptions
   } = options || {};
 
@@ -112,7 +115,7 @@ export default function defineDocument(
   return {
     ...schemaWithoutOptions,
     options: {
-      ...(documentActions ? {documentActions} : {}),
+      actions,
       ...restOfOptions,
     },
     fields: uniqBy(allFields, "name"),

@@ -1,3 +1,10 @@
+export {
+  byRoleActions,
+  noDeleteActionsPreset,
+  publishOnlyActionsPreset,
+  readOnlyActionsPreset,
+  singletonActionsPreset,
+} from "./action-presets";
 export {default as defineActions} from "./define-actions";
 export {
   default as defineDocument,
