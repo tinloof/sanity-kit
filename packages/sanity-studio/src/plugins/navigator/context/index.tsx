@@ -1,15 +1,23 @@
-import React, {createContext, useContext, useEffect, useReducer} from "react";
+import {localizePathname} from "@tinloof/sanity-web";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react";
+import {type DocumentDefinition, useSchema} from "sanity";
 
 import {
   NavigatorContextType,
   Page,
   PagesNavigatorOptions,
+  PathnameOptions,
   ReducerAction,
   Tree,
   TreeNode,
 } from "../../../types";
 import {buildTree, findTreeByPath} from "../utils";
-import {localizePathname} from "@tinloof/sanity-web";
 
 const CURRENT_DIR_PARAM = "sw-dir";
 const CURRENT_LOCALE_PARAM = "sw-locale";
@@ -89,14 +97,97 @@ export const NavigatorProvider = ({
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const schema = useSchema();
 
-  const filteredData = i18nEnabled
-    ? data.filter(
-        (page) =>
-          page.locale === state.locale ||
-          (!page.locale && i18n.requireLocale === false),
-      )
-    : data;
+  // Extract documents with pathname prefix
+  const typeToPrefixMap = useMemo(() => {
+    const prefixMap = new Map<string, string>();
+    const schemaTypes = schema._original?.types;
+    if (!schemaTypes) return prefixMap;
+
+    for (const type of schemaTypes) {
+      const isDocumentType =
+        "type" in type &&
+        type.type === "document" &&
+        "fields" in type &&
+        Array.isArray(type.fields);
+      if (!isDocumentType) continue;
+
+      const documentType = type as DocumentDefinition;
+      const pathnameField = documentType.fields?.find(
+        (field) => field.name === "pathname",
+      );
+      const options = pathnameField?.options as PathnameOptions | undefined;
+      if (options?.prefix && typeof options.prefix === "string") {
+        prefixMap.set(documentType.name, options.prefix);
+      }
+    }
+    return prefixMap;
+  }, [schema._original?.types]);
+
+  /**
+   * Normalizes and applies prefix to a pathname.
+   */
+  function applyPathnamePrefix(
+    pathname: string | undefined | null,
+    prefix: string,
+  ): string {
+    if (!pathname || pathname.trim() === "") {
+      return `/${prefix.replace(/^\/+|\/+$/g, "")}`;
+    }
+
+    // Normalize prefix (remove leading/trailing slashes)
+    const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, "");
+    if (!normalizedPrefix) {
+      return pathname.startsWith("/") ? pathname : `/${pathname}`;
+    }
+
+    // Normalize pathname (ensure it starts with /, remove trailing slashes)
+    const normalizedPathname = pathname
+      .replace(/\/+$/, "")
+      .replace(/^\/+/, "/");
+
+    // Check if pathname already contains the prefix to avoid double prefixing
+    const pathnameWithoutLeadingSlash = normalizedPathname.slice(1);
+    if (
+      pathnameWithoutLeadingSlash === normalizedPrefix ||
+      pathnameWithoutLeadingSlash.startsWith(`${normalizedPrefix}/`)
+    ) {
+      return normalizedPathname;
+    }
+
+    // Handle root pathname
+    if (normalizedPathname === "/") {
+      return `/${normalizedPrefix}`;
+    }
+
+    // Combine prefix and pathname, ensuring single slashes
+    return `/${normalizedPrefix}${normalizedPathname}`;
+  }
+
+  // Apply prefixes to pathnames before building tree
+  const dataWithPrefixes = useMemo(() => {
+    return data.map((page) => {
+      const prefix = typeToPrefixMap.get(page._type);
+      if (prefix && page.pathname) {
+        return {
+          ...page,
+          pathname: applyPathnamePrefix(page.pathname, prefix),
+        };
+      }
+      return page;
+    });
+  }, [data, typeToPrefixMap]);
+
+  const filteredData = useMemo(() => {
+    return i18nEnabled
+      ? dataWithPrefixes.filter(
+          (page) =>
+            page.locale === state.locale ||
+            (!page.locale && i18n.requireLocale === false),
+        )
+      : dataWithPrefixes;
+  }, [dataWithPrefixes, i18nEnabled, state.locale, i18n?.requireLocale]);
 
   const rootTree = searchTree({
     tree: buildTree(filteredData),

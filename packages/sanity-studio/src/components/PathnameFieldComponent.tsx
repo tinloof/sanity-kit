@@ -71,7 +71,6 @@ const pathnameDebounceTime = 1000;
 export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
   const {prefix} = usePathnamePrefix(props);
-  console.log(prefix);
   const folderOptions = fieldOptions?.folder ?? {canUnlock: true};
 
   const i18nOptions = useMemo(
