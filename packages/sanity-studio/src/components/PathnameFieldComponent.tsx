@@ -71,6 +71,7 @@ const pathnameDebounceTime = 1000;
 export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
   const {prefix} = usePathnamePrefix(props);
+  console.log(prefix);
   const folderOptions = fieldOptions?.folder ?? {canUnlock: true};
 
   const i18nOptions = useMemo(
@@ -266,7 +267,10 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
             />
           )}
           {!autoNavigate && (
-            <PreviewButton localizedPathname={localizedPathname || ""} />
+            <PreviewButton
+              localizedPathname={localizedPathname || ""}
+              prefix={prefix}
+            />
           )}
         </Flex>
       );
@@ -300,7 +304,10 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
           />
         )}
         {!autoNavigate && (
-          <PreviewButton localizedPathname={localizedPathname || ""} />
+          <PreviewButton
+            localizedPathname={localizedPathname || ""}
+            prefix={prefix}
+          />
         )}
       </Flex>
     );
@@ -324,6 +331,7 @@ export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
     updateFinalSegment,
     updateFullPath,
     value,
+    prefix,
   ]);
 
   return (
@@ -410,7 +418,13 @@ function runChange({
   }
 }
 
-function PreviewButton({localizedPathname}: {localizedPathname: string}) {
+function PreviewButton({
+  localizedPathname,
+  prefix,
+}: {
+  localizedPathname: string;
+  prefix?: string;
+}) {
   const navigate = useSafeNavigate();
   const preview = useSafePreview();
 
@@ -419,8 +433,12 @@ function PreviewButton({localizedPathname}: {localizedPathname: string}) {
       return;
     }
 
-    navigate(localizedPathname);
-  }, [navigate, localizedPathname]);
+    const pathWithPrefix = prefix
+      ? `${prefix}${localizedPathname}`
+      : localizedPathname;
+
+    navigate(pathWithPrefix);
+  }, [navigate, localizedPathname, prefix]);
 
   return (
     !!navigate && (
