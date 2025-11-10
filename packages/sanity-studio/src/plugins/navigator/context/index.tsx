@@ -119,26 +119,27 @@ export const NavigatorProvider = ({
       );
       const options = pathnameField?.options as PathnameOptions | undefined;
       if (options?.prefix && typeof options.prefix === "string") {
-        prefixMap.set(documentType.name, options.prefix);
+        // Normalize prefix (remove leading/trailing slashes) once when storing
+        const normalizedPrefix = options.prefix.replace(/^\/+|\/+$/g, "");
+        prefixMap.set(documentType.name, normalizedPrefix);
       }
     }
     return prefixMap;
   }, [schema._original?.types]);
 
   /**
-   * Normalizes and applies prefix to a pathname.
+   * Applies a normalized prefix to a pathname.
+   * @param prefix - Already normalized prefix (no leading/trailing slashes)
    */
   function applyPathnamePrefix(
     pathname: string | undefined | null,
     prefix: string,
   ): string {
     if (!pathname || pathname.trim() === "") {
-      return `/${prefix.replace(/^\/+|\/+$/g, "")}`;
+      return `/${prefix}`;
     }
 
-    // Normalize prefix (remove leading/trailing slashes)
-    const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, "");
-    if (!normalizedPrefix) {
+    if (!prefix) {
       return pathname.startsWith("/") ? pathname : `/${pathname}`;
     }
 
@@ -150,19 +151,19 @@ export const NavigatorProvider = ({
     // Check if pathname already contains the prefix to avoid double prefixing
     const pathnameWithoutLeadingSlash = normalizedPathname.slice(1);
     if (
-      pathnameWithoutLeadingSlash === normalizedPrefix ||
-      pathnameWithoutLeadingSlash.startsWith(`${normalizedPrefix}/`)
+      pathnameWithoutLeadingSlash === prefix ||
+      pathnameWithoutLeadingSlash.startsWith(`${prefix}/`)
     ) {
       return normalizedPathname;
     }
 
     // Handle root pathname
     if (normalizedPathname === "/") {
-      return `/${normalizedPrefix}`;
+      return `/${prefix}`;
     }
 
     // Combine prefix and pathname, ensuring single slashes
-    return `/${normalizedPrefix}${normalizedPathname}`;
+    return `/${prefix}${normalizedPathname}`;
   }
 
   // Apply prefixes to pathnames before building tree
