@@ -6,14 +6,6 @@ import {
   type SchemaTypeDefinition,
 } from "sanity";
 
-declare module "sanity" {
-  interface DocumentOptions {
-    document?: {
-      actions?: DocumentPluginOptions["actions"];
-    };
-  }
-}
-
 /**
  * Retrieves the actions configuration from a document schema type's options.
  *
