@@ -12,9 +12,9 @@ import {
   FieldCustomization,
 } from "./apply-field-customization";
 
-export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
+export type DefineDocumentDefinition = DocumentDefinition & {
   /** Schema options for various features */
-  options?: {
+  options?: DocumentDefinition["options"] & {
     /** Disable document creation, used with the disableCreation plugin */
     disableCreation?: boolean;
     /** Enable localization with locale field */

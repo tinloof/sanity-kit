@@ -1,7 +1,6 @@
 import {Language as Locale} from "@sanity/document-internationalization";
 import {LocalizePathnameFn} from "@tinloof/sanity-web";
 import {
-  FieldDefinition,
   FieldDefinitionBase,
   ObjectDefinition,
   ObjectFieldProps,
