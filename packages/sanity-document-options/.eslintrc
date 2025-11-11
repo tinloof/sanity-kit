@@ -9,7 +9,10 @@
     "sanity/typescript",
     "sanity/react",
     "plugin:react-hooks/recommended",
-    "plugin:prettier/recommended",
     "plugin:react/jsx-runtime"
-  ]
+  ],
+  "rules": {
+    "semi": "off",
+    "quotes": "off"
+  }
 }
