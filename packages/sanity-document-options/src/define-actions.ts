@@ -27,16 +27,15 @@ function getDocumentActionsConfig(
 
 /**
  * A document actions resolver that automatically applies actions configuration
- * from document schemas created with `defineDocument` and `definePage` utilities.
  *
  * This function reads the `actions` option from your document schemas and applies
  * the appropriate filtering/customization to the available document actions in
  * Sanity Studio.
  *
- * **Usage:**
+ * @example Basic usage
  * ```ts
  * // In your sanity.config.ts
- * import {defineActions} from "@tinloof/sanity-studio";
+ * import {defineActions} from "@tinloof/sanity-document-options";
  *
  * export default defineConfig({
  *   document: {
@@ -45,64 +44,51 @@ function getDocumentActionsConfig(
  * });
  * ```
  *
- * **Schema Configuration:**
- * The actions are configured in your document schemas using the `actions` option:
- *
+ * @example Schema configuration with custom function
  * ```ts
- * defineDocument({
+ * defineType({
  *   name: "post",
  *   title: "Post",
  *   fields: [
  *     // ... your fields
  *   ],
  *   options: {
- *     actions: (prev, context) => {
- *       // Custom actions function
- *       return prev.filter(action => action.action !== 'delete');
+ *     document: {
+ *       actions: (prev, context) => {
+ *         // Custom actions function - remove delete for published posts
+ *         if (context.published) {
+ *           return prev.filter(action => action.action !== 'delete');
+ *         }
+ *         return prev;
+ *       },
  *     },
- *     // OR array of additional actions:
- *     // actions: [customAction1, customAction2],
+ *   },
+ * });
+ * ```
+ *
+ * @example Schema configuration with additional actions
+ * ```ts
+ * defineType({
+ *   name: "page",
+ *   title: "Page",
+ *   fields: [...],
+ *   options: {
+ *     document: {
+ *       actions: [customPreviewAction, customAnalyticsAction],
+ *     },
  *   },
  * });
  * ```
  *
  * **Supported Configuration Types:**
- * - **Function**: `(prev, context) => DocumentActionComponent[]` - Custom resolver function
+ * - **Function**: `(prev, context) => DocumentActionComponent[]` - Custom resolver function that receives existing actions and context
  * - **Array**: `DocumentActionComponent[]` - Additional actions to append to existing ones
  *
  * @param prev - The existing document action components from Sanity and other plugins
  * @param context - The document actions context containing schema information and document data
  * @returns The filtered/modified array of document action components
  *
- * @example
- * ```ts
- * // Custom function that removes delete action for published documents
- * defineDocument({
- *   name: "article",
- *   title: "Article",
- *   fields: [...],
- *   options: {
- *     actions: (prev, context) => {
- *       if (context.published) {
- *         return prev.filter(action => action.action !== 'delete');
- *       }
- *       return prev;
- *     },
- *   },
- * });
- *
- * // Array of custom actions to add
- * defineDocument({
- *   name: "page",
- *   title: "Page",
- *   fields: [...],
- *   options: {
- *     actions: [customPreviewAction, customAnalyticsAction],
- *   },
- * });
- * ```
- *
- * @see {@link https://www.sanity.io/docs/document-actions Document Actions Documentation}
+ * @see {@link https://www.sanity.io/docs/document-actions | Sanity Document Actions Documentation}
  */
 export default function defineActions(
   prev: DocumentActionComponent[],

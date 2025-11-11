@@ -6,6 +6,15 @@ import {
   type SchemaTypeDefinition,
 } from "sanity";
 
+/**
+ * Retrieves the badges configuration from a document schema type's options.
+ *
+ * @param schemas - Array of schema type definitions from the Sanity schema
+ * @param schemaType - The name of the schema type to get badges config for
+ * @returns The badges configuration if found, undefined otherwise
+ *
+ * @internal
+ */
 function getDocumentBadgesConfig(
   schemas: SchemaTypeDefinition[],
   schemaType: string,
@@ -17,83 +26,75 @@ function getDocumentBadgesConfig(
 }
 
 /**
- * A document actions resolver that automatically applies actions configuration
- * from document schemas created with `defineDocument` and `definePage` utilities.
+ * A document badges resolver that automatically applies badges configuration
  *
- * This function reads the `actions` option from your document schemas and applies
- * the appropriate filtering/customization to the available document actions in
+ * This function reads the `badges` option from your document schemas and applies
+ * the appropriate filtering/customization to the available document badges in
  * Sanity Studio.
  *
- * **Usage:**
+ * @example Basic usage in sanity.config.ts
  * ```ts
  * // In your sanity.config.ts
- * import {defineActions} from "@tinloof/sanity-studio";
+ * import {documentOptionsPlugin} from "@tinloof/sanity-document-options";
  *
  * export default defineConfig({
- *   document: {
- *     actions: defineActions, // Enable automatic actions filtering
+ *   plugins: [
+ *     documentOptionsPlugin, // Enable automatic badges filtering
+ *   ],
+ * });
+ * ```
+ *
+ * @example Schema configuration with custom function
+ * ```ts
+ * defineType({
+ *   name: "post",
+ *   title: "Post",
+ *   fields: [...],
+ *   options: {
+ *     document: {
+ *       badges: (prev, context) => {
+ *         // Add custom badge for draft posts
+ *         if (!context.published) {
+ *           return [
+ *             ...prev,
+ *             {
+ *               label: 'Draft',
+ *               title: 'This post is in draft mode',
+ *               color: 'warning'
+ *             }
+ *           ];
+ *         }
+ *         return prev;
+ *       },
+ *     },
  *   },
  * });
  * ```
  *
- * **Schema Configuration:**
- * The actions are configured in your document schemas using the `actions` option:
- *
+ * @example Schema configuration with additional badges
  * ```ts
- * defineDocument({
- *   name: "post",
- *   title: "Post",
- *   fields: [
- *     // ... your fields
- *   ],
+ * defineType({
+ *   name: "page",
+ *   title: "Page",
+ *   fields: [...],
  *   options: {
- *     actions: (prev, context) => {
- *       // Custom actions function
- *       return prev.filter(action => action.action !== 'delete');
+ *     document: {
+ *       badges: [customStatusBadge, customPriorityBadge],
  *     },
- *     // OR array of additional actions:
- *     // actions: [customAction1, customAction2],
  *   },
  * });
  * ```
  *
  * **Supported Configuration Types:**
- * - **Function**: `(prev, context) => DocumentActionComponent[]` - Custom resolver function
- * - **Array**: `DocumentActionComponent[]` - Additional actions to append to existing ones
+ * - **Function**: `(prev, context) => DocumentBadgeComponent[]` - Custom resolver function that receives existing badges and context
+ * - **Array**: `DocumentBadgeComponent[]` - Additional badges to append to existing ones
  *
- * @param prev - The existing document action components from Sanity and other plugins
- * @param context - The document actions context containing schema information and document data
- * @returns The filtered/modified array of document action components
+ * @param prev - The existing document badge components from Sanity and other plugins
+ * @param context - The document badges context containing schema information and document data
+ * @returns The filtered/modified array of document badge components
  *
- * @example
- * ```ts
- * // Custom function that removes delete action for published documents
- * defineDocument({
- *   name: "article",
- *   title: "Article",
- *   fields: [...],
- *   options: {
- *     actions: (prev, context) => {
- *       if (context.published) {
- *         return prev.filter(action => action.action !== 'delete');
- *       }
- *       return prev;
- *     },
- *   },
- * });
- *
- * // Array of custom actions to add
- * defineDocument({
- *   name: "page",
- *   title: "Page",
- *   fields: [...],
- *   options: {
- *     actions: [customPreviewAction, customAnalyticsAction],
- *   },
- * });
- * ```
- *
- * @see {@link https://www.sanity.io/docs/document-actions Document Actions Documentation}
+ * @see {@link https://www.sanity.io/docs/document-badges | Sanity Document Badges Documentation}
+ * @internal
  */
 export default function defineBadges(
   prev: DocumentBadgeComponent[],

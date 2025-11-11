@@ -31,10 +31,10 @@ declare module "sanity" {
  * - **New Document Options**: Control which templates appear in the "Create new document" interface
  * - **Templates**: Define initial value templates directly in document schemas
  *
- * **Usage:**
+ * @example Basic plugin usage
  * ```ts
  * // In your sanity.config.ts
- * import {documentOptionsPlugin} from "@tinloof/sanity-studio";
+ * import {documentOptionsPlugin} from "@tinloof/sanity-document-options";
  *
  * export default defineConfig({
  *   plugins: [
@@ -44,11 +44,9 @@ declare module "sanity" {
  * });
  * ```
  *
- * **Schema Configuration:**
- * Configure document options directly in your schemas:
- *
+ * @example Schema configuration with document options
  * ```ts
- * defineDocument({
+ * defineType({
  *   name: "post",
  *   title: "Post",
  *   fields: [...],
@@ -89,10 +87,10 @@ declare module "sanity" {
  * - `defineNewDocumentOptions` - Manages new document template filtering
  * - `defineTemplates` - Collects and applies schema-defined templates
  *
- * @example
+ * @example Complete configuration with all features
  * ```ts
  * // Complete example with all features
- * defineDocument({
+ * defineType({
  *   name: "article",
  *   title: "Article",
  *   fields: [...],
@@ -135,8 +133,8 @@ declare module "sanity" {
  * });
  * ```
  *
- * @see {@link https://www.sanity.io/docs/document-actions Document Actions}
- * @see {@link https://www.sanity.io/docs/initial-value-templates Templates}
+ * @see {@link https://www.sanity.io/docs/document-actions | Sanity Document Actions Documentation}
+ * @see {@link https://www.sanity.io/docs/initial-value-templates | Sanity Initial Value Templates Documentation}
  * @public
  */
 export const documentOptionsPlugin = definePlugin({
@@ -150,5 +148,3 @@ export const documentOptionsPlugin = definePlugin({
     templates: defineTemplates,
   },
 });
-
-console.log("Hello world");

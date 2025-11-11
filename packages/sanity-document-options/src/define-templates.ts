@@ -24,7 +24,7 @@ import type {ConfigContext, DocumentDefinition, Template} from "sanity";
  * Templates are configured in your document schemas using the `templates` option:
  *
  * ```ts
- * defineDocument({
+ * defineType({
  *   name: "post",
  *   title: "Post",
  *   fields: [
@@ -71,7 +71,7 @@ import type {ConfigContext, DocumentDefinition, Template} from "sanity";
  * @example
  * ```ts
  * // Dynamic templates based on context or conditions
- * defineDocument({
+ * defineType({
  *   name: "article",
  *   title: "Article",
  *   fields: [...],
@@ -107,7 +107,7 @@ import type {ConfigContext, DocumentDefinition, Template} from "sanity";
  * });
  *
  * // Static templates for consistent document creation
- * defineDocument({
+ * defineType({
  *   name: "page",
  *   title: "Page",
  *   fields: [...],
@@ -140,7 +140,7 @@ import type {ConfigContext, DocumentDefinition, Template} from "sanity";
  * ```
  *
  * @internal
- * @see {@link https://www.sanity.io/docs/initial-value-templates Initial Value Templates Documentation}
+ * @see {@link https://www.sanity.io/docs/initial-value-templates | Sanity Initial Value Templates Documentation}
  */
 export default function defineTemplates(
   prev: Template<any, any>[],

@@ -28,7 +28,7 @@ import type {
  * The new document options are configured in your document schemas using the `newDocumentOptions` option:
  *
  * ```ts
- * defineDocument({
+ * defineType({
  *   name: "post",
  *   title: "Post",
  *   fields: [
@@ -56,7 +56,7 @@ import type {
  * @example
  * ```ts
  * // Hide specific document types from the create menu
- * defineDocument({
+ * defineType({
  *   name: "internalSettings",
  *   title: "Internal Settings",
  *   fields: [...],
@@ -72,7 +72,7 @@ import type {
  * ```
  *
  * @internal
- * @see {@link https://www.sanity.io/docs/studio/new-document-options New Document Options Documentation}
+ * @see {@link https://www.sanity.io/docs/studio/new-document-options | Sanity New Document Options Documentation}
  */
 export default function defineNewDocumentOptions(
   prev: TemplateItem[],
