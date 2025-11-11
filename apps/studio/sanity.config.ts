@@ -2,14 +2,10 @@ import {defineConfig, isDev} from "sanity";
 import {structureTool} from "sanity/structure";
 import {visionTool} from "@sanity/vision";
 
-import {
-  disableCreation,
-  documentOptionsPlugin,
-  importAllSchemas,
-  pages,
-} from "@tinloof/sanity-studio";
+import {disableCreation, importAllSchemas, pages} from "@tinloof/sanity-studio";
 import config from "./config";
 import {disableCreationDocumentTypes, structure} from "./src/structure";
+import {documentOptionsPlugin} from "@tinloof/sanity-document-options";
 
 export default defineConfig({
   name: "sanity-basic-studio",

@@ -251,13 +251,6 @@ declare module "sanity" {
   interface DocumentOptions {
     /** Disable document creation, used with the disableCreation plugin */
     disableCreation?: boolean;
-    document?: {
-      newDocumentOptions?: DocumentPluginOptions["newDocumentOptions"];
-      actions?: DocumentPluginOptions["actions"];
-    };
-    schema?: {
-      templates?: SchemaPluginOptions["templates"];
-    };
   }
   interface TextOptions {
     maxLength?: number;
