@@ -255,6 +255,9 @@ declare module "sanity" {
       newDocumentOptions?: DocumentPluginOptions["newDocumentOptions"];
       actions?: DocumentPluginOptions["actions"];
     };
+    schema?: {
+      templates?: SchemaPluginOptions["templates"];
+    };
   }
   interface TextOptions {
     maxLength?: number;
