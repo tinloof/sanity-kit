@@ -1,16 +1,30 @@
 import {BaseSchemaDefinition} from "sanity";
-import {ListItemBuilder, StructureBuilder} from "sanity/structure";
+import {
+  ListItemBuilder,
+  StructureBuilder,
+  StructureResolverContext,
+} from "sanity/structure";
 
 import {i18nConfig} from "../types";
 import {singletonListItem} from "./singleton-list-item";
 
-export const localizedSingletonItem = (
-  S: StructureBuilder,
-  name: string,
-  title: string,
-  locales: i18nConfig["locales"],
-  icon?: BaseSchemaDefinition["icon"],
-): ListItemBuilder => {
+type LocalizedSingletonItemProps = {
+  S: StructureBuilder;
+  context: StructureResolverContext;
+  name: string;
+  title: string;
+  locales: i18nConfig["locales"];
+  icon?: BaseSchemaDefinition["icon"];
+};
+
+export const localizedSingletonItem = ({
+  S,
+  context,
+  name,
+  title,
+  locales,
+  icon,
+}: LocalizedSingletonItemProps): ListItemBuilder => {
   // Input validation
   if (!name || typeof name !== "string") {
     throw new Error(
@@ -32,6 +46,25 @@ export const localizedSingletonItem = (
       "localizedSingletonItem: each locale must have an id and title",
     );
   }
+
+  // Create translation metadata document
+  context.getClient({apiVersion: "2021-06-07"}).createIfNotExists({
+    _type: "translation.metadata",
+    _id: `${name}_translations_metadata`,
+    schemaTypes: [name],
+    translations: locales.map((locale) => ({
+      _type: "internationalizedArrayReferenceValue",
+      _key: locale.id,
+      value: {
+        _ref: `${name}_${locale.id}`,
+        _type: "reference",
+        _weak: true,
+        _strengthenOnPublish: {
+          type: name,
+        },
+      },
+    })),
+  });
 
   const listItem = S.listItem()
     .title(title)

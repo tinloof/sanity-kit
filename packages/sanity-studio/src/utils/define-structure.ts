@@ -117,7 +117,14 @@ export default function defineStructure(
           );
         }
 
-        return localizedSingletonItem(S, schema.name, title, locales, icon);
+        return localizedSingletonItem({
+          S,
+          context,
+          name: schema.name,
+          title,
+          locales,
+          icon,
+        });
       }
 
       const singletonItem = singletonListItem(S, schema.name, title);
