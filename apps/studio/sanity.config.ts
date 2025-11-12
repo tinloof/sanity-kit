@@ -2,9 +2,10 @@ import {defineConfig, isDev} from "sanity";
 import {structureTool} from "sanity/structure";
 import {visionTool} from "@sanity/vision";
 
-import {disableCreation, importAllSchemas, pages} from "@tinloof/sanity-studio";
+import {disableCreation, pages} from "@tinloof/sanity-studio";
 import config from "./config";
 import {disableCreationDocumentTypes, structure} from "./src/structure";
+import schemas from "./src/schemas";
 
 export default defineConfig({
   name: "sanity-basic-studio",
@@ -29,6 +30,6 @@ export default defineConfig({
     }),
   ],
   schema: {
-    types: await importAllSchemas(),
+    types: schemas,
   },
 });

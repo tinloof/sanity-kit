@@ -1,5 +1,5 @@
 import {defineType} from "sanity";
-import {importSectionSchemas} from "@tinloof/sanity-studio";
+import sections from "../sections";
 
 // Differs from ptBody in that it specializes in adding & reordering sections.
 export default defineType({
@@ -7,7 +7,7 @@ export default defineType({
   title: "Sections content",
   type: "array",
   of: [
-    ...(await importSectionSchemas()).map((section) => ({
+    ...sections.map((section) => ({
       type: section.name,
     })),
   ],
