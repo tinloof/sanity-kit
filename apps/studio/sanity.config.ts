@@ -2,9 +2,10 @@ import {defineConfig, isDev} from "sanity";
 import {structureTool} from "sanity/structure";
 import {visionTool} from "@sanity/vision";
 
-import {disableCreation, importAllSchemas, pages} from "@tinloof/sanity-studio";
+import {disableCreation, documentI18n, pages} from "@tinloof/sanity-studio";
 import config from "./config";
 import {disableCreationDocumentTypes, structure} from "./src/structure";
+import schemas from "./src/schemas";
 
 export default defineConfig({
   name: "sanity-basic-studio",
@@ -27,8 +28,15 @@ export default defineConfig({
     disableCreation({
       schemas: disableCreationDocumentTypes,
     }),
+    documentI18n({
+      locales: [
+        {id: "en", title: "English"},
+        {id: "fr", title: "French"},
+      ],
+      schemas,
+    }),
   ],
   schema: {
-    types: await importAllSchemas(),
+    types: schemas,
   },
 });
