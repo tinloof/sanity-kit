@@ -16,6 +16,7 @@ import {defineField} from "sanity";
  * ```tsx
  * // Basic usage in internationalized documents
  * localeStringField
+ * ```
  */
 export default defineField({
   name: "locale",

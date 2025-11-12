@@ -38,6 +38,7 @@ type SEOObjectProps = {
  * ```tsx
  * // Basic usage with all fields visible
  * seoObjectField()
+ * ```
  *
  * @example
  * ```tsx

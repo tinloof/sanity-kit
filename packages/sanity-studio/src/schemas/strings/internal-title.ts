@@ -17,6 +17,7 @@ import {defineField} from "sanity";
  * ```tsx
  * // Basic usage
  * internalTitleStringField
+ * ```
  *
  * @example
  * ```tsx

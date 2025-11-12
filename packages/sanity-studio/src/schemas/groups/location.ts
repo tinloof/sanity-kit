@@ -13,6 +13,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```tsx
  * // Basic usage
  * locationSchemaGroup
+ * ```
  *
  * @example
  * ```tsx
