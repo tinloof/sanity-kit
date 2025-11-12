@@ -39,6 +39,7 @@ type PathnameSlugFieldOptions = {
  * ```tsx
  * // Basic usage
  * pathnameSlugField()
+ * ```
  *
  * @example
  * ```tsx

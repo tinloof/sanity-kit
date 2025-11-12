@@ -1,11 +1,9 @@
-import {definePage} from "@tinloof/sanity-studio";
+import {defineType} from "sanity";
 
-export default definePage({
+export default defineType({
   name: "page",
   title: "Page",
-  options: {
-    localized: true,
-  },
+  type: "document",
   fields: [
     {
       name: "title",

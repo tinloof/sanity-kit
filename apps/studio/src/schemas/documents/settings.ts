@@ -1,17 +1,12 @@
-import {defineField} from "sanity";
-import {
-  defineDocument,
-  redirectsSchema,
-  seoObjectField,
-} from "@tinloof/sanity-studio";
+import {defineField, defineType} from "sanity";
+import {redirectsSchema, seoObjectField} from "@tinloof/sanity-studio";
 
-export default defineDocument({
+export default defineType({
   name: "settings",
   title: "Settings",
   type: "document",
   options: {
     disableCreation: true,
-    internalTitle: false,
   },
   fields: [
     defineField({
