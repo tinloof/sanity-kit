@@ -22,10 +22,27 @@ export default defineConfig({
     structureTool({
       title: "General",
       structure: (S, context) =>
-        defineStructure(S, context, {
+        (defineStructure as any)(S, context, {
           locales: config.i18n.locales,
           hide: ["translation.metadata"],
         }),
+      defaultDocumentNode: (S, context) => {
+        const documentSchemas =
+          (context as any).schema._original?.types.filter(
+            ({type}: any) => type === "document",
+          ) || [];
+
+        const schema = documentSchemas.find(
+          (s: any) => s.name === (context as any).schemaType,
+        );
+        const views = (schema as any)?.options?.structure?.views;
+
+        if (views && typeof views === "function") {
+          return S.document().views([S.view.form(), ...views(S)]);
+        }
+
+        return S.document().views([S.view.form()]);
+      },
     }),
     pages({
       creatablePages: ["page"],

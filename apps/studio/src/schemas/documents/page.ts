@@ -1,3 +1,4 @@
+import {CogIcon, HomeIcon} from "@sanity/icons";
 import {definePage} from "@tinloof/sanity-studio";
 
 export default definePage({
@@ -6,14 +7,16 @@ export default definePage({
   options: {
     structure: {
       group: "pages",
+      views: (S) => [
+        S.view.form().title("Home Form").id("home-form").icon(HomeIcon),
+        S.view.form().title("Another Form").id("another-form").icon(CogIcon),
+      ],
     },
-    orderable: true,
   },
   fields: [
     {
       name: "title",
       type: "string",
     },
-    {name: "adadw", type: "reference", to: [{type: "home"}]},
   ],
 });

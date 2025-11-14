@@ -3,6 +3,8 @@ import {
   ListItemBuilder,
   StructureBuilder,
   StructureResolverContext,
+  View,
+  ViewBuilder,
 } from "sanity/structure";
 
 import {i18nConfig} from "../types";
@@ -15,6 +17,10 @@ type LocalizedSingletonItemProps = {
   title: string;
   locales: i18nConfig["locales"];
   icon?: BaseSchemaDefinition["icon"];
+  views?:
+    | (View | ViewBuilder)[]
+    // eslint-disable-next-line no-shadow
+    | ((S: StructureBuilder) => (View | ViewBuilder)[]);
 };
 
 export const localizedSingletonItem = ({
@@ -24,6 +30,7 @@ export const localizedSingletonItem = ({
   title,
   locales,
   icon,
+  views,
 }: LocalizedSingletonItemProps): ListItemBuilder => {
   // Input validation
   if (!name || typeof name !== "string") {
@@ -78,6 +85,7 @@ export const localizedSingletonItem = ({
               name,
               `${locale.title} (${locale.id})`,
               `${name}_${locale.id}`,
+              views,
             );
 
             return icon ? item.icon(icon) : item;

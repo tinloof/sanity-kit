@@ -9,6 +9,7 @@ export default definePage({
     disableCreation: true,
     structure: {
       group: "pages",
+      singleton: true,
     },
   },
   fields: [

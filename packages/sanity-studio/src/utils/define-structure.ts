@@ -45,12 +45,12 @@ export default function defineStructure(
     return () => S.defaults();
   }
 
-  // Helper function to create title with capitalization
-  const createTitle = (
+  // Create title with capitalization
+  function createTitle(
     schema: DefineDocumentDefinition,
     shouldPluralize = false,
-  ) => {
-    // Priority: structure.title > schema.title > schema.name
+  ) {
+    // structure.title > schema.title > schema.name
     if (schema.options?.structure?.title) {
       return shouldPluralize
         ? pluralize(schema.options.structure.title)
@@ -60,10 +60,10 @@ export default function defineStructure(
     const title = schema.title || schema.name;
     const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
     return shouldPluralize ? pluralize(capitalizedTitle) : capitalizedTitle;
-  };
+  }
 
-  // Helper function to create structure item for a schema
-  const createSchemaItem = (schema: DefineDocumentDefinition) => {
+  // Create structure item for a schema
+  function createSchemaItem(schema: DefineDocumentDefinition) {
     // Skip hidden schemas
     if (hide.includes(schema.name)) {
       return null;
@@ -71,6 +71,7 @@ export default function defineStructure(
 
     const title = createTitle(schema);
     const icon = schema.options?.structure?.icon || schema.icon;
+    const views = schema.options?.structure?.views || [];
 
     // Handle orderable option
     if (schema.options?.orderable) {
@@ -124,10 +125,17 @@ export default function defineStructure(
           title,
           locales,
           icon,
+          views,
         });
       }
 
-      const singletonItem = singletonListItem(S, schema.name, title);
+      const singletonItem = singletonListItem(
+        S,
+        schema.name,
+        title,
+        schema.name,
+        views,
+      );
       return icon ? singletonItem.icon(icon) : singletonItem;
     }
 
@@ -147,7 +155,7 @@ export default function defineStructure(
       pluralizedTitle,
     );
     return icon ? documentItem.icon(icon) : documentItem;
-  };
+  }
 
   // Group schemas by their structure group option
   const groupedSchemas = documentSchemas.reduce(
@@ -162,12 +170,11 @@ export default function defineStructure(
     {} as Record<string, DefineDocumentDefinition[]>,
   );
 
-  // Separate grouped and ungrouped items
   const groupedItems: ReturnType<typeof createSchemaItem>[] = [];
   const ungroupedItems: ReturnType<typeof createSchemaItem>[] = [];
 
   Object.entries(groupedSchemas).forEach(([groupName, schemas]) => {
-    // Filter out null items (hidden schemas) and get actual items
+    // Filter out null items
     const schemaItems = schemas
       .map(createSchemaItem)
       .filter((item): item is NonNullable<typeof item> => Boolean(item));

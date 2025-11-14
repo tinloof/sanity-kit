@@ -21,6 +21,7 @@ import {
   NavigatorOptions as PresentationNavigatorOptions,
   PresentationPluginOptions,
 } from "sanity/presentation";
+import {StructureBuilder, View, ViewBuilder} from "sanity/structure";
 
 import {SlugContext} from "./hooks/usePathnameContext";
 
@@ -296,6 +297,8 @@ export type DocumentStructureOptions = {
   icon?: React.ComponentType | React.ReactNode;
 
   title?: string;
+
+  views?: (S: StructureBuilder) => (View | ViewBuilder)[];
 };
 
 declare global {
