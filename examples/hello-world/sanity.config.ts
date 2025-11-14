@@ -1,6 +1,7 @@
 import schemas from '@/sanity/schemas'
 import { visionTool } from '@sanity/vision'
 import { pages } from '@tinloof/sanity-studio'
+import { withExtends } from '@tinloof/sanity-extends'
 import { defineConfig } from 'sanity'
 
 import { structureTool } from 'sanity/structure'
@@ -14,7 +15,7 @@ export default defineConfig({
   title: config.siteName,
   icon: StudioLogo,
   schema: {
-    types: schemas,
+    types: withExtends(schemas),
   },
   plugins: [
     pages({
