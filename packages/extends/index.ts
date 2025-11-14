@@ -29,8 +29,7 @@ function mergeSchema(
   };
 }
 
-export function resolveExtends(types: SchemaTypeDefinition[]) {
-  // Check for duplicate type names
+function resolveExtends(types: SchemaTypeDefinition[]) {
   const typeNames = new Set<string>();
   for (const type of types) {
     if (typeNames.has(type.name)) {
