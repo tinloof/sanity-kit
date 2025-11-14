@@ -1,37 +1,39 @@
 import {FolderIcon} from "@sanity/icons";
 import {orderableDocumentListDeskItem} from "@sanity/orderable-document-list";
+import * as React from "react";
+import {DocumentDefinition} from "sanity";
 import {
   StructureBuilder,
   StructureResolver,
   StructureResolverContext,
 } from "sanity/structure";
 
-import {i18nConfig} from "../types";
-import {DefineDocumentDefinition} from "./define-document";
+import {LOCALE_FIELD_NAME, TOOL_TITLE} from "./constants";
+import {localizedItem} from "./localized-item";
 import {localizedOrderableItem} from "./localized-orderable-item";
 import {localizedSingletonItem} from "./localized-singleton-item";
-import {localizedItem} from "./localizedItem";
 import {pluralize} from "./pluralize";
 import {singletonListItem} from "./singleton-list-item";
-
-type DefineStructureOptions = {
-  locales?: i18nConfig["locales"];
-  hide?: string[];
-};
+import {StructureFromDocsProps} from "./types";
 
 export default function defineStructure(
   S: StructureBuilder,
   context: StructureResolverContext,
-  options?: DefineStructureOptions,
+  options?: StructureFromDocsProps,
 ): StructureResolver | null {
   const {
     schema: {_original},
   } = context;
   const documentSchemas = _original?.types.filter(
     ({type}) => type === "document",
-  ) as DefineDocumentDefinition[];
+  ) as DocumentDefinition[];
 
-  const {locales = [], hide = []} = options || {};
+  const {
+    locales = [],
+    hide = [],
+    localeFieldName = LOCALE_FIELD_NAME,
+    toolTitle = TOOL_TITLE,
+  } = options || {};
 
   // If no documents are found, return the default structure
   if (!documentSchemas || !documentSchemas.length) {
@@ -46,10 +48,7 @@ export default function defineStructure(
   }
 
   // Create title with capitalization
-  function createTitle(
-    schema: DefineDocumentDefinition,
-    shouldPluralize = false,
-  ) {
+  function createTitle(schema: DocumentDefinition, shouldPluralize = false) {
     // structure.title > schema.title > schema.name
     if (schema.options?.structure?.title) {
       return shouldPluralize
@@ -63,7 +62,7 @@ export default function defineStructure(
   }
 
   // Create structure item for a schema
-  function createSchemaItem(schema: DefineDocumentDefinition) {
+  function createSchemaItem(schema: DocumentDefinition) {
     // Skip hidden schemas
     if (hide.includes(schema.name)) {
       return null;
@@ -71,10 +70,9 @@ export default function defineStructure(
 
     const title = createTitle(schema);
     const icon = schema.options?.structure?.icon || schema.icon;
-    const views = schema.options?.structure?.views || [];
 
     // Handle orderable option
-    if (schema.options?.orderable) {
+    if (schema.options?.structure?.orderable) {
       if (schema.options?.structure?.singleton) {
         throw new Error(
           `Schema "${schema.name}" cannot be both singleton and orderable`,
@@ -96,6 +94,7 @@ export default function defineStructure(
           title,
           locales,
           icon,
+          localeFieldName,
         });
       }
       // Non-localized orderable
@@ -125,18 +124,14 @@ export default function defineStructure(
           title,
           locales,
           icon,
-          views,
         });
       }
 
-      const singletonItem = singletonListItem(
+      return singletonListItem({
         S,
-        schema.name,
+        type: schema.name,
         title,
-        schema.name,
-        views,
-      );
-      return icon ? singletonItem.icon(icon) : singletonItem;
+      }).icon(icon);
     }
 
     // Handle localized non-singleton items
@@ -147,7 +142,14 @@ export default function defineStructure(
         );
       }
 
-      return localizedItem(S, schema.name, title, locales, icon);
+      return localizedItem({
+        S,
+        name: schema.name,
+        title,
+        locales,
+        icon,
+        localeFieldName,
+      });
     }
 
     const pluralizedTitle = createTitle(schema, true);
@@ -167,7 +169,7 @@ export default function defineStructure(
       groups[group].push(schema);
       return groups;
     },
-    {} as Record<string, DefineDocumentDefinition[]>,
+    {} as Record<string, DocumentDefinition[]>,
   );
 
   const groupedItems: ReturnType<typeof createSchemaItem>[] = [];
@@ -205,5 +207,5 @@ export default function defineStructure(
     ...ungroupedItems,
   ].filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-  return () => S.list().title("Structure").items(structureItems);
+  return () => S.list().title(toolTitle).items(structureItems);
 }

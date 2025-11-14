@@ -3,24 +3,18 @@ import {
   ListItemBuilder,
   StructureBuilder,
   StructureResolverContext,
-  View,
-  ViewBuilder,
 } from "sanity/structure";
 
-import {i18nConfig} from "../types";
 import {singletonListItem} from "./singleton-list-item";
+import {Locale} from "./types";
 
 type LocalizedSingletonItemProps = {
   S: StructureBuilder;
   context: StructureResolverContext;
   name: string;
   title: string;
-  locales: i18nConfig["locales"];
+  locales: Locale[];
   icon?: BaseSchemaDefinition["icon"];
-  views?:
-    | (View | ViewBuilder)[]
-    // eslint-disable-next-line no-shadow
-    | ((S: StructureBuilder) => (View | ViewBuilder)[]);
 };
 
 export const localizedSingletonItem = ({
@@ -30,7 +24,6 @@ export const localizedSingletonItem = ({
   title,
   locales,
   icon,
-  views,
 }: LocalizedSingletonItemProps): ListItemBuilder => {
   // Input validation
   if (!name || typeof name !== "string") {
@@ -55,7 +48,7 @@ export const localizedSingletonItem = ({
   }
 
   // Create translation metadata document
-  context.getClient({apiVersion: "2021-06-07"}).createIfNotExists({
+  context.getClient({apiVersion: "2025-11-14"}).createIfNotExists({
     _type: "translation.metadata",
     _id: `${name}_translations_metadata`,
     schemaTypes: [name],
@@ -79,19 +72,16 @@ export const localizedSingletonItem = ({
       S.list()
         .title("Locales")
         .items(
-          locales.map((locale) => {
-            const item = singletonListItem(
+          locales.map((locale) =>
+            singletonListItem({
               S,
-              name,
-              `${locale.title} (${locale.id})`,
-              `${name}_${locale.id}`,
-              views,
-            );
-
-            return icon ? item.icon(icon) : item;
-          }),
+              type: name,
+              title: `${locale.title} (${locale.id})`,
+              id: `${name}_${locale.id}`,
+            }).icon(icon),
+          ),
         ),
     );
 
-  return icon ? listItem.icon(icon) : listItem;
+  return listItem.icon(icon);
 };

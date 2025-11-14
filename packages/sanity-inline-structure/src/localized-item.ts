@@ -2,19 +2,26 @@ import {FolderIcon} from "@sanity/icons";
 import {BaseSchemaDefinition} from "sanity";
 import {ListItemBuilder, StructureBuilder} from "sanity/structure";
 
-export type Locale = {
-  id: string;
+import {pluralize} from "./pluralize";
+import {Locale} from "./types";
+
+type LocalizedItemProps = {
+  S: StructureBuilder;
+  name: string;
   title: string;
-  [key: string]: unknown;
+  locales: Locale[];
+  icon?: BaseSchemaDefinition["icon"];
+  localeFieldName?: string;
 };
 
-export const localizedItem = (
-  S: StructureBuilder,
-  name: string,
-  title: string,
-  locales: Locale[],
-  icon?: BaseSchemaDefinition["icon"],
-): ListItemBuilder => {
+export const localizedItem = ({
+  S,
+  name,
+  title,
+  locales,
+  icon,
+  localeFieldName = "locale",
+}: LocalizedItemProps): ListItemBuilder => {
   // Input validation
   if (!name || typeof name !== "string") {
     throw new Error("localizedItem: name parameter must be a non-empty string");
@@ -32,12 +39,12 @@ export const localizedItem = (
   }
 
   return S.listItem()
-    .title(title)
+    .title(pluralize(title))
     .icon(icon || FolderIcon)
     .child(
       S.list()
         .id(name)
-        .title(`${title} by locale`)
+        .title(`${pluralize(title)} by locale`)
         .items([
           S.listItem()
             .id(`${name}-all`)
@@ -46,7 +53,7 @@ export const localizedItem = (
               S.documentTypeList(name)
                 .filter(`_type == $name`)
                 .params({name})
-                .title(`All ${title.toLowerCase()}`),
+                .title(`All ${pluralize(title).toLowerCase()}`),
             ),
           S.divider(),
           ...locales.map((locale) =>
@@ -55,8 +62,8 @@ export const localizedItem = (
               .title(`${locale.title} (${locale.id})`)
               .child(
                 S.documentTypeList(name)
-                  .title(`${locale.title} ${title.toLowerCase()}`)
-                  .filter(`_type == $name && locale == $locale`)
+                  .title(`${locale.title} ${pluralize(title).toLowerCase()}`)
+                  .filter(`_type == $name && ${localeFieldName} == $locale`)
                   .params({locale: locale.id, name})
                   .initialValueTemplates(
                     S.initialValueTemplateItem(`${name}-${locale.id}`),

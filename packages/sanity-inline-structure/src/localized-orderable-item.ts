@@ -1,5 +1,6 @@
 import {FolderIcon} from "@sanity/icons";
 import {orderableDocumentListDeskItem} from "@sanity/orderable-document-list";
+import * as React from "react";
 import {BaseSchemaDefinition} from "sanity";
 import {
   ListItemBuilder,
@@ -7,17 +8,18 @@ import {
   StructureResolverContext,
 } from "sanity/structure";
 
-import {i18nConfig} from "../types";
 import {pluralize} from "./pluralize";
+import {Locale} from "./types";
 
-export interface LocalizedOrderableItemOptions {
+export type LocalizedOrderableItemOptions = {
   S: StructureBuilder;
   context: StructureResolverContext;
   name: string;
   title: string;
-  locales: i18nConfig["locales"];
+  locales: Locale[];
   icon?: BaseSchemaDefinition["icon"];
-}
+  localeFieldName?: string;
+};
 
 export const localizedOrderableItem = ({
   S,
@@ -26,6 +28,7 @@ export const localizedOrderableItem = ({
   title,
   locales,
   icon,
+  localeFieldName = "locale",
 }: LocalizedOrderableItemOptions): ListItemBuilder => {
   // Input validation
   if (!name || typeof name !== "string") {
@@ -51,7 +54,7 @@ export const localizedOrderableItem = ({
 
   const pluralizedTitle = pluralize(title);
 
-  const listItem = S.listItem()
+  return S.listItem()
     .title(pluralizedTitle)
     .child(
       S.list()
@@ -63,7 +66,7 @@ export const localizedOrderableItem = ({
               id: `${name}_${locale.id}`,
               icon: (icon as React.ComponentType) ?? FolderIcon,
               type: name,
-              filter: `_type == $type && locale == $locale`,
+              filter: `_type == $type && ${localeFieldName} == $locale`,
               params: {locale: locale.id, type: name},
               S,
               context,
@@ -89,7 +92,6 @@ export const localizedOrderableItem = ({
             }),
           ),
         ),
-    );
-
-  return icon ? listItem.icon(icon) : listItem;
+    )
+    .icon(icon);
 };

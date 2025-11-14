@@ -1,18 +1,13 @@
-import {defineField} from "sanity";
-import {
-  defineDocument,
-  redirectsSchema,
-  seoObjectField,
-} from "@tinloof/sanity-studio";
-import {CogIcon, HomeIcon} from "@sanity/icons";
+import {defineField, defineType} from "sanity";
+import {redirectsSchema, seoObjectField} from "@tinloof/sanity-studio";
+import {CogIcon} from "@sanity/icons";
 
-export default defineDocument({
+export default defineType({
   name: "settings",
   title: "Settings",
   icon: CogIcon,
   type: "document",
   options: {
-    internalTitle: false,
     structure: {
       singleton: true,
     },

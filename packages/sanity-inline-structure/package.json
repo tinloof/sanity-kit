@@ -1,5 +1,5 @@
 {
-  "name": "@tinloof/sanity-structure",
+  "name": "@tinloof/sanity-inline-structure",
   "version": "0.0.0",
   "description": "",
   "keywords": [
@@ -36,7 +36,9 @@
     "dev": "npm run watch"
   },
   "dependencies": {
-    "@sanity/incompatible-plugin": "^1.0.5"
+    "@sanity/icons": "^3.7.4",
+    "@sanity/incompatible-plugin": "^1.0.5",
+    "@sanity/orderable-document-list": "^1.4.0"
   },
   "devDependencies": {
     "@sanity/pkg-utils": "^6.13.4",

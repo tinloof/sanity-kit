@@ -7,12 +7,7 @@ import {type DocumentDefinition, type SortOrdering} from "sanity";
 
 import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";
 import {internalTitleStringField, localeStringField} from "../schemas/strings";
-import {
-  DocumentStructureOptions,
-  NewDocumentOptions,
-  SanityActions,
-  TemplatesPolicy,
-} from "../types";
+import {NewDocumentOptions, SanityActions, TemplatesPolicy} from "../types";
 import {
   applyFieldCustomization,
   FieldCustomization,
@@ -33,7 +28,6 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
     documentActions?: SanityActions;
     newDocumentOptions?: NewDocumentOptions;
     templates?: TemplatesPolicy;
-    structure?: DocumentStructureOptions;
   };
 };
 
@@ -90,7 +84,6 @@ export default function defineDocument(
     documentActions = "default",
     newDocumentOptions = true,
     templates = true,
-    structure,
     ...restOfOptions
   } = options || {};
 
@@ -126,7 +119,6 @@ export default function defineDocument(
       newDocumentOptions,
       ...(documentActions ? {documentActions} : {}),
       templates,
-      structure,
       ...restOfOptions,
       localized: !!localized,
       orderable: !!orderable,

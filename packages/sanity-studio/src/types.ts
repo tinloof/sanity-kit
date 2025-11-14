@@ -21,7 +21,6 @@ import {
   NavigatorOptions as PresentationNavigatorOptions,
   PresentationPluginOptions,
 } from "sanity/presentation";
-import {StructureBuilder, View, ViewBuilder} from "sanity/structure";
 
 import {SlugContext} from "./hooks/usePathnameContext";
 
@@ -267,8 +266,6 @@ declare module "sanity" {
     localized?: boolean;
     /** Enable document ordering with orderRank field */
     orderable?: boolean;
-    /** Document structure configuration */
-    structure?: DocumentStructureOptions;
   }
   interface TextOptions {
     maxLength?: number;
@@ -279,27 +276,6 @@ declare module "sanity" {
     minLength?: number;
   }
 }
-
-/**
- * Configuration options for document structure in the Sanity Studio.
- * Used to control how documents appear in the studio's structure builder.
- */
-export type DocumentStructureOptions = {
-  /**
-   * Group(s) to place the document in within the studio structure.
-   * Can be a single group name or array of group names.
-   * Defaults to undefined if not specified.
-   */
-  group?: string;
-
-  singleton?: boolean;
-
-  icon?: React.ComponentType | React.ReactNode;
-
-  title?: string;
-
-  views?: (S: StructureBuilder) => (View | ViewBuilder)[];
-};
 
 declare global {
   interface ImportMeta {

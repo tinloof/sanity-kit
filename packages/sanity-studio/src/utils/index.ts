@@ -6,7 +6,6 @@ export {
 export {default as defineNewDocumentOptions} from "./define-new-document-options";
 export {default as definePage} from "./define-page";
 export {default as defineSchemaTemplates} from "./define-schema-templates";
-export {default as defineStructure} from "./define-structure";
 export {definePathname} from "./definePathname";
 export {
   importAllSchemas,

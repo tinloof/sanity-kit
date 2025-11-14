@@ -1,9 +1,10 @@
-import {CogIcon, HomeIcon} from "@sanity/icons";
-import {definePage} from "@tinloof/sanity-studio";
+import {HomeIcon} from "@sanity/icons";
+import {defineType} from "sanity";
 
-export default definePage({
+export default defineType({
   name: "home",
   title: "Home",
+  type: "document",
   icon: HomeIcon,
   options: {
     disableCreation: true,
