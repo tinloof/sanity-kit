@@ -1,0 +1,39 @@
+{
+  "name": "@tinloof/sanity-extends",
+  "version": "1.0.1",
+  "description": "Schema extension utilities for Sanity",
+  "license": "ISC",
+  "author": "Tinloof",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "peerDependencies": {
+    "sanity": "^4.15.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.20",
+    "tsup": "^8.3.0",
+    "typescript": "^5.0.0",
+    "vitest": "^4.0.8"
+  }
+}
