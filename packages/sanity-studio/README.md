@@ -42,6 +42,7 @@ npm install @tinloof/sanity-studio
   - [Add a section picker to your document](#3-add-a-section-picker-to-your-document)
   - [Add sections to your Sanity schema](#4-add-sections-to-your-sanity-schema)
 - [`documentI18n`](#documenti18n)
+  - [`localizedAbstract`](#localizedabstract)
 - [`localizedItem`](#localizedItem)
 - [`singletonListItem`](#singletonlistitem)
 - [Schemas](#schemas)
@@ -809,10 +810,146 @@ export default schemas;
 
 ## `documentI18n`
 
-The `documentI18n` plugin is an opinionated thin wrapper around Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) that makes it possible to add internationalization without having to specify schema types.
-`documentI18n` enables internationalization on any schema with a `locale` field.
+The `documentI18n` plugin is an enhanced wrapper around Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) that provides streamlined internationalization capabilities with automatic schema detection and improved template filtering.
 
-Check the `with-i18n` example for instructions on usage.
+### Features
+
+- **Automatic schema detection**: Automatically enables internationalization for document schemas that:
+  - Have a `locale` field
+  - Have `options.localized` set to `true`
+  - Extend the `localizedAbstract` schema
+- **Template filtering**: Removes default localeless templates for translatable documents to prevent creation of untranslated content
+- **Metadata filtering**: Hides translation metadata from document creation menus
+
+### Basic usage
+
+```tsx
+import {documentI18n} from "@tinloof/sanity-studio";
+import schemas from "@/sanity/schemas";
+
+const i18nConfig = {
+  locales: [
+    {id: "en", title: "English"},
+    {id: "fr", title: "French"},
+    {id: "es", title: "Spanish"},
+  ],
+  defaultLocaleId: "en",
+};
+
+export default defineConfig({
+  plugins: [
+    documentI18n({
+      ...i18nConfig,
+      schemas,
+    }),
+  ],
+});
+```
+
+### Making schemas translatable
+
+There are three ways to mark a document schema as translatable:
+
+#### 1. Add a `locale` field
+
+```tsx
+export const blogPost = {
+  name: "blogPost",
+  type: "document",
+  fields: [
+    {
+      name: "locale",
+      type: "string",
+      // This field makes the document translatable
+    },
+    {
+      name: "title",
+      type: "string",
+    },
+    // ... other fields
+  ],
+};
+```
+
+#### 2. Use the `localized` option
+
+```tsx
+export const page = {
+  name: "page",
+  type: "document",
+  options: {
+    localized: true, // Alternative way to mark as translatable
+  },
+  fields: [
+    {
+      name: "locale",
+      type: "string",
+      // You still need to add the locale field yourself
+    },
+    // ... other fields
+  ],
+};
+```
+
+#### 3. Extend the `localizedAbstract`
+
+```tsx
+import {localizedAbstract} from "@tinloof/sanity-studio";
+
+export const article = {
+  name: "article",
+  type: "document",
+  extends: "localized", // Uses the built-in abstract schema - adds locale field and localized: true for you
+  fields: [
+    {
+      name: "title",
+      type: "string",
+    },
+    // ... other fields
+  ],
+};
+
+// Don't forget to include the abstract in your schema and use withExtends
+import {withExtends} from "@tinloof/sanity-extends";
+
+export default [
+  localizedAbstract,
+  article,
+  // ... other schemas
+];
+
+// In your sanity.config.ts
+export default defineConfig({
+  schema: {
+    types: withExtends(schemas),
+  },
+});
+```
+
+Check the `with-i18n` example for more detailed usage instructions.
+
+### `localizedAbstract`
+
+The `localizedAbstract` is a built-in abstract schema that provides a convenient way to make document schemas translatable. It automatically includes a hidden `locale` field and sets the `localized` option to `true`, so you don't need to add these manually.
+
+### Usage
+
+```tsx
+import {localizedAbstract} from "@tinloof/sanity-studio";
+
+export const mySchema = {
+  name: "myDocument",
+  type: "document",
+  extends: "localized",
+  fields: [
+    // Your fields here
+  ],
+};
+
+export default [localizedAbstract, mySchema];
+```
+
+**Note**: This requires the `@tinloof/sanity-extends` package for the `extends` functionality.
 
 ## `localizedItem`
 

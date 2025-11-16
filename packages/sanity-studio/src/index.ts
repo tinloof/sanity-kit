@@ -1,3 +1,6 @@
+// Get types from "@tinloof/sanity-extends";
+import "@tinloof/sanity-extends";
+
 export * from "./components";
 export * from "./plugins";
 export * from "./schemas";

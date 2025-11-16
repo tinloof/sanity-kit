@@ -189,6 +189,7 @@ export type SanityI18NPluginOptions = {
  * - Is a document type
  * - Has a field named "locale"
  * - OR has the `options.localized` flag set to true
+ * - OR extends the "localized" schema abstract
  *
  * @param schemas - Array of schema type definitions to analyze
  * @returns Array of schema names that support translations
@@ -196,12 +197,14 @@ export type SanityI18NPluginOptions = {
 function extractTranslatableSchemaTypes(schemas: SchemaTypeDefinition[]) {
   return schemas
     .filter((schema) => schema.type === "document")
-    .filter(
-      (schema) =>
-        (schema as DocumentDefinition).fields.some(
-          (field) => field.name === "locale",
-        ) || (schema as DocumentDefinition).options?.localized,
-    )
+    .filter((schema) => {
+      const documentSchema = schema as DocumentDefinition;
+      return (
+        documentSchema.fields.some((field) => field.name === "locale") ||
+        documentSchema.options?.localized ||
+        documentSchema.extends?.includes("localized")
+      );
+    })
     .map((schema) => schema.name);
 }
 
@@ -215,3 +218,5 @@ declare module "sanity" {
     localized?: boolean;
   }
 }
+
+export {default as localizedAbstract} from "./localized-abstract";
