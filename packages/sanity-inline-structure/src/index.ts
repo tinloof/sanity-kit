@@ -1,23 +1,25 @@
-import * as React from "react";
 import {definePlugin} from "sanity";
 import {
+  type ListItemBuilder,
   type StructureBuilder,
+  type StructureResolverContext,
   structureTool,
-  type View,
-  type ViewBuilder,
 } from "sanity/structure";
 
 import {LOCALE_FIELD_NAME, TOOL_TITLE} from "./constants";
 import defineDefaultDocumentNode from "./define-default-document-node";
 import defineStructure from "./define-structure";
-import {StructureFromDocsProps} from "./types";
+import {InlineStructureProps, StructureBuiltinOptions} from "./types";
+
+// Re-export types for external use
+export type {StructureBuiltinOptions} from "./types";
 
 /**
  * A Sanity plugin that enables document schemas to configure their own structure.
  *
  * @public
  */
-export const inlineStructure = definePlugin<StructureFromDocsProps>(
+export const inlineStructure = definePlugin<InlineStructureProps>(
   ({
     hide = [],
     locales = [],
@@ -43,14 +45,12 @@ export const inlineStructure = definePlugin<StructureFromDocsProps>(
 
 declare module "sanity" {
   interface DocumentOptions {
-    structure?: {
-      group?: string;
-      singleton?: boolean;
-      icon?: React.ComponentType | React.ReactNode;
-      title?: string;
-      views?: (S: StructureBuilder) => (View | ViewBuilder)[];
-      orderable?: boolean;
-    };
-    localized?: boolean;
+    structureGroup?: string;
+    structureOptions?:
+      | StructureBuiltinOptions
+      | ((
+          S: StructureBuilder,
+          context: StructureResolverContext,
+        ) => ListItemBuilder);
   }
 }

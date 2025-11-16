@@ -14,12 +14,12 @@ import {localizedOrderableItem} from "./localized-orderable-item";
 import {localizedSingletonItem} from "./localized-singleton-item";
 import {pluralize} from "./pluralize";
 import {singletonListItem} from "./singleton-list-item";
-import {StructureFromDocsProps} from "./types";
+import {InlineStructureProps, StructureBuiltinOptions} from "./types";
 
 export default function defineStructure(
   S: StructureBuilder,
   context: StructureResolverContext,
-  options?: StructureFromDocsProps,
+  options?: InlineStructureProps,
 ): StructureResolver | null {
   const {
     schema: {_original},
@@ -41,19 +41,20 @@ export default function defineStructure(
     return () => S.defaults();
   }
 
-  // If documents are found, but no structure is defined, return the default structure
-  if (!documentSchemas.some((schema) => schema.options?.structure)) {
-    console.error("No structure defined for documents");
-    return () => S.defaults();
-  }
+  // Always create structure - even if no explicit config is provided
 
   // Create title with capitalization
   function createTitle(schema: DocumentDefinition, shouldPluralize = false) {
-    // structure.title > schema.title > schema.name
-    if (schema.options?.structure?.title) {
+    // Check for title in structureOptions (object form)
+    const structureOptions = schema.options?.structureOptions;
+    if (
+      structureOptions &&
+      typeof structureOptions === "object" &&
+      structureOptions.title
+    ) {
       return shouldPluralize
-        ? pluralize(schema.options.structure.title)
-        : schema.options.structure.title;
+        ? pluralize(structureOptions.title)
+        : structureOptions.title;
     }
 
     const title = schema.title || schema.name;
@@ -68,18 +69,38 @@ export default function defineStructure(
       return null;
     }
 
+    const structureOptions = schema.options?.structureOptions;
+
+    // Handle custom builder function
+    if (typeof structureOptions === "function") {
+      return structureOptions(S, context);
+    }
+
+    // Handle built-in options or create default
+    return createBuiltinStructureItem(schema, structureOptions);
+  }
+
+  // Create structure item using built-in options
+  function createBuiltinStructureItem(
+    schema: DocumentDefinition,
+    opts?: StructureBuiltinOptions,
+  ) {
     const title = createTitle(schema);
-    const icon = schema.options?.structure?.icon || schema.icon;
+    const icon = opts?.icon || schema.icon;
 
     // Handle orderable option
-    if (schema.options?.structure?.orderable) {
-      if (schema.options?.structure?.singleton) {
+    if (opts && "orderable" in opts && opts?.orderable) {
+      if (opts.singleton) {
         throw new Error(
           `Schema "${schema.name}" cannot be both singleton and orderable`,
         );
       }
 
-      if (schema.options?.localized) {
+      if (
+        schema.options &&
+        "localized" in schema.options &&
+        schema.options?.localized
+      ) {
         // Localized orderable
         if (!locales || locales.length === 0) {
           throw new Error(
@@ -108,9 +129,13 @@ export default function defineStructure(
       });
     }
 
-    if (schema.options?.structure?.singleton) {
+    if (opts?.singleton) {
       // Check if localized singleton
-      if (schema.options?.localized) {
+      if (
+        schema.options &&
+        "localized" in schema.options &&
+        schema.options?.localized
+      ) {
         if (!locales || locales.length === 0) {
           throw new Error(
             `Schema "${schema.name}" is marked as localized singleton but no locales are provided`,
@@ -135,7 +160,11 @@ export default function defineStructure(
     }
 
     // Handle localized non-singleton items
-    if (schema.options?.localized) {
+    if (
+      schema.options &&
+      "localized" in schema.options &&
+      schema.options.localized
+    ) {
       if (!locales || locales.length === 0) {
         throw new Error(
           `Schema "${schema.name}" is marked as localized but no locales are provided`,
@@ -152,6 +181,7 @@ export default function defineStructure(
       });
     }
 
+    // Default: create document list item
     const pluralizedTitle = createTitle(schema, true);
     const documentItem = S.documentTypeListItem(schema.name).title(
       pluralizedTitle,
@@ -159,10 +189,10 @@ export default function defineStructure(
     return icon ? documentItem.icon(icon) : documentItem;
   }
 
-  // Group schemas by their structure group option
+  // Group schemas by their structureGroup option
   const groupedSchemas = documentSchemas.reduce(
     (groups, schema) => {
-      const group = schema.options?.structure?.group || "Ungrouped";
+      const group = schema.options?.structureGroup || "Ungrouped";
       if (!groups[group]) {
         groups[group] = [];
       }

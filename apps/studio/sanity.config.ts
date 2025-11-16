@@ -1,12 +1,10 @@
 import {defineConfig, isDev} from "sanity";
-import {structureTool} from "sanity/structure";
 import {visionTool} from "@sanity/vision";
 
 import {
   defineActions,
   defineNewDocumentOptions,
   defineSchemaTemplates,
-  defineStructure,
   documentI18n,
   pages,
 } from "@tinloof/sanity-studio";

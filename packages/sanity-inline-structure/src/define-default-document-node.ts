@@ -15,10 +15,14 @@ export default function defineDefaultDocumentNode(
   ) as DocumentDefinition[];
 
   const schema = documentSchemas.find((s) => s.name === context.schemaType);
-  const views = schema?.options?.structure?.views;
+  const structureOptions = schema?.options?.structureOptions;
 
-  if (views && typeof views === "function") {
-    return S.document().views([S.view.form(), ...views(S)]);
+  // Only check for views if structureOptions is an object (not a function)
+  if (structureOptions && typeof structureOptions === "object") {
+    const views = structureOptions.views;
+    if (views && typeof views === "function") {
+      return S.document().views([S.view.form(), ...views(S)]);
+    }
   }
 
   return S.document().views([S.view.form()]);

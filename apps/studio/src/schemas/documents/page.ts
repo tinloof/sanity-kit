@@ -5,9 +5,7 @@ export default defineType({
   title: "Page",
   type: "document",
   options: {
-    structure: {
-      group: "pages",
-    },
+    structureGroup: "pages",
   },
   fields: [
     {

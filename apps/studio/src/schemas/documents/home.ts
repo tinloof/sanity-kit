@@ -8,8 +8,8 @@ export default defineType({
   icon: HomeIcon,
   options: {
     disableCreation: true,
-    structure: {
-      group: "pages",
+    structureGroup: "pages",
+    structureOptions: {
       singleton: true,
     },
   },

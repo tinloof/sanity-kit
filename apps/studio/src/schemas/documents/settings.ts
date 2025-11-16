@@ -8,7 +8,7 @@ export default defineType({
   icon: CogIcon,
   type: "document",
   options: {
-    structure: {
+    structureOptions: {
       singleton: true,
     },
     localized: true,
