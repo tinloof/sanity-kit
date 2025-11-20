@@ -10,34 +10,56 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build"
   },
+  "sideEffects": false,
   "peerDependencies": {
-    "sanity": "^4.15.0"
+    "sanity": "^3.80.1 || ^4.0.0",
+    "react": "^18 || ^19.2.0",
+    "react-dom": "^18 || ^19.2.0",
+    "@sanity/icons": "^3.0.0",
+    "@sanity/ui": "^3.0.0",
+    "styled-components": "^6.0.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.5",
+    "sanity": "^4.16.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@sanity/icons": "^3.7.4",
+    "@sanity/ui": "^3.1.11",
+    "styled-components": "^6.1.19",
+    "@types/react": "^18 || ^19.2.5",
+    "@types/react-dom": "^18 || ^19.2.5",
     "tsup": "^8.3.0",
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@sanity/icons": "^3.7.4",
-    "@sanity/ui": "^3.1.11",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
     "sanity-plugin-utils": "^1.7.0",
-    "styled-components": "^6.1.19",
     "suspend-react": "^0.1.3"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tinloof/sanity-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tinloof/sanity-kit/issues"
+  },
+  "homepage": "https://github.com/tinloof/sanity-kit/packages/document-i18n#readme"
 }
