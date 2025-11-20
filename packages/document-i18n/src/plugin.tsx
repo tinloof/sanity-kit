@@ -156,7 +156,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
       // For every schema type this plugin is enabled on
       // Create an initial value template to set the language
       templates: (prev, {schema}) => {
-        // Templates are not setup for async languages
+        // Templates are not setup for async locales
         if (!Array.isArray(locales)) {
           return prev;
         }
@@ -191,7 +191,12 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
           }));
         });
 
-        return [...prev, ...parameterizedTemplates, ...staticTemplates];
+        // Filter out default templates for localized schema types
+        const filteredPrev = prev.filter((template) => {
+          return !schemaTypes.includes(template.id);
+        });
+
+        return [...filteredPrev, ...parameterizedTemplates, ...staticTemplates];
       },
     },
   };

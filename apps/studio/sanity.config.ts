@@ -6,6 +6,7 @@ import {disableCreation, pages} from "@tinloof/sanity-studio";
 import config from "./config";
 import {disableCreationDocumentTypes, structure} from "./src/structure";
 import schemas from "./src/schemas";
+import {documentI18n} from "@tinloof/sanity-document-i18n";
 
 export default defineConfig({
   name: "sanity-basic-studio",
@@ -27,6 +28,12 @@ export default defineConfig({
     visionTool({defaultApiVersion: config.apiVersion}),
     disableCreation({
       schemas: disableCreationDocumentTypes,
+    }),
+    documentI18n({
+      locales: [
+        {id: "en", title: "English"},
+        {id: "fr", title: "French"},
+      ],
     }),
   ],
   schema: {
