@@ -32,7 +32,7 @@ export type InlineStructureProps = {
  * Main plugin options
  * @public
  */
-export type DocumentOptionsProps = {structure?: InlineStructureProps};
+export type DocumentOptionsProps = {structure?: InlineStructureProps | false};
 
 /**
  * Common structure options

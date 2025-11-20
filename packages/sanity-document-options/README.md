@@ -21,6 +21,16 @@ export default defineConfig({
 });
 ```
 
+### Disable Structure Tool
+
+If you want to use only document options (actions, badges, templates) without the structure tool:
+
+```ts
+export default defineConfig({
+  plugins: [documentOptions({structure: false})],
+});
+```
+
 ## Features
 
 ### ✅ Zero Configuration
@@ -219,12 +229,12 @@ defineType({
 
 ```ts
 documentOptions({
-  structure: {
+  structure?: {
     locales?: Locale[];        // Locale configuration
     hide?: string[];           // Document types to hide
     toolTitle?: string;        // Structure tool title
     localeFieldName?: string;  // Locale field name (default: "locale")
-  },
+  } | false,                   // Pass false to disable structure tool
 });
 ```
 

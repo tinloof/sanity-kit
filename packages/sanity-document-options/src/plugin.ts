@@ -21,10 +21,33 @@ import {DocumentOptionsProps} from "./types";
  *   plugins: [documentOptions()]
  * });
  * ```
+ *
+ * @example Disable structure tool
+ * ```ts
+ * export default defineConfig({
+ *   plugins: [documentOptions({ structure: false })]
+ * });
+ * ```
  * @public
  */
 export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
   const {structure} = props ?? {};
+
+  // Skip structure tool if explicitly disabled
+  if (structure === false) {
+    return {
+      name: "tinloof-document-options",
+      document: {
+        actions: defineActions,
+        newDocumentOptions: defineNewDocumentOptions,
+        badges: defineBadges,
+      },
+      schema: {
+        templates: defineTemplates,
+      },
+    };
+  }
+
   const {
     hide = [],
     localeFieldName = LOCALE_FIELD_NAME,
