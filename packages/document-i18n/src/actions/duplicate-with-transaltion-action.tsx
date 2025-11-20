@@ -20,8 +20,8 @@ import {useRouter} from "sanity/router";
 import {structureLocaleNamespace} from "sanity/structure";
 
 import {METADATA_SCHEMA_NAME, TRANSLATIONS_ARRAY_NAME} from "../constants";
-import {useTranslationMetadata} from "../hooks/use-language-metadata";
-import {documenti18nLocaleNamespace} from "../i18n";
+import {useTranslationMetadata} from "../hooks/use-locale-metadata";
+import {documentI18nLocaleNamespace} from "../i18n";
 
 const DISABLED_REASON_KEY = {
   METADATA_NOT_FOUND: "action.duplicate.disabled.missing-metadata",
@@ -52,7 +52,7 @@ export const DuplicateWithTranslationsAction: DocumentActionComponent = ({
   const client = useClient(DEFAULT_STUDIO_CLIENT_OPTIONS);
   const toast = useToast();
   const {t: s} = useTranslation(structureLocaleNamespace);
-  const {t: d} = useTranslation(documenti18nLocaleNamespace);
+  const {t: d} = useTranslation(documentI18nLocaleNamespace);
   const currentUser = useCurrentUser();
 
   const handle = useCallback(async () => {

@@ -9,28 +9,28 @@ import type {
   SanityDocumentLike,
 } from "sanity";
 
-export type Language = {
+export type Locale = {
   id: Intl.UnicodeBCP47LocaleIdentifier;
   title: string;
 };
 
-export type SupportedLanguages =
-  | Language[]
-  | ((client: SanityClient) => Promise<Language[]>);
+export type SupportedLocales =
+  | Locale[]
+  | ((client: SanityClient) => Promise<Locale[]>);
 
 export type PluginCallbackArgs = {
   sourceDocument: SanityDocument;
   newDocument: SanityDocument;
-  sourceLanguageId: string;
-  destinationLanguageId: string;
+  sourceLocaleId: string;
+  destinationLocaleId: string;
   metaDocumentId: string;
   client: SanityClient;
 };
 
 export type PluginConfig = {
-  locales: SupportedLanguages;
+  locales: SupportedLocales;
   // schemas: BaseSchemaDefinition[];
-  languageField?: string;
+  localeField?: string;
   weakReferences?: boolean;
   bulkPublish?: boolean;
   // metadataFields?: FieldDefinition[];
@@ -43,7 +43,7 @@ export type PluginConfig = {
 // should have processed the
 // supportedLanguages function
 export type PluginConfigContext = Required<PluginConfig> & {
-  locales: Language[];
+  locales: Locale[];
 };
 
 export type TranslationReference = KeyedObject & {
@@ -62,37 +62,35 @@ export type MetadataDocument = SanityDocumentLike & {
   translations: TranslationReference[];
 };
 
-export type DocumentInternationalizationMenuProps = {
+export type DocumentI18nMenuProps = {
   schemaType: ObjectSchemaType;
   documentId: string;
 };
 
 // Extend Sanity schema definitions
-export interface DocumentInternationalizationSchemaOpts {
-  documentInternationalization?: {
+export interface DocumentI18nSchemaOpts {
+  documentI18n?: {
     /** Set to true to disable duplication of this field or type */
     exclude?: boolean;
   };
 }
 
 declare module "sanity" {
-  interface ArrayOptions extends DocumentInternationalizationSchemaOpts {}
-  interface BlockOptions extends DocumentInternationalizationSchemaOpts {}
-  interface BooleanOptions extends DocumentInternationalizationSchemaOpts {}
-  interface CrossDatasetReferenceOptions
-    extends DocumentInternationalizationSchemaOpts {}
-  interface DateOptions extends DocumentInternationalizationSchemaOpts {}
-  interface DatetimeOptions extends DocumentInternationalizationSchemaOpts {}
-  interface FileOptions extends DocumentInternationalizationSchemaOpts {}
-  interface GeopointOptions extends DocumentInternationalizationSchemaOpts {}
-  interface ImageOptions extends DocumentInternationalizationSchemaOpts {}
-  interface NumberOptions extends DocumentInternationalizationSchemaOpts {}
-  interface ObjectOptions extends DocumentInternationalizationSchemaOpts {}
-  interface ReferenceBaseOptions
-    extends DocumentInternationalizationSchemaOpts {}
-  interface SlugOptions extends DocumentInternationalizationSchemaOpts {}
-  interface StringOptions extends DocumentInternationalizationSchemaOpts {}
-  interface TextOptions extends DocumentInternationalizationSchemaOpts {}
-  interface UrlOptions extends DocumentInternationalizationSchemaOpts {}
-  interface EmailOptions extends DocumentInternationalizationSchemaOpts {}
+  interface ArrayOptions extends DocumentI18nSchemaOpts {}
+  interface BlockOptions extends DocumentI18nSchemaOpts {}
+  interface BooleanOptions extends DocumentI18nSchemaOpts {}
+  interface CrossDatasetReferenceOptions extends DocumentI18nSchemaOpts {}
+  interface DateOptions extends DocumentI18nSchemaOpts {}
+  interface DatetimeOptions extends DocumentI18nSchemaOpts {}
+  interface FileOptions extends DocumentI18nSchemaOpts {}
+  interface GeopointOptions extends DocumentI18nSchemaOpts {}
+  interface ImageOptions extends DocumentI18nSchemaOpts {}
+  interface NumberOptions extends DocumentI18nSchemaOpts {}
+  interface ObjectOptions extends DocumentI18nSchemaOpts {}
+  interface ReferenceBaseOptions extends DocumentI18nSchemaOpts {}
+  interface SlugOptions extends DocumentI18nSchemaOpts {}
+  interface StringOptions extends DocumentI18nSchemaOpts {}
+  interface TextOptions extends DocumentI18nSchemaOpts {}
+  interface UrlOptions extends DocumentI18nSchemaOpts {}
+  interface EmailOptions extends DocumentI18nSchemaOpts {}
 }

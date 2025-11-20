@@ -43,7 +43,7 @@ export default function DeleteTranslationDialog(
     <Stack space={4}>
       {translations && translations.length > 0 ? (
         <Text>
-          This document is a language-specific version which other translations
+          This document is a locale-specific version which other translations
           depend on.
         </Text>
       ) : (

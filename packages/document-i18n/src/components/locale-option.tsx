@@ -16,17 +16,17 @@ import {type ObjectSchemaType, type SanityDocument, useClient} from "sanity";
 import {METADATA_SCHEMA_NAME} from "../constants";
 import {useOpenInNewPane} from "../hooks/use-open-in-new-pane";
 import type {
-  Language,
+  Locale,
   Metadata,
   MetadataDocument,
   TranslationReference,
 } from "../types";
 import {createReference} from "../utils/create-reference";
 import {removeExcludedPaths} from "../utils/exclude-paths";
-import {useDocumentInternationalizationContext} from "./document-internationalization-context";
+import {useDocumentI18nContext} from "./document-i18n-context";
 
-type LanguageOptionProps = {
-  language: Language;
+type LocaleOptionProps = {
+  locale: Locale;
   schemaType: ObjectSchemaType;
   documentId: string;
   disabled: boolean;
@@ -34,17 +34,17 @@ type LanguageOptionProps = {
   source: SanityDocument | null;
   metadataId: string | null;
   metadata?: Metadata | null;
-  sourceLanguageId?: string;
+  sourceLocaleId?: string;
 };
 
-export default function LanguageOption(props: LanguageOptionProps) {
+export default function LocaleOption(props: LocaleOptionProps) {
   const {
-    language,
+    locale,
     schemaType,
     documentId,
     current,
     source,
-    sourceLanguageId,
+    sourceLocaleId,
     metadata,
     metadataId,
   } = props;
@@ -57,14 +57,14 @@ export default function LanguageOption(props: LanguageOptionProps) {
     userHasClicked ||
     current ||
     !source ||
-    !sourceLanguageId ||
+    !sourceLocaleId ||
     !metadataId;
   const translation: TranslationReference | undefined = metadata?.translations
     .length
-    ? metadata.translations.find((t) => t._key === language.id)
+    ? metadata.translations.find((t) => t._key === locale.id)
     : undefined;
-  const {apiVersion, languageField, weakReferences, callback} =
-    useDocumentInternationalizationContext();
+  const {apiVersion, localeField, weakReferences, callback} =
+    useDocumentI18nContext();
   const client = useClient({apiVersion});
   const toast = useToast();
 
@@ -84,8 +84,8 @@ export default function LanguageOption(props: LanguageOptionProps) {
       throw new Error(`Cannot create translation without source document`);
     }
 
-    if (!sourceLanguageId) {
-      throw new Error(`Cannot create translation without source language ID`);
+    if (!sourceLocaleId) {
+      throw new Error(`Cannot create translation without source locale ID`);
     }
 
     if (!metadataId) {
@@ -101,8 +101,8 @@ export default function LanguageOption(props: LanguageOptionProps) {
     let newTranslationDocument = {
       ...source,
       _id: `drafts.${newTranslationDocumentId}`,
-      // 2. Update language of the translation
-      [languageField]: language.id,
+      // 2. Update locale of the translation
+      [localeField]: locale.id,
     };
 
     // Remove fields / paths we don't want to duplicate
@@ -115,13 +115,13 @@ export default function LanguageOption(props: LanguageOptionProps) {
 
     // 3. Maybe create the metadata document
     const sourceReference = createReference(
-      sourceLanguageId,
+      sourceLocaleId,
       documentId,
       schemaType.name,
       !weakReferences,
     );
     const newTranslationReference = createReference(
-      language.id,
+      locale.id,
       newTranslationDocumentId,
       schemaType.name,
       !weakReferences,
@@ -153,10 +153,10 @@ export default function LanguageOption(props: LanguageOptionProps) {
 
         callback?.({
           client,
-          sourceLanguageId,
+          sourceLocaleId,
           sourceDocument: source,
           newDocument: newTranslationDocument,
-          destinationLanguageId: language.id,
+          destinationLocaleId: locale.id,
           metaDocumentId: metadataId,
         }).catch((err) => {
           toast.push({
@@ -168,7 +168,7 @@ export default function LanguageOption(props: LanguageOptionProps) {
 
         return toast.push({
           status: "success",
-          title: `Created "${language.title}" translation`,
+          title: `Created "${locale.title}" translation`,
           description: metadataExisted
             ? `Updated Translations Metadata`
             : `Created Translations Metadata`,
@@ -189,14 +189,14 @@ export default function LanguageOption(props: LanguageOptionProps) {
   }, [
     client,
     documentId,
-    language.id,
-    language.title,
-    languageField,
+    locale.id,
+    locale.title,
+    localeField,
     metadata?._createdAt,
     metadataId,
     schemaType,
     source,
-    sourceLanguageId,
+    sourceLocaleId,
     toast,
     weakReferences,
     callback,
@@ -207,9 +207,9 @@ export default function LanguageOption(props: LanguageOptionProps) {
   if (current) {
     message = `Current document`;
   } else if (translation) {
-    message = `Open ${language.title} translation`;
+    message = `Open ${locale.title} translation`;
   } else if (!translation) {
-    message = `Create new ${language.title} translation`;
+    message = `Create new ${locale.title} translation`;
   }
 
   return (
@@ -247,10 +247,10 @@ export default function LanguageOption(props: LanguageOptionProps) {
             </Text>
           )}
           <Box flex={1}>
-            <Text>{language.title}</Text>
+            <Text>{locale.title}</Text>
           </Box>
           <Badge tone={disabled || current ? `default` : `primary`}>
-            {language.id}
+            {locale.id}
           </Badge>
         </Flex>
       </Button>

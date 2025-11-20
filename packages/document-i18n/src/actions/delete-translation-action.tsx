@@ -9,18 +9,18 @@ import {
 
 import DeleteTranslationDialog from "../components/delete-translation-dialog";
 import DeleteTranslationFooter from "../components/delete-translation-footer";
-import {useDocumentInternationalizationContext} from "../components/document-internationalization-context";
+import {useDocumentI18nContext} from "../components/document-i18n-context";
 import {API_VERSION, TRANSLATIONS_ARRAY_NAME} from "../constants";
 
 export const DeleteTranslationAction: DocumentActionComponent = (props) => {
   const {id: documentId, published, draft} = props;
   const doc = draft || published;
-  const {languageField} = useDocumentInternationalizationContext();
+  const {localeField} = useDocumentI18nContext();
 
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [translations, setTranslations] = useState<SanityDocument[]>([]);
   const onClose = useCallback(() => setDialogOpen(false), []);
-  const documentLanguage = doc ? doc[languageField] : null;
+  const documentLocale = doc ? doc[localeField] : null;
 
   const toast = useToast();
   const client = useClient({apiVersion: API_VERSION});
@@ -30,12 +30,12 @@ export const DeleteTranslationAction: DocumentActionComponent = (props) => {
     const tx = client.transaction();
     let operation = "DELETE";
 
-    if (documentLanguage && translations.length > 0) {
+    if (documentLocale && translations.length > 0) {
       operation = "UNSET";
       translations.forEach((translation) => {
         tx.patch(translation._id, (patch) =>
           patch.unset([
-            `${TRANSLATIONS_ARRAY_NAME}[_key == "${documentLanguage}"]`,
+            `${TRANSLATIONS_ARRAY_NAME}[_key == "${documentLocale}"]`,
           ]),
         );
       });
@@ -63,17 +63,17 @@ export const DeleteTranslationAction: DocumentActionComponent = (props) => {
         toast.push({
           status: "error",
           title:
-            operation === "unset"
+            operation === "UNSET"
               ? "Failed to unset translation reference"
               : "Failed to delete document",
           description: err.message,
         });
       });
-  }, [client, documentLanguage, translations, documentId, onClose, toast]);
+  }, [client, documentLocale, translations, documentId, onClose, toast]);
 
   return {
     label: `Delete translation...`,
-    disabled: !doc || !documentLanguage,
+    disabled: !doc || !documentLocale,
     icon: () => <TrashIcon />,
     tone: "critical" as ButtonTone,
     onHandle: () => {

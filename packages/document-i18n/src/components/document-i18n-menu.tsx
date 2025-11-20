@@ -13,20 +13,18 @@ import {uuid} from "@sanity/uuid";
 import {type FormEvent, useCallback, useMemo, useState} from "react";
 import {useEditState} from "sanity";
 
-import {useTranslationMetadata} from "../hooks/use-language-metadata";
-import type {DocumentInternationalizationMenuProps} from "../types";
-import {useDocumentInternationalizationContext} from "./document-internationalization-context";
-import LanguageManage from "./language-manage";
-import LanguageOption from "./language-option";
-import LanguagePatch from "./language-patch";
+import {useTranslationMetadata} from "../hooks/use-locale-metadata";
+import type {DocumentI18nMenuProps} from "../types";
+import {useDocumentI18nContext} from "./document-i18n-context";
 import Warning from "./warning";
+import LocaleOption from "./locale-option";
+import LocalePatch from "./locale-patch";
+import LocaleManage from "./locale-manage";
 
-export function DocumentInternationalizationMenu(
-  props: DocumentInternationalizationMenuProps,
-) {
+export function DocumentI18nMenu(props: DocumentI18nMenuProps) {
   const {documentId} = props;
   const schemaType = props.schemaType;
-  const {languageField, locales} = useDocumentInternationalizationContext();
+  const {localeField, locales} = useDocumentI18nContext();
 
   // Search filter query
   const [query, setQuery] = useState(``);
@@ -62,7 +60,7 @@ export function DocumentInternationalizationMenu(
     return metadata?._id ?? uuid();
   }, [loading, metadata?._id]);
 
-  // Duplicate a new language version from the most recent version of this document
+  // Duplicate a new locale version from the most recent version of this document
   const {draft, published} = useEditState(documentId, schemaType.name);
   const source = draft || published;
 
@@ -70,13 +68,13 @@ export function DocumentInternationalizationMenu(
   const documentIsInOneMetadataDocument = useMemo(() => {
     return Array.isArray(data) && data.length <= 1;
   }, [data]);
-  const sourceLanguageId = source?.[languageField] as string | undefined;
-  const sourceLanguageIsValid = locales.some((l) => l.id === sourceLanguageId);
-  const allLanguagesAreValid = useMemo(() => {
+  const sourceLocaleId = source?.[localeField] as string | undefined;
+  const sourceLocaleIsValid = locales.some((l) => l.id === sourceLocaleId);
+  const allLocalesAreValid = useMemo(() => {
     const valid = locales.every((l) => l.id && l.title);
     if (!valid) {
       console.warn(
-        `Not all languages are valid. It should be an array of objects with an "id" and "title" property. Or a function that returns an array of objects with an "id" and "title" property.`,
+        `Not all locales are valid. It should be an array of objects with an "id" and "title" property. Or a function that returns an array of objects with an "id" and "title" property.`,
         locales,
       );
     }
@@ -92,18 +90,18 @@ export function DocumentInternationalizationMenu(
         </Card>
       ) : (
         <Stack space={1}>
-          <LanguageManage
+          <LocaleManage
             id={metadata?._id}
             documentId={documentId}
             metadataId={metadataId}
             schemaType={schemaType}
-            sourceLanguageId={sourceLanguageId}
+            sourceLocaleId={sourceLocaleId}
           />
           {locales.length > 4 ? (
             <TextInput
               onChange={handleQuery}
               value={query}
-              placeholder="Filter languages"
+              placeholder="Filter locales"
             />
           ) : null}
           {locales.length > 0 ? (
@@ -111,7 +109,7 @@ export function DocumentInternationalizationMenu(
               {/* Once metadata is loaded, there may be issues */}
               {loading ? null : (
                 <>
-                  {/* Not all languages are valid */}
+                  {/* Not all locales are valid */}
                   {data && documentIsInOneMetadataDocument ? null : (
                     <Warning>
                       {/* TODO: Surface these documents to the user */}
@@ -119,68 +117,67 @@ export function DocumentInternationalizationMenu(
                       Metadata documents
                     </Warning>
                   )}
-                  {/* Not all languages are valid */}
-                  {allLanguagesAreValid ? null : (
+                  {/* Not all locales are valid */}
+                  {allLocalesAreValid ? null : (
                     <Warning>
-                      Not all language objects are valid. See the console.
+                      Not all locale objects are valid. See the console.
                     </Warning>
                   )}
-                  {/* Current document has no language field */}
-                  {sourceLanguageId ? null : (
+                  {/* Current document has no locale field */}
+                  {sourceLocaleId ? null : (
                     <Warning>
-                      Choose a language to apply to{" "}
-                      <strong>this Document</strong>
+                      Choose a locale to apply to <strong>this document</strong>
                     </Warning>
                   )}
-                  {/* Current document has an invalid language field */}
-                  {sourceLanguageId && !sourceLanguageIsValid ? (
+                  {/* Current document has an invalid locale field */}
+                  {sourceLocaleId && !sourceLocaleIsValid ? (
                     <Warning>
-                      Select a supported language. Current language value:{" "}
-                      <code>{sourceLanguageId}</code>
+                      Select a supported locale. Current locale value:{" "}
+                      <code>{sourceLocaleId}</code>
                     </Warning>
                   ) : null}
                 </>
               )}
               {locales
-                .filter((language) => {
+                .filter((locale) => {
                   if (query) {
-                    return language.title
+                    return locale.title
                       .toLowerCase()
                       .includes(query.toLowerCase());
                   }
                   return true;
                 })
-                .map((language) =>
-                  !loading && sourceLanguageId && sourceLanguageIsValid ? (
+                .map((locale) =>
+                  !loading && sourceLocaleId && sourceLocaleIsValid ? (
                     // Button to duplicate this document to a new translation
                     // And either create or update the metadata document
-                    <LanguageOption
-                      key={language.id}
-                      language={language}
+                    <LocaleOption
+                      key={locale.id}
+                      locale={locale}
                       schemaType={schemaType}
                       documentId={documentId}
-                      disabled={loading || !allLanguagesAreValid}
-                      current={language.id === sourceLanguageId}
+                      disabled={loading || !allLocalesAreValid}
+                      current={locale.id === sourceLocaleId}
                       metadata={metadata}
                       metadataId={metadataId}
                       source={source}
-                      sourceLanguageId={sourceLanguageId}
+                      sourceLocaleId={sourceLocaleId}
                     />
                   ) : (
-                    // Button to set a language field on *this* document
-                    <LanguagePatch
-                      key={language.id}
+                    // Button to set a locale field on *this* document
+                    <LocalePatch
+                      key={locale.id}
                       source={source}
-                      language={language}
-                      // Only allow language patch change to:
+                      locale={locale}
+                      // Only allow locale patch change to:
                       // - Keys not in metadata
                       // - The key of this document in the metadata
                       disabled={
                         (loading ||
-                          !allLanguagesAreValid ||
+                          !allLocalesAreValid ||
                           metadata?.translations
                             .filter((t) => t?.value?._ref !== documentId)
-                            .some((t) => t._key === language.id)) ??
+                            .some((t) => t._key === locale.id)) ??
                         false
                       }
                     />
@@ -194,7 +191,7 @@ export function DocumentInternationalizationMenu(
   );
 
   const issueWithTranslations =
-    !loading && sourceLanguageId && !sourceLanguageIsValid;
+    !loading && sourceLocaleId && !sourceLocaleIsValid;
 
   if (!documentId) {
     return null;

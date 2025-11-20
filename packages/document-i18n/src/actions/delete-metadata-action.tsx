@@ -86,7 +86,7 @@ export const DeleteMetadataAction: DocumentActionComponent = (props) => {
       tone: "critical" as ButtonTone,
       message:
         translations.length === 1
-          ? `Delete 1 translation and this document`
+          ? `Delete translation and this document`
           : `Delete all ${translations.length} translations and this document`,
     },
   };

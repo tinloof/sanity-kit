@@ -6,23 +6,20 @@ import {suspend} from "suspend-react";
 import {DEFAULT_CONFIG} from "../constants";
 import type {PluginConfig, PluginConfigContext} from "../types";
 
-const DocumentInternationalizationContext =
-  createContext<PluginConfigContext>(DEFAULT_CONFIG);
+const DocumentI18nContext = createContext<PluginConfigContext>(DEFAULT_CONFIG);
 
-export function useDocumentInternationalizationContext() {
-  return useContext(DocumentInternationalizationContext);
+export function useDocumentI18nContext() {
+  return useContext(DocumentI18nContext);
 }
 
-type DocumentInternationalizationProviderProps = LayoutProps & {
+type DocumentI18nProviderProps = LayoutProps & {
   pluginConfig: Required<PluginConfig>;
 };
 
 /**
- * This Provider wraps the Studio and provides the DocumentInternationalization context to document actions and components.
+ * This Provider wraps the Studio and provides the DocumentI18n context to document actions and components.
  */
-export function DocumentInternationalizationProvider(
-  props: DocumentInternationalizationProviderProps,
-) {
+export function DocumentI18nProvider(props: DocumentI18nProviderProps) {
   const {pluginConfig} = props;
 
   const client = useClient({apiVersion: pluginConfig.apiVersion});
@@ -38,10 +35,8 @@ export function DocumentInternationalizationProvider(
       }, [workspace]);
 
   return (
-    <DocumentInternationalizationContext.Provider
-      value={{...pluginConfig, locales}}
-    >
+    <DocumentI18nContext.Provider value={{...pluginConfig, locales}}>
       {props.renderDefault(props)}
-    </DocumentInternationalizationContext.Provider>
+    </DocumentI18nContext.Provider>
   );
 }

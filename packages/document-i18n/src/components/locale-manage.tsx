@@ -6,29 +6,29 @@ import {type ObjectSchemaType, useClient} from "sanity";
 import {METADATA_SCHEMA_NAME} from "../constants";
 import {useOpenInNewPane} from "../hooks/use-open-in-new-pane";
 import {createReference} from "../utils/create-reference";
-import {useDocumentInternationalizationContext} from "./document-internationalization-context";
+import {useDocumentI18nContext} from "./document-i18n-context";
 
-type LanguageManageProps = {
+type LocaleManageProps = {
   id?: string;
   metadataId?: string | null;
   schemaType: ObjectSchemaType;
   documentId: string;
-  sourceLanguageId?: string;
+  sourceLocaleId?: string;
 };
 
-export default function LanguageManage(props: LanguageManageProps) {
-  const {id, metadataId, schemaType, documentId, sourceLanguageId} = props;
+export default function LocaleManage(props: LocaleManageProps) {
+  const {id, metadataId, schemaType, documentId, sourceLocaleId} = props;
   const open = useOpenInNewPane(id, METADATA_SCHEMA_NAME);
   const openCreated = useOpenInNewPane(metadataId, METADATA_SCHEMA_NAME);
   const {allowCreateMetaDoc, apiVersion, weakReferences} =
-    useDocumentInternationalizationContext();
+    useDocumentI18nContext();
   const client = useClient({apiVersion});
   const [userHasClicked, setUserHasClicked] = useState(false);
 
   const canCreate = !id && Boolean(metadataId) && allowCreateMetaDoc;
 
   const handleClick = useCallback(() => {
-    if (!id && metadataId && sourceLanguageId) {
+    if (!id && metadataId && sourceLocaleId) {
       /* Disable button while this request is pending */
       setUserHasClicked(true);
 
@@ -36,7 +36,7 @@ export default function LanguageManage(props: LanguageManageProps) {
       const transaction = client.transaction();
 
       const sourceReference = createReference(
-        sourceLanguageId,
+        sourceLocaleId,
         documentId,
         schemaType.name,
         !weakReferences,
@@ -66,7 +66,7 @@ export default function LanguageManage(props: LanguageManageProps) {
   }, [
     id,
     metadataId,
-    sourceLanguageId,
+    sourceLocaleId,
     client,
     documentId,
     schemaType.name,
@@ -76,7 +76,7 @@ export default function LanguageManage(props: LanguageManageProps) {
   ]);
 
   const disabled =
-    (!id && !canCreate) || (canCreate && !sourceLanguageId) || userHasClicked;
+    (!id && !canCreate) || (canCreate && !sourceLocaleId) || userHasClicked;
 
   function ManageButton() {
     return (
@@ -84,7 +84,7 @@ export default function LanguageManage(props: LanguageManageProps) {
         <Button
           disabled={disabled}
           mode="ghost"
-          text="Manage Translations"
+          text="Manage translations"
           icon={CogIcon}
           loading={userHasClicked}
           onClick={handleClick}

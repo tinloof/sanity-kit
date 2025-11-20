@@ -3,18 +3,18 @@ import {Badge, Box, Button, Flex, Text, useToast} from "@sanity/ui";
 import {useCallback} from "react";
 import {type SanityDocument, useClient} from "sanity";
 
-import type {Language} from "../types";
-import {useDocumentInternationalizationContext} from "./document-internationalization-context";
+import type {Locale} from "../types";
+import {useDocumentI18nContext} from "./document-i18n-context";
 
-type LanguagePatchProps = {
-  language: Language;
+type LocalePatchProps = {
+  locale: Locale;
   source: SanityDocument | null;
   disabled: boolean;
 };
 
-export default function LanguagePatch(props: LanguagePatchProps) {
-  const {language, source} = props;
-  const {apiVersion, languageField} = useDocumentInternationalizationContext();
+export default function LocalePatch(props: LocalePatchProps) {
+  const {locale, source} = props;
+  const {apiVersion, localeField} = useDocumentI18nContext();
   const disabled = props.disabled || !source;
   const client = useClient({apiVersion});
   const toast = useToast();
@@ -28,11 +28,11 @@ export default function LanguagePatch(props: LanguagePatchProps) {
 
     client
       .patch(currentId)
-      .set({[languageField]: language.id})
+      .set({[localeField]: locale.id})
       .commit()
       .then(() => {
         toast.push({
-          title: `Set document language to ${language.title}`,
+          title: `Set document locale to ${locale.title}`,
           status: `success`,
         });
       })
@@ -40,11 +40,11 @@ export default function LanguagePatch(props: LanguagePatchProps) {
         console.error(err);
 
         return toast.push({
-          title: `Failed to set document language to ${language.title}`,
+          title: `Failed to set document locale to ${locale.title}`,
           status: `error`,
         });
       });
-  }, [source, client, languageField, language, toast]);
+  }, [source, client, localeField, locale, toast]);
 
   return (
     <Button
@@ -58,9 +58,9 @@ export default function LanguagePatch(props: LanguagePatchProps) {
           <EditIcon />
         </Text>
         <Box flex={1}>
-          <Text>{language.title}</Text>
+          <Text>{locale.title}</Text>
         </Box>
-        <Badge>{language.id}</Badge>
+        <Badge>{locale.id}</Badge>
       </Flex>
     </Button>
   );
