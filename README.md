@@ -2,6 +2,12 @@
 
 Packages to help developing powerful content management experiences with Sanity.
 
+## Packages
+
+- **[@tinloof/sanity-document-i18n](packages/document-i18n/)** - Document internationalization plugin (fork of [sanity-io/document-internationalization](https://github.com/sanity-io/document-internationalization) with enhanced template management)
+- **[@tinloof/sanity-studio](packages/sanity-studio/)** - Enhanced Sanity Studio components and utilities
+- **[@tinloof/sanity-web](packages/sanity-web/)** - Web utilities for Sanity projects
+
 ## How to contribute
 
 1. Make sure to install dependencies from the root folder, this will assure all deps are installed for sub-projects

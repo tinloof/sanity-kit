@@ -2,6 +2,8 @@
 
 A Sanity Studio plugin that enables internationalization (i18n) for documents with language selection, translation management, and bulk publishing capabilities.
 
+> This is a fork of [sanity-io/document-internationalization](https://github.com/sanity-io/document-internationalization).
+
 ## Installation
 
 ```bash
@@ -41,6 +43,7 @@ The plugin accepts the following configuration options:
 - Multi-language document support with language selection dropdown
 - Language badges on documents for quick visual identification
 - Automatic translation templates for each language
+- **Enhanced template management**: Automatically removes default templates for localized schema types to avoid confusion
 - Translation metadata management
 - Delete translation actions
 - Duplicate documents with existing translations
