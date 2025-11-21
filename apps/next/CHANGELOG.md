@@ -1,5 +1,12 @@
 # next-non-embedded-studio
 
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies [fb4ac21]
+  - @tinloof/sanity-studio@1.13.0
+
 ## 1.2.1
 
 ### Patch Changes

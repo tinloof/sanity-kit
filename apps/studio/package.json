@@ -1,7 +1,7 @@
 {
   "name": "sanity-basic-studio",
   "private": true,
-  "version": "1.1.16",
+  "version": "1.1.17",
   "main": "package.json",
   "license": "UNLICENSED",
   "scripts": {
@@ -14,6 +14,7 @@
   ],
   "dependencies": {
     "@sanity/vision": "^4.10.2",
+    "@tinloof/sanity-document-i18n": "workspace:*",
     "@tinloof/sanity-studio": "workspace:*",
     "@tinloof/sanity-document-options": "workspace:*",
     "@tinloof/sanity-extends": "workspace:*",

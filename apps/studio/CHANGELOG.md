@@ -1,5 +1,13 @@
 # vite-studio
 
+## 1.1.17
+
+### Patch Changes
+
+- Updated dependencies [fb4ac21]
+  - @tinloof/sanity-studio@1.13.0
+  - @tinloof/sanity-document-i18n@1.0.0
+
 ## 1.1.16
 
 ### Patch Changes

@@ -1,9 +1,8 @@
 import {defineConfig, isDev} from "sanity";
 import {visionTool} from "@sanity/vision";
 
-import {disableCreation, documentI18n, pages} from "@tinloof/sanity-studio";
+import {pages} from "@tinloof/sanity-studio";
 import config from "./config";
-import {disableCreationDocumentTypes, structure} from "./src/structure";
 import schemas from "./src/schemas";
 import {documentOptions} from "@tinloof/sanity-document-options";
 import {withExtends} from "@tinloof/sanity-extends";
