@@ -1,7 +1,7 @@
 {
   "name": "sanity-basic-studio",
   "private": true,
-  "version": "1.1.16",
+  "version": "1.1.17",
   "main": "package.json",
   "license": "UNLICENSED",
   "scripts": {
