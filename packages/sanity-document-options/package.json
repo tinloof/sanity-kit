@@ -42,6 +42,7 @@
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
+    "@tinloof/sanity-extends": "workspace:*",
     "@sanity/pkg-utils": "^6.13.4",
     "@sanity/plugin-kit": "^4.0.20",
     "@types/pluralize": "^0.0.33",
@@ -63,7 +64,9 @@
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
+    "@tinloof/sanity-extends": "workspace:*",
     "react": "^18 || ^19",
+    "react-dom": "^18 || ^19",
     "sanity": "^3 || ^4"
   },
   "engines": {

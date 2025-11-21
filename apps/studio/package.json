@@ -15,6 +15,8 @@
   "dependencies": {
     "@sanity/vision": "^4.10.2",
     "@tinloof/sanity-studio": "workspace:*",
+    "@tinloof/sanity-document-options": "workspace:*",
+    "@tinloof/sanity-extends": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-is": "^19.2.0",

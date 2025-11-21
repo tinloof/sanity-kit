@@ -11,6 +11,7 @@ import {
   defineTemplates,
 } from "./define";
 import {DocumentOptionsProps} from "./types";
+import {resolveAbstractSchemaTypes} from "./utils";
 
 /**
  * Configure document options and structure directly in schema definitions.
@@ -31,7 +32,11 @@ import {DocumentOptionsProps} from "./types";
  * @public
  */
 export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
-  const {structure} = props ?? {};
+  const {structure, abstracts = {i18n: true, singleton: true, sync: true}} =
+    props ?? {};
+
+  // Resolve enabled abstract schema types
+  const enabledAbstractTypes = resolveAbstractSchemaTypes(abstracts);
 
   // Skip structure tool if explicitly disabled
   if (structure === false) {
@@ -44,6 +49,7 @@ export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
       },
       schema: {
         templates: defineTemplates,
+        types: enabledAbstractTypes,
       },
     };
   }
@@ -77,6 +83,7 @@ export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
     },
     schema: {
       templates: defineTemplates,
+      types: enabledAbstractTypes,
     },
   };
 });

@@ -29,10 +29,24 @@ export type InlineStructureProps = {
 };
 
 /**
+ * Abstracts plugin options
+ * @public
+ */
+export type Abstracts =
+  | {
+      singleton?: boolean;
+      sync?: boolean;
+    }
+  | false;
+
+/**
  * Main plugin options
  * @public
  */
-export type DocumentOptionsProps = {structure?: InlineStructureProps | false};
+export type DocumentOptionsProps = {
+  structure?: InlineStructureProps | false;
+  abstracts?: Abstracts;
+};
 
 /**
  * Common structure options
@@ -76,5 +90,11 @@ declare module "sanity" {
           context: StructureResolverContext,
         ) => ListItemBuilder);
     localized?: boolean;
+  }
+}
+
+declare module "sanity" {
+  interface NewDocumentOptionsContext {
+    schemaType: string;
   }
 }
