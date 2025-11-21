@@ -32,9 +32,7 @@ export function removeExcludedPaths(
     // We filter for any fields which should be excluded from the document
     // duplicate action, based on the schemaType option being set.
     .filter(
-      (field) =>
-        field.schemaType?.options?.documentInternationalization?.exclude ===
-        true,
+      (field) => field.schemaType?.options?.documentI18n?.exclude === true,
     )
     // then we return the stringified version of the path
     .map((field) => {

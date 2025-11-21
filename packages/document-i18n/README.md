@@ -16,11 +16,11 @@ Add the plugin to your Sanity config:
 
 ```typescript
 import {defineConfig} from "sanity";
-import {documentInternationalization} from "@tinloof/sanity-document-i18n";
+import {documentI18n} from "@tinloof/sanity-document-i18n";
 
 export default defineConfig({
   plugins: [
-    documentInternationalization({
+    documentI18n({
       locales: [
         {id: "en", title: "English"},
         {id: "fr", title: "Français"},

@@ -19,6 +19,7 @@
     "@sanity/preview-url-secret": "^2.1.4",
     "@sanity/vision": "^3.80.1",
     "@tailwindcss/typography": "0.5.15",
+    "@tinloof/sanity-document-i18n": "workspace:*",
     "@tinloof/sanity-studio": "workspace:*",
     "classnames": "2.5.1",
     "lucide-react": "^0.453.0",

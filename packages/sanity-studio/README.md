@@ -41,7 +41,7 @@ npm install @tinloof/sanity-studio
   - [Create a sections list array](#2-create-a-sections-list-array)
   - [Add a section picker to your document](#3-add-a-section-picker-to-your-document)
   - [Add sections to your Sanity schema](#4-add-sections-to-your-sanity-schema)
-- [`documentI18n`](#documenti18n)
+- [`documentI18n` (DEPRECATED)](#documenti18n-deprecated)
 - [`localizedItem`](#localizedItem)
 - [`singletonListItem`](#singletonlistitem)
 - [Schemas](#schemas)
@@ -807,12 +807,39 @@ const schemas = [page, ...sections];
 export default schemas;
 ```
 
-## `documentI18n`
+## `documentI18n` (DEPRECATED)
+
+> ⚠️ **DEPRECATED**: This plugin has been moved to a separate package `@tinloof/sanity-document-i18n` with enhanced features and better template management. Please migrate to the new package.
 
 The `documentI18n` plugin is an opinionated thin wrapper around Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) that makes it possible to add internationalization without having to specify schema types.
 `documentI18n` enables internationalization on any schema with a `locale` field.
 
-Check the `with-i18n` example for instructions on usage.
+**Migration:**
+
+```bash
+npm install @tinloof/sanity-document-i18n
+```
+
+```typescript
+// OLD (deprecated)
+import {documentI18n} from "@tinloof/sanity-studio";
+
+// NEW (recommended)
+import {documentI18n} from "@tinloof/sanity-document-i18n";
+
+export default defineConfig({
+  plugins: [
+    documentI18n({
+      locales: [
+        {id: "en", title: "English"},
+        {id: "fr", title: "French"},
+      ],
+    }),
+  ],
+});
+```
+
+See the [`@tinloof/sanity-document-i18n` documentation](../document-i18n/) for complete usage instructions.
 
 ## `localizedItem`
 
