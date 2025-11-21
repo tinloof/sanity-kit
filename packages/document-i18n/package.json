@@ -29,18 +29,24 @@
   "sideEffects": false,
   "peerDependencies": {
     "sanity": "^3.80.1 || ^4.0.0",
-    "react": "^18 || ^19.2.0",
-    "react-dom": "^18 || ^19.2.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
     "@sanity/icons": "^3.0.0",
     "@sanity/ui": "^3.0.0",
-    "styled-components": "^6.0.0"
+    "styled-components": "^6.0.0",
+    "@sanity/uuid": "^3.0.0",
+    "@sanity/mutator": "^3.0.0 || ^4.0.0",
+    "rxjs": "^7.0.0"
   },
   "devDependencies": {
-    "sanity": "^4.16.0",
+    "sanity": "^4.17.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "@sanity/icons": "^3.7.4",
     "@sanity/ui": "^3.1.11",
+    "@sanity/uuid": "^3.0.2",
+    "@sanity/mutator": "^4.17.0",
+    "rxjs": "^7.8.2",
     "styled-components": "^6.1.19",
     "@types/react": "^18 || ^19.2.5",
     "@types/react-dom": "^18 || ^19.2.5",
