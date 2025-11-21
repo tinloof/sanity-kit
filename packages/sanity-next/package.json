@@ -1,0 +1,60 @@
+{
+  "name": "@tinloof/sanity-next",
+  "version": "0.0.1",
+  "description": "Sanity & Next.js utilities and components plugin",
+  "license": "ISC",
+  "author": "Tinloof",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build"
+  },
+  "sideEffects": false,
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "next-sanity": "^10.0.0 || ^11.0.0",
+    "react": "^18 || ^19.2.0",
+    "react-dom": "^18 || ^19.2.0"
+  },
+  "devDependencies": {
+    "next": "^16.0.3",
+    "next-sanity": "^11.6.8",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@types/react": "^18 || ^19.2.5",
+    "@types/react-dom": "^18 || ^19.2.5",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "sanity-plugin-utils": "^1.7.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tinloof/sanity-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tinloof/sanity-kit/issues"
+  },
+  "homepage": "https://github.com/tinloof/sanity-kit/packages/sanity-next#readme"
+}
