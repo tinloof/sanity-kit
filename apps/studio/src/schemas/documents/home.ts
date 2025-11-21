@@ -4,16 +4,13 @@ export default defineType({
   name: "home",
   title: "Home",
   type: "document",
+  extends: ["singleton"],
   options: {
-    disableCreation: true,
+    structureGroup: "pages",
   },
   fields: [
     {
       name: "title",
-      type: "string",
-    },
-    {
-      name: "locale",
       type: "string",
     },
   ],
