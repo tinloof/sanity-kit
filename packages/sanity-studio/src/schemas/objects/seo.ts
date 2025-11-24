@@ -85,7 +85,6 @@ export default function seoObjectField({
     name: "seo",
     title: "SEO",
     type: "object",
-    group: "settings",
     options: {collapsed: false, collapsible: true},
     fields: allFields,
   });
