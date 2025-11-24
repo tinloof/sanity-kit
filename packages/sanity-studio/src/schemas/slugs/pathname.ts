@@ -82,7 +82,6 @@ export default function pathnameSlugField(
         ...options,
       },
     }),
-    group: "settings",
     readOnly: disableCreation && !isDev,
     hidden,
     initialValue: {current: options?.initialValue},
