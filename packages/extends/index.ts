@@ -1,17 +1,39 @@
-import {DocumentDefinition, SchemaTypeDefinition} from "sanity";
+import {
+  DocumentDefinition,
+  IntrinsicTypeName,
+  SchemaTypeDefinition,
+} from "sanity";
 import mergeWith from "lodash/mergeWith";
+import {FieldDefinition} from "sanity";
 
-type AbstractDefinition = Omit<DocumentDefinition, "type"> & {
+type AbstractDefinition = Omit<DocumentDefinition, "type" | "fields"> & {
   type: "abstract";
+  fields?: FieldDefinition<IntrinsicTypeName>[];
 };
+
+type AbstractDefinitionResolver = (
+  document: DocumentDefinition,
+) => AbstractDefinition;
 
 declare module "sanity" {
   export interface IntrinsicDefinitions {
-    abstract: AbstractDefinition;
+    abstract: AbstractDefinition | AbstractDefinitionResolver;
   }
   export interface DocumentDefinition {
     extends?: string[] | string;
   }
+}
+
+function isAbstractResolver(
+  value: AbstractDefinition | AbstractDefinitionResolver,
+): value is AbstractDefinitionResolver {
+  return typeof value === "function";
+}
+
+export function defineAbstract(
+  schema: AbstractDefinition | AbstractDefinitionResolver,
+): AbstractDefinition | AbstractDefinitionResolver {
+  return schema;
 }
 
 function mergeSchema(
@@ -40,29 +62,75 @@ function mergeSchema(
     }),
     extends: undefined,
     type: extendedSchema.type,
-  };
+  } as DocumentDefinition | AbstractDefinition;
 }
 
 function resolveExtends(types: SchemaTypeDefinition[]) {
   const typeNames = new Set<string>();
+
+  const resolverList: AbstractDefinitionResolver[] = [];
+
   for (const type of types) {
-    if (typeNames.has(type.name)) {
-      throw new Error(`Duplicate type: "${type.name}"`);
+    if (isAbstractResolver(type)) {
+      resolverList.push(type);
+    } else if ("name" in type && type.name) {
+      if (typeNames.has(type.name)) {
+        throw new Error(`Duplicate type: "${type.name}"`);
+      }
+      typeNames.add(type.name);
     }
-    typeNames.add(type.name);
   }
 
-  const abstracts = types.filter(
-    (type): type is AbstractDefinition => type.type === "abstract",
-  );
+  const abstractMap = new Map<string, AbstractDefinition>();
+
+  for (const type of types) {
+    if (
+      !isAbstractResolver(type) &&
+      typeof type === "object" &&
+      "type" in type &&
+      type.type === "abstract"
+    ) {
+      const abstractDef = type as AbstractDefinition;
+      abstractMap.set(abstractDef.name, abstractDef);
+    }
+  }
 
   const documents = types.filter(
-    (type): type is DocumentDefinition => type.type === "document",
+    (type): type is DocumentDefinition =>
+      !isAbstractResolver(type) &&
+      typeof type === "object" &&
+      "type" in type &&
+      type.type === "document",
   );
 
-  const allExtendable = [...documents, ...abstracts];
+  const documentMap = new Map<string, DocumentDefinition>();
+  for (const doc of documents) {
+    documentMap.set(doc.name, doc);
+  }
 
-  const processExtensions = (type: DocumentDefinition | AbstractDefinition) => {
+  const resolveAbstract = (
+    name: string,
+    rootDocument: DocumentDefinition,
+  ): AbstractDefinition | undefined => {
+    const staticAbstract = abstractMap.get(name);
+    if (staticAbstract) {
+      return staticAbstract;
+    }
+
+    for (const resolver of resolverList) {
+      const resolved = resolver(rootDocument);
+      if (resolved.name === name) {
+        return resolved;
+      }
+    }
+
+    return undefined;
+  };
+
+  const processExtensions = (
+    type: DocumentDefinition | AbstractDefinition,
+    rootDocument: DocumentDefinition,
+  ) => {
     if (!type.extends) return type;
 
     const extendedTypes = Array.isArray(type.extends)
@@ -84,7 +152,13 @@ function resolveExtends(types: SchemaTypeDefinition[]) {
 
       visited.add(extendedType);
 
-      const baseSchema = allExtendable.find(({name}) => name === extendedType);
+      let baseSchema: DocumentDefinition | AbstractDefinition | undefined;
+
+      baseSchema = resolveAbstract(extendedType, rootDocument);
+
+      if (!baseSchema) {
+        baseSchema = documentMap.get(extendedType);
+      }
 
       if (!baseSchema) {
         throw new Error(
@@ -112,18 +186,29 @@ function resolveExtends(types: SchemaTypeDefinition[]) {
     return merged;
   };
 
-  const mergedDocuments = documents.map(processExtensions);
-  abstracts.forEach(processExtensions);
+  const mergedDocuments = documents.map((doc) => processExtensions(doc, doc));
+
+  for (const [, abstract] of abstractMap) {
+    if (abstract.extends) {
+      processExtensions(abstract, abstract as unknown as DocumentDefinition);
+    }
+  }
 
   const objects = types.filter(
-    ({type}) => !["document", "abstract"].includes(type),
+    (type) =>
+      !isAbstractResolver(type) &&
+      typeof type === "object" &&
+      "type" in type &&
+      !["document", "abstract"].includes(type.type),
   );
 
   return [...mergedDocuments, ...objects];
 }
 
-export function withExtends(types: SchemaTypeDefinition[]) {
+export function withExtends(types: SchemaTypeDefinition<IntrinsicTypeName>[]) {
   return (prev: SchemaTypeDefinition[]) => {
     return resolveExtends([...prev, ...types]);
   };
 }
+
+export type {AbstractDefinition, AbstractDefinitionResolver};

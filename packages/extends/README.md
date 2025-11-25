@@ -84,11 +84,42 @@ In this example:
 - `homePage` document extends `landingPage`, inheriting its fields and creating an extension chain
 - Abstract types don't create documents—they only serve as field templates
 
+## Abstract Resolvers
+
+Abstract resolvers are functions that generate abstract types dynamically based on the extending document. Use `defineAbstract` to create one:
+
+```typescript
+import {defineAbstract, withExtends} from "@tinloof/sanity-extends";
+
+const seoFields = defineAbstract((doc) => ({
+  type: "abstract",
+  name: "seoFields",
+  fields: [
+    {name: `${doc.name}MetaTitle`, type: "string"},
+    {name: `${doc.name}MetaDescription`, type: "text"},
+  ],
+}));
+
+const article = defineType({
+  type: "document",
+  name: "article",
+  extends: "seoFields",
+  fields: [{name: "title", type: "string"}],
+});
+
+// article will have: title, articleMetaTitle, articleMetaDescription
+```
+
+The resolver receives the full document definition, so you can generate field names, conditionally include fields, or create dynamic fieldsets based on the document's properties.
+
+In extension chains, resolvers always receive the **root document** (the final document), not intermediate abstracts.
+
 ## Features
 
 - Define reusable fields, groups and any schema options using abstract types
 - Extend documents and abstracts from one or multiple types
 - Support for extension chains (type → type → type)
+- Abstract resolvers for dynamic field generation based on the extending document
 - Automatic circular dependency detection
 - Field merging from base types
 
