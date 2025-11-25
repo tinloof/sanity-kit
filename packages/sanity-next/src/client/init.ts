@@ -39,7 +39,7 @@ export function initSanity(config?: InitSanityConfig) {
     useCdn: process.env.NODE_ENV === "production",
     perspective: "published",
     stega: {
-      studioUrl: "/manage",
+      studioUrl: "/cms",
     },
     ...config?.client,
   };
@@ -51,7 +51,7 @@ export function initSanity(config?: InitSanityConfig) {
 
     if (!sanity_api_token) {
       throw new Error(
-        "SANITY_API_TOKEN environment variable is not defined. This token is required for next-sanity/live features.",
+        "SANITY_API_TOKEN environment variable is not defined. This token is required for next-sanity/live features. Make sure it is a VIEWER token",
       );
     }
 
@@ -82,12 +82,11 @@ export function initSanity(config?: InitSanityConfig) {
         }),
       client,
       sanityFetch,
-      createSanityMetadataResolver: () =>
-        createSanityMetadataResolver({
-          client,
-          websiteBaseURL: baseUrl,
-          defaultLocaleId: config?.i18n?.defaultLocaleId,
-        }),
+      resolveSanityMetadata: createSanityMetadataResolver({
+        client,
+        websiteBaseURL: baseUrl,
+        defaultLocaleId: config?.i18n?.defaultLocaleId,
+      }),
       ...utils,
       ...rest,
     };
@@ -114,12 +113,11 @@ export function initSanity(config?: InitSanityConfig) {
       }),
     client,
     sanityFetch,
-    createSanityMetadataResolver: () =>
-      createSanityMetadataResolver({
-        client,
-        websiteBaseURL: baseUrl,
-        defaultLocaleId: config.i18n?.defaultLocaleId,
-      }),
+    resolveSanityMetadata: createSanityMetadataResolver({
+      client,
+      websiteBaseURL: baseUrl,
+      defaultLocaleId: config.i18n?.defaultLocaleId,
+    }),
     ...utils,
     ...rest,
   };

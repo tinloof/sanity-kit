@@ -1,7 +1,8 @@
-import {defineQuery} from "next-sanity";
 import {type DefinedSanityFetchType} from "next-sanity/live";
 import {generateSanitySitemap, generateSanityI18nSitemap} from "./sitemap";
 import {getPathVariations, localizePathname} from "./urls";
+import {NextRequest} from "next/server";
+import {redirectIfNeeded} from "./redirect";
 
 export type InitSanityUtilsConfig = {
   sanityFetch: DefinedSanityFetchType;
@@ -16,24 +17,6 @@ export type InitSanityI18nUtilsConfig = {
     defaultLocaleId: string;
   };
 };
-
-/**
- * Redirect configuration returned from Sanity.
- */
-export type RedirectData = {
-  /** The source path that triggers the redirect */
-  source: string;
-  /** The destination URL to redirect to */
-  destination: string;
-  /** Whether this is a permanent or temporary redirect */
-  permanent: boolean;
-} | null;
-
-/**
- * GROQ query to fetch redirect configuration from Sanity.
- */
-const REDIRECT_QUERY = defineQuery(`
-  *[_type == "settings"][0].redirects[@.source in $paths][0]`);
 
 /**
  * Initialize Sanity utilities with pre-configured functions
@@ -56,18 +39,8 @@ export function initSanityUtils({sanityFetch, baseUrl}: InitSanityUtilsConfig) {
         sanityFetch,
         websiteBaseURL: baseUrl,
       }),
-    getRedirect: async (source: string, query?: string) => {
-      const paths = getPathVariations(source);
-
-      const {data} = await sanityFetch({
-        params: {paths},
-        query: query || REDIRECT_QUERY,
-        perspective: "published",
-        stega: false,
-      });
-
-      return data as RedirectData;
-    },
+    redirectIfNeeded: async ({request}: {request: NextRequest}) =>
+      await redirectIfNeeded({request, sanityFetch}),
   };
 }
 
@@ -105,18 +78,8 @@ export function initSanityI18nUtils({
         websiteBaseURL: baseUrl,
         i18n,
       }),
-    getRedirect: async (source: string, query?: string) => {
-      const paths = getPathVariations(source);
-
-      const {data} = await sanityFetch({
-        params: {paths},
-        query: query || REDIRECT_QUERY,
-        perspective: "published",
-        stega: false,
-      });
-
-      return data as RedirectData;
-    },
+    redirectIfNeeded: async ({request}: {request: NextRequest}) =>
+      await redirectIfNeeded({request, sanityFetch}),
     localizePathname,
   };
 }
