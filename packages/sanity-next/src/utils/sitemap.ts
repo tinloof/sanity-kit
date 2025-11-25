@@ -183,8 +183,6 @@ export async function generateSanityI18nSitemap({
       }
     }
 
-    console.log("url", url);
-
     return {
       alternates: {
         languages: alternatesLanguages,

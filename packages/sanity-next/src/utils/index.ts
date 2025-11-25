@@ -20,7 +20,6 @@ export {
   initSanityI18nUtils,
   type InitSanityUtilsConfig,
   type InitSanityI18nUtilsConfig,
-  type RedirectData,
 } from "./sanity";
 
 export {
@@ -30,3 +29,5 @@ export {
   I18N_SITEMAP_QUERY,
   TRANSLATIONS_FRAGMENT,
 } from "./sitemap";
+
+export {redirectIfNeeded, getRedirect} from "./redirect";
