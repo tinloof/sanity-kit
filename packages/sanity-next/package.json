@@ -26,17 +26,12 @@
       "import": "./dist/components/exit-preview.js",
       "require": "./dist/components/exit-preview.cjs"
     },
-    "./components/sanity-image": {
-      "types": "./dist/components/sanity-image.d.ts",
-      "import": "./dist/components/sanity-image.js",
-      "require": "./dist/components/sanity-image.cjs"
-    },
     "./actions": {
       "types": "./dist/actions/index.d.ts",
       "import": "./dist/actions/index.js",
       "require": "./dist/actions/index.cjs"
     },
-    "./disable-draft-mode": {
+    "./actions/disable-draft-mode": {
       "types": "./dist/disable-draft-mode.d.ts",
       "import": "./dist/disable-draft-mode.js",
       "require": "./dist/disable-draft-mode.cjs"
