@@ -1,5 +1,5 @@
 import {describe, it, expect} from "vitest";
-import {withExtends} from "../";
+import {withExtends, defineAbstract} from "../";
 import type {DocumentDefinition, SchemaTypeDefinition} from "sanity";
 
 describe("schemaTypes", () => {
@@ -1185,6 +1185,315 @@ describe("schemaTypes", () => {
       ]);
 
       expect(article.fields.map((f) => f.name)).toContain("unique");
+    });
+  });
+
+  describe("Abstract resolvers", () => {
+    it("should resolve abstract resolver with document context", () => {
+      const types: SchemaTypeDefinition[] = [
+        defineAbstract((doc) => ({
+          type: "abstract",
+          name: "dynamicAbstract",
+          fields: [{name: `${doc.name}Slug`, type: "slug"}],
+        })),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "dynamicAbstract",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.fields).toHaveLength(2);
+      expect(article.fields.map((f) => f.name)).toContain("articleSlug");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+    });
+
+    it("should pass the correct document to the resolver", () => {
+      let receivedDoc: DocumentDefinition | null = null;
+
+      const types: SchemaTypeDefinition[] = [
+        defineAbstract((doc) => {
+          receivedDoc = doc;
+          return {
+            type: "abstract" as const,
+            name: "inspectorAbstract",
+            fields: [{name: "inspected", type: "boolean"}],
+          };
+        }),
+        {
+          type: "document",
+          name: "myDocument",
+          title: "My Document",
+          extends: "inspectorAbstract",
+          fields: [{name: "content", type: "text"}],
+        },
+      ];
+
+      withExtends(types)([]);
+      expect(receivedDoc).not.toBeNull();
+      expect(receivedDoc!.name).toBe("myDocument");
+      expect(receivedDoc!.title).toBe("My Document");
+      expect(receivedDoc!.fields).toHaveLength(1);
+      expect(receivedDoc!.fields[0].name).toBe("content");
+    });
+
+    it("should handle multiple documents extending the same resolver", () => {
+      const types: SchemaTypeDefinition[] = [
+        defineAbstract((doc) => ({
+          type: "abstract" as const,
+          name: "slugAbstract",
+          fields: [{name: `${doc.name}Slug`, type: "slug"}],
+        })),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "slugAbstract",
+          fields: [{name: "title", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "page",
+          title: "Page",
+          extends: "slugAbstract",
+          fields: [{name: "heading", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      const page = result.find((t) => t.name === "page") as DocumentDefinition;
+
+      expect(article.fields.map((f) => f.name)).toContain("articleSlug");
+      expect(page.fields.map((f) => f.name)).toContain("pageSlug");
+    });
+
+    it("should handle document extending both static abstract and resolver", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "abstract",
+          name: "staticAbstract",
+          fields: [{name: "staticField", type: "string"}],
+        },
+        defineAbstract((doc) => ({
+          type: "abstract" as const,
+          name: "dynamicAbstract",
+          fields: [{name: `${doc.name}Dynamic`, type: "string"}],
+        })),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: ["staticAbstract", "dynamicAbstract"],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.fields).toHaveLength(3);
+      expect(article.fields.map((f) => f.name)).toContain("staticField");
+      expect(article.fields.map((f) => f.name)).toContain("articleDynamic");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+    });
+
+    it("should resolve abstract resolver when extended through static abstract chain", () => {
+      const types: SchemaTypeDefinition[] = [
+        defineAbstract((doc) => ({
+          type: "abstract" as const,
+          name: "dynamicBase",
+          fields: [{name: `${doc.name}BaseField`, type: "string"}],
+        })),
+        {
+          type: "abstract",
+          name: "middleAbstract",
+          extends: "dynamicBase",
+          fields: [{name: "middleField", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "middleAbstract",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.fields).toHaveLength(3);
+      // The resolver should receive the root document "article", not "middleAbstract"
+      expect(article.fields.map((f) => f.name)).toContain("articleBaseField");
+      expect(article.fields.map((f) => f.name)).toContain("middleField");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+    });
+
+    it("should resolve deeply nested chain with resolver at the bottom", () => {
+      const types: SchemaTypeDefinition[] = [
+        defineAbstract((doc) => ({
+          type: "abstract" as const,
+          name: "deepResolver",
+          fields: [{name: `${doc.name}Deep`, type: "string"}],
+        })),
+        {
+          type: "abstract",
+          name: "level1",
+          extends: "deepResolver",
+          fields: [{name: "level1Field", type: "string"}],
+        },
+        {
+          type: "abstract",
+          name: "level2",
+          extends: "level1",
+          fields: [{name: "level2Field", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "finalDoc",
+          title: "Final Document",
+          extends: "level2",
+          fields: [{name: "docField", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const finalDoc = result.find(
+        (t) => t.name === "finalDoc",
+      ) as DocumentDefinition;
+      expect(finalDoc.fields).toHaveLength(4);
+      expect(finalDoc.fields.map((f) => f.name)).toContain("finalDocDeep");
+      expect(finalDoc.fields.map((f) => f.name)).toContain("level1Field");
+      expect(finalDoc.fields.map((f) => f.name)).toContain("level2Field");
+      expect(finalDoc.fields.map((f) => f.name)).toContain("docField");
+    });
+
+    it("should allow resolver to access document fields", () => {
+      const types: SchemaTypeDefinition[] = [
+        defineAbstract((doc) => {
+          const hasTitle = doc.fields?.some((f) => f.name === "title");
+          return {
+            type: "abstract" as const,
+            name: "fieldInspector",
+            fields: [
+              {
+                name: hasTitle ? "subtitle" : "title",
+                type: "string",
+              },
+            ],
+          };
+        }),
+        {
+          type: "document",
+          name: "withTitle",
+          title: "With Title",
+          extends: "fieldInspector",
+          fields: [{name: "title", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "withoutTitle",
+          title: "Without Title",
+          extends: "fieldInspector",
+          fields: [{name: "body", type: "text"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const withTitle = result.find(
+        (t) => t.name === "withTitle",
+      ) as DocumentDefinition;
+      const withoutTitle = result.find(
+        (t) => t.name === "withoutTitle",
+      ) as DocumentDefinition;
+
+      // Document with title should get subtitle from resolver
+      expect(withTitle.fields.map((f) => f.name)).toContain("subtitle");
+      expect(withTitle.fields.map((f) => f.name)).toContain("title");
+
+      // Document without title should get title from resolver
+      expect(withoutTitle.fields.map((f) => f.name)).toContain("title");
+      expect(withoutTitle.fields.map((f) => f.name)).toContain("body");
+    });
+
+    it("should allow resolver to return additional properties like fieldsets and groups", () => {
+      const types: SchemaTypeDefinition[] = [
+        defineAbstract((doc) => ({
+          type: "abstract" as const,
+          name: "richAbstract",
+          fields: [{name: `${doc.name}Field`, type: "string", fieldset: "seo"}],
+          fieldsets: [{name: "seo", title: `${doc.name} SEO`}],
+          groups: [{name: "metadata", title: `${doc.name} Metadata`}],
+        })),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "richAbstract",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+
+      expect(article.fields.map((f) => f.name)).toContain("articleField");
+      expect(article.fieldsets).toBeDefined();
+      expect(article.fieldsets).toHaveLength(1);
+      expect(article.fieldsets![0].title).toBe("article SEO");
+      expect(article.groups).toBeDefined();
+      expect(article.groups).toHaveLength(1);
+      expect(article.groups![0].title).toBe("article Metadata");
+    });
+
+    it("should filter out abstract resolvers from final output", () => {
+      const types: SchemaTypeDefinition[] = [
+        defineAbstract(() => ({
+          type: "abstract" as const,
+          name: "hiddenResolver",
+          fields: [{name: "hidden", type: "string"}],
+        })),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "hiddenResolver",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("article");
+    });
+
+    it("should throw error when extending non-existent resolver", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "nonExistentResolver",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      expect(() => withExtends(types)([])).toThrow(
+        'Cannot extend non-existent type "nonExistentResolver"',
+      );
     });
   });
 });
