@@ -1,7 +1,7 @@
 {
   "name": "@tinloof/sanity-next",
-  "version": "0.0.1",
-  "description": "Sanity & Next.js utilities and components plugin",
+  "version": "1.0.0",
+  "description": "Sanity & Next.js utilities and components package",
   "license": "ISC",
   "author": "Tinloof",
   "type": "module",
@@ -26,20 +26,10 @@
       "import": "./dist/components/exit-preview.js",
       "require": "./dist/components/exit-preview.cjs"
     },
-    "./components/sanity-image": {
-      "types": "./dist/components/sanity-image.d.ts",
-      "import": "./dist/components/sanity-image.js",
-      "require": "./dist/components/sanity-image.cjs"
-    },
-    "./actions": {
-      "types": "./dist/actions/index.d.ts",
-      "import": "./dist/actions/index.js",
-      "require": "./dist/actions/index.cjs"
-    },
-    "./disable-draft-mode": {
-      "types": "./dist/disable-draft-mode.d.ts",
-      "import": "./dist/disable-draft-mode.js",
-      "require": "./dist/disable-draft-mode.cjs"
+    "./actions/disable-draft-mode": {
+      "types": "./dist/actions/disable-draft-mode.d.ts",
+      "import": "./dist/actions/disable-draft-mode.js",
+      "require": "./dist/actions/disable-draft-mode.cjs"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
@@ -78,16 +68,15 @@
   },
   "sideEffects": false,
   "peerDependencies": {
-    "@sanity/client": "^7.13.0",
     "next": "^15.0.0 || ^16.0.0",
     "next-sanity": "^10.0.0 || ^11.0.0",
-    "react": "^18 || ^19.2.0",
-    "react-dom": "^18 || ^19.2.0"
+    "react": "^18 || ^19.0.0",
+    "react-dom": "^18 || ^19.0.0"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
-    "@types/react": "^18 || ^19.2.5",
-    "@types/react-dom": "^18 || ^19.2.5",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.5",
     "next": "^16.0.3",
     "next-sanity": "^11.6.8",
     "react": "^19.2.0",
@@ -96,8 +85,9 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@sanity/asset-utils": "^1.3.0",
-    "@sanity/image-url": "^1.1.0",
+    "@sanity/client": "^7.13.0",
+    "@sanity/asset-utils": "^2.3.0",
+    "@sanity/image-url": "^1.2.0",
     "sanity": "^4.18.0",
     "sanity-plugin-utils": "^1.7.0",
     "speakingurl": "^14.0.1"

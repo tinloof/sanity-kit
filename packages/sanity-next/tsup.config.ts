@@ -4,7 +4,7 @@ export default defineConfig({
   entry: {
     index: "src/index.ts",
     "components/exit-preview": "src/components/exit-preview.tsx",
-    "disable-draft-mode": "src/actions/disable-draft-mode.ts",
+    "actions/disable-draft-mode": "src/actions/disable-draft-mode.ts",
   },
   format: ["esm", "cjs"],
   dts: true,
