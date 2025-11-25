@@ -11,6 +11,7 @@ export default defineType({
   fields: [
     defineField({
       ...seoObjectField({indexableStatus: false}),
+      group: undefined,
       name: "globalSeo",
       title: "Global fallback SEO",
       description:
