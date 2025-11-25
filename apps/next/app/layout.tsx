@@ -1,6 +1,6 @@
 import {Inter} from "next/font/google";
 
-import {disableDraftMode} from "@/app/actions";
+import {disableDraftMode} from "@tinloof/sanity-next/actions/disable-draft-mode";
 import ExitPreviewClient from "@/components/exit-preview";
 import {VisualEditing} from "next-sanity/visual-editing";
 import {SanityLive} from "@/data/sanity/live";

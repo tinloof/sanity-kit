@@ -3583,8 +3583,8 @@ packages:
     resolution: {integrity: sha512-vdGOd6sxNjqTo2H3Q3L2/Gepy+cDBiQ1mr9ck7c/A9o4NnmBLoDliifsNHIwgNwBUz37oH4+EIz/lIjNy8hSew==}
     engines: {node: '>=20.19 <22 || >=22.12'}
 
-  '@sanity/descriptors@1.1.1':
-    resolution: {integrity: sha512-pTqpyLhH3z4NDhjKHyfL+quVN0ixA8NikcdqxRmL2iqPZuJavi81eKm631PaUqJGbY1kh1+vHnO1/GgWIcjgxw==}
+  '@sanity/descriptors@1.2.0':
+    resolution: {integrity: sha512-C8QuLHwzgqCZInJDyz+V+9QnnVUI7LcNEdR+HRkll9JE6dkkjW6jG6W1md7bv7TXCYvEl0fOHDgXTB7k0ibjew==}
     engines: {node: '>=18.0.0'}
 
   '@sanity/diff-match-patch@3.2.0':
@@ -13202,7 +13202,7 @@ snapshots:
       uuid: 13.0.0
       xstate: 5.24.0
 
-  '@sanity/descriptors@1.1.1':
+  '@sanity/descriptors@1.2.0':
     dependencies:
       sha256-uint8array: 0.10.7
 
@@ -13962,7 +13962,7 @@ snapshots:
 
   '@sanity/schema@3.99.0(@types/react@18.3.27)(debug@4.4.3)':
     dependencies:
-      '@sanity/descriptors': 1.1.1
+      '@sanity/descriptors': 1.2.0
       '@sanity/generate-help-url': 3.0.0
       '@sanity/types': 3.99.0(@types/react@18.3.27)(debug@4.4.3)
       arrify: 2.0.1
@@ -13978,7 +13978,7 @@ snapshots:
 
   '@sanity/schema@4.18.0(@types/react@18.3.27)(debug@4.4.3)':
     dependencies:
-      '@sanity/descriptors': 1.1.1
+      '@sanity/descriptors': 1.2.0
       '@sanity/generate-help-url': 3.0.0
       '@sanity/types': 3.99.0(@types/react@18.3.27)(debug@4.4.3)
       arrify: 2.0.1
@@ -17676,10 +17676,10 @@ snapshots:
 
   get-latest-version@5.1.0:
     dependencies:
-      get-it: 8.6.10(debug@4.4.3)
+      get-it: 8.6.3
       registry-auth-token: 5.1.0
       registry-url: 5.1.0
-      semver: 7.7.3
+      semver: 7.5.4
     transitivePeerDependencies:
       - debug
 

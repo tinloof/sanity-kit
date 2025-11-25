@@ -26,15 +26,10 @@
       "import": "./dist/components/exit-preview.js",
       "require": "./dist/components/exit-preview.cjs"
     },
-    "./actions": {
-      "types": "./dist/actions/index.d.ts",
-      "import": "./dist/actions/index.js",
-      "require": "./dist/actions/index.cjs"
-    },
     "./actions/disable-draft-mode": {
-      "types": "./dist/disable-draft-mode.d.ts",
-      "import": "./dist/disable-draft-mode.js",
-      "require": "./dist/disable-draft-mode.cjs"
+      "types": "./dist/actions/disable-draft-mode.d.ts",
+      "import": "./dist/actions/disable-draft-mode.js",
+      "require": "./dist/actions/disable-draft-mode.cjs"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
