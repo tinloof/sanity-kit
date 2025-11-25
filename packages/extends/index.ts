@@ -19,7 +19,21 @@ function mergeSchema(
   extendedSchema: DocumentDefinition | AbstractDefinition,
 ): DocumentDefinition | AbstractDefinition {
   return {
-    ...mergeWith({}, baseSchema, extendedSchema, (objValue, srcValue) => {
+    ...mergeWith({}, baseSchema, extendedSchema, (objValue, srcValue, key) => {
+      if (key == "fields") {
+        if (Array.isArray(objValue) && Array.isArray(srcValue)) {
+          const childFieldNames = new Set(
+            srcValue.map((field: {name: string}) => field.name),
+          );
+
+          const filteredParentFields = objValue.filter(
+            (field: {name: string}) => !childFieldNames.has(field.name),
+          );
+
+          return [...filteredParentFields, ...srcValue];
+        }
+      }
+
       if (Array.isArray(objValue) && Array.isArray(srcValue)) {
         return [...objValue, ...srcValue];
       }
