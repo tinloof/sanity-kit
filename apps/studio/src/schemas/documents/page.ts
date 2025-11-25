@@ -9,9 +9,5 @@ export default defineType({
       name: "title",
       type: "string",
     },
-    {
-      name: "locale",
-      type: "string",
-    },
   ],
 });
