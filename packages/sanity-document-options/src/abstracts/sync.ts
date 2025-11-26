@@ -30,5 +30,4 @@ export default defineType({
       },
     },
   },
-  fields: [],
 });
