@@ -31,5 +31,4 @@ export default defineType({
       templates: [],
     },
   },
-  fields: [],
 });
