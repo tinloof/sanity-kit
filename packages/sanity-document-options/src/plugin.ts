@@ -32,8 +32,10 @@ import {resolveAbstractSchemaTypes} from "./utils";
  * @public
  */
 export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
-  const {structure, abstracts = {i18n: true, singleton: true, sync: true}} =
-    props ?? {};
+  const {
+    structure,
+    abstracts = {orderable: true, singleton: true, sync: true},
+  } = props ?? {};
 
   // Resolve enabled abstract schema types
   const enabledAbstractTypes = resolveAbstractSchemaTypes(abstracts);

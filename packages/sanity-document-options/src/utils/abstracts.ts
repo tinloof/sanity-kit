@@ -1,6 +1,6 @@
-import {SchemaTypeDefinition} from "sanity";
+import {ExtendedAbstractType} from "@tinloof/sanity-extends";
 
-import {singletonAbstract, syncAbstract} from "../abstracts";
+import {orderableAbstract, singletonAbstract, syncAbstract} from "../abstracts";
 import {Abstracts} from "../types";
 
 /**
@@ -9,6 +9,7 @@ import {Abstracts} from "../types";
 const ABSTRACT_SCHEMA_MAP = {
   singleton: singletonAbstract,
   sync: syncAbstract,
+  orderable: orderableAbstract,
 } as const;
 
 /**
@@ -33,10 +34,10 @@ export type AbstractKey = keyof typeof ABSTRACT_SCHEMA_MAP;
  */
 export function resolveAbstractSchemaTypes(
   abstracts: Abstracts = {},
-): SchemaTypeDefinition[] {
+): ExtendedAbstractType[] {
   if (abstracts === false) return [];
 
-  const enabledAbstracts: SchemaTypeDefinition[] = [];
+  const enabledAbstracts: ExtendedAbstractType[] = [];
 
   // Iterate through the abstracts configuration
   Object.entries(abstracts).forEach(([key, enabled]) => {
