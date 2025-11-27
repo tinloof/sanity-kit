@@ -13,8 +13,9 @@
     "declarationMap": false,
     "sourceMap": false,
     "outDir": "./dist",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "rootDir": "./src"
   },
-  "include": ["index.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
