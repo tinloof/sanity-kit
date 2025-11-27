@@ -24,12 +24,12 @@ declare module "sanity" {
   }
 }
 
-type ExtendedType =
+export type ExtendedAbstractType =
   | SchemaTypeDefinition<IntrinsicTypeName>
   | AbstractDefinitionResolver;
 
 function isAbstractResolver(
-  value: ExtendedType,
+  value: ExtendedAbstractType,
 ): value is AbstractDefinitionResolver {
   return typeof value === "function";
 }
@@ -69,7 +69,7 @@ function mergeSchema(
   } as DocumentDefinition | AbstractDefinition;
 }
 
-function resolveExtends(types: ExtendedType[]) {
+function resolveExtends(types: ExtendedAbstractType[]) {
   const typeNames = new Set<string>();
 
   const resolverList: AbstractDefinitionResolver[] = [];
@@ -209,7 +209,7 @@ function resolveExtends(types: ExtendedType[]) {
   return [...mergedDocuments, ...objects];
 }
 
-export function withExtends(types: ExtendedType[]) {
+export function withExtends(types: ExtendedAbstractType[]) {
   return (prev: SchemaTypeDefinition[]) => {
     return resolveExtends([...prev, ...types]);
   };
