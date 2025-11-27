@@ -1,5 +1,19 @@
 # vite-studio
 
+## 1.1.20
+
+### Patch Changes
+
+- Updated dependencies [517151b]
+- Updated dependencies [c7491b3]
+- Updated dependencies [51862a9]
+- Updated dependencies [2961a35]
+- Updated dependencies [c7491b3]
+- Updated dependencies [629c182]
+- Updated dependencies [51862a9]
+  - @tinloof/sanity-extends@1.1.0
+  - @tinloof/sanity-document-options@2.0.0
+
 ## 1.1.19
 
 ### Patch Changes
