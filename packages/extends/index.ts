@@ -69,7 +69,7 @@ function mergeSchema(
   } as DocumentDefinition | AbstractDefinition;
 }
 
-function resolveExtends(types: ExtendedType[]) {
+function resolveExtends(types: ExtendedType[]): SchemaTypeDefinition[] {
   const typeNames = new Set<string>();
 
   const resolverList: AbstractDefinitionResolver[] = [];
@@ -199,7 +199,7 @@ function resolveExtends(types: ExtendedType[]) {
   }
 
   const objects = types.filter(
-    (type) =>
+    (type): type is SchemaTypeDefinition =>
       !isAbstractResolver(type) &&
       typeof type === "object" &&
       "type" in type &&
