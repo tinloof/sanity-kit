@@ -1,5 +1,6 @@
 import {describe, it, expect} from "vitest";
-import {withExtends, defineAbstract} from "../";
+import {withExtends, defineAbstractResolver} from "../src";
+import type {AbstractDefinitionResolver, ExtendedType} from "../src";
 import type {DocumentDefinition, SchemaTypeDefinition} from "sanity";
 
 describe("schemaTypes", () => {
@@ -1190,8 +1191,8 @@ describe("schemaTypes", () => {
 
   describe("Abstract resolvers", () => {
     it("should resolve abstract resolver with document context", () => {
-      const types: SchemaTypeDefinition[] = [
-        defineAbstract((doc) => ({
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc) => ({
           type: "abstract",
           name: "dynamicAbstract",
           fields: [{name: `${doc.name}Slug`, type: "slug"}],
@@ -1217,8 +1218,8 @@ describe("schemaTypes", () => {
     it("should pass the correct document to the resolver", () => {
       let receivedDoc: DocumentDefinition | null = null;
 
-      const types: SchemaTypeDefinition[] = [
-        defineAbstract((doc) => {
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc) => {
           receivedDoc = doc;
           return {
             type: "abstract" as const,
@@ -1244,8 +1245,8 @@ describe("schemaTypes", () => {
     });
 
     it("should handle multiple documents extending the same resolver", () => {
-      const types: SchemaTypeDefinition[] = [
-        defineAbstract((doc) => ({
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc) => ({
           type: "abstract" as const,
           name: "slugAbstract",
           fields: [{name: `${doc.name}Slug`, type: "slug"}],
@@ -1277,13 +1278,13 @@ describe("schemaTypes", () => {
     });
 
     it("should handle document extending both static abstract and resolver", () => {
-      const types: SchemaTypeDefinition[] = [
+      const types: ExtendedType[] = [
         {
           type: "abstract",
           name: "staticAbstract",
           fields: [{name: "staticField", type: "string"}],
         },
-        defineAbstract((doc) => ({
+        defineAbstractResolver((doc) => ({
           type: "abstract" as const,
           name: "dynamicAbstract",
           fields: [{name: `${doc.name}Dynamic`, type: "string"}],
@@ -1308,8 +1309,8 @@ describe("schemaTypes", () => {
     });
 
     it("should resolve abstract resolver when extended through static abstract chain", () => {
-      const types: SchemaTypeDefinition[] = [
-        defineAbstract((doc) => ({
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc) => ({
           type: "abstract" as const,
           name: "dynamicBase",
           fields: [{name: `${doc.name}BaseField`, type: "string"}],
@@ -1341,8 +1342,8 @@ describe("schemaTypes", () => {
     });
 
     it("should resolve deeply nested chain with resolver at the bottom", () => {
-      const types: SchemaTypeDefinition[] = [
-        defineAbstract((doc) => ({
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc) => ({
           type: "abstract" as const,
           name: "deepResolver",
           fields: [{name: `${doc.name}Deep`, type: "string"}],
@@ -1380,8 +1381,8 @@ describe("schemaTypes", () => {
     });
 
     it("should allow resolver to access document fields", () => {
-      const types: SchemaTypeDefinition[] = [
-        defineAbstract((doc) => {
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc) => {
           const hasTitle = doc.fields?.some((f) => f.name === "title");
           return {
             type: "abstract" as const,
@@ -1428,8 +1429,8 @@ describe("schemaTypes", () => {
     });
 
     it("should allow resolver to return additional properties like fieldsets and groups", () => {
-      const types: SchemaTypeDefinition[] = [
-        defineAbstract((doc) => ({
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc) => ({
           type: "abstract" as const,
           name: "richAbstract",
           fields: [{name: `${doc.name}Field`, type: "string", fieldset: "seo"}],
@@ -1460,8 +1461,8 @@ describe("schemaTypes", () => {
     });
 
     it("should filter out abstract resolvers from final output", () => {
-      const types: SchemaTypeDefinition[] = [
-        defineAbstract(() => ({
+      const types: ExtendedType[] = [
+        defineAbstractResolver(() => ({
           type: "abstract" as const,
           name: "hiddenResolver",
           fields: [{name: "hidden", type: "string"}],
@@ -1494,6 +1495,752 @@ describe("schemaTypes", () => {
       expect(() => withExtends(types)([])).toThrow(
         'Cannot extend non-existent type "nonExistentResolver"',
       );
+    });
+
+    it("should pass options to resolver when extending with options object", () => {
+      let receivedOptions: object | boolean | undefined;
+
+      const types: ExtendedType[] = [
+        defineAbstractResolver((_doc, options) => {
+          receivedOptions = options;
+          return {
+            type: "abstract" as const,
+            name: "sluggable",
+            fields: [{name: "slug", type: "slug"}],
+          };
+        }),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: {
+            type: "sluggable",
+            parameters: {source: "title", maxLength: 96},
+          },
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      withExtends(types)([]);
+      expect(receivedOptions).toEqual({source: "title", maxLength: 96});
+    });
+
+    it("should pass true to resolver when extending with boolean", () => {
+      let receivedOptions: object | boolean | undefined;
+
+      const types: ExtendedType[] = [
+        defineAbstractResolver((_doc, options) => {
+          receivedOptions = options;
+          return {
+            type: "abstract" as const,
+            name: "timestampable",
+            fields: [{name: "createdAt", type: "datetime"}],
+          };
+        }),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "timestampable",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      withExtends(types)([]);
+      expect(receivedOptions).toBe(true);
+    });
+
+    it("should allow resolver to use options to customize fields", () => {
+      const types: ExtendedType[] = [
+        defineAbstractResolver((_doc, options) => {
+          const opts = options as {source?: string} | undefined;
+          return {
+            type: "abstract" as const,
+            name: "sluggable",
+            fields: [
+              {
+                name: "slug",
+                type: "slug",
+                options: {source: opts?.source ?? "title"},
+              },
+            ],
+          };
+        }),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: {type: "sluggable", parameters: {source: "name"}},
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      const slugField = article.fields.find((f) => f.name === "slug");
+      expect(slugField?.options).toEqual({source: "name"});
+    });
+
+    it("should pass different options to same resolver for different documents", () => {
+      const receivedOptionsMap: Record<string, object | boolean | undefined> =
+        {};
+
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc, options) => {
+          receivedOptionsMap[doc.name] = options;
+          return {
+            type: "abstract" as const,
+            name: "sluggable",
+            fields: [{name: "slug", type: "slug"}],
+          };
+        }),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: {type: "sluggable", parameters: {source: "title"}},
+          fields: [{name: "title", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "page",
+          title: "Page",
+          extends: {
+            type: "sluggable",
+            parameters: {source: "heading", maxLength: 50},
+          },
+          fields: [{name: "heading", type: "string"}],
+        },
+      ];
+
+      withExtends(types)([]);
+      expect(receivedOptionsMap["article"]).toEqual({source: "title"});
+      expect(receivedOptionsMap["page"]).toEqual({
+        source: "heading",
+        maxLength: 50,
+      });
+    });
+  });
+
+  describe("String and array extends formats", () => {
+    it("should handle extends as a single string", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "abstract",
+          name: "base",
+          title: "Base",
+          fields: [{name: "baseField", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "base",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.type).toBe("document");
+      expect(article.fields).toHaveLength(2);
+      expect(article.fields.map((f) => f.name)).toContain("baseField");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+    });
+
+    it("should handle extends as an array of strings", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "abstract",
+          name: "seo",
+          title: "SEO",
+          fields: [{name: "metaTitle", type: "string"}],
+        },
+        {
+          type: "abstract",
+          name: "timestamps",
+          title: "Timestamps",
+          fields: [{name: "createdAt", type: "datetime"}],
+        },
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: ["seo", "timestamps"],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.type).toBe("document");
+      expect(article.fields).toHaveLength(3);
+      expect(article.fields.map((f) => f.name)).toContain("metaTitle");
+      expect(article.fields.map((f) => f.name)).toContain("createdAt");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+    });
+
+    it("should handle extends as an empty array", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: [],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.type).toBe("document");
+      expect(article.fields).toHaveLength(1);
+      expect(article.fields[0].name).toBe("title");
+    });
+
+    it("should handle string extends with resolver", () => {
+      const types: ExtendedType[] = [
+        defineAbstractResolver((doc) => ({
+          type: "abstract",
+          name: "sluggable",
+          fields: [
+            {
+              name: "slug",
+              type: "slug",
+              options: {source: doc.name},
+            },
+          ],
+        })),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "sluggable",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.fields).toHaveLength(2);
+      expect(article.fields.map((f) => f.name)).toContain("slug");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+    });
+
+    it("should handle array extends with resolvers", () => {
+      const types: ExtendedType[] = [
+        defineAbstractResolver(() => ({
+          type: "abstract",
+          name: "sluggable",
+          fields: [{name: "slug", type: "slug"}],
+        })),
+        defineAbstractResolver(() => ({
+          type: "abstract",
+          name: "publishable",
+          fields: [{name: "publishedAt", type: "datetime"}],
+        })),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: ["sluggable", "publishable"],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.fields).toHaveLength(3);
+      expect(article.fields.map((f) => f.name)).toContain("slug");
+      expect(article.fields.map((f) => f.name)).toContain("publishedAt");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+    });
+
+    it("should handle string extends in parent chain", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "abstract",
+          name: "grandparent",
+          title: "Grandparent",
+          fields: [{name: "grandparentField", type: "string"}],
+        },
+        {
+          type: "abstract",
+          name: "parent",
+          title: "Parent",
+          extends: "grandparent",
+          fields: [{name: "parentField", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "child",
+          title: "Child",
+          extends: "parent",
+          fields: [{name: "childField", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const child = result.find(
+        (t) => t.name === "child",
+      ) as DocumentDefinition;
+      expect(child.fields).toHaveLength(3);
+      expect(child.fields.map((f) => f.name)).toContain("grandparentField");
+      expect(child.fields.map((f) => f.name)).toContain("parentField");
+      expect(child.fields.map((f) => f.name)).toContain("childField");
+    });
+
+    it("should handle array extends in parent chain", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "abstract",
+          name: "base1",
+          title: "Base 1",
+          fields: [{name: "field1", type: "string"}],
+        },
+        {
+          type: "abstract",
+          name: "base2",
+          title: "Base 2",
+          fields: [{name: "field2", type: "string"}],
+        },
+        {
+          type: "abstract",
+          name: "parent",
+          title: "Parent",
+          extends: ["base1", "base2"],
+          fields: [{name: "parentField", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "child",
+          title: "Child",
+          extends: "parent",
+          fields: [{name: "childField", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const child = result.find(
+        (t) => t.name === "child",
+      ) as DocumentDefinition;
+      expect(child.fields).toHaveLength(4);
+      expect(child.fields.map((f) => f.name)).toContain("field1");
+      expect(child.fields.map((f) => f.name)).toContain("field2");
+      expect(child.fields.map((f) => f.name)).toContain("parentField");
+      expect(child.fields.map((f) => f.name)).toContain("childField");
+    });
+
+    it("should throw error when string extends references non-existent type", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "nonExistent",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      expect(() => withExtends(types)([])).toThrow(
+        'Cannot extend non-existent type "nonExistent"',
+      );
+    });
+
+    it("should throw error when array extends references non-existent type", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "abstract",
+          name: "base",
+          title: "Base",
+          fields: [{name: "baseField", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: ["base", "nonExistent"],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      expect(() => withExtends(types)([])).toThrow(
+        'Cannot extend non-existent type "nonExistent"',
+      );
+    });
+
+    it("should detect circular dependency with string extends", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: "article",
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      expect(() => withExtends(types)([])).toThrow("cannot extend itself");
+    });
+
+    it("should detect circular dependency with array extends", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "abstract",
+          name: "base",
+          title: "Base",
+          extends: ["article"],
+          fields: [{name: "baseField", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: ["base"],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      expect(() => withExtends(types)([])).toThrow(
+        "Circular dependency detected",
+      );
+    });
+
+    it("should mix string, array, and ExtendsOptionsArrayEntry formats", () => {
+      let receivedOptions: object | boolean | undefined;
+      const types: ExtendedType[] = [
+        {
+          type: "abstract",
+          name: "base1",
+          title: "Base 1",
+          fields: [{name: "field1", type: "string"}],
+        },
+        {
+          type: "abstract",
+          name: "base2",
+          title: "Base 2",
+          fields: [{name: "field2", type: "string"}],
+        },
+        defineAbstractResolver((_doc, options) => {
+          receivedOptions = options;
+          return {
+            type: "abstract",
+            name: "configurable",
+            fields: [{name: "field3", type: "string"}],
+          };
+        }),
+        {
+          type: "document",
+          name: "docWithString",
+          title: "Doc With String",
+          extends: "base1",
+          fields: [{name: "title", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "docWithArray",
+          title: "Doc With Array",
+          extends: ["base1", "base2"],
+          fields: [{name: "title", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "docWithObject",
+          title: "Doc With Object",
+          extends: {type: "configurable", parameters: {custom: "option"}},
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+
+      const docWithString = result.find(
+        (t) => t.name === "docWithString",
+      ) as DocumentDefinition;
+      expect(docWithString.fields).toHaveLength(2);
+      expect(docWithString.fields.map((f) => f.name)).toContain("field1");
+
+      const docWithArray = result.find(
+        (t) => t.name === "docWithArray",
+      ) as DocumentDefinition;
+      expect(docWithArray.fields).toHaveLength(3);
+      expect(docWithArray.fields.map((f) => f.name)).toContain("field1");
+      expect(docWithArray.fields.map((f) => f.name)).toContain("field2");
+
+      const docWithObject = result.find(
+        (t) => t.name === "docWithObject",
+      ) as DocumentDefinition;
+      expect(docWithObject.fields).toHaveLength(2);
+      expect(docWithObject.fields.map((f) => f.name)).toContain("field3");
+      expect(receivedOptions).toEqual({custom: "option"});
+    });
+  });
+
+  describe("ExtendsOptionsArrayEntry and ExtendsOptionsArray formats", () => {
+    it("should handle extends as a single ExtendsOptionsArrayEntry", () => {
+      let receivedOptions: object | boolean | undefined;
+      const types: ExtendedType[] = [
+        defineAbstractResolver((_doc, options) => {
+          receivedOptions = options;
+          return {
+            type: "abstract",
+            name: "sluggable",
+            fields: [{name: "slug", type: "slug"}],
+          };
+        }),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: {type: "sluggable", parameters: {source: "title"}},
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.fields).toHaveLength(2);
+      expect(article.fields.map((f) => f.name)).toContain("slug");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+      expect(receivedOptions).toEqual({source: "title"});
+    });
+
+    it("should handle extends as an ExtendsOptionsArray", () => {
+      const receivedOptionsMap: Record<string, object | boolean | undefined> =
+        {};
+      const types: ExtendedType[] = [
+        defineAbstractResolver((_doc, options) => {
+          if (options && typeof options === "object" && "source" in options) {
+            receivedOptionsMap["sluggable"] = options;
+          }
+          return {
+            type: "abstract",
+            name: "sluggable",
+            fields: [{name: "slug", type: "slug"}],
+          };
+        }),
+        defineAbstractResolver((_doc, options) => {
+          if (
+            options &&
+            typeof options === "object" &&
+            "defaultTitle" in options
+          ) {
+            receivedOptionsMap["seo"] = options;
+          }
+          return {
+            type: "abstract",
+            name: "seo",
+            fields: [{name: "metaTitle", type: "string"}],
+          };
+        }),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: [
+            {type: "sluggable", parameters: {source: "title"}},
+            {type: "seo", parameters: {defaultTitle: "My Site"}},
+          ],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.fields).toHaveLength(3);
+      expect(article.fields.map((f) => f.name)).toContain("slug");
+      expect(article.fields.map((f) => f.name)).toContain("metaTitle");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+      expect(receivedOptionsMap["sluggable"]).toEqual({source: "title"});
+      expect(receivedOptionsMap["seo"]).toEqual({defaultTitle: "My Site"});
+    });
+
+    it("should handle mixed array with strings and ExtendsOptionsArrayEntry", () => {
+      let receivedOptions: object | boolean | undefined;
+      const types: ExtendedType[] = [
+        {
+          type: "abstract",
+          name: "timestamps",
+          title: "Timestamps",
+          fields: [{name: "createdAt", type: "datetime"}],
+        },
+        defineAbstractResolver((_doc, options) => {
+          receivedOptions = options;
+          return {
+            type: "abstract",
+            name: "sluggable",
+            fields: [{name: "slug", type: "slug"}],
+          };
+        }),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: [
+            "timestamps",
+            {type: "sluggable", parameters: {source: "title"}},
+          ],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      expect(article.fields).toHaveLength(3);
+      expect(article.fields.map((f) => f.name)).toContain("createdAt");
+      expect(article.fields.map((f) => f.name)).toContain("slug");
+      expect(article.fields.map((f) => f.name)).toContain("title");
+      expect(receivedOptions).toEqual({source: "title"});
+    });
+
+    it("should handle ExtendsOptionsArrayEntry in parent chain", () => {
+      let receivedOptions: object | boolean | undefined;
+      const types: ExtendedType[] = [
+        defineAbstractResolver((_doc, options) => {
+          receivedOptions = options;
+          return {
+            type: "abstract",
+            name: "base",
+            fields: [{name: "baseField", type: "string"}],
+          };
+        }),
+        {
+          type: "abstract",
+          name: "parent",
+          title: "Parent",
+          extends: {type: "base", parameters: {customOption: true}},
+          fields: [{name: "parentField", type: "string"}],
+        },
+        {
+          type: "document",
+          name: "child",
+          title: "Child",
+          extends: "parent",
+          fields: [{name: "childField", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const child = result.find(
+        (t) => t.name === "child",
+      ) as DocumentDefinition;
+      expect(child.fields).toHaveLength(3);
+      expect(child.fields.map((f) => f.name)).toContain("baseField");
+      expect(child.fields.map((f) => f.name)).toContain("parentField");
+      expect(child.fields.map((f) => f.name)).toContain("childField");
+      expect(receivedOptions).toEqual({customOption: true});
+    });
+
+    it("should throw error when ExtendsOptionsArrayEntry references non-existent type", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: {type: "nonExistent", parameters: {foo: "bar"}},
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      expect(() => withExtends(types)([])).toThrow(
+        'Cannot extend non-existent type "nonExistent"',
+      );
+    });
+
+    it("should throw error when ExtendsOptionsArray references non-existent type", () => {
+      const types: ExtendedType[] = [
+        defineAbstractResolver(() => ({
+          type: "abstract",
+          name: "existing",
+          fields: [{name: "field", type: "string"}],
+        })),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: [
+            {type: "existing", parameters: {}},
+            {type: "nonExistent", parameters: {foo: "bar"}},
+          ],
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      expect(() => withExtends(types)([])).toThrow(
+        'Cannot extend non-existent type "nonExistent"',
+      );
+    });
+
+    it("should allow resolver to use parameters from ExtendsOptionsArrayEntry", () => {
+      const types: ExtendedType[] = [
+        defineAbstractResolver((_doc, options) => {
+          const opts = options as {source: string; maxLength?: number};
+          return {
+            type: "abstract",
+            name: "sluggable",
+            fields: [
+              {
+                name: "slug",
+                type: "slug",
+                options: {
+                  source: opts?.source || "title",
+                  maxLength: opts?.maxLength || 96,
+                },
+              },
+            ],
+          };
+        }),
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: {
+            type: "sluggable",
+            parameters: {source: "headline", maxLength: 50},
+          },
+          fields: [{name: "headline", type: "string"}],
+        },
+      ];
+
+      const result = withExtends(types)([]);
+      const article = result.find(
+        (t) => t.name === "article",
+      ) as DocumentDefinition;
+      const slugField = article.fields.find((f) => f.name === "slug") as any;
+      expect(slugField.options.source).toBe("headline");
+      expect(slugField.options.maxLength).toBe(50);
+    });
+
+    it("should detect circular dependency with ExtendsOptionsArrayEntry", () => {
+      const types: SchemaTypeDefinition[] = [
+        {
+          type: "document",
+          name: "article",
+          title: "Article",
+          extends: {type: "article", parameters: {}},
+          fields: [{name: "title", type: "string"}],
+        },
+      ];
+
+      expect(() => withExtends(types)([])).toThrow("cannot extend itself");
     });
   });
 });
