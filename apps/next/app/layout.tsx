@@ -8,10 +8,11 @@ import {draftMode} from "next/headers";
 import {Metadata} from "next";
 import config from "@/config";
 
-import "@/styles/index.css";
 import {getOgImages} from "@tinloof/sanity-web";
 import {loadGlobalData} from "@/data/sanity";
 import {client} from "@/data/sanity/client";
+
+import "@/styles/index.css";
 
 const sans = Inter({
   variable: "--font-sans",
@@ -44,7 +45,6 @@ export default async function RootLayout({
     <html lang="en" className={sans.variable}>
       <body>
         {children}
-
         {(await draftMode()).isEnabled && (
           <>
             <VisualEditing />

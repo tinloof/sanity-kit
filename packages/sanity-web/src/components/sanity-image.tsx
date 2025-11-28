@@ -55,7 +55,10 @@ export type SanityImageProps = {
     hotspot?: ImageHotspot;
   } | null;
   fetchPriority?: "high" | "default";
-} & Omit<React.ImgHTMLAttributes, "loading" | "fetchPriority">;
+} & Omit<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  "loading" | "fetchPriority"
+>;
 
 /**
  * Sanity’s Image component is a wrapper around the HTML image element.
