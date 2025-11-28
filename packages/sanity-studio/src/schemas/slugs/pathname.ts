@@ -39,6 +39,7 @@ type PathnameSlugFieldOptions = {
  * ```tsx
  * // Basic usage
  * pathnameSlugField()
+ * ```
  *
  * @example
  * ```tsx
@@ -81,7 +82,6 @@ export default function pathnameSlugField(
         ...options,
       },
     }),
-    group: "settings",
     readOnly: disableCreation && !isDev,
     hidden,
     initialValue: {current: options?.initialValue},

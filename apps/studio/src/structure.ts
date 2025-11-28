@@ -1,6 +1,7 @@
 import {isDev} from "sanity";
 import {StructureResolver} from "sanity/structure";
-import {importDocumentSchemas, singletonListItem} from "@tinloof/sanity-studio";
+import {singletonListItem} from "@tinloof/sanity-studio";
+import documents from "./schemas/documents";
 
 export const structure: StructureResolver = (S) => {
   return S.list()
@@ -13,7 +14,7 @@ export const structure: StructureResolver = (S) => {
     ]);
 };
 
-const disableCreationDocuments = (await importDocumentSchemas()).filter(
+const disableCreationDocuments = documents.filter(
   (document) => document.options?.disableCreation,
 );
 

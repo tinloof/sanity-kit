@@ -169,10 +169,10 @@ export interface SectionVariant {
    * What initial value to use for this variant when creating the block.
    *
    * @example
-   * {
+   * \{
    *  title: "Title Centered, dark background",
-   *  initialValue: { centeredTitle: true, bg: "dark" }
-   * }
+   *  initialValue: \{ centeredTitle: true, bg: "dark" \}
+   * \}
    */
   initialValue?: {};
 }

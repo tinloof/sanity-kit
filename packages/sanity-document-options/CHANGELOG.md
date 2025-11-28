@@ -1,0 +1,23 @@
+# @tinloof/sanity-document-options
+
+## 1.1.0
+
+### Minor Changes
+
+- c7491b3: Add orderable abstract
+
+### Patch Changes
+
+- 51862a9: Removed fields from the abstract schemas
+- Updated dependencies [517151b]
+- Updated dependencies [2961a35]
+- Updated dependencies [c7491b3]
+- Updated dependencies [629c182]
+- Updated dependencies [51862a9]
+  - @tinloof/sanity-extends@1.1.0
+
+## 1.0.0
+
+### Major Changes
+
+- 6f19a78: Configure document actions, badges, templates, and structure directly in your schema definitions.

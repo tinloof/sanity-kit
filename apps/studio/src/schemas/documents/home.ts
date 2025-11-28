@@ -1,10 +1,12 @@
-import {definePage} from "@tinloof/sanity-studio";
+import {defineType} from "sanity";
 
-export default definePage({
+export default defineType({
   name: "home",
   title: "Home",
+  type: "document",
+  extends: ["singleton"],
   options: {
-    disableCreation: true,
+    structureGroup: "pages",
   },
   fields: [
     {

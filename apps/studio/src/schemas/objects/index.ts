@@ -1,7 +1,6 @@
 import href, {hrefPt} from "./href";
-import sections from "./sections";
 import sectionsBody from "./sections-body";
 
-const objects = [hrefPt, href, ...sections, sectionsBody];
+const objects = [href, hrefPt, sectionsBody];
 
 export default objects;

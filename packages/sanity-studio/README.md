@@ -15,14 +15,6 @@ npm install @tinloof/sanity-studio
 
 - [Table of contents](#table-of-contents)
 - [Schema utilities](#schema-utilities)
-  - [`definePage`](#definepage)
-  - [`defineDocument`](#definedocument)
-- [Schema importing utilities](#schema-importing-utilities)
-  - [`importAllSchemas`](#importallschemas)
-  - [`importDocumentSchemas`](#importdocumentschemas)
-  - [`importSectionSchemas`](#importsectionschemas)
-  - [`importObjectSchemas`](#importobjectschemas)
-  - [`importSingletonSchemas`](#importsingletonschemas)
 - [Schema components](#schema-components)
   - [Field groups](#field-groups)
     - [`contentSchemaGroup`](#contentschemagroup)
@@ -51,7 +43,7 @@ npm install @tinloof/sanity-studio
   - [Create a sections list array](#2-create-a-sections-list-array)
   - [Add a section picker to your document](#3-add-a-section-picker-to-your-document)
   - [Add sections to your Sanity schema](#4-add-sections-to-your-sanity-schema)
-- [`documentI18n`](#documenti18n)
+- [`documentI18n` (DEPRECATED)](#documenti18n-deprecated)
 - [`localizedItem`](#localizedItem)
 - [`singletonListItem`](#singletonlistitem)
 - [Schemas](#schemas)
@@ -61,302 +53,6 @@ npm install @tinloof/sanity-studio
 - [Input with characters count](#input-with-characters-count)
 
 ## Schema utilities
-
-These utilities help you create document schemas with common fields and configurations automatically applied.
-
-### `definePage`
-
-The `definePage` utility creates page document schemas with automatic pathname, SEO, and indexable fields. It's perfect for creating page schemas that need URL routing and search engine optimization.
-
-#### Basic usage
-
-```tsx
-import {definePage} from "@tinloof/sanity-studio";
-
-export default definePage({
-  name: "page",
-  title: "Page",
-  type: "document",
-  fields: [
-    {
-      name: "title",
-      type: "string",
-      title: "Title",
-    },
-    {
-      name: "content",
-      type: "array",
-      of: [{type: "block"}],
-    },
-  ],
-});
-```
-
-This automatically adds:
-
-- **Pathname field**: For URL routing with i18n support
-- **SEO field**: For search engine optimization
-- **Indexable field**: To control search engine indexing
-- **Internal title field**: For internal document identification
-- **Field groups**: Content and settings groups
-
-#### Options
-
-```tsx
-export default definePage({
-  name: "page",
-  title: "Page",
-  type: "document",
-  options: {
-    disableCreation: true, // Disable document creation
-    localized: true, // Enable internationalization
-    defaultLocaleId: "en", // Default locale for i18n
-    orderable: false, // Enable document ordering
-
-    // Field customization options
-    internalTitle: "hidden", // Hide internal title (FieldCustomization)
-
-    // Pathname field - can be FieldCustomization or configuration object
-    pathname: true, // Show with defaults (FieldCustomization)
-    // OR
-    pathname: {
-      // Direct configuration (PathnameSlugFieldOptions)
-      localized: true,
-      options: {
-        source: "title",
-        initialValue: "/",
-      },
-      hidden: false,
-    },
-
-    // SEO field - can be FieldCustomization or configuration object
-    seo: "hidden", // Hide entire SEO field (FieldCustomization)
-    // OR
-    seo: {
-      // Configure individual SEO sub-fields (SEOOptions)
-      title: "hidden", // Hide SEO title
-      description: true, // Show SEO description
-      ogImage: false, // Remove OG image completely
-      indexableStatus: true, // Show indexable status
-    },
-  },
-  fields: [
-    // Your custom fields
-  ],
-});
-```
-
-### `defineDocument`
-
-The `defineDocument` utility creates document schemas with automatic internal title, locale fields (for i18n), and orderable document list support. It includes content and settings field groups by default. Use this for schemas that do not require SEO or pathname fields.
-
-#### Basic usage
-
-```tsx
-import {defineDocument} from "@tinloof/sanity-studio";
-
-export default defineDocument({
-  name: "post",
-  title: "Blog Post",
-  type: "document",
-  fields: [
-    {
-      name: "title",
-      type: "string",
-      title: "Title",
-    },
-    {
-      name: "content",
-      type: "array",
-      of: [{type: "block"}],
-    },
-  ],
-});
-```
-
-This automatically adds:
-
-- **Internal title field**: For internal document identification
-- **Locale field**: For internationalization (when enabled)
-- **Order rank field**: For document ordering (when enabled)
-- **Field groups**: Content and settings groups
-
-#### Options
-
-```tsx
-export default defineDocument({
-  name: "tag",
-  title: "Blog Tag",
-  type: "document",
-  options: {
-    disableCreation: true, // Disable document creation
-
-    // Field customization with FieldCustomization type
-    localized: true, // Show locale field (FieldCustomization)
-    orderable: "hidden", // Hide order rank field (FieldCustomization)
-    internalTitle: (field) =>
-      defineField({
-        ...field,
-        title: "Tag Name",
-        validation: (Rule) => Rule.required(),
-      }), // Custom field transformation (FieldCustomization)
-  },
-  fields: [
-    // Your custom fields
-  ],
-});
-```
-
-## Schema importing utilities
-
-The package provides utilities for dynamically importing Sanity schemas using Vite's `import.meta.glob()` functionality. These utilities help organize and load schemas from different directories in your project.
-
-**⚠️ Compatibility Notice:** These utilities only work in standalone Sanity Studio projects. They are **not compatible** with embedded setups (e.g., Sanity Studio embedded in Next.js apps) as they depend on Vite's build system and `import.meta.glob()` functionality. If you're using Sanity Studio in an embedded setup, you'll need to import your schemas manually.
-
-### `importAllSchemas`
-
-Imports all schemas from all schema directories (`/src/schemas/**/*.ts`).
-
-```typescript
-import {importAllSchemas} from "@tinloof/sanity-studio";
-
-// Use in Sanity config
-const allSchemas = await importAllSchemas();
-
-export default defineConfig({
-  schema: {
-    types: allSchemas,
-  },
-});
-```
-
-### `importDocumentSchemas`
-
-Imports schemas specifically from the documents directory (`/src/schemas/documents/*.ts`).
-
-```typescript
-import {importDocumentSchemas} from "@tinloof/sanity-studio";
-
-const documentSchemas = await importDocumentSchemas();
-```
-
-### `importSectionSchemas`
-
-Imports schemas from the sections directory (`/src/schemas/sections/*.ts`). Useful for page builders and modular content.
-
-```typescript
-import {importSectionSchemas} from "@tinloof/sanity-studio";
-
-const sectionSchemas = await importSectionSchemas();
-
-// Use in a sections array field
-defineField({
-  name: "sections",
-  type: "array",
-  of: sectionSchemas.map((schema) => ({
-    type: schema.name,
-  })),
-});
-```
-
-### `importObjectSchemas`
-
-Imports schemas from the objects directory (`/src/schemas/objects/*.ts`). These represent reusable field groups and complex data structures.
-
-```typescript
-import {importObjectSchemas} from "@tinloof/sanity-studio";
-
-const objectSchemas = await importObjectSchemas();
-```
-
-### `importSingletonSchemas`
-
-Imports schemas from the singletons directory (`/src/schemas/singletons/*.ts`). These represent unique documents that should only have one instance.
-
-```typescript
-import {importSingletonSchemas} from "@tinloof/sanity-studio";
-
-const singletonSchemas = await importSingletonSchemas();
-
-// Use with disable creation plugin
-export default defineConfig({
-  schema: {
-    types: singletonSchemas,
-  },
-  plugins: [
-    disableCreation({
-      types: singletonSchemas.map((s) => s.name),
-    }),
-  ],
-});
-```
-
-#### Requirements
-
-All schema importing utilities require:
-
-- A standalone Sanity Studio project (not embedded)
-- Vite as the build tool (default for Sanity Studio projects)
-- Schema files with proper TypeScript/JavaScript exports
-
-These utilities will not work in projects where Sanity Studio is embedded into other frameworks that don't use Vite or support `import.meta.glob()`.
-
-## Schema components
-
-The package now provides modular schema components that can be used independently or as part of the `definePage` and `defineDocument` utilities. These components are organized into categories for better organization and reusability.
-
-### Field Customization
-
-The package introduces a `FieldCustomization` system that allows you to control and customize fields in multiple ways.
-
-#### Field Customization Types
-
-- **`true`** - (default) - Show the field with default configuration
-- **`false`** - Completely remove the field from the schema
-- **`"hidden"`** - Hide the field but keep it in the schema
-- **`(field) => defineField({...field, ...changes})`** - Transform the field with a custom function (always wrap in `defineField` for type safety)
-
-#### Usage Examples
-
-```tsx
-// Basic visibility control
-internalTitle: true,        // Show field
-internalTitle: false,       // Remove field
-internalTitle: "hidden",    // Hide field
-
-// Custom transformation - ALWAYS wrap in defineField for type safety
-internalTitle: (field) => defineField({
-  ...field,
-  title: "Custom Internal Title",
-  validation: (Rule) => Rule.required(),
-}),
-
-// For object fields like SEO, you can also pass configuration options directly
-seo: {
-  title: "hidden",           // Hide SEO title field
-  description: true,         // Show SEO description
-  ogImage: false,           // Remove OG image field
-  indexableStatus: true,    // Show indexable status
-},
-```
-
-This system provides fine-grained control over field visibility, configuration, and behavior throughout your Sanity Studio.
-
-**⚠️ Important**: When using the function callback approach, **always wrap your return value in `defineField`** for maximum type safety:
-
-```tsx
-// ✅ Correct - wrapped in defineField
-myField: (field) => defineField({
-  ...field,
-  title: "Custom Title",
-}),
-
-// ❌ Incorrect - missing defineField wrapper
-myField: (field) => ({
-  ...field,
-  title: "Custom Title",
-}),
-```
 
 ### Field groups
 
@@ -824,7 +520,7 @@ export default defineConfig({
 });
 ```
 
-#### 2. Add a `pathname` field to page schemas using the `definePage` helper:
+#### 2. Add a `pathname` field to page schemas using the `definePathname` helper:
 
 ```tsx
 import {definePathname} from "@tinloof/sanity-studio";
@@ -1197,12 +893,39 @@ const schemas = [page, ...sections];
 export default schemas;
 ```
 
-## `documentI18n`
+## `documentI18n` (DEPRECATED)
+
+> ⚠️ **DEPRECATED**: This plugin has been moved to a separate package `@tinloof/sanity-document-i18n` with enhanced features and better template management. Please migrate to the new package.
 
 The `documentI18n` plugin is an opinionated thin wrapper around Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) that makes it possible to add internationalization without having to specify schema types.
 `documentI18n` enables internationalization on any schema with a `locale` field.
 
-Check the `with-i18n` example for instructions on usage.
+**Migration:**
+
+```bash
+npm install @tinloof/sanity-document-i18n
+```
+
+```typescript
+// OLD (deprecated)
+import {documentI18n} from "@tinloof/sanity-studio";
+
+// NEW (recommended)
+import {documentI18n} from "@tinloof/sanity-document-i18n";
+
+export default defineConfig({
+  plugins: [
+    documentI18n({
+      locales: [
+        {id: "en", title: "English"},
+        {id: "fr", title: "French"},
+      ],
+    }),
+  ],
+});
+```
+
+See the [`@tinloof/sanity-document-i18n` documentation](../document-i18n/) for complete usage instructions.
 
 ## `localizedItem`
 

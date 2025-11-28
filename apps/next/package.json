@@ -24,7 +24,8 @@
     "@tailwindcss/typography": "0.5.19",
     "@tinloof/sanity-studio": "workspace:*",
     "@tinloof/sanity-web": "workspace:*",
-    "next": "15.5.4",
+    "@tinloof/sanity-next": "workspace:*",
+    "next": "16.0.3",
     "next-sanity": "^11.4.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -48,5 +49,5 @@
     "tailwindcss": "4.1.14",
     "typescript": "^5.9.3"
   },
-  "version": "1.2.0"
+  "version": "1.2.4"
 }

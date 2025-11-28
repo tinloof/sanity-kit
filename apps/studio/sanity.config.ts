@@ -1,11 +1,11 @@
-import {defineConfig, isDev, SchemaTypeDefinition} from "sanity";
-import {structureTool} from "sanity/structure";
+import {defineConfig, isDev} from "sanity";
 import {visionTool} from "@sanity/vision";
 
-import {disableCreation, importAllSchemas, pages} from "@tinloof/sanity-studio";
+import {pages} from "@tinloof/sanity-studio";
 import config from "./config";
-import {disableCreationDocumentTypes, structure} from "./src/structure";
 import schemas from "./src/schemas";
+import {documentOptions} from "@tinloof/sanity-document-options";
+import {withExtends} from "@tinloof/sanity-extends";
 
 export default defineConfig({
   name: "sanity-basic-studio",
@@ -13,7 +13,7 @@ export default defineConfig({
   projectId: config.projectId,
   dataset: config.dataset,
   plugins: [
-    structureTool({title: "General", structure}),
+    documentOptions({}),
     pages({
       creatablePages: ["page"],
       previewUrl: {
@@ -25,11 +25,8 @@ export default defineConfig({
       allowOrigins: isDev ? ["http://localhost:3000"] : undefined,
     }),
     visionTool({defaultApiVersion: config.apiVersion}),
-    disableCreation({
-      schemas: disableCreationDocumentTypes,
-    }),
   ],
   schema: {
-    types: schemas as SchemaTypeDefinition[],
+    types: withExtends(schemas),
   },
 });

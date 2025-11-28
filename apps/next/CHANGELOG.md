@@ -1,5 +1,37 @@
 # next-non-embedded-studio
 
+## 1.2.4
+
+### Patch Changes
+
+- Updated dependencies [ee5b6ab]
+  - @tinloof/sanity-next@1.0.0
+
+## 1.2.3
+
+### Patch Changes
+
+- Updated dependencies [47d2f17]
+  - @tinloof/sanity-studio@1.13.1
+
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies [fb4ac21]
+  - @tinloof/sanity-studio@1.13.0
+
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies [58492bd]
+- Updated dependencies [85860d2]
+- Updated dependencies [b8e00f9]
+- Updated dependencies [6e1f75f]
+  - @tinloof/sanity-web@0.10.0
+  - @tinloof/sanity-studio@1.12.0
+
 ## 1.2.0
 
 ### Minor Changes

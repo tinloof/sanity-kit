@@ -1,5 +1,83 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.13.1
+
+### Patch Changes
+
+- 47d2f17: Remove default "settings" group assignment from schema fields
+
+  Removes the hardcoded `group: "settings"` property from SEO object, pathname slug, and internal title fields to allow more flexible grouping in document schemas. This gives developers full control over field organization without being constrained by default group assignments.
+
+  **Affected fields:**
+  - `seo` object field
+  - `pathname` slug field
+  - `internalTitle` string field
+
+  This is a non-breaking change that only removes default grouping behavior while preserving all field functionality.
+
+## 1.13.0
+
+### Minor Changes
+
+- fb4ac21: Fork of the Sanity i18n with better defaults and seperating it to a seperate package
+
+  BREAKING: Deprecate documentI18n plugin in favor of @tinloof/sanity-document-i18n
+
+  The `documentI18n` plugin has been moved to a separate package `@tinloof/sanity-document-i18n` with enhanced features and better template management.
+
+  **Migration required:**
+  1. Install the new package:
+
+     ```bash
+     npm install @tinloof/sanity-document-i18n
+     ```
+
+  2. Update your imports:
+
+     ```typescript
+     // OLD (deprecated)
+     import {documentI18n} from "@tinloof/sanity-studio";
+
+     // NEW (recommended)
+     import {documentI18n} from "@tinloof/sanity-document-i18n";
+     ```
+
+  3. Update your configuration:
+     ```typescript
+     export default defineConfig({
+       plugins: [
+         documentI18n({
+           locales: [
+             {id: "en", title: "English"},
+             {id: "fr", title: "French"},
+           ],
+         }),
+       ],
+     });
+     ```
+
+## 1.12.0
+
+### Minor Changes
+
+- b8e00f9: Updates the `@sanity` peer dependency to support v4
+
+### Patch Changes
+
+- 85860d2: Fix pathname prefix handling in pages navigator and preview functionality
+
+  This patch addresses several issues related to pathname prefixes in the pages navigator:
+  - **Fixed preview button navigation**: The preview button in the pathname field component now correctly applies prefixes when navigating to pages, preventing broken links when pathname prefixes are configured
+  - **Enhanced navigator context with prefix support**: Added automatic detection and application of pathname prefixes from document schema definitions to ensure consistent URL generation throughout the navigator
+  - **Improved prefix normalization**: Implemented robust prefix handling that prevents double-prefixing and correctly formats URLs with leading/trailing slash management
+  - **Schema-aware prefix mapping**: The navigator now extracts prefix configurations from document type schemas and applies them consistently across the navigation tree
+
+  These changes ensure that when using pathname prefixes (e.g., `/blog` for blog posts), both the preview functionality and navigator display the correct URLs without manual intervention.
+
+- Updated dependencies [58492bd]
+- Updated dependencies [6e1f75f]
+  - @tinloof/sanity-web@0.10.0
+
 ## 1.11.0
 
 ### Minor Changes
