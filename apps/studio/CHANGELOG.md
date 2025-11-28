@@ -1,5 +1,73 @@
 # vite-studio
 
+## 1.2.0
+
+### Minor Changes
+
+- d3f0d97: Add SectionsRenderer component for dynamic section rendering
+
+  Introduces a new `SectionsRenderer` component that dynamically renders sections based on their `_type` field. This component is designed for Sanity's modular content approach where pages contain arrays of section objects.
+
+  Key features:
+  - Dynamic section-to-component mapping via `sectionComponentMap`
+  - Enhanced props for each section component including `_sectionIndex`, `_sections`, and `rootHtmlAttributes`
+  - Deep link support with automatic ID generation
+  - Custom fallback component callback for missing section types (breaking change: now accepts a function instead of ReactNode)
+  - Development warnings for missing components
+  - Factory function `createSectionsRenderer` for pre-configured instances
+
+- 723e30e: Add `sectionsBodyArraySchema` function for creating sections body array fields
+
+  This new function provides a convenient way to create array fields for sections in Sanity Studio documents. It operates synchronously and requires a `sections` array to be provided for maximum compatibility across all Sanity Studio setups.
+
+  ## Features
+  - **Required sections parameter**: Must provide a `sections` array containing the section schemas to use
+  - **Simple preview image configuration**: Pass a function to customize image URLs for section insert menus
+  - **Grid view insert menu**: Visual section picker with preview images
+  - **Type-safe configuration**: Full TypeScript support with proper return types
+  - **Universal compatibility**: Works in all Sanity Studio setups (standalone and embedded)
+
+  ## Usage
+
+  ```typescript
+  import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+
+  // Basic usage
+  export default defineType({
+    name: "page",
+    type: "document",
+    fields: [
+      sectionsBodyArraySchema({
+        sections: [
+          {name: "hero", title: "Hero Section"},
+          {name: "banner", title: "Banner Section"},
+        ],
+      }),
+    ],
+  });
+
+  // With custom preview image function
+  export default defineType({
+    name: "page",
+    type: "document",
+    fields: [
+      sectionsBodyArraySchema({
+        sections: [
+          {name: "hero", title: "Hero Section"},
+          {name: "banner", title: "Banner Section"},
+        ],
+        previewImage: (type) =>
+          `/static/sections/${type.replace("section.", "")}.png`,
+      }),
+    ],
+  });
+  ```
+
+### Patch Changes
+
+- Updated dependencies [723e30e]
+  - @tinloof/sanity-studio@1.14.0
+
 ## 1.1.20
 
 ### Patch Changes
