@@ -13,6 +13,7 @@
     "declarationMap": false,
     "sourceMap": false,
     "outDir": "./dist",
+    "rootDir": ".",
     "moduleResolution": "bundler"
   },
   "include": ["index.ts"],

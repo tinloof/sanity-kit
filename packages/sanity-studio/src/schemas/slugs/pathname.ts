@@ -6,7 +6,7 @@ import {definePathname} from "../../utils/definePathname";
 /**
  * Configuration options for the pathname slug field
  */
-type PathnameSlugFieldOptions = {
+export type PathnameSlugFieldOptions = {
   /** Enable internationalization support */
   localized?: boolean;
   /** Default locale ID for i18n */

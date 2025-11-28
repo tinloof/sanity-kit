@@ -1,7 +1,6 @@
 import {Language as Locale} from "@sanity/document-internationalization";
 import {LocalizePathnameFn} from "@tinloof/sanity-web";
 import {
-  FieldDefinition,
   FieldDefinitionBase,
   ObjectDefinition,
   ObjectFieldProps,
@@ -54,6 +53,16 @@ export type PagesNavigatorOptions = {
   filterBasedOnRoles?: FilterBasedOnRoles[];
 };
 
+/**
+ * Abstracts plugin options
+ * @public
+ */
+export type Abstracts =
+  | {
+      page?: boolean;
+    }
+  | false;
+
 export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
   i18n?: {
     locales: Locale[];
@@ -66,6 +75,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
   folders?: FoldersConfig;
   title?: string;
   filterBasedOnRoles?: FilterBasedOnRoles[];
+  abstracts?: Abstracts;
 };
 
 export type Page = {

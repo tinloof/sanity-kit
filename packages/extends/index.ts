@@ -13,15 +13,29 @@ type AbstractDefinition = Omit<DocumentDefinition, "type" | "fields"> & {
 
 type AbstractDefinitionResolver = (
   document: DocumentDefinition,
+  options?: {[key: string]: any},
 ) => AbstractDefinition;
+
+export type BaseExtends = string;
+
+export type PluginExtends = ExtendsWith[keyof ExtendsWith];
+
+export type ExtendsEntry = BaseExtends | PluginExtends;
+
+export type Extends = ExtendsEntry | ExtendsEntry[];
 
 declare module "sanity" {
   export interface IntrinsicDefinitions {
     abstract: AbstractDefinition;
   }
   export interface DocumentDefinition {
-    extends?: string[] | string;
+    extends?: Extends;
   }
+}
+
+// Allow interface merging for plugin-specific extends
+declare module "@tinloof/sanity-extends" {
+  export interface ExtendsWith {}
 }
 
 export type ExtendedAbstractType =
@@ -115,6 +129,7 @@ function resolveExtends(types: ExtendedAbstractType[]): SchemaTypeDefinition[] {
   const resolveAbstract = (
     name: string,
     rootDocument: DocumentDefinition,
+    options?: {[key: string]: any},
   ): AbstractDefinition | undefined => {
     const staticAbstract = abstractMap.get(name);
     if (staticAbstract) {
@@ -122,7 +137,7 @@ function resolveExtends(types: ExtendedAbstractType[]): SchemaTypeDefinition[] {
     }
 
     for (const resolver of resolverList) {
-      const resolved = resolver(rootDocument);
+      const resolved = resolver(rootDocument, options);
       if (resolved.name === name) {
         return resolved;
       }
@@ -141,36 +156,66 @@ function resolveExtends(types: ExtendedAbstractType[]): SchemaTypeDefinition[] {
       ? type.extends
       : [type.extends];
 
-    if (extendedTypes.includes(type.name))
-      throw new Error(`A ${type.type} cannot extend itself`);
+    // Check for self-extension
+    for (const extendedType of extendedTypes) {
+      const abstractName =
+        typeof extendedType === "string"
+          ? extendedType
+          : (extendedType as any).abstract;
+      if (abstractName === type.name) {
+        throw new Error(`A ${type.type} cannot extend itself`);
+      }
+    }
 
     let merged = type;
     const visited = new Set<string>([type.name]);
 
-    const processExtendedType = (extendedType: string): void => {
-      if (visited.has(extendedType)) {
+    const processExtendedType = (
+      extendedType: ExtendsEntry,
+      options?: {[key: string]: any},
+    ): void => {
+      const abstractName =
+        typeof extendedType === "string"
+          ? extendedType
+          : (extendedType as any).abstract;
+
+      const extendOptions =
+        typeof extendedType === "string"
+          ? options || {}
+          : {...(extendedType as any), abstract: undefined};
+
+      if (visited.has(abstractName)) {
         throw new Error(
-          `Circular dependency detected: ${type.name} extends ${extendedType}`,
+          `Circular dependency detected: ${type.name} extends ${abstractName}`,
         );
       }
 
-      visited.add(extendedType);
+      visited.add(abstractName);
 
       let baseSchema: DocumentDefinition | AbstractDefinition | undefined;
 
-      baseSchema = resolveAbstract(extendedType, rootDocument);
+      baseSchema = resolveAbstract(abstractName, rootDocument, extendOptions);
 
       if (!baseSchema) {
-        baseSchema = documentMap.get(extendedType);
+        baseSchema = documentMap.get(abstractName);
       }
 
       if (!baseSchema) {
         throw new Error(
-          `Cannot extend non-existent type "${extendedType}" in ${type.type} "${type.name}"`,
+          `Cannot extend non-existent type "${abstractName}" in ${type.type} "${type.name}"`,
         );
       }
 
-      merged = mergeSchema(baseSchema, merged);
+      // Apply extension options to the base schema
+      let extendedBaseSchema = baseSchema;
+      if (Object.keys(extendOptions).length > 0) {
+        extendedBaseSchema = {
+          ...baseSchema,
+          ...extendOptions,
+        };
+      }
+
+      merged = mergeSchema(extendedBaseSchema, merged);
 
       if (baseSchema.extends) {
         const baseExtendedTypes = Array.isArray(baseSchema.extends)
@@ -213,6 +258,59 @@ export function withExtends(types: ExtendedAbstractType[]) {
   return (prev: SchemaTypeDefinition[]) => {
     return resolveExtends([...prev, ...types]);
   };
+}
+
+/**
+ * Generic utility for resolving abstract schema types from configuration
+ *
+ * @param abstractSchemaMap - Map of abstract keys to their schema definitions
+ * @param abstracts - Configuration object specifying which abstracts to enable
+ * @param options - Optional configuration passed to abstract resolvers
+ * @returns Array of enabled abstract schema types
+ *
+ * @example
+ * ```ts
+ * const schemaMap = {
+ *   singleton: singletonAbstract,
+ *   sync: syncAbstract,
+ * } as const;
+ *
+ * const abstracts = { singleton: true, sync: false };
+ * const types = resolveAbstractSchemaTypes(schemaMap, abstracts);
+ * ```
+ */
+export function resolveAbstractSchemaTypes<
+  T extends Record<string, ExtendedAbstractType>,
+>(
+  abstractSchemaMap: T,
+  abstracts: Record<string, any> | false = {},
+  options?: any,
+): ExtendedAbstractType[] {
+  if (abstracts === false) return [];
+
+  const enabledAbstracts: ExtendedAbstractType[] = [];
+
+  // Iterate through the abstracts configuration
+  Object.entries(abstracts).forEach(([key, enabled]) => {
+    if (enabled && key in abstractSchemaMap) {
+      const abstractResolver = abstractSchemaMap[key as keyof T];
+
+      // If options are provided and the resolver is a function, wrap it
+      if (options && typeof abstractResolver === "function") {
+        const wrappedResolver = (
+          schema: DocumentDefinition,
+          resolverOptions: any = {},
+        ) => {
+          return abstractResolver(schema, {...resolverOptions, ...options});
+        };
+        enabledAbstracts.push(wrappedResolver);
+      } else {
+        enabledAbstracts.push(abstractResolver);
+      }
+    }
+  });
+
+  return enabledAbstracts;
 }
 
 export type {AbstractDefinition, AbstractDefinitionResolver};
