@@ -119,7 +119,7 @@ export async function importAllSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importDocumentSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/documents/*.{ts,tsx}");
+  const modules = import.meta.glob("/src/schemas/documents/**/*.{ts,tsx}");
   return processSchemaModules(modules);
 }
 
@@ -156,7 +156,9 @@ export async function importDocumentSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importSectionSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/sections/*.{ts,tsx}");
+  const modules = import.meta.glob(
+    "/src/schemas/objects/sections/**/*.{ts,tsx}",
+  );
   return processSchemaModules(modules);
 }
 
@@ -193,7 +195,7 @@ export async function importSectionSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importObjectSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/objects/*.{ts,tsx}");
+  const modules = import.meta.glob("/src/schemas/objects/**/*.{ts,tsx}");
   return processSchemaModules(modules);
 }
 
@@ -234,6 +236,6 @@ export async function importObjectSchemas(): Promise<SchemaTypeDefinition[]> {
 export async function importSingletonSchemas(): Promise<
   SchemaTypeDefinition[]
 > {
-  const modules = import.meta.glob("/src/schemas/singletons/*.{ts,tsx}");
+  const modules = import.meta.glob("/src/schemas/singletons/**/*.{ts,tsx}");
   return processSchemaModules(modules);
 }

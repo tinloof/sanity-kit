@@ -13,5 +13,6 @@ export default defineType({
       name: "title",
       type: "string",
     },
+    {name: "sectionsBody", type: "sectionsBody"},
   ],
 });

@@ -12,6 +12,7 @@ A collection of Sanity-related utilities for web development.
     - [Features](#features)
     - [Styling](#styling)
     - [Dependencies](#dependencies)
+  - [SectionsRenderer](#sectionsrenderer)
 - [Utils](#utils)
   - [Redirects](#redirects)
     - [getRedirect](#getredirect)
@@ -131,6 +132,161 @@ The component provides flexible styling options:
 - Requires `next-sanity/hooks` for `useIsPresentationTool`
 - Requires `next/navigation` for `useRouter`
 - Built for Next.js App Router with React 18+ (uses `useTransition`)
+
+### SectionsRenderer
+
+A React component that dynamically renders sections based on their `_type` field. This component is designed to work with Sanity's modular content approach, where pages contain arrays of section objects that need to be rendered with different components.
+
+#### Usage
+
+```tsx
+import {SectionsRenderer} from "@tinloof/sanity-web";
+import HeroSection from "./sections/hero-section";
+import CallToAction from "./sections/call-to-action";
+
+// Basic usage
+export default function Page({sections}) {
+  return (
+    <SectionsRenderer
+      fieldName="sections"
+      sectionsData={sections}
+      sectionComponentMap={{
+        "section.hero": HeroSection,
+        "section.cta": CallToAction,
+      }}
+    />
+  );
+}
+```
+
+#### Props
+
+| Prop                  | Type                                                             | Description                                                  |
+| --------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| `fieldName`           | `string` (optional, default: "sections")                         | Field name used for generating deep link IDs                 |
+| `sectionsData`        | `SectionData[]` (optional)                                       | Array of section data objects to render                      |
+| `sectionComponentMap` | `Record<string, SectionComponent>`                               | Map of section type strings to their React components        |
+| `className`           | `string` (optional)                                              | Optional container class name                                |
+| `fallbackComponent`   | `(props: {type: string, availableTypes: string[]}) => ReactNode` | Custom fallback component callback for missing section types |
+| `showDevWarnings`     | `boolean` (optional, default: true in development)               | Show dev warnings for missing components                     |
+
+#### Features
+
+**Dynamic Section Rendering**: Automatically maps section `_type` fields to React components, making it easy to build modular page layouts.
+
+**Enhanced Component Props**: Each section component receives:
+
+- All original section data as props
+- `_sectionIndex`: The index of the section in the array
+- `_sections`: Reference to the complete sections array
+- `rootHtmlAttributes`: Object with `data-section` attribute and deep-link `id`
+
+**Deep Link Support**: Automatically generates unique IDs for each section using the field name and section key, enabling smooth anchor navigation.
+
+**Development-Friendly**:
+
+- Shows helpful warnings when section components are missing
+- Displays a fallback component with available section types
+- Validates section data structure
+
+**Custom Fallback Components**: Provide a callback function that receives the missing section type and available types:
+
+```tsx
+<SectionsRenderer
+  sectionsData={sections}
+  sectionComponentMap={componentMap}
+  fallbackComponent={({type, availableTypes}) => (
+    <div className="p-4 bg-yellow-100 border border-yellow-400 rounded">
+      <h3>Missing Component: {type}</h3>
+      <p>Available: {availableTypes.join(", ")}</p>
+    </div>
+  )}
+/>
+```
+
+**Section Component Structure**: Your section components will receive enhanced props:
+
+```tsx
+type SectionComponentProps = {
+  // Your section data fields
+  title?: string;
+  content?: any;
+  // Enhanced props from SectionsRenderer
+  _key: string;
+  _type: string;
+  _sectionIndex: number;
+  _sections: SectionData[];
+  rootHtmlAttributes: {
+    "data-section": string;
+    id: string;
+  };
+};
+
+export default function HeroSection({
+  title,
+  content,
+  _sectionIndex,
+}: SectionComponentProps) {
+  return (
+    <section>
+      <h1>{title}</h1>
+      <div>{content}</div>
+    </section>
+  );
+}
+```
+
+#### Factory Function
+
+Create reusable, pre-configured renderers with `createSectionsRenderer`:
+
+```tsx
+import {createSectionsRenderer} from "@tinloof/sanity-web";
+
+// Configure once
+export const ConfiguredSectionsRenderer = createSectionsRenderer({
+  sectionComponentMap: {
+    "section.hero": HeroSection,
+    "section.cta": CallToAction,
+    "section.text": TextSection,
+  },
+  className: "space-y-16",
+  showDevWarnings: true,
+  fallbackComponent: ({type}) => <div>Custom fallback for: {type}</div>,
+});
+
+// Use throughout your app with minimal props
+export default function Page({sections}) {
+  return <ConfiguredSectionsRenderer sectionsData={sections} />;
+}
+```
+
+#### TypeScript Support
+
+The component provides full TypeScript support with proper typing:
+
+```tsx
+import type {SectionComponent, SectionComponentMap} from "@tinloof/sanity-web";
+
+// Type your section components
+const HeroSection: SectionComponent<{title: string; subtitle?: string}> = ({
+  title,
+  subtitle,
+}) => {
+  return (
+    <section>
+      <h1>{title}</h1>
+      {subtitle && <h2>{subtitle}</h2>}
+    </section>
+  );
+};
+
+// Type your component map
+const sectionComponentMap: SectionComponentMap = {
+  "section.hero": HeroSection,
+  "section.cta": CallToAction,
+};
+```
 
 ## Utils
 

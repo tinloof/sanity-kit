@@ -29,6 +29,8 @@ npm install @tinloof/sanity-studio
     - [`localizationSchemaGroup`](#localizationschemagroup)
     - [`locationSchemaGroup`](#locationschemagroup)
     - [`themingSchemaGroup`](#themingschemagroup)
+  - [Array fields](#array-fields)
+    - [`sectionsBodyArraySchema`](#sectionsbodyarrayschema)
   - [Object fields](#object-fields)
   - [Slug fields](#slug-fields)
   - [String fields](#string-fields)
@@ -299,6 +301,90 @@ export default defineType({
   ],
 });
 ```
+
+### Array fields
+
+Reusable array field definitions for common use cases.
+
+#### `sectionsBodyArraySchema`
+
+Creates a sections body array field schema for Sanity Studio. This function generates a field definition for an array of sections that can be used in document schemas. It operates synchronously and requires a `sections` array to be provided.
+
+##### Basic usage
+
+```tsx
+import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+
+// Basic usage with sections array
+export default defineType({
+  name: "page",
+  type: "document",
+  fields: [
+    sectionsBodyArraySchema({
+      sections: [
+        {name: "hero", title: "Hero Section"},
+        {name: "banner", title: "Banner Section"},
+      ],
+    }),
+  ],
+});
+
+// With custom preview image function
+export default defineType({
+  name: "page",
+  type: "document",
+  fields: [
+    sectionsBodyArraySchema({
+      sections: [
+        {name: "hero", title: "Hero Section"},
+        {name: "banner", title: "Banner Section"},
+      ],
+      previewImage: (type) =>
+        `/static/sections/${type.replace("section.", "")}.png`,
+    }),
+  ],
+});
+```
+
+##### Usage with provided sections
+
+```tsx
+import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+
+const field = sectionsBodyArraySchema({
+  sections: [
+    {name: "hero", title: "Hero Section"},
+    {name: "banner", title: "Banner Section"},
+  ],
+  previewImage: (type) =>
+    `/static/sections/${type.replace("section.", "")}.png`,
+});
+```
+
+##### Custom preview image function
+
+```tsx
+import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+
+const field = sectionsBodyArraySchema({
+  sections: [
+    {name: "hero", title: "Hero Section"},
+    {name: "banner", title: "Banner Section"},
+  ],
+  previewImage: (type) => `/custom/path/${type.replace("section.", "")}.jpg`,
+});
+```
+
+##### Parameters
+
+- `props.sections` - **Required** array of section schemas that will be available in the array field.
+- `props.previewImage` - Optional function to generate preview image URLs for sections in the insert menu. Takes the section type as a parameter and returns the image URL.
+
+The field includes:
+
+- **Grid view insert menu** - Visual section picker with preview images
+- **Customizable preview images** - Configure image paths and naming conventions
+- **Type-safe configuration** - Full TypeScript support with proper return types
 
 ### Object fields
 

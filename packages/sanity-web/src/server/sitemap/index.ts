@@ -1,5 +1,5 @@
 import type {MetadataRoute} from "next";
-import type {DefinedSanityFetchType} from "next-sanity";
+import type {DefinedSanityFetchType} from "next-sanity/live";
 
 import {localizePathname, pathToAbsUrl} from "../../utils/urls";
 import {i18nConfig} from "../../types";

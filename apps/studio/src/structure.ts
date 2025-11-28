@@ -19,7 +19,7 @@ const disableCreationDocuments = documents.filter(
 );
 
 const disabledSingletons = () => {
-  if (!isDev) {
+  if (isDev) {
     return [...disableCreationDocuments.map((document) => document.name)];
   }
   return [];
