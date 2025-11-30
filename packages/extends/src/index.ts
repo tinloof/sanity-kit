@@ -3,6 +3,7 @@ export type {
   AbstractDefinitionResolver,
   ExtendedType,
   ExtendsRegistry,
+  CreateAbstractsConfig,
 } from "./types";
 
 import "./types";

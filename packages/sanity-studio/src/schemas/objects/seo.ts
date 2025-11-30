@@ -11,7 +11,7 @@ import {seoDescriptionStringField, seoTitleStringField} from "../strings";
 /**
  * Configuration options for the SEO object field
  */
-type SEOObjectProps = {
+export type SEOObjectProps = {
   /** Control the indexable status field visibility */
   indexableStatus?: FieldCustomization<typeof indexableBooleanField>;
   /** Control the SEO title field visibility */

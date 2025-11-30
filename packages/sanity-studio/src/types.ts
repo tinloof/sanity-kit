@@ -1,7 +1,7 @@
 import {Language as Locale} from "@sanity/document-internationalization";
+import {CreateAbstractsConfig} from "@tinloof/sanity-extends";
 import {LocalizePathnameFn} from "@tinloof/sanity-web";
 import {
-  FieldDefinition,
   FieldDefinitionBase,
   ObjectDefinition,
   ObjectFieldProps,
@@ -66,6 +66,7 @@ export type PagesNavigatorPluginOptions = PresentationPluginOptions & {
   folders?: FoldersConfig;
   title?: string;
   filterBasedOnRoles?: FilterBasedOnRoles[];
+  abstracts?: CreateAbstractsConfig<"page">;
 };
 
 export type Page = {
