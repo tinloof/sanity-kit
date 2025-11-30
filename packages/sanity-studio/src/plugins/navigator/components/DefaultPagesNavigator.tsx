@@ -1,4 +1,5 @@
 import React from "react";
+import {useCurrentUser} from "sanity";
 
 import {PagesNavigatorOptions} from "../../../types";
 import {NavigatorProvider} from "../context";
@@ -8,7 +9,6 @@ import {List} from "./List";
 import LocaleSelect from "./LocaleSelect";
 import SearchBox from "./SearchBox";
 import ThemeProvider from "./ThemeProvider";
-import {useCurrentUser} from "sanity";
 
 export function createPagesNavigator(props: PagesNavigatorOptions) {
   return function PagesNavigator() {

@@ -804,6 +804,93 @@ export default defineType({
 
 The Presentation tool will now automatically navigate to the new pathname as the user types, with a 1 second debounce.
 
+### Using the Page Abstract
+
+The Pages Navigator plugin provides a reusable `page` abstract type that can be extended by your page documents. This abstract includes common page fields like SEO and pathname configuration.
+
+**Important:** This feature requires the `@tinloof/sanity-extends` package to be installed and configured:
+
+```tsx
+import {withExtends} from "@tinloof/sanity-extends";
+import {defineConfig} from "sanity";
+
+export default defineConfig({
+  schema: {
+    types: withExtends([
+      // Your schema types here
+    ]),
+  },
+});
+```
+
+The `page` abstract is automatically injected by the Pages Navigator plugin and includes:
+- SEO fields (meta title, description, og:image)
+- Pathname field with i18n support
+- Content and settings field groups
+
+You can extend from it in your documents:
+
+```tsx
+import {defineType} from "sanity";
+
+export default defineType({
+  type: "document",
+  name: "landingPage",
+  title: "Landing Page",
+  extends: "page", // Extend from the page abstract
+  fields: [
+    // Add your custom fields here
+    {
+      name: "hero",
+      type: "object",
+      group: "content",
+      fields: [
+        {name: "title", type: "string"},
+        {name: "subtitle", type: "text"},
+      ],
+    },
+  ],
+});
+```
+
+#### Disabling the Page Abstract
+
+If you don't want to use the page abstract, you can disable it in the plugin configuration:
+
+```tsx
+import {pages} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  plugins: [
+    pages({
+      abstracts: false, // Disable the page abstract
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+    }),
+  ],
+});
+```
+
+You can also selectively enable/disable it:
+
+```tsx
+pages({
+  abstracts: {
+    page: false, // Specifically disable the page abstract
+  },
+  // ... other configuration
+})
+```
+
+When using the page abstract:
+- Your document automatically gets pathname and SEO fields
+- The pathname field respects i18n configuration from the plugin
+- Fields are organized into content and settings groups
+- All Pages Navigator features work seamlessly
+
 ## Sections
 
 The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
