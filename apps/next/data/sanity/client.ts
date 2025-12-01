@@ -8,4 +8,5 @@ export const {
   redirectIfNeeded,
   resolveSanityMetadata,
   sanityFetch,
+  draftRoute,
 } = initSanity();

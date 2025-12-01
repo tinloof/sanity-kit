@@ -15,6 +15,9 @@ pnpm install @tinloof/sanity-next
   - [Environment Variables](#environment-variables)
   - [Basic Setup](#basic-setup)
   - [With Internationalization](#with-internationalization)
+- [Draft Mode](#draft-mode)
+  - [Setup](#setup)
+  - [Usage](#usage)
 - [Components](#components)
   - [SanityImage](#sanityimage)
   - [ExitPreview](#exitpreview)
@@ -41,6 +44,8 @@ export const {
   sanityFetch,
   SanityImage,
   resolveSanityMetadata,
+  // Draft mode handler
+  draftRoute,
   // Redirect utilities
   redirectIfNeeded,
   // Sitemap utilities
@@ -112,6 +117,42 @@ export const {
   i18n: i18nConfig,
 });
 ```
+
+## Draft Mode
+
+The package provides a streamlined way to implement Sanity's draft mode in Next.js App Router projects.
+
+### Setup
+
+Configure your Sanity client with a viewer token during initialization:
+
+```tsx
+// lib/sanity/index.ts
+import {initSanity} from "@tinloof/sanity-next";
+
+export const sanity = initSanity({
+  // Optional: explicitly provide viewer token
+  viewerToken: process.env.SANITY_VIEWER_TOKEN,
+  // Or rely on SANITY_API_TOKEN env variable (default)
+});
+```
+
+### Usage
+
+Create your draft mode API route with a single line:
+
+```tsx
+// app/api/draft/route.ts
+import {draftRoute} from "@/data/sanity/client";
+export const {GET} = draftRoute;
+```
+
+That's it! The `draftRoute` handler:
+
+- Is always defined (no TypeScript errors about undefined values)
+- Automatically uses the token from your initialization
+- Returns helpful error messages if not properly configured
+- Handles all the draft mode setup internally
 
 ## Components
 
