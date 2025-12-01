@@ -104,3 +104,35 @@ declare module "sanity" {
     extends?: ExtendsOption;
   }
 }
+
+/**
+ * Generic helper type for creating abstracts configuration.
+ * Generates a configuration type that allows disabling all abstracts
+ * or enabling/disabling specific document types.
+ *
+ * @template T - Union of document type names that can support abstracts
+ *
+ * @example
+ * ```ts
+ * // Single document type
+ * type PageAbstracts = CreateAbstractsConfig<"page">;
+ * // Result: false | { page?: boolean }
+ *
+ * // Multiple document types
+ * type MyAbstracts = CreateAbstractsConfig<"page" | "article" | "product">;
+ * // Result: false | { page?: boolean; article?: boolean; product?: boolean }
+ *
+ * // Usage in configuration
+ * const config1: MyAbstracts = false; // Disable all
+ * const config2: MyAbstracts = { page: true, article: false }; // Selective
+ *
+ * // Extend for custom document types
+ * type CustomDocTypes = "blogPost" | "landingPage" | "caseStudy";
+ * type CustomAbstracts = CreateAbstractsConfig<CustomDocTypes>;
+ * ```
+ */
+export type CreateAbstractsConfig<T extends string> =
+  | false
+  | {
+      [K in T]?: boolean;
+    };

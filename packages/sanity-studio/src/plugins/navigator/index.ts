@@ -1,9 +1,14 @@
+import {resolveAbstractSchemaTypes} from "@tinloof/sanity-extends";
 import {definePlugin} from "sanity";
 import {presentationTool} from "sanity/presentation";
 
+import {SEOObjectProps} from "../../schemas/objects/seo";
+import {PathnameSlugFieldOptions} from "../../schemas/slugs/pathname";
 import {PagesNavigatorPluginOptions} from "../../types";
+import {ABSTRACTS_MAP} from "./abstracts";
 import {createPagesNavigator} from "./components/DefaultPagesNavigator";
 import {createPageTemplates, normalizeCreatablePages} from "./utils";
+
 /**
  * The `pages` plugin is a wrapper around Sanity's `presentation` plugin.
  * When enabled, it will add Tinloof's pages navigator to the prensentation view.
@@ -32,9 +37,15 @@ export const pages = definePlugin<PagesNavigatorPluginOptions>((config) => {
   const normalizedCreatablePages = normalizeCreatablePages(
     config.creatablePages,
   );
+
   return {
     name: "tinloof-pages-navigator",
     schema: {
+      types: resolveAbstractSchemaTypes(
+        ABSTRACTS_MAP,
+        config?.abstracts ?? {page: true},
+        config?.i18n,
+      ),
       templates: createPageTemplates(normalizedCreatablePages),
     },
     plugins: [
@@ -63,3 +74,9 @@ export const pages = definePlugin<PagesNavigatorPluginOptions>((config) => {
  * @deprecated use `import { pages } from '@tinloof/sanity-studio'` instead
  */
 export const pagesNavigator = pages;
+
+declare module "@tinloof/sanity-extends" {
+  interface ExtendsRegistry {
+    page?: {pathname?: PathnameSlugFieldOptions; seo?: SEOObjectProps};
+  }
+}

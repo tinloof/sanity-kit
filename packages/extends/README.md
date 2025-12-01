@@ -348,6 +348,40 @@ type AbstractDefinitionResolver = (
 type ExtendedType = SchemaTypeDefinition | AbstractDefinitionResolver;
 ```
 
+### `CreateAbstractsConfig<T extends string>`
+
+Utility type for creating abstracts configuration objects. This helper type generates a configuration that allows disabling all abstracts or selectively enabling/disabling specific document types.
+
+```typescript
+import {CreateAbstractsConfig} from "@tinloof/sanity-extends";
+
+// Single document type
+type PageAbstracts = CreateAbstractsConfig<"page">;
+// Result: false | { page?: boolean }
+
+// Multiple document types
+type MyAbstracts = CreateAbstractsConfig<"page" | "article" | "product">;
+// Result: false | { page?: boolean; article?: boolean; product?: boolean }
+
+// Usage in configuration
+const config1: MyAbstracts = false; // Disable all abstracts
+const config2: MyAbstracts = {page: true, article: false}; // Selective enable/disable
+
+// Practical example in a plugin
+type CustomDocTypes = "blogPost" | "landingPage" | "caseStudy";
+type CustomAbstracts = CreateAbstractsConfig<CustomDocTypes>;
+
+export function createPlugin(options: {abstracts?: CustomAbstracts}) {
+  const enabledAbstracts = resolveAbstractSchemaTypes(
+    abstractSchemaMap,
+    options.abstracts ?? {blogPost: true, landingPage: true, caseStudy: true},
+  );
+  // ...
+}
+```
+
+This type is particularly useful when building reusable schema packages or plugins that need to provide flexible configuration for which abstract types should be enabled.
+
 ## Features
 
 - Define reusable fields, groups and any schema options using abstract types

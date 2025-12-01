@@ -6,6 +6,7 @@ import config from "./config";
 import schemas from "./src/schemas";
 import {documentOptions} from "@tinloof/sanity-document-options";
 import {withExtends} from "@tinloof/sanity-extends";
+import {documentI18n} from "@tinloof/sanity-document-i18n";
 
 export default defineConfig({
   name: "sanity-basic-studio",
@@ -14,7 +15,20 @@ export default defineConfig({
   dataset: config.dataset,
   plugins: [
     documentOptions({}),
+    documentI18n({
+      locales: [
+        {id: "en", title: "English"},
+        {id: "fr", title: "French"},
+      ],
+    }),
     pages({
+      i18n: {
+        locales: [
+          {id: "en", title: "English"},
+          {id: "fr", title: "French"},
+        ],
+        defaultLocaleId: "en",
+      },
       creatablePages: ["page"],
       previewUrl: {
         origin: isDev ? "http://localhost:3000" : undefined,
