@@ -1,6 +1,8 @@
+import {resolveAbstractSchemaTypes} from "@tinloof/sanity-extends";
 import {definePlugin} from "sanity";
 import {structureTool} from "sanity/structure";
 
+import {ABSTRACTS_MAP} from "./abstracts";
 import {LOCALE_FIELD_NAME, TOOL_TITLE} from "./constants";
 import {
   defineActions,
@@ -11,7 +13,6 @@ import {
   defineTemplates,
 } from "./define";
 import {DocumentOptionsProps} from "./types";
-import {resolveAbstractSchemaTypes} from "./utils";
 
 /**
  * Configure document options and structure directly in schema definitions.
@@ -38,7 +39,10 @@ export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
   } = props ?? {};
 
   // Resolve enabled abstract schema types
-  const enabledAbstractTypes = resolveAbstractSchemaTypes(abstracts);
+  const enabledAbstractTypes = resolveAbstractSchemaTypes(
+    ABSTRACTS_MAP,
+    abstracts,
+  );
 
   // Skip structure tool if explicitly disabled
   if (structure === false) {
