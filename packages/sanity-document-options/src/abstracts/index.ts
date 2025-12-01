@@ -1,5 +1,13 @@
 import "@tinloof/sanity-extends";
 
-export {default as orderableAbstract} from "./orderable";
-export {default as singletonAbstract} from "./singleton";
-export {default as syncAbstract} from "./sync";
+import orderableAbstract from "./orderable";
+import singletonAbstract from "./singleton";
+import syncAbstract from "./sync";
+
+export const ABSTRACTS_MAP = {
+  orderable: orderableAbstract,
+  singleton: singletonAbstract,
+  sync: syncAbstract,
+};
+
+export {orderableAbstract, singletonAbstract, syncAbstract};

@@ -1,3 +1,4 @@
+import {CreateAbstractsConfig} from "@tinloof/sanity-extends";
 import * as React from "react";
 import {DocumentPluginOptions, SchemaPluginOptions} from "sanity";
 import {ListItemBuilder} from "sanity/structure";
@@ -29,23 +30,12 @@ export type InlineStructureProps = {
 };
 
 /**
- * Abstracts plugin options
- * @public
- */
-export type Abstracts =
-  | {
-      singleton?: boolean;
-      sync?: boolean;
-    }
-  | false;
-
-/**
  * Main plugin options
  * @public
  */
 export type DocumentOptionsProps = {
   structure?: InlineStructureProps | false;
-  abstracts?: Abstracts;
+  abstracts?: CreateAbstractsConfig<"singleton" | "sync" | "orderable">;
 };
 
 /**
