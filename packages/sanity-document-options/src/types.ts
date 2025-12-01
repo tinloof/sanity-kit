@@ -88,3 +88,11 @@ declare module "sanity" {
     schemaType: string;
   }
 }
+
+declare module "@tinloof/sanity-extends" {
+  interface ExtendsRegistry {
+    singleton: undefined;
+    orderable: undefined;
+    sync: undefined;
+  }
+}
