@@ -1,6 +1,6 @@
 # @tinloof/sanity-plugin-pages-navigator
 
-## 2.0.0
+## 1.15.0
 
 ### Minor Changes
 
