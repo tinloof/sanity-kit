@@ -4,6 +4,7 @@ export type PagePayload = {
   pathname: string;
   title?: string;
   image?: any;
+  sectionsBody?: any[];
 };
 
 export interface PageProps<

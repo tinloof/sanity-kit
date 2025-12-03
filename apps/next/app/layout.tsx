@@ -3,16 +3,15 @@ import {Inter} from "next/font/google";
 import {disableDraftMode} from "@tinloof/sanity-next/actions/disable-draft-mode";
 import ExitPreviewClient from "@/components/exit-preview";
 import {VisualEditing} from "next-sanity/visual-editing";
-import {SanityLive} from "@/data/sanity/live";
 import {draftMode} from "next/headers";
 import {Metadata} from "next";
 import config from "@/config";
 
 import {getOgImages} from "@tinloof/sanity-web";
-import {loadGlobalData} from "@/data/sanity";
-import {client} from "@/data/sanity/client";
+import {client, sanityFetchMetadata, SanityLive} from "@/data/sanity/client";
 
 import "@/styles/index.css";
+import {GLOBAL_QUERY} from "@/data/sanity/queries";
 
 const sans = Inter({
   variable: "--font-sans",
@@ -20,7 +19,7 @@ const sans = Inter({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await loadGlobalData();
+  const {data} = await sanityFetchMetadata({query: GLOBAL_QUERY});
   return {
     openGraph: {
       images: !data?.fallbackSEO?.ogImage

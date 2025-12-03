@@ -15,6 +15,10 @@ pnpm install @tinloof/sanity-next
   - [Environment Variables](#environment-variables)
   - [Basic Setup](#basic-setup)
   - [With Internationalization](#with-internationalization)
+- [Fetch Utilities](#fetch-utilities)
+  - [sanityFetch](#sanityfetch)
+  - [sanityFetchMetadata](#sanityfetchmetadata)
+  - [sanityFetchStaticParams](#sanityfetchstaticparams)
 - [Components](#components)
   - [SanityImage](#sanityimage)
   - [ExitPreview](#exitpreview)
@@ -38,8 +42,13 @@ import {initSanity} from "@tinloof/sanity-next/client/init";
 
 export const {
   client,
+  // Fetch utilities
   sanityFetch,
+  sanityFetchMetadata,
+  sanityFetchStaticParams,
+  // Components
   SanityImage,
+  // Metadata
   resolveSanityMetadata,
   // Redirect utilities
   redirectIfNeeded,
@@ -69,6 +78,8 @@ import {initSanity} from "@tinloof/sanity-next/client/init";
 export const {
   client,
   sanityFetch,
+  sanityFetchMetadata,
+  sanityFetchStaticParams,
   SanityImage,
   resolveSanityMetadata,
   generateSanitySitemap,
@@ -104,6 +115,8 @@ const i18nConfig = {
 export const {
   client,
   sanityFetch,
+  sanityFetchMetadata,
+  sanityFetchStaticParams,
   SanityImage,
   resolveSanityMetadata,
   // I18n-specific utilities
@@ -111,6 +124,70 @@ export const {
 } = initSanity({
   i18n: i18nConfig,
 });
+```
+
+## Fetch Utilities
+
+The `initSanity` function provides three specialized fetch functions for different use cases in your Next.js application:
+
+### sanityFetch
+
+Use in server components to fetch data with automatic perspective and stega configuration based on draft mode:
+
+```tsx
+// app/page.tsx
+import {sanityFetch} from "./lib/sanity";
+
+export default async function Page({params}) {
+  const {data} = await sanityFetch({
+    query: '*[_type == "post" && slug.current == $slug][0]',
+    params: {slug: params.slug},
+  });
+
+  return <div>{data.title}</div>;
+}
+```
+
+### sanityFetchMetadata
+
+Use in `generateMetadata` functions to fetch data without stega encoding (which would interfere with metadata):
+
+```tsx
+// app/[slug]/page.tsx
+import {sanityFetchMetadata} from "./lib/sanity";
+
+export async function generateMetadata({params}) {
+  const {data} = await sanityFetchMetadata({
+    query: '*[_type == "post" && slug.current == $slug][0]',
+    params: {slug: params.slug},
+  });
+
+  return {
+    title: data?.title,
+    description: data?.description,
+  };
+}
+```
+
+### sanityFetchStaticParams
+
+Use in `generateStaticParams` to fetch published content for static generation:
+
+```tsx
+// app/[slug]/page.tsx
+import {sanityFetchStaticParams} from "./lib/sanity";
+
+export async function generateStaticParams() {
+  const {data} = await sanityFetchStaticParams({
+    query: '*[_type == "post"]{ "slug": slug.current }',
+  });
+
+  return (
+    data?.map((post) => ({
+      slug: post.slug,
+    })) ?? []
+  );
+}
 ```
 
 ## Components

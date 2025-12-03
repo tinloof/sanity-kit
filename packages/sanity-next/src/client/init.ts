@@ -5,6 +5,7 @@ import {ComponentProps} from "react";
 import {initSanityUtils, initSanityI18nUtils} from "../utils/sanity";
 import {getVercelBaseUrl} from "../utils/vercel-base-url";
 import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
+import {createSanityFetchUtils} from "../utils/create-sanity-fetch-utils";
 
 type InitSanityConfig = {
   client?: ClientConfig;
@@ -55,19 +56,27 @@ export function initSanity(config?: InitSanityConfig) {
       );
     }
 
-    const {sanityFetch, ...rest} = defineLive({
+    const {sanityFetch: baseSanityFetch, ...rest} = defineLive({
       browserToken: sanity_api_token,
       serverToken: sanity_api_token,
       client,
     });
 
+    const fetchUtils = createSanityFetchUtils({
+      sanityFetch: baseSanityFetch,
+    });
+
     const utils =
       typeof config?.i18n === "undefined"
         ? initSanityUtils({
-            sanityFetch,
+            sanityFetch: baseSanityFetch,
             baseUrl,
           })
-        : initSanityI18nUtils({sanityFetch, baseUrl, i18n: config.i18n});
+        : initSanityI18nUtils({
+            sanityFetch: baseSanityFetch,
+            baseUrl,
+            i18n: config.i18n,
+          });
 
     return {
       SanityImage: (
@@ -81,7 +90,7 @@ export function initSanity(config?: InitSanityConfig) {
           },
         }),
       client,
-      sanityFetch,
+      ...fetchUtils,
       resolveSanityMetadata: createSanityMetadataResolver({
         client,
         websiteBaseURL: baseUrl,
@@ -92,15 +101,26 @@ export function initSanity(config?: InitSanityConfig) {
     };
   }
 
-  const {sanityFetch, ...rest} = defineLive({...config.live, client});
+  const {sanityFetch: baseSanityFetch, ...rest} = defineLive({
+    ...config.live,
+    client,
+  });
+
+  const fetchUtils = createSanityFetchUtils({
+    sanityFetch: baseSanityFetch,
+  });
 
   const utils =
     typeof config.i18n === "undefined"
       ? initSanityUtils({
-          sanityFetch,
+          sanityFetch: baseSanityFetch,
           baseUrl,
         })
-      : initSanityI18nUtils({sanityFetch, baseUrl, i18n: config.i18n});
+      : initSanityI18nUtils({
+          sanityFetch: baseSanityFetch,
+          baseUrl,
+          i18n: config.i18n,
+        });
 
   return {
     SanityImage: (props: Omit<ComponentProps<typeof SanityImage>, "config">) =>
@@ -112,7 +132,7 @@ export function initSanity(config?: InitSanityConfig) {
         },
       }),
     client,
-    sanityFetch,
+    ...fetchUtils,
     resolveSanityMetadata: createSanityMetadataResolver({
       client,
       websiteBaseURL: baseUrl,

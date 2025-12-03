@@ -8,4 +8,6 @@ export const {
   redirectIfNeeded,
   resolveSanityMetadata,
   sanityFetch,
+  sanityFetchMetadata,
+  sanityFetchStaticParams,
 } = initSanity();

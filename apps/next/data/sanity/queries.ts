@@ -12,3 +12,7 @@ export const GLOBAL_QUERY = defineQuery(`
       image
     },
   }`);
+
+export const STATIC_PATHS_QUERY = defineQuery(
+  `*[_type == "page" && pathname.current != null].pathname.current`,
+);

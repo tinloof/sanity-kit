@@ -1,6 +1,10 @@
 import {Page} from "@/components/pages/modular";
-import {loadPage} from "@/data/sanity";
-import {resolveSanityMetadata} from "@/data/sanity/client";
+import {
+  resolveSanityMetadata,
+  sanityFetch,
+  sanityFetchMetadata,
+} from "@/data/sanity/client";
+import {PAGE_QUERY} from "@/data/sanity/queries";
 import {ResolvingMetadata} from "next";
 import {notFound} from "next/navigation";
 
@@ -10,15 +14,21 @@ export async function generateMetadata(
 ) {
   const parent = await parentPromise;
 
-  const initialData = await loadPage("/");
+  const {data} = await sanityFetchMetadata({
+    query: PAGE_QUERY,
+    params: {pathname: "/"},
+  });
 
-  if (!initialData) return notFound();
+  if (!data) return notFound();
 
-  return resolveSanityMetadata({...initialData, parent});
+  return resolveSanityMetadata({...data, parent});
 }
 
 export default async function IndexRoute() {
-  const data = await loadPage("/");
+  const {data} = await sanityFetch({
+    query: PAGE_QUERY,
+    params: {pathname: "/"},
+  });
 
   if (!data) return notFound();
 
