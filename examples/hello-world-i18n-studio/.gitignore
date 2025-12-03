@@ -30,4 +30,4 @@
 
 # TypeGen outputs
 schema.json
-sanity.generated.d.ts
+sanity.types.ts

@@ -8,10 +8,4 @@ export default defineCliConfig({
   project: {
     basePath: "/cms",
   },
-  typegen: {
-    path: "./src/**/*.{ts,tsx,js,jsx}",
-    schema: "./schema.json",
-    generates: "./sanity.generated.d.ts",
-    overloadClientMethods: true,
-  },
 });

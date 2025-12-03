@@ -9,8 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@tinloof/sanity-next": "workspace:*",
     "@examples/hello-world-i18n-studio": "workspace:*",
+    "@tinloof/sanity-next": "workspace:*",
+    "@tinloof/sanity-web": "^0.11.0",
     "next": "16.0.6",
     "next-sanity": "^11.6.10",
     "react": "19.2.0",

@@ -4,7 +4,7 @@ export default defineType({
   name: "modular.page",
   title: "Page",
   type: "document",
-  extends: ["page"],
+  extends: ["page", "i18n"],
   options: {
     structureGroup: "pages",
     localized: true,
@@ -15,9 +15,9 @@ export default defineType({
       type: "string",
     },
     {
-      name: "locale",
-      type: "string",
-      hidden: true,
+      name: "sections",
+      type: "sectionsBody",
+      validation: (Rule) => Rule.required().min(1),
     },
   ],
   preview: {

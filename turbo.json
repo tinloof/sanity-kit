@@ -50,7 +50,7 @@
     },
     "@examples/hello-world-i18n-studio#dev": {
       "with": ["@examples/hello-world-i18n-studio#typegen:watch"],
-      "cache": true
+      "persistent": true
     },
     "@examples/hello-world-i18n-next#build": {
       "dependsOn": ["@examples/hello-world-i18n-studio#build"],

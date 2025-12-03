@@ -6,20 +6,22 @@
   "scripts": {
     "dev": "sanity dev",
     "build": "sanity build ../hello-world-i18n-next/public/cms -y",
-    "extract-types": "sanity schema extract --path ./schema.json",
+    "extract-types": "sanity schema extract",
     "typegen:watch": "watch \"npm run typegen\" ./src",
     "typegen": "pnpm run extract-types && sanity typegen generate"
   },
   "exports": {
     "./queries": "./src/queries/index.ts",
-    "./types": "./sanity.generated.d.ts"
+    "./types": "./sanity.types.ts"
   },
   "dependencies": {
+    "@sanity/client": "^7.13.1",
     "@sanity/vision": "^4.19.0",
     "@tinloof/sanity-document-i18n": "workspace:*",
     "@tinloof/sanity-document-options": "workspace:*",
     "@tinloof/sanity-extends": "workspace:*",
     "@tinloof/sanity-studio": "workspace:*",
+    "groq": "^4.19.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "sanity": "^4.19.0",

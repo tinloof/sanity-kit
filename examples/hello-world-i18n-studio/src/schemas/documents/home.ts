@@ -7,6 +7,7 @@ export default defineType({
   extends: [
     "singleton",
     {type: "page", parameters: {pathname: {disableCreation: true}}},
+    "i18n",
   ],
   options: {
     structureGroup: "pages",
@@ -18,9 +19,9 @@ export default defineType({
       type: "string",
     },
     {
-      name: "locale",
-      type: "string",
-      hidden: true,
+      name: "sections",
+      type: "sectionsBody",
+      validation: (Rule) => Rule.required().min(1),
     },
   ],
   preview: {
