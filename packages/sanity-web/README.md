@@ -150,7 +150,7 @@ export default function Page({sections}) {
     <SectionsRenderer
       fieldName="sections"
       sectionsData={sections}
-      sectionComponentMap={{
+      components={{
         "section.hero": HeroSection,
         "section.cta": CallToAction,
       }}
@@ -161,14 +161,15 @@ export default function Page({sections}) {
 
 #### Props
 
-| Prop                  | Type                                                             | Description                                                  |
-| --------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
-| `fieldName`           | `string` (optional, default: "sections")                         | Field name used for generating deep link IDs                 |
-| `sectionsData`        | `SectionData[]` (optional)                                       | Array of section data objects to render                      |
-| `sectionComponentMap` | `Record<string, SectionComponent>`                               | Map of section type strings to their React components        |
-| `className`           | `string` (optional)                                              | Optional container class name                                |
-| `fallbackComponent`   | `(props: {type: string, availableTypes: string[]}) => ReactNode` | Custom fallback component callback for missing section types |
-| `showDevWarnings`     | `boolean` (optional, default: true in development)               | Show dev warnings for missing components                     |
+| Prop                | Type                                                             | Description                                                  |
+| ------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| `fieldName`         | `string` (optional, default: "sections")                         | Field name used for generating deep link IDs                 |
+| `sectionsData`      | `TSections` (optional)                                           | Array of section data objects to render                      |
+| `components`        | `SectionComponentMap<TSections, TSharedProps>`                   | Map of section type strings to their React components        |
+| `sharedProps`       | `TSharedProps` (optional)                                        | Props shared across all section components                   |
+| `className`         | `string` (optional)                                              | Optional container class name                                |
+| `fallbackComponent` | `(props: {type: string, availableTypes: string[]}) => ReactNode` | Custom fallback component callback for missing section types |
+| `showDevWarnings`   | `boolean` (optional, default: true in development)               | Show dev warnings for missing components                     |
 
 #### Features
 
@@ -194,7 +195,7 @@ export default function Page({sections}) {
 ```tsx
 <SectionsRenderer
   sectionsData={sections}
-  sectionComponentMap={componentMap}
+  components={componentMap}
   fallbackComponent={({type, availableTypes}) => (
     <div className="p-4 bg-yellow-100 border border-yellow-400 rounded">
       <h3>Missing Component: {type}</h3>
@@ -238,15 +239,18 @@ export default function HeroSection({
 
 #### Factory Function
 
-Create reusable, pre-configured renderers with `createSectionsRenderer`:
+Create reusable, pre-configured, type-safe renderers with `createSectionsRenderer`:
 
 ```tsx
-import {createSectionsRenderer} from "@tinloof/sanity-web";
+import {createSectionsRenderer} from "@tinloof/sanity-web/components";
+import type {PAGE_QUERYResult} from "@/sanity/types";
 
-// Configure once
-export const ConfiguredSectionsRenderer = createSectionsRenderer({
-  sectionComponentMap: {
-    "section.hero": HeroSection,
+type Sections = NonNullable<NonNullable<PAGE_QUERYResult>["sections"]>;
+
+// Configure once with full type safety
+export const SectionsRenderer = createSectionsRenderer<Sections>({
+  components: {
+    "section.hero": HeroSection,    // TypeScript ensures correct props
     "section.cta": CallToAction,
     "section.text": TextSection,
   },
@@ -257,35 +261,109 @@ export const ConfiguredSectionsRenderer = createSectionsRenderer({
 
 // Use throughout your app with minimal props
 export default function Page({sections}) {
-  return <ConfiguredSectionsRenderer sectionsData={sections} />;
+  return <SectionsRenderer sectionsData={sections} />;
+}
+```
+
+#### Shared Props
+
+Pass props that are shared across all section components using `sharedProps`:
+
+```tsx
+import {createSectionsRenderer, type SectionProps} from "@tinloof/sanity-web/components";
+import type {PAGE_QUERYResult} from "@/sanity/types";
+
+type Sections = NonNullable<NonNullable<PAGE_QUERYResult>["sections"]>;
+type SharedProps = {locale: string; isPreview: boolean};
+
+// Create renderer with shared props type
+export const SectionsRenderer = createSectionsRenderer<Sections, SharedProps>({
+  components: {
+    "section.hero": HeroSection,
+    "section.cta": CallToAction,
+  },
+});
+
+// Export a helper type for section components
+export type MySectionProps<TType extends Sections[number]["_type"]> =
+  SectionProps<Sections, TType, SharedProps>;
+
+// Usage - sharedProps is required when TSharedProps is defined
+export default function Page({sections, locale}) {
+  return (
+    <SectionsRenderer
+      sectionsData={sections}
+      sharedProps={{locale, isPreview: false}}
+    />
+  );
+}
+```
+
+Section components receive shared props along with their section data:
+
+```tsx
+import type {MySectionProps} from "./sections";
+
+export default function HeroSection({
+  title,
+  locale,      // From sharedProps
+  isPreview,   // From sharedProps
+}: MySectionProps<"section.hero">) {
+  return (
+    <section>
+      <h1>{title}</h1>
+      <p>Locale: {locale}</p>
+    </section>
+  );
 }
 ```
 
 #### TypeScript Support
 
-The component provides full TypeScript support with proper typing:
+The component provides full TypeScript support with automatic type inference from your Sanity schema:
 
 ```tsx
-import type {SectionComponent, SectionComponentMap} from "@tinloof/sanity-web";
+import {
+  createSectionsRenderer,
+  type SectionProps,
+} from "@tinloof/sanity-web/components";
+import type {PAGE_QUERYResult} from "@/sanity/types";
 
-// Type your section components
-const HeroSection: SectionComponent<{title: string; subtitle?: string}> = ({
+type Sections = NonNullable<NonNullable<PAGE_QUERYResult>["sections"]>;
+
+// Re-export SectionProps bound to your Sections type
+export type MySectionProps<TType extends Sections[number]["_type"]> =
+  SectionProps<Sections, TType>;
+
+// TypeScript automatically validates the components map
+export const SectionsRenderer = createSectionsRenderer<Sections>({
+  components: {
+    "section.hero": HeroSection,  // Must accept SectionProps<Sections, "section.hero">
+    "section.cta": CallToAction,  // Must accept SectionProps<Sections, "section.cta">
+  },
+});
+```
+
+Section components receive their specific props:
+
+```tsx
+import type {MySectionProps} from "./sections";
+
+// Props are fully typed based on your Sanity schema
+export default function HeroSection({
   title,
   subtitle,
-}) => {
+  _sectionIndex,
+  _key,
+  rootHtmlAttributes,
+}: MySectionProps<"section.hero">) {
   return (
-    <section>
+    <section {...rootHtmlAttributes}>
       <h1>{title}</h1>
       {subtitle && <h2>{subtitle}</h2>}
     </section>
   );
-};
-
-// Type your component map
-const sectionComponentMap: SectionComponentMap = {
-  "section.hero": HeroSection,
-  "section.cta": CallToAction,
-};
+}
 ```
 
 ## Utils
