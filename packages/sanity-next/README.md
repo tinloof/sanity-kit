@@ -45,7 +45,7 @@ export const {
   SanityImage,
   resolveSanityMetadata,
   // Draft mode handler
-  draftRoute,
+  defineEnableDraftMode,
   // Redirect utilities
   redirectIfNeeded,
   // Sitemap utilities
@@ -124,18 +124,7 @@ The package provides a streamlined way to implement Sanity's draft mode in Next.
 
 ### Setup
 
-Configure your Sanity client with a viewer token during initialization:
-
-```tsx
-// lib/sanity/index.ts
-import {initSanity} from "@tinloof/sanity-next";
-
-export const sanity = initSanity({
-  // Optional: explicitly provide viewer token
-  viewerToken: process.env.SANITY_VIEWER_TOKEN,
-  // Or rely on SANITY_API_TOKEN env variable (default)
-});
-```
+The draft mode handler is automatically configured when you initialize Sanity with a token (via the `SANITY_API_TOKEN` environment variable).
 
 ### Usage
 
@@ -143,11 +132,10 @@ Create your draft mode API route with a single line:
 
 ```tsx
 // app/api/draft/route.ts
-import {draftRoute} from "@/data/sanity/client";
-export const {GET} = draftRoute;
+export {defineEnableDraftMode as GET} from "@/data/sanity/client";
 ```
 
-That's it! The `draftRoute` handler:
+That's it! The `defineEnableDraftMode` handler:
 
 - Is always defined (no TypeScript errors about undefined values)
 - Automatically uses the token from your initialization

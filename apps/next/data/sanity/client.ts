@@ -8,5 +8,5 @@ export const {
   redirectIfNeeded,
   resolveSanityMetadata,
   sanityFetch,
-  draftRoute,
+  defineEnableDraftMode,
 } = initSanity();

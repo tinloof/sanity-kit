@@ -1,3 +1,1 @@
-import {draftRoute} from "@/data/sanity/client";
-
-export const {GET} = draftRoute;
+export {defineEnableDraftMode as GET} from "@/data/sanity/client";
