@@ -8,7 +8,7 @@ import {
   MenuItem as MenuItemComponent,
   Text,
 } from "@sanity/ui";
-import {useCallback} from "react";
+import {ReactElement, useCallback} from "react";
 import {useSchema} from "sanity";
 import {useIntentLink} from "sanity/router";
 
@@ -17,7 +17,7 @@ import {useNavigator} from "../context";
 import {getTemplateName, pathnameToTitle} from "../utils";
 import TooltipWrapper from "./ToolTipWrapper";
 
-const Header = ({pages, domRef, children}: HeaderProps): JSX.Element => {
+const Header = ({pages, domRef, children}: HeaderProps): ReactElement => {
   const {currentDir, setCurrentDir, locale} = useNavigator();
 
   const back = useCallback(() => {

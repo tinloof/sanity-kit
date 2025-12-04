@@ -185,7 +185,10 @@ const List = ({loading}: {loading: boolean}) => {
   return !filteredItemsAndFolders.length ? (
     <EmptySearchResults />
   ) : (
-    <ListWrapperParent padding={1} ref={innerRef}>
+    <ListWrapperParent
+      padding={1}
+      ref={innerRef as unknown as React.RefObject<HTMLDivElement>}
+    >
       <ListWrapper
         id="navigator-list"
         as="ul"
