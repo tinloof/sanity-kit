@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+import {CreateAbstractsConfig} from "@tinloof/sanity-extends";
+import {ABSTRACTS_MAP} from "./abstracts";
 import type {
   KeyedObject,
   ObjectSchemaType,
@@ -37,6 +39,7 @@ export type PluginConfig = {
   apiVersion?: string;
   allowCreateMetaDoc?: boolean;
   callback?: ((args: PluginCallbackArgs) => Promise<void>) | null;
+  abstracts?: CreateAbstractsConfig<keyof typeof ABSTRACTS_MAP>;
 };
 
 // Context version of config
@@ -93,4 +96,10 @@ declare module "sanity" {
   interface TextOptions extends DocumentI18nSchemaOpts {}
   interface UrlOptions extends DocumentI18nSchemaOpts {}
   interface EmailOptions extends DocumentI18nSchemaOpts {}
+}
+
+declare module "@tinloof/sanity-extends" {
+  interface ExtendsRegistry {
+    i18n: undefined;
+  }
 }

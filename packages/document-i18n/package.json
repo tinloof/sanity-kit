@@ -1,6 +1,6 @@
 {
   "name": "@tinloof/sanity-document-i18n",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Sanity document i18n plugin",
   "license": "ISC",
   "author": "Tinloof",
@@ -28,6 +28,7 @@
   },
   "sideEffects": false,
   "peerDependencies": {
+    "@tinloof/sanity-extends": "workspace:*",
     "sanity": "^3.80.1 || ^4.0.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
@@ -39,6 +40,7 @@
     "rxjs": "^7.0.0"
   },
   "devDependencies": {
+    "@tinloof/sanity-extends": "workspace:*",
     "sanity": "^4.17.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

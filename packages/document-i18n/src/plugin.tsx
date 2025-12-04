@@ -11,6 +11,8 @@ import {DEFAULT_CONFIG, METADATA_SCHEMA_NAME} from "./constants";
 import {documentI18nUsEnglishLocaleBundle} from "./i18n";
 import type {PluginConfig, TranslationReference} from "./types";
 import {DocumentDefinition} from "sanity";
+import {ABSTRACTS_MAP, i18nAbstract} from "./abstracts";
+import {resolveAbstractSchemaTypes} from "@tinloof/sanity-extends";
 
 function extractSchemaTypeNames(
   schemas: SchemaTypeDefinition[],
@@ -33,6 +35,8 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
   const {locales, localeField} = pluginConfig;
 
   const bulkPublish = false;
+
+  const abstracts = config?.abstracts ?? {i18n: true};
 
   return {
     name: "@tinloof/sanity-document-i18n",
@@ -150,6 +154,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
     // Adds:
     // - The `Translations metadata` document type to the schema
     schema: {
+      types: resolveAbstractSchemaTypes(ABSTRACTS_MAP, abstracts),
       // Create the metadata document type
       // types: [metadata(["article"], metadataFields)],
 

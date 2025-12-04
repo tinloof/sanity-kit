@@ -1,5 +1,13 @@
 # vite-studio
 
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies [db1c824]
+  - @tinloof/sanity-document-i18n@1.1.0
+  - @tinloof/sanity-studio@1.15.1
+
 ## 1.2.1
 
 ### Patch Changes
