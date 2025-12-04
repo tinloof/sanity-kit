@@ -1,6 +1,6 @@
 import type { SectionProps } from ".";
 
-export default function TextSection(props: SectionProps<"section.text">) {
+export default function TextSection(props: SectionProps["section.text"]) {
 	const { text } = props;
 
 	return (
