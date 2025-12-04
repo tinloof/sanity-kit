@@ -1,5 +1,6 @@
 import type {BadgeTone} from "@sanity/ui";
 import {Badge, Flex, Stack} from "@sanity/ui";
+import {ReactElement} from "react";
 import type {TextInputProps, TextOptions} from "sanity";
 import {useFormValue} from "sanity";
 
@@ -36,7 +37,7 @@ function CharacterCount(props: {value?: string} & CountedTextOptions) {
   );
 }
 
-export function InputWithCharacterCount(props: TextInputProps): JSX.Element {
+export function InputWithCharacterCount(props: TextInputProps): ReactElement {
   const document = useFormValue([]);
 
   if (!document) {
