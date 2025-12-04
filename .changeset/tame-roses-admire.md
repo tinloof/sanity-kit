@@ -2,9 +2,9 @@
 "@tinloof/sanity-web": minor
 ---
 
-Add type-safe generics and sharedProps support to createSectionsRenderer
+Add type-safe generics and sharedProps support to createSections
 
-- `createSectionsRenderer` now accepts two generic type parameters:
+- `createSections` now accepts two generic type parameters:
   - `TSections`: The sections array type from your Sanity query result
   - `TSharedProps`: Optional type for props shared across all section components
 
@@ -22,7 +22,7 @@ Example usage:
 type Sections = NonNullable<PAGE_QUERYResult>["sections"];
 type SharedProps = { locale: string };
 
-export const SectionsRenderer = createSectionsRenderer<Sections, SharedProps>({
+export const SectionsRenderer = createSections<Sections, SharedProps>({
   components: {
     "section.hero": HeroSection,
     "section.text": TextSection,
@@ -31,6 +31,6 @@ export const SectionsRenderer = createSectionsRenderer<Sections, SharedProps>({
 
 // In your page
 <SectionsRenderer
-  sectionsData={page.sections}
+  data={page.sections}
   sharedProps={{ locale: "en" }}
 />

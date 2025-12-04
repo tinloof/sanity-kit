@@ -3,6 +3,7 @@ export { default as SanityImage } from "./sanity-image";
 export {
 	type BaseSectionProps,
 	type ConfiguredSectionsRendererProps,
+	createSections,
 	createSectionsRenderer,
 	default as SectionsRenderer,
 	type SectionComponent,

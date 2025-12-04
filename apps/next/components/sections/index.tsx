@@ -1,9 +1,9 @@
-import {createSectionsRenderer} from "@tinloof/sanity-web/components/sections-renderer";
+import { createSections } from "@tinloof/sanity-web/components/sections-renderer";
 
 import HeroSection from "./hero";
 
-export default createSectionsRenderer({
-  sectionComponentMap: {
-    "section.hero": HeroSection,
-  },
+export default createSections({
+	components: {
+		"section.hero": HeroSection,
+	},
 });

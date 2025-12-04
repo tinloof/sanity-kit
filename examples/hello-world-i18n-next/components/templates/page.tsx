@@ -16,10 +16,6 @@ export default function PageTemplate({
 	const { sections } = data;
 
 	return (
-		<SectionsRenderer
-			sharedProps={{ locale: "en" }}
-			fieldName="sections"
-			sectionsData={sections ?? []}
-		/>
+		<SectionsRenderer sharedProps={{ locale: "en" }} data={sections ?? []} />
 	);
 }

@@ -63,8 +63,6 @@ export type SectionsRendererProps<
 	TSections extends readonly any[] = any[],
 	TSharedProps extends Record<string, any> = {},
 > = {
-	/** Field name used for generating deep link IDs */
-	fieldName?: string;
 	/** Array of section data objects to render */
 	sectionsData?: TSections;
 	/** Map of section type strings to their React components */
@@ -93,7 +91,6 @@ export type SectionsRendererProps<
  * @example
  * ```tsx
  * <SectionsRenderer
- *   fieldName="sections"
  *   sectionsData={pageData.sections}
  *   components={{
  *     "section.hero": HeroSection,
@@ -110,7 +107,6 @@ export default function SectionsRenderer<
 	TSections extends readonly any[] = any[],
 	TSharedProps extends Record<string, any> = {},
 >({
-	fieldName = "sections",
 	sectionsData,
 	components,
 	sharedProps,
@@ -184,7 +180,7 @@ export default function SectionsRenderer<
 						_sections={sectionsData}
 						rootHtmlAttributes={{
 							"data-section": section._type,
-							id: getDeepLinkID({ sectionKey, fieldName }),
+							id: getDeepLinkID({ sectionKey }),
 						}}
 					/>
 				);
@@ -318,13 +314,16 @@ export type SectionsRendererConfig<
 export type ConfiguredSectionsRendererProps<
 	TSections extends readonly any[],
 	TSharedProps extends Record<string, any> = {},
-> = Pick<
-	SectionsRendererProps<TSections, TSharedProps>,
-	"fieldName" | "sectionsData"
-> &
-	(keyof TSharedProps extends never
-		? { sharedProps?: TSharedProps }
-		: { sharedProps: TSharedProps });
+> = (keyof TSharedProps extends never
+	? { sharedProps?: TSharedProps }
+	: { sharedProps: TSharedProps }) & {
+	/** Array of section data objects to render */
+	data?: TSections;
+	/**
+	 * @deprecated Use `data` instead
+	 */
+	sectionsData?: TSections;
+};
 
 /**
  * Factory function to create a pre-configured, type-safe SectionsRenderer.
@@ -340,7 +339,7 @@ export type ConfiguredSectionsRendererProps<
  *
  * // Create a type-safe renderer - TypeScript ensures each component
  * // receives the correct props based on its section type
- * export const SectionsRenderer = createSectionsRenderer<Sections, SharedProps>({
+ * export const SectionsRenderer = createSections<Sections, SharedProps>({
  *   components: {
  *     "section.hero": HeroSection,    // Must accept hero section props + SharedProps
  *     "section.cta": CallToAction,    // Must accept CTA section props + SharedProps
@@ -350,8 +349,7 @@ export type ConfiguredSectionsRendererProps<
  *
  * // Use in pages with minimal props
  * <SectionsRenderer
- *   fieldName="sections"
- *   sectionsData={pageData.sections}
+ *   data={pageData.sections}
  *   sharedProps={{ locale: "en", isPreview: false }}
  * />
  * ```
@@ -363,19 +361,27 @@ export type ConfiguredSectionsRendererProps<
  * - `rootHtmlAttributes`: Object with `data-section` and `id` for deep linking
  * - Plus any shared props passed to the renderer
  */
-export function createSectionsRenderer<
+export function createSections<
 	TSections extends readonly any[],
 	TSharedProps extends Record<string, any> = {},
 >(config: SectionsRendererConfig<TSections, TSharedProps>) {
 	return function ConfiguredSectionsRenderer({
-		fieldName,
+		data,
 		sectionsData,
 		sharedProps,
 	}: ConfiguredSectionsRendererProps<TSections, TSharedProps>) {
+		// Support both `data` and deprecated `sectionsData`
+		const resolvedData = data ?? sectionsData;
+
+		if (sectionsData !== undefined && process.env.NODE_ENV === "development") {
+			console.warn(
+				"[SectionsRenderer] `sectionsData` is deprecated. Use `data` instead.",
+			);
+		}
+
 		return (
 			<SectionsRenderer<TSections, TSharedProps>
-				fieldName={fieldName}
-				sectionsData={sectionsData}
+				sectionsData={resolvedData}
 				components={config.components}
 				sharedProps={sharedProps as TSharedProps}
 				className={config.className}
@@ -385,3 +391,8 @@ export function createSectionsRenderer<
 		);
 	};
 }
+
+/**
+ * @deprecated Use `createSections` instead
+ */
+export const createSectionsRenderer = createSections;
