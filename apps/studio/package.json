@@ -13,23 +13,23 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/vision": "^4.10.2",
+    "@sanity/vision": "^4.20.1",
     "@tinloof/sanity-document-i18n": "workspace:*",
-    "@tinloof/sanity-studio": "workspace:*",
     "@tinloof/sanity-document-options": "workspace:*",
     "@tinloof/sanity-extends": "workspace:*",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-is": "^19.2.0",
-    "sanity": "^4.10.2",
+    "@tinloof/sanity-studio": "workspace:*",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-is": "^19.2.1",
+    "sanity": "^4.20.1",
     "styled-components": "^6.1.19"
   },
   "devDependencies": {
     "@sanity/eslint-config-studio": "^5.0.2",
-    "@sanity/types": "^4.10.2",
-    "@types/react": "^19.2.2",
-    "eslint": "^9.37.0",
-    "prettier": "^3.6.2",
+    "@sanity/types": "^4.20.1",
+    "@types/react": "^19.2.7",
+    "eslint": "^9.39.1",
+    "prettier": "^3.7.4",
     "typescript": "^5.9.3"
   },
   "prettier": {
