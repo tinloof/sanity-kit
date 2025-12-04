@@ -9,7 +9,7 @@ import {
   Text,
   TextInput,
 } from "@sanity/ui";
-import {useCallback, useState} from "react";
+import {useCallback, useState, ReactElement} from "react";
 import {set, unset} from "sanity";
 import {styled} from "styled-components";
 
@@ -74,7 +74,7 @@ const addSpaceBeforeCapitalLetters = (inputString: string): string =>
     .trim()
     .slice(1);
 
-export function IconSelectComponent(props: IconInputProps): JSX.Element {
+export function IconSelectComponent(props: IconInputProps): ReactElement {
   const {
     elementProps,
     onChange,

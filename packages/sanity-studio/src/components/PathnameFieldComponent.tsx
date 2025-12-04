@@ -17,7 +17,13 @@ import {
 } from "@sanity/ui";
 import * as PathUtils from "@sanity/util/paths";
 import {getDocumentPath, stringToPathname} from "@tinloof/sanity-web";
-import React, {useCallback, useMemo, useRef, useState} from "react";
+import React, {
+  ReactElement,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   FormFieldValidationStatus,
   FormPatch,
@@ -68,7 +74,9 @@ const FolderText = styled(Text)`
 
 const pathnameDebounceTime = 1000;
 
-export function PathnameFieldComponent(props: PathnameInputProps): JSX.Element {
+export function PathnameFieldComponent(
+  props: PathnameInputProps,
+): ReactElement {
   const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
   const {prefix} = usePathnamePrefix(props);
   const folderOptions = fieldOptions?.folder ?? {canUnlock: true};
