@@ -31,3 +31,5 @@ export {
 } from "./sitemap";
 
 export {redirectIfNeeded, getRedirect} from "./redirect";
+
+export {createDraftModeRoute, defineDraftRoute} from "./draft-mode";
