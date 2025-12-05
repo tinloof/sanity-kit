@@ -21,7 +21,7 @@
   "dependencies": {
     "@examples/hello-world-i18n-studio": "workspace:*",
     "@sanity/client": "^7.13.1",
-    "@sanity/vision": "^4.20.1",
+    "@sanity/vision": "^4.20.3",
     "@tailwindcss/typography": "0.5.19",
     "@tinloof/sanity-next": "workspace:*",
     "@tinloof/sanity-studio": "workspace:*",
@@ -30,7 +30,7 @@
     "next-sanity": "^11.6.10",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "sanity": "^4.20.1",
+    "sanity": "^4.20.3",
     "server-only": "0.0.1"
   },
   "devDependencies": {
