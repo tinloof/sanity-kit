@@ -1,37 +1,41 @@
-const DEEP_LINK_SEPARATOR = "__" as const;
+/**
+ * @deprecated This entire module is deprecated. Use the section's `_key` directly as the ID.
+ */
 
+/**
+ * @deprecated Use the section's `_key` directly instead
+ */
 export type DeepLinkData = {
-  /**
-   * _key of the target deep-linked section
-   */
-  sectionKey?: string;
-  /**
-   * name of the schema field that contains this section
-   */
-  fieldName?: string;
-  parentDocumentId?: string;
+	/**
+	 * _key of the target deep-linked section
+	 */
+	sectionKey?: string;
+	/**
+	 * @deprecated No longer used - deep link IDs are now based solely on sectionKey
+	 */
+	fieldName?: never;
+	parentDocumentId?: string;
 };
 
 /**
- * Generates a unique deep link ID by combining field name and section key.
+ * Generates a unique deep link ID from the section key.
+ *
+ * @deprecated This function is no longer used. Just use the sectionKey directly as the ID.
  *
  * @param deepLink - The deep link data object containing section information
- * @returns A string in the format "{fieldName}__{sectionKey}" or undefined if required fields are missing
+ * @returns The section key as the ID, or undefined if sectionKey is missing
  *
  * @example
  * ```ts
- * const deepLinkData = {
- *   sectionKey: "hero-section",
- *   fieldName: "content",
- *   parentDocumentId: "doc-123"
- * };
+ * // Instead of:
+ * const id = getDeepLinkID({ sectionKey: "hero-section" });
  *
- * const id = getDeepLinkID(deepLinkData);
- * // Returns: "content__hero-section"
+ * // Just use:
+ * const id = sectionKey;
  * ```
  */
 export function getDeepLinkID(deepLink: DeepLinkData): string | undefined {
-  if (!deepLink?.sectionKey?.trim() || !deepLink?.fieldName?.trim()) return;
+	if (!deepLink?.sectionKey?.trim()) return;
 
-  return `${deepLink.fieldName}${DEEP_LINK_SEPARATOR}${deepLink.sectionKey}`;
+	return deepLink.sectionKey;
 }

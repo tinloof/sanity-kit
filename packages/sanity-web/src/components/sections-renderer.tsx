@@ -2,8 +2,8 @@ import type {
 	ArbitraryTypedObject,
 	PortableTextBlock,
 } from "@portabletext/types";
+import type { ComponentProps, ComponentType } from "react";
 import React from "react";
-import { getDeepLinkID } from "../utils/ids";
 
 // Type for individual section data
 export type SectionData = ArbitraryTypedObject | PortableTextBlock;
@@ -59,13 +59,20 @@ export type SectionComponentMap<
 	>;
 };
 
+// Loose component map that accepts any value - useful for avoiding circular deps
+type SectionComponentMapLoose<TSections extends readonly any[]> = {
+	[K in ExtractSectionTypes<TSections>]?: unknown;
+};
+
 export type SectionsRendererProps<
 	TSections extends readonly any[] = any[],
 	TSharedProps extends Record<string, any> = {},
 > = {
-	/** Field name used for generating deep link IDs */
-	fieldName?: string;
 	/** Array of section data objects to render */
+	data?: TSections;
+	/**
+	 * @deprecated Use `data` instead
+	 */
 	sectionsData?: TSections;
 	/** Map of section type strings to their React components */
 	components: SectionComponentMap<TSections, TSharedProps>;
@@ -84,6 +91,10 @@ export type SectionsRendererProps<
 	}) => React.ReactNode;
 	/** Show dev warnings for missing components (default: true in dev) */
 	showDevWarnings?: boolean;
+	/**
+	 * @deprecated This field is no longer used
+	 */
+	fieldName?: never;
 };
 
 /**
@@ -93,8 +104,7 @@ export type SectionsRendererProps<
  * @example
  * ```tsx
  * <SectionsRenderer
- *   fieldName="sections"
- *   sectionsData={pageData.sections}
+ *   data={pageData.sections}
  *   components={{
  *     "section.hero": HeroSection,
  *     "section.cta": CallToAction,
@@ -110,7 +120,7 @@ export default function SectionsRenderer<
 	TSections extends readonly any[] = any[],
 	TSharedProps extends Record<string, any> = {},
 >({
-	fieldName = "sections",
+	data,
 	sectionsData,
 	components,
 	sharedProps,
@@ -118,14 +128,23 @@ export default function SectionsRenderer<
 	fallbackComponent,
 	showDevWarnings = process.env.NODE_ENV === "development",
 }: SectionsRendererProps<TSections, TSharedProps>) {
+	// Support both `data` and deprecated `sectionsData`
+	const resolvedData = data ?? sectionsData;
+
+	if (sectionsData !== undefined && process.env.NODE_ENV === "development") {
+		console.warn(
+			"[SectionsRenderer] `sectionsData` is deprecated. Use `data` instead.",
+		);
+	}
+
 	// Early return if no sections
-	if (!sectionsData?.length) {
+	if (!resolvedData?.length) {
 		return null;
 	}
 
 	return (
 		<div className={className}>
-			{sectionsData.map((section, index) => {
+			{resolvedData.map((section, index) => {
 				// Skip invalid sections
 				if (!section?._type) {
 					if (showDevWarnings) {
@@ -181,10 +200,10 @@ export default function SectionsRenderer<
 						{...sharedProps}
 						_key={sectionKey}
 						_sectionIndex={index}
-						_sections={sectionsData}
+						_sections={resolvedData}
 						rootHtmlAttributes={{
 							"data-section": section._type,
-							id: getDeepLinkID({ sectionKey, fieldName }),
+							id: sectionKey,
 						}}
 					/>
 				);
@@ -310,21 +329,29 @@ function MissingSection({ type, availableTypes }: MissingSectionProps) {
 export type SectionsRendererConfig<
 	TSections extends readonly any[],
 	TSharedProps extends Record<string, any> = {},
-> = Pick<
-	SectionsRendererProps<TSections, TSharedProps>,
-	"className" | "fallbackComponent" | "components" | "showDevWarnings"
->;
+> = {
+	components: SectionComponentMapLoose<TSections>;
+	className?: string;
+	fallbackComponent?: SectionsRendererProps<
+		TSections,
+		TSharedProps
+	>["fallbackComponent"];
+	showDevWarnings?: boolean;
+};
 
 export type ConfiguredSectionsRendererProps<
 	TSections extends readonly any[],
 	TSharedProps extends Record<string, any> = {},
-> = Pick<
-	SectionsRendererProps<TSections, TSharedProps>,
-	"fieldName" | "sectionsData"
-> &
-	(keyof TSharedProps extends never
-		? { sharedProps?: TSharedProps }
-		: { sharedProps: TSharedProps });
+> = (keyof TSharedProps extends never
+	? { sharedProps?: TSharedProps }
+	: { sharedProps: TSharedProps }) & {
+	/** Array of section data objects to render */
+	data?: TSections;
+	/**
+	 * @deprecated Use `data` instead
+	 */
+	sectionsData?: TSections;
+};
 
 /**
  * Factory function to create a pre-configured, type-safe SectionsRenderer.
@@ -333,27 +360,42 @@ export type ConfiguredSectionsRendererProps<
  *
  * @example
  * ```tsx
- * import {PAGE_QUERYResult} from "@/sanity/types";
+ * // components/sections/index.ts
+ * import { createSectionsComponent } from "@tinloof/sanity-web/components";
+ * import type { PAGE_QUERYResult } from "@/sanity/types";
+ * import HeroSection from "./hero-section";
+ * import CallToAction from "./call-to-action";
  *
- * type Sections = NonNullable<PAGE_QUERYResult>["sections"];
- * type SharedProps = { locale: string; isPreview: boolean };
- *
- * // Create a type-safe renderer - TypeScript ensures each component
- * // receives the correct props based on its section type
- * export const SectionsRenderer = createSectionsRenderer<Sections, SharedProps>({
+ * // Create the sections renderer
+ * const Sections = createSectionsComponent<
+ *   NonNullable<NonNullable<PAGE_QUERYResult>["sections"]>,
+ *   { locale: string }
+ * >({
  *   components: {
- *     "section.hero": HeroSection,    // Must accept hero section props + SharedProps
- *     "section.cta": CallToAction,    // Must accept CTA section props + SharedProps
+ *     "section.hero": HeroSection,
+ *     "section.cta": CallToAction,
  *   },
- *   className: "space-y-8",
  * });
  *
- * // Use in pages with minimal props
- * <SectionsRenderer
- *   fieldName="sections"
- *   sectionsData={pageData.sections}
- *   sharedProps={{ locale: "en", isPreview: false }}
- * />
+ * // Infer SectionProps directly from the Sections component
+ * type SectionProps = (typeof Sections)["_SectionProps"];
+ *
+ * export { Sections, type SectionProps };
+ *
+ * // components/sections/hero-section.tsx
+ * import type { SectionProps } from ".";
+ *
+ * export default function HeroSection(props: SectionProps["section.hero"]) {
+ *   const { title, locale } = props;
+ *   return <section><h1>{title}</h1></section>;
+ * }
+ *
+ * // pages/[slug].tsx
+ * import { Sections } from "@/components/sections";
+ *
+ * export default function Page({ sections, locale }) {
+ *   return <Sections data={sections} sharedProps={{ locale }} />;
+ * }
  * ```
  *
  * Section components receive their specific section data plus these additional props:
@@ -363,25 +405,105 @@ export type ConfiguredSectionsRendererProps<
  * - `rootHtmlAttributes`: Object with `data-section` and `id` for deep linking
  * - Plus any shared props passed to the renderer
  */
-export function createSectionsRenderer<
+// Type for the section props map attached to the configured renderer
+type SectionPropsMap<
+	TSections extends readonly any[],
+	TSharedProps extends Record<string, any> = {},
+> = {
+	[K in TSections[number]["_type"]]: SectionProps<TSections, K, TSharedProps>;
+};
+
+export function createSectionsComponent<
 	TSections extends readonly any[],
 	TSharedProps extends Record<string, any> = {},
 >(config: SectionsRendererConfig<TSections, TSharedProps>) {
-	return function ConfiguredSectionsRenderer({
-		fieldName,
+	function ConfiguredSectionsRenderer({
+		data,
 		sectionsData,
 		sharedProps,
 	}: ConfiguredSectionsRendererProps<TSections, TSharedProps>) {
+		// Support both `data` and deprecated `sectionsData`
+		const resolvedData = data ?? sectionsData;
+
+		if (sectionsData !== undefined && process.env.NODE_ENV === "development") {
+			console.warn(
+				"[SectionsRenderer] `sectionsData` is deprecated. Use `data` instead.",
+			);
+		}
+
 		return (
 			<SectionsRenderer<TSections, TSharedProps>
-				fieldName={fieldName}
-				sectionsData={sectionsData}
-				components={config.components}
+				data={resolvedData}
+				components={
+					config.components as unknown as SectionComponentMap<
+						TSections,
+						TSharedProps
+					>
+				}
 				sharedProps={sharedProps as TSharedProps}
 				className={config.className}
 				fallbackComponent={config.fallbackComponent}
 				showDevWarnings={config.showDevWarnings}
 			/>
 		);
-	};
+	}
+
+	// Attach the section props type to the component for easy access
+	ConfiguredSectionsRenderer._SectionProps = {} as SectionPropsMap<
+		TSections,
+		TSharedProps
+	>;
+
+	return ConfiguredSectionsRenderer;
 }
+
+/**
+ * @deprecated Use `createSectionsComponent` instead
+ */
+export const createSectionsRenderer = createSectionsComponent;
+
+/**
+ * @deprecated Use `createSectionsComponent` instead
+ */
+export const createSections = createSectionsComponent;
+
+/**
+ * Utility type to infer section props from a configured SectionsRenderer.
+ * This allows you to derive the props type for each section directly from
+ * the renderer without manually specifying the types.
+ *
+ * Note: Prefer using the `_SectionProps` property on the Sections component instead:
+ * ```tsx
+ * type SectionProps = (typeof Sections)["_SectionProps"];
+ * ```
+ *
+ * @example
+ * ```tsx
+ * import { createSectionsComponent, InferSectionProps } from "@tinloof/sanity-web";
+ *
+ * const Sections = createSectionsComponent<Sections, SharedProps>({
+ *   components: {
+ *     "section.hero": HeroSection,
+ *     "section.cta": CallToAction,
+ *   },
+ * });
+ *
+ * // Infer props from the renderer (alternative to _SectionProps)
+ * type SectionProps = InferSectionProps<typeof Sections>;
+ *
+ * // Use in components
+ * function HeroSection(props: SectionProps["section.hero"]) {
+ *   // ...
+ * }
+ * ```
+ */
+export type InferSectionProps<
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	T extends ComponentType<any>,
+> = {
+	[K in NonNullable<ComponentProps<T>["data"]>[number]["_type"]]: SectionProps<
+		NonNullable<ComponentProps<T>["data"]>,
+		K,
+		ComponentProps<T>["sharedProps"]
+	>;
+};

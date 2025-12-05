@@ -1,7 +1,7 @@
 import { SanityImage } from "@/data/sanity/client";
 import type { SectionProps } from ".";
 
-export default function ImageSection(props: SectionProps<"section.image">) {
+export default function ImageSection(props: SectionProps["section.image"]) {
 	const { image } = props;
 
 	return (
