@@ -1,0 +1,85 @@
+name: PR – Build changed packages
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "packages/**"
+
+jobs:
+  build-packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Detect changed packages
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          # one filter per package folder
+          filters: |
+            document_i18n:
+              - "packages/document-i18n/**"
+            extends:
+              - "packages/extends/**"
+            sanity_document_options:
+              - "packages/sanity-document-options/**"
+            sanity_next:
+              - "packages/sanity-next/**"
+            sanity_studio:
+              - "packages/sanity-studio/**"
+            sanity_web:
+              - "packages/sanity-web/**"
+
+      - name: Build changed packages
+        run: |
+          filters=()
+
+          if [ "${{ steps.changes.outputs.document_i18n }}" = "true" ]; then
+            filters+=("--filter=./packages/document-i18n")
+          fi
+
+          if [ "${{ steps.changes.outputs.extends }}" = "true" ]; then
+            filters+=("--filter=./packages/extends")
+          fi
+
+          if [ "${{ steps.changes.outputs.sanity_document_options }}" = "true" ]; then
+            filters+=("--filter=./packages/sanity-document-options")
+          fi
+
+          if [ "${{ steps.changes.outputs.sanity_next }}" = "true" ]; then
+            filters+=("--filter=./packages/sanity-next")
+          fi
+
+          if [ "${{ steps.changes.outputs.sanity_studio }}" = "true" ]; then
+            filters+=("--filter=./packages/sanity-studio")
+          fi
+
+          if [ "${{ steps.changes.outputs.sanity_web }}" = "true" ]; then
+            filters+=("--filter=./packages/sanity-web")
+          fi
+
+          if [ "${#filters[@]}" -eq 0 ]; then
+            echo "No packages changed – skipping turbo build."
+            exit 0
+          fi
+
+          echo "Building changed packages with filters: ${filters[*]}"
+          pnpm turbo run build "${filters[@]}"
