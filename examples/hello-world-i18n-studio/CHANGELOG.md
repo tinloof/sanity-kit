@@ -1,5 +1,11 @@
 # @examples/hello-world-i18n-studio
 
+## 0.0.3
+
+### Patch Changes
+
+- @tinloof/sanity-studio@1.15.3
+
 ## 0.0.2
 
 ### Patch Changes
