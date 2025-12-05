@@ -1,5 +1,19 @@
 # @tinloof/sanity-document-i18n
 
+## 1.1.1
+
+### Patch Changes
+
+- 0fb1b20: Update dependencies to latest versions
+  - Update Sanity packages to latest stable versions
+  - Update Next.js and React dependencies
+  - Update TypeScript and build tooling dependencies
+  - Fix component type definitions for improved TypeScript compatibility
+  - Remove deprecated eslint configuration
+
+- Updated dependencies [0fb1b20]
+  - @tinloof/sanity-extends@1.2.1
+
 ## 1.1.0
 
 ### Minor Changes
