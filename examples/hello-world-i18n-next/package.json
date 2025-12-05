@@ -1,6 +1,6 @@
 {
 	"name": "@examples/hello-world-i18n-next",
-	"version": "0.1.0",
+	"version": "0.1.2",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
@@ -12,20 +12,20 @@
 		"@examples/hello-world-i18n-studio": "workspace:*",
 		"@tinloof/sanity-next": "workspace:*",
 		"@tinloof/sanity-web": "workspace:*",
-		"next": "16.0.6",
+		"next": "16.0.7",
 		"next-sanity": "^11.6.10",
-		"react": "19.2.0",
-		"react-dom": "19.2.0"
+		"react": "19.2.1",
+		"react-dom": "19.2.1"
 	},
 	"devDependencies": {
-		"@tailwindcss/postcss": "^4",
-		"@types/node": "^20",
-		"@types/react": "^19",
-		"@types/react-dom": "^19",
+		"@tailwindcss/postcss": "^4.1.17",
+		"@types/node": "^24.10.1",
+		"@types/react": "^19.2.7",
+		"@types/react-dom": "^19.2.3",
 		"babel-plugin-react-compiler": "1.0.0",
-		"eslint": "^9",
-		"eslint-config-next": "16.0.6",
-		"tailwindcss": "^4",
-		"typescript": "^5"
+		"eslint": "^9.39.1",
+		"eslint-config-next": "16.0.7",
+		"tailwindcss": "^4.1.17",
+		"typescript": "^5.9.3"
 	}
 }

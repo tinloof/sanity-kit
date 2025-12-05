@@ -1,5 +1,30 @@
 # @tinloof/sanity-document-i18n
 
+## 1.1.1
+
+### Patch Changes
+
+- 0fb1b20: Update dependencies to latest versions
+  - Update Sanity packages to latest stable versions
+  - Update Next.js and React dependencies
+  - Update TypeScript and build tooling dependencies
+  - Fix component type definitions for improved TypeScript compatibility
+  - Remove deprecated eslint configuration
+
+- Updated dependencies [0fb1b20]
+  - @tinloof/sanity-extends@1.2.1
+
+## 1.1.0
+
+### Minor Changes
+
+- db1c824: Add i18n abstract for standardized internationalization fields
+  - Introduces an i18n abstract that is automatically injected by default
+  - Provides a consistent way to organize i18n-related fields across schemas
+  - Requires the `@tinloof/sanity-extends` plugin for abstract support
+  - Can be disabled by setting `abstracts: false` in the plugin configuration
+  - Type-safe configuration using keys from the ABSTRACTS_MAP for automatic type inference
+
 ## 1.0.0
 
 ### Major Changes

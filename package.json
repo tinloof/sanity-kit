@@ -1,46 +1,34 @@
 {
-	"name": "sanity-kit",
-	"private": true,
-	"scripts": {
-		"build-install": "pnpm install --filter='./packages/*'",
-		"build": "turbo run build --filter='./packages/*'",
-		"build:example:hello-world-i18n": "turbo run build --filter=./examples/hello-world-i18n-*",
-		"changeset": "changeset add",
-		"version": "changeset version",
-		"dev": "turbo run dev --parallel --filter=./packages/*",
-		"dev:all": "turbo run dev",
-		"dev:example:hello-world": "turbo run dev --filter=./examples/hello-world",
-		"dev:example:with-i18n": "turbo run dev --filter=./examples/with-i18n",
-		"dev:example:hello-world-i18n": "turbo run dev --filter=./examples/hello-world-i18n-*",
-		"lint": "turbo run lint",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish",
-		"typecheck": "turbo run typecheck",
-		"test": "turbo run test",
-		"clean": "rimraf .turbo apps/**/{.next,.sanity,dist,node_modules} packages/**/{.next,.sanity,dist,node_modules} node_modules"
-	},
-	"engines": {
-		"node": ">=18"
-	},
-	"packageManager": "pnpm@9.15.0",
-	"dependencies": {
-		"@changesets/cli": "^2.29.8",
-		"turbo": "^2.6.1"
-	},
-	"pnpm": {
-		"overrides": {
-			"@portabletext/markdown": "1.0.0",
-			"@portabletext/schema": "2.0.0",
-			"@sanity/image-url": "2.0.1",
-			"sanity": "^4.19.0",
-			"@types/react": "^18.3.11",
-			"@types/react-dom": "^18.3.1",
-			"@sanity/types": "^3.80.1",
-			"@sanity/pkg-utils": "^6.13.5"
-		}
-	},
-	"devDependencies": {
-		"prettier": "^3.4.2",
-		"rimraf": "^5.0.10"
-	}
+  "name": "sanity-kit",
+  "private": true,
+  "scripts": {
+    "build-install": "pnpm install --filter='./packages/*'",
+    "build": "turbo run build --filter='./packages/*'",
+    "build:example:hello-world-i18n": "turbo run build --filter=./examples/hello-world-i18n-*",
+    "changeset": "changeset add",
+    "version": "changeset version",
+    "dev": "turbo run dev --parallel --filter=./packages/*",
+    "dev:all": "turbo run dev",
+    "dev:example:hello-world": "turbo run dev --filter=./examples/hello-world",
+    "dev:example:with-i18n": "turbo run dev --filter=./examples/with-i18n",
+    "dev:example:hello-world-i18n": "turbo run dev --filter=./examples/hello-world-i18n-*",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "clean": "rimraf .turbo apps/**/{.next,.sanity,dist,node_modules} packages/**/{.next,.sanity,dist,node_modules} node_modules"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "dependencies": {
+    "@changesets/cli": "^2.29.8",
+    "turbo": "^2.6.2"
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4",
+    "rimraf": "^6.1.2"
+  }
 }

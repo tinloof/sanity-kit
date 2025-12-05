@@ -11,7 +11,7 @@ import {DEFAULT_CONFIG, METADATA_SCHEMA_NAME} from "./constants";
 import {documentI18nUsEnglishLocaleBundle} from "./i18n";
 import type {PluginConfig, TranslationReference} from "./types";
 import {DocumentDefinition} from "sanity";
-import {ABSTRACTS_MAP, i18nAbstract} from "./abstracts";
+import {ABSTRACTS_MAP} from "./abstracts";
 import {resolveAbstractSchemaTypes} from "@tinloof/sanity-extends";
 
 function extractSchemaTypeNames(
@@ -32,11 +32,9 @@ function extractSchemaTypeNames(
 
 export const documentI18n = definePlugin<PluginConfig>((config) => {
   const pluginConfig = {...DEFAULT_CONFIG, ...config};
-  const {locales, localeField} = pluginConfig;
+  const {locales, localeField, abstracts} = pluginConfig;
 
   const bulkPublish = false;
-
-  const abstracts = config?.abstracts ?? {i18n: true};
 
   return {
     name: "@tinloof/sanity-document-i18n",

@@ -1,6 +1,0 @@
-{
-  "extends": ["sanity", "sanity/react", "sanity/typescript", "prettier"],
-  "rules": {
-    "no-negated-condition": "off"
-  }
-}

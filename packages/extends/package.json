@@ -1,6 +1,6 @@
 {
   "name": "@tinloof/sanity-extends",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Schema extension utilities for Sanity",
   "license": "ISC",
   "author": "Tinloof",
@@ -31,9 +31,9 @@
     "sanity": "^4.15.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.20",
-    "tsup": "^8.3.0",
-    "typescript": "^5.0.0",
-    "vitest": "^4.0.8"
+    "@types/lodash": "^4.17.21",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
   }
 }
