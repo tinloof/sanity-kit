@@ -5,12 +5,14 @@ import {ComponentProps} from "react";
 import {initSanityUtils, initSanityI18nUtils} from "../utils/sanity";
 import {getVercelBaseUrl} from "../utils/vercel-base-url";
 import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
+import {defineDraftRoute, createErrorDraftRoute} from "../utils/draft-mode";
 
 type InitSanityConfig = {
   client?: ClientConfig;
   live?: Omit<DefineSanityLiveOptions, "client">;
   baseUrl?: string;
   i18n?: Parameters<typeof initSanityI18nUtils>[0]["i18n"];
+  viewerToken?: string;
 };
 
 export function initSanity(config?: InitSanityConfig) {
@@ -46,9 +48,10 @@ export function initSanity(config?: InitSanityConfig) {
 
   const client = createClient(clientConfig);
 
-  if (typeof config?.live === "undefined") {
-    const sanity_api_token = process.env["SANITY_API_TOKEN"];
+  const sanity_api_token =
+    config?.viewerToken || process.env["SANITY_API_TOKEN"];
 
+  if (typeof config?.live === "undefined") {
     if (!sanity_api_token) {
       throw new Error(
         "SANITY_API_TOKEN environment variable is not defined. This token is required for next-sanity/live features. Make sure it is a VIEWER token",
@@ -69,6 +72,9 @@ export function initSanity(config?: InitSanityConfig) {
           })
         : initSanityI18nUtils({sanityFetch, baseUrl, i18n: config.i18n});
 
+    const clientWithToken = client.withConfig({token: sanity_api_token});
+    const defineEnableDraftMode = defineDraftRoute(clientWithToken).GET;
+
     return {
       SanityImage: (
         props: Omit<ComponentProps<typeof SanityImage>, "config">,
@@ -87,6 +93,8 @@ export function initSanity(config?: InitSanityConfig) {
         websiteBaseURL: baseUrl,
         defaultLocaleId: config?.i18n?.defaultLocaleId,
       }),
+      clientWithToken,
+      defineEnableDraftMode,
       ...utils,
       ...rest,
     };
@@ -101,6 +109,17 @@ export function initSanity(config?: InitSanityConfig) {
           baseUrl,
         })
       : initSanityI18nUtils({sanityFetch, baseUrl, i18n: config.i18n});
+
+  const clientWithToken = client.withConfig({token: sanity_api_token});
+
+  const defineEnableDraftMode = sanity_api_token
+    ? defineDraftRoute(clientWithToken)
+    : createErrorDraftRoute(
+        "Draft mode is not configured. To enable draft mode, either:\n" +
+          "1. Set SANITY_API_TOKEN environment variable with a viewer token\n" +
+          "2. Pass a 'viewerToken' option to initSanity({ viewerToken: 'your-token' })\n" +
+          "Learn more: https://www.sanity.io/docs/draft-mode",
+      );
 
   return {
     SanityImage: (props: Omit<ComponentProps<typeof SanityImage>, "config">) =>
@@ -118,6 +137,8 @@ export function initSanity(config?: InitSanityConfig) {
       websiteBaseURL: baseUrl,
       defaultLocaleId: config.i18n?.defaultLocaleId,
     }),
+    defineEnableDraftMode,
+    clientWithToken,
     ...utils,
     ...rest,
   };
