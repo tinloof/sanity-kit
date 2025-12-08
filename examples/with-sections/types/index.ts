@@ -1,7 +1,7 @@
 export type PagePayload = {
-  _id: string
-  _type: string
-  pathname: string
-  title?: string
-  sectionsBody?: any[]
-}
+	_id: string;
+	_type: string;
+	pathname: string;
+	title?: string;
+	sectionsBody?: unknown[];
+};

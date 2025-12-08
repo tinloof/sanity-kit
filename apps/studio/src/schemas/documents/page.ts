@@ -1,14 +1,14 @@
-import {defineType} from "sanity";
+import { defineType } from "sanity";
 
 export default defineType({
-  name: "page",
-  title: "Page",
-  type: "document",
-  fields: [
-    {
-      name: "title",
-      type: "string",
-    },
-    {name: "sectionsBody", type: "sectionsBody"},
-  ],
+	name: "page",
+	title: "Page",
+	type: "document",
+	fields: [
+		{
+			name: "title",
+			type: "string",
+		},
+		{ name: "sectionsBody", type: "sectionsBody" },
+	],
 });

@@ -1,1 +1,1 @@
-export {default as indexableBooleanField} from "./indexable";
+export { default as indexableBooleanField } from "./indexable";

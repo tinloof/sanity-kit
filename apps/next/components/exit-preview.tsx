@@ -1,9 +1,9 @@
 "use client";
 
 import ExitPreview, {
-  type ExitPreviewProps,
+	type ExitPreviewProps,
 } from "@tinloof/sanity-web/components/exit-preview";
 
 export default function ExitPreviewClient(props: ExitPreviewProps) {
-  return <ExitPreview {...props} />;
+	return <ExitPreview {...props} />;
 }

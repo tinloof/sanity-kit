@@ -1,4 +1,4 @@
-import {defineField} from "sanity";
+import { defineField } from "sanity";
 
 /**
  * Creates a hidden locale string field for internationalization.
@@ -19,6 +19,6 @@ import {defineField} from "sanity";
  * ```
  */
 export default defineField({
-  name: "locale",
-  type: "string",
+	name: "locale",
+	type: "string",
 });

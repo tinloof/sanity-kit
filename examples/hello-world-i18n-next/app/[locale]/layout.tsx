@@ -1,64 +1,67 @@
-import type {Metadata} from "next";
-import {GLOBAL_QUERY} from "@examples/hello-world-i18n-studio/queries";
-import {PageProps} from "@tinloof/sanity-next";
+import { GLOBAL_QUERY } from "@examples/hello-world-i18n-studio/queries";
+import type { PageProps } from "@tinloof/sanity-next";
+import type { Metadata } from "next";
 
 import "../globals.css";
-import {sanityFetch, SanityLive} from "@/data/sanity/client";
+import { disableDraftMode } from "@tinloof/sanity-next/actions/disable-draft-mode";
 import ExitPreview from "@tinloof/sanity-next/components/exit-preview";
-import {disableDraftMode} from "@tinloof/sanity-next/actions/disable-draft-mode";
-import {VisualEditing} from "next-sanity/visual-editing";
-import {draftMode} from "next/headers";
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
+import { SanityLive, sanityFetch } from "@/data/sanity/client";
 
 type RootLayoutProps = PageProps<"locale">;
 
 export async function generateMetadata(
-  props: RootLayoutProps,
+	props: RootLayoutProps,
 ): Promise<Metadata> {
-  const {locale} = await props.params;
+	const { locale } = await props.params;
 
-  const {data} = await sanityFetch({query: GLOBAL_QUERY, params: {locale}});
+	const { data } = await sanityFetch({
+		query: GLOBAL_QUERY,
+		params: { locale },
+	});
 
-  return {
-    // openGraph: {
-    //   images: !data?.globalSeo?.image
-    //     ? undefined
-    //     : getOgImages(data.globalSeo.image),
-    //   ...(data?.globalSeo?.title ? {title: data?.globalSeo?.title} : {}),
-    //   type: "website",
-    // },
-    title: data?.globalSeo?.title,
-    description: data?.globalSeo?.description,
-  };
+	return {
+		// openGraph: {
+		//   images: !data?.globalSeo?.image
+		//     ? undefined
+		//     : getOgImages(data.globalSeo.image),
+		//   ...(data?.globalSeo?.title ? {title: data?.globalSeo?.title} : {}),
+		//   type: "website",
+		// },
+		title: data?.globalSeo?.title,
+		description: data?.globalSeo?.description,
+	};
 }
 
 export default async function RootLayout({
-  children,
-  params,
+	children,
+	params,
 }: Readonly<
-  RootLayoutProps & {
-    children: React.ReactNode;
-  }
+	RootLayoutProps & {
+		children: React.ReactNode;
+	}
 >) {
-  const {locale} = await params;
+	const { locale } = await params;
 
-  return (
-    <html lang={locale}>
-      <body className={`antialiased`}>
-        {children}
-        {(await draftMode()).isEnabled && (
-          <>
-            <ExitPreview disableDraftMode={disableDraftMode} />
-            <VisualEditing />
-          </>
-        )}
-        <SanityLive refreshOnFocus={false} />
-      </body>
-    </html>
-  );
+	return (
+		<html lang={locale}>
+			<body className={`antialiased`}>
+				{children}
+				{(await draftMode()).isEnabled && (
+					<>
+						<ExitPreview disableDraftMode={disableDraftMode} />
+						<VisualEditing />
+					</>
+				)}
+				<SanityLive refreshOnFocus={false} />
+			</body>
+		</html>
+	);
 }
 
 export function generateStaticParams() {
-  return ["en", "fr"].map((locale) => ({
-    locale,
-  }));
+	return ["en", "fr"].map((locale) => ({
+		locale,
+	}));
 }

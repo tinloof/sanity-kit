@@ -1,7 +1,7 @@
 import { getExtension, getImageDimensions } from "@sanity/asset-utils";
 import { createImageUrlBuilder } from "@sanity/image-url";
+import type { CSSProperties, ImgHTMLAttributes } from "react";
 import React from "react";
-// @ts-ignore
 import { preload } from "react-dom";
 import type { ImageUrlBuilder } from "sanity";
 
@@ -54,10 +54,7 @@ export type SanityImageProps = {
 		hotspot?: ImageHotspot;
 	} | null;
 	fetchPriority?: "high" | "default";
-} & Omit<
-	React.ImgHTMLAttributes<HTMLImageElement>,
-	"loading" | "fetchPriority"
->;
+} & Omit<ImgHTMLAttributes<HTMLImageElement>, "loading" | "fetchPriority">;
 
 /**
  * Sanity’s Image component is a wrapper around the HTML image element.
@@ -112,10 +109,10 @@ export default function SanityImage({
 	}
 
 	const aspectRatioWidth = aspectRatioValues
-		? parseFloat(aspectRatioValues[0])
+		? Number.parseFloat(aspectRatioValues[0])
 		: undefined;
 	const aspectRatioHeight = aspectRatioValues
-		? parseFloat(aspectRatioValues[1])
+		? Number.parseFloat(aspectRatioValues[1])
 		: undefined;
 
 	const urlBuilder = createImageUrlBuilder({
@@ -193,7 +190,7 @@ export default function SanityImage({
 			backgroundPositionY: `var(--focalY)`,
 			backgroundRepeat: "no-repeat",
 			backgroundSize: "cover",
-		} as React.CSSProperties);
+		} as CSSProperties);
 
 	const focalCoords = data.hotspot?.x &&
 		data.hotspot?.y && {
@@ -207,14 +204,13 @@ export default function SanityImage({
 			"--focalX": focalCoords?.x + "%",
 			"--focalY": focalCoords?.y + "%",
 			objectPosition: `var(--focalX) var(--focalY)`,
-		} as React.CSSProperties);
+		} as CSSProperties);
 
 	if (fetchPriority === "high") {
 		preload(urlDefault as string, {
 			fetchPriority: "high",
 			imageSizes: sizes ?? sizes,
 			imageSrcSet: srcSet ?? srcSet,
-			// @ts-ignore
 			as: "image",
 		});
 	}
@@ -238,7 +234,7 @@ export default function SanityImage({
 					}`,
 					height: "100%",
 					width: "100%",
-				} as React.CSSProperties
+				} as CSSProperties
 			}
 			width={aspectRatioWidth ? aspectRatioWidth * 100 : width}
 			sizes={sizes}

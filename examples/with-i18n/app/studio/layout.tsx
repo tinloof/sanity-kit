@@ -1,13 +1,13 @@
-import 'tailwindcss/tailwind.css'
+import "tailwindcss/tailwind.css";
 
 export default async function RootLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode
+	children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  )
+	return (
+		<html lang="en">
+			<body>{children}</body>
+		</html>
+	);
 }

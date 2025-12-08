@@ -1,0 +1,56 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"includes": [
+			"**/*.ts",
+			"**/*.tsx",
+			"**/*.js",
+			"**/*.jsx",
+			"**/*.json",
+			"**/*.md",
+			"!**/v2-incompatible.js"
+		]
+	},
+	"linter": {
+		"rules": {
+			"performance": {
+				"noImgElement": "off",
+				"noAccumulatingSpread": "off"
+			},
+			"a11y": {
+				"useValidAnchor": "off",
+				"useButtonType": "off",
+				"useAltText": "off",
+				"useSemanticElements": "off"
+			},
+			"suspicious": {
+				"noExplicitAny": "off",
+				"useIterableCallbackReturn": "off",
+				"noImplicitAnyLet": "off",
+				"noConfusingVoidType": "off",
+				"noArrayIndexKey": "off"
+			},
+			"complexity": {
+				"noBannedTypes": "off",
+				"useOptionalChain": "off",
+				"useLiteralKeys": "off"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "off",
+				"noUnusedImports": "off",
+				"useHookAtTopLevel": "off",
+				"noUnusedVariables": "off",
+				"noUnusedFunctionParameters": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off",
+				"useTemplate": "off"
+			}
+		}
+	}
+}

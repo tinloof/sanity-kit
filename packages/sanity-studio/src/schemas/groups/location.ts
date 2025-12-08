@@ -1,5 +1,5 @@
-import {PinIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import { PinIcon } from "@sanity/icons";
+import type { FieldGroupDefinition } from "sanity";
 
 /**
  * Pre-configured location field group with location icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: PinIcon,
-  name: "location",
-  title: "Location",
+	icon: PinIcon,
+	name: "location",
+	title: "Location",
 } as FieldGroupDefinition;

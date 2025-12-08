@@ -1,4 +1,4 @@
-import type {SchemaTypeDefinition} from "sanity";
+import type { SchemaTypeDefinition } from "sanity";
 
 /**
  * Type for Sanity schema modules that can be functions or objects
@@ -9,8 +9,8 @@ type SanitySchemaExport = SchemaTypeDefinition | (() => SchemaTypeDefinition);
  * Type for modules loaded via import.meta.glob
  */
 type GlobModule = () => Promise<{
-  default?: SanitySchemaExport;
-  [key: string]: SanitySchemaExport | unknown;
+	default?: SanitySchemaExport;
+	[key: string]: SanitySchemaExport | unknown;
 }>;
 
 /**
@@ -21,29 +21,29 @@ type GlobModule = () => Promise<{
  * @returns A promise that resolves to an array of Sanity schema type definitions
  */
 async function processSchemaModules(
-  modules: Record<string, GlobModule>,
+	modules: Record<string, GlobModule>,
 ): Promise<SchemaTypeDefinition[]> {
-  const schemas = await Promise.all(
-    Object.values(modules).map(async (mod: GlobModule) => {
-      const module = await mod();
-      // Handle default exports
-      if (module.default) {
-        const schema = module.default;
-        return typeof schema === "function" ? schema() : schema;
-      }
-      // Handle named exports - collect all non-default exports
-      const namedExports = Object.keys(module).filter(
-        (key) => key !== "default" && typeof module[key] === "object",
-      );
-      return namedExports.map((key) => {
-        const schema = module[key];
-        return typeof schema === "function" ? schema() : schema;
-      });
-    }),
-  );
+	const schemas = await Promise.all(
+		Object.values(modules).map(async (mod: GlobModule) => {
+			const module = await mod();
+			// Handle default exports
+			if (module.default) {
+				const schema = module.default;
+				return typeof schema === "function" ? schema() : schema;
+			}
+			// Handle named exports - collect all non-default exports
+			const namedExports = Object.keys(module).filter(
+				(key) => key !== "default" && typeof module[key] === "object",
+			);
+			return namedExports.map((key) => {
+				const schema = module[key];
+				return typeof schema === "function" ? schema() : schema;
+			});
+		}),
+	);
 
-  // Flatten the array since we might have multiple exports per module
-  return schemas.flat().filter(Boolean) as SchemaTypeDefinition[];
+	// Flatten the array since we might have multiple exports per module
+	return schemas.flat().filter(Boolean) as SchemaTypeDefinition[];
 }
 
 /**
@@ -80,8 +80,8 @@ async function processSchemaModules(
  * ```
  */
 export async function importAllSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/**/*.{ts,tsx}");
-  return processSchemaModules(modules);
+	const modules = import.meta.glob("/src/schemas/**/*.{ts,tsx}");
+	return processSchemaModules(modules);
 }
 
 /**
@@ -119,8 +119,8 @@ export async function importAllSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importDocumentSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/documents/**/*.{ts,tsx}");
-  return processSchemaModules(modules);
+	const modules = import.meta.glob("/src/schemas/documents/**/*.{ts,tsx}");
+	return processSchemaModules(modules);
 }
 
 /**
@@ -156,10 +156,10 @@ export async function importDocumentSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importSectionSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob(
-    "/src/schemas/objects/sections/**/*.{ts,tsx}",
-  );
-  return processSchemaModules(modules);
+	const modules = import.meta.glob(
+		"/src/schemas/objects/sections/**/*.{ts,tsx}",
+	);
+	return processSchemaModules(modules);
 }
 
 /**
@@ -195,8 +195,8 @@ export async function importSectionSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importObjectSchemas(): Promise<SchemaTypeDefinition[]> {
-  const modules = import.meta.glob("/src/schemas/objects/**/*.{ts,tsx}");
-  return processSchemaModules(modules);
+	const modules = import.meta.glob("/src/schemas/objects/**/*.{ts,tsx}");
+	return processSchemaModules(modules);
 }
 
 /**
@@ -234,8 +234,8 @@ export async function importObjectSchemas(): Promise<SchemaTypeDefinition[]> {
  * ```
  */
 export async function importSingletonSchemas(): Promise<
-  SchemaTypeDefinition[]
+	SchemaTypeDefinition[]
 > {
-  const modules = import.meta.glob("/src/schemas/singletons/**/*.{ts,tsx}");
-  return processSchemaModules(modules);
+	const modules = import.meta.glob("/src/schemas/singletons/**/*.{ts,tsx}");
+	return processSchemaModules(modules);
 }

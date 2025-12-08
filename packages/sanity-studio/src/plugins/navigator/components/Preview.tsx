@@ -88,25 +88,21 @@ const Preview = React.memo(function Preview({
 				layout="default"
 				icon={schemaType?.icon}
 			/>
-		) : (
-			<>{!isLoading ? fallback : null}</>
-		);
+		) : !isLoading ? (
+			fallback
+		) : null;
 	}
 
 	if (type === "title") {
-		return showPreview && previewValues?.title ? (
-			<>{previewValues?.title}</>
-		) : (
-			<>{fallback}</>
-		);
+		return showPreview && previewValues?.title
+			? previewValues?.title
+			: fallback;
 	}
 
 	if (type === "subtitle") {
-		return showPreview && previewValues?.subtitle ? (
-			<>{previewValues?.subtitle}</>
-		) : (
-			<>{fallback}</>
-		);
+		return showPreview && previewValues?.subtitle
+			? previewValues?.subtitle
+			: fallback;
 	}
 
 	return null;

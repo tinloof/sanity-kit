@@ -1,4 +1,4 @@
-import {AbstractDefinitionResolver} from "./types";
+import type { AbstractDefinitionResolver } from "./types";
 
 /**
  * Helper function to define an abstract resolver with proper typing.
@@ -27,7 +27,7 @@ import {AbstractDefinitionResolver} from "./types";
  * ```
  */
 export function defineAbstractResolver(
-  schema: AbstractDefinitionResolver,
+	schema: AbstractDefinitionResolver,
 ): AbstractDefinitionResolver {
-  return schema;
+	return schema;
 }

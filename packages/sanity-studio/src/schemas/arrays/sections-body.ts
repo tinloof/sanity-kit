@@ -1,15 +1,15 @@
-import {defineField, SchemaTypeDefinition} from "sanity";
+import { defineField, type SchemaTypeDefinition } from "sanity";
 
 /**
  * Props for the sections body array schema function.
  */
 export type SectionBodyArraySchemaProps = {
-  /** Function to generate preview image URLs for sections in the insert menu */
-  previewImage?: (type: string) => string;
-  /** Array of section schemas. This parameter is now required. */
-  sections:
-    | Array<{name: string} & Record<string, unknown>>
-    | SchemaTypeDefinition[];
+	/** Function to generate preview image URLs for sections in the insert menu */
+	previewImage?: (type: string) => string;
+	/** Array of section schemas. This parameter is now required. */
+	sections:
+		| Array<{ name: string } & Record<string, unknown>>
+		| SchemaTypeDefinition[];
 };
 
 /**
@@ -52,38 +52,38 @@ export type SectionBodyArraySchemaProps = {
  * ```
  */
 function sectionsBodyArraySchema(
-  props: SectionBodyArraySchemaProps,
+	props: SectionBodyArraySchemaProps,
 ): ReturnType<typeof defineField> {
-  const {sections, previewImage} = props;
+	const { sections, previewImage } = props;
 
-  const getPreviewImageUrl = (type: string): string => {
-    if (previewImage) {
-      return previewImage(type);
-    }
+	const getPreviewImageUrl = (type: string): string => {
+		if (previewImage) {
+			return previewImage(type);
+		}
 
-    return `/static/sections/${type.replace("section.", "")}.png`;
-  };
+		return `/static/sections/${type.replace("section.", "")}.png`;
+	};
 
-  const sectionFields = sections.map(({name}) => ({
-    type: name,
-  }));
+	const sectionFields = sections.map(({ name }) => ({
+		type: name,
+	}));
 
-  return defineField({
-    name: "sectionsBody",
-    title: "Sections",
-    type: "array",
-    of: sectionFields,
-    options: {
-      insertMenu: {
-        views: [
-          {
-            name: "grid",
-            previewImageUrl: getPreviewImageUrl,
-          },
-        ],
-      },
-    },
-  });
+	return defineField({
+		name: "sectionsBody",
+		title: "Sections",
+		type: "array",
+		of: sectionFields,
+		options: {
+			insertMenu: {
+				views: [
+					{
+						name: "grid",
+						previewImageUrl: getPreviewImageUrl,
+					},
+				],
+			},
+		},
+	});
 }
 
 export default sectionsBodyArraySchema;

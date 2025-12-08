@@ -1,26 +1,26 @@
-import {DefinedSanityFetchType} from "next-sanity/live";
-import {NextResponse, NextRequest} from "next/server";
-import {getRedirect} from "../../utils/redirects";
+import { type NextRequest, NextResponse } from "next/server";
+import type { DefinedSanityFetchType } from "next-sanity/live";
+import { getRedirect } from "../../utils/redirects";
 
 export type RedirectIfNeededParams = {
-  pathname: string;
-  sanityFetch: DefinedSanityFetchType;
-  request: NextRequest;
+	pathname: string;
+	sanityFetch: DefinedSanityFetchType;
+	request: NextRequest;
 };
 
 export async function redirectIfNeeded({
-  pathname,
-  sanityFetch,
-  request,
+	pathname,
+	sanityFetch,
+	request,
 }: RedirectIfNeededParams) {
-  const redirect = await getRedirect({
-    source: pathname,
-    sanityFetch,
-  });
+	const redirect = await getRedirect({
+		source: pathname,
+		sanityFetch,
+	});
 
-  if (redirect && redirect?.destination) {
-    return NextResponse.redirect(new URL(redirect.destination, request.url), {
-      status: redirect.permanent ? 301 : 302,
-    });
-  }
+	if (redirect ? redirect?.destination : false) {
+		return NextResponse.redirect(new URL(redirect.destination, request.url), {
+			status: redirect.permanent ? 301 : 302,
+		});
+	}
 }

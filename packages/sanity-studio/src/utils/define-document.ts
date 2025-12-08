@@ -1,29 +1,32 @@
 import {
-  orderRankField,
-  orderRankOrdering,
+	orderRankField,
+	orderRankOrdering,
 } from "@sanity/orderable-document-list";
-import {uniqBy} from "lodash";
-import {type DocumentDefinition, type SortOrdering} from "sanity";
+import { uniqBy } from "lodash";
+import type { DocumentDefinition, SortOrdering } from "sanity";
 
-import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";
-import {internalTitleStringField, localeStringField} from "../schemas/strings";
+import { contentSchemaGroup, settingsSchemaGroup } from "../schemas/groups";
 import {
-  applyFieldCustomization,
-  FieldCustomization,
+	internalTitleStringField,
+	localeStringField,
+} from "../schemas/strings";
+import {
+	applyFieldCustomization,
+	type FieldCustomization,
 } from "./apply-field-customization";
 
 export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
-  /** Schema options for various features */
-  options?: {
-    /** Disable document creation, used with the disableCreation plugin */
-    disableCreation?: boolean;
-    /** Enable localization with locale field */
-    localized?: FieldCustomization<typeof localeStringField>;
-    /** Enable document ordering with orderRank field */
-    orderable?: FieldCustomization<ReturnType<typeof orderRankField>>;
-    /** Hide the internal title field */
-    internalTitle?: FieldCustomization<typeof internalTitleStringField>;
-  };
+	/** Schema options for various features */
+	options?: {
+		/** Disable document creation, used with the disableCreation plugin */
+		disableCreation?: boolean;
+		/** Enable localization with locale field */
+		localized?: FieldCustomization<typeof localeStringField>;
+		/** Enable document ordering with orderRank field */
+		orderable?: FieldCustomization<ReturnType<typeof orderRankField>>;
+		/** Hide the internal title field */
+		internalTitle?: FieldCustomization<typeof internalTitleStringField>;
+	};
 };
 
 /**
@@ -56,72 +59,72 @@ export type DefineDocumentDefinition = Omit<DocumentDefinition, "options"> & {
  * ```
  */
 export default function defineDocument(
-  schema: DefineDocumentDefinition,
+	schema: DefineDocumentDefinition,
 ): DocumentDefinition {
-  const groups = uniqBy(
-    [
-      {
-        ...contentSchemaGroup,
-        default: schema?.groups?.some((group) => group.default),
-      },
-      settingsSchemaGroup,
-      ...(schema.groups || []),
-    ].filter(Boolean),
-    "name",
-  );
+	const groups = uniqBy(
+		[
+			{
+				...contentSchemaGroup,
+				default: schema?.groups?.some((group) => group.default),
+			},
+			settingsSchemaGroup,
+			...(schema.groups || []),
+		].filter(Boolean),
+		"name",
+	);
 
-  const {options, preview, ...schemaWithoutOptions} = schema;
+	const { options, preview, ...schemaWithoutOptions } = schema;
 
-  const {
-    localized = false,
-    internalTitle = false,
-    orderable = false,
-    ...restOfOptions
-  } = options || {};
+	const {
+		localized = false,
+		internalTitle = false,
+		orderable = false,
+		...restOfOptions
+	} = options || {};
 
-  const internalTitleField = internalTitle
-    ? applyFieldCustomization(internalTitleStringField, internalTitle)
-    : null;
+	const internalTitleField = internalTitle
+		? applyFieldCustomization(internalTitleStringField, internalTitle)
+		: null;
 
-  const localizedField = localized
-    ? applyFieldCustomization(localeStringField, localized)
-    : null;
+	const localizedField = localized
+		? applyFieldCustomization(localeStringField, localized)
+		: null;
 
-  const orderRankFieldInstance = orderable
-    ? orderRankField({type: schema.name})
-    : null;
+	const orderRankFieldInstance = orderable
+		? orderRankField({ type: schema.name })
+		: null;
 
-  const defaultFields = [
-    ...(orderRankFieldInstance ? [orderRankFieldInstance] : []),
-    ...(localizedField ? [localizedField] : []),
-    ...(internalTitleField ? [internalTitleField] : []),
-  ];
+	const defaultFields = [
+		...(orderRankFieldInstance ? [orderRankFieldInstance] : []),
+		...(localizedField ? [localizedField] : []),
+		...(internalTitleField ? [internalTitleField] : []),
+	];
 
-  const allFields = [...defaultFields, ...schema.fields];
+	const allFields = [...defaultFields, ...schema.fields];
 
-  if (allFields.length === 0) {
-    throw new Error(
-      `[defineDocument] "${schema.name}" must define at least one field.`,
-    );
-  }
+	if (allFields.length === 0) {
+		throw new Error(
+			`[defineDocument] "${schema.name}" must define at least one field.`,
+		);
+	}
 
-  return {
-    ...schemaWithoutOptions,
-    options: {
-      ...restOfOptions,
-    },
-    fields: uniqBy(allFields, "name"),
-    groups,
-    orderings: options?.orderable
-      ? [...(schema.orderings || []), orderRankOrdering as SortOrdering]
-      : schema.orderings,
-    preview: preview ?? {
-      select: {
-        title: "internalTitle",
-      },
-      prepare: ({title}) => ({
-        title: title ?? schema?.title,
-      }),
-    },
-  };
+	return {
+		...schemaWithoutOptions,
+		options: {
+			...restOfOptions,
+		},
+		fields: uniqBy(allFields, "name"),
+		groups,
+		orderings: options?.orderable
+			? [...(schema.orderings || []), orderRankOrdering as SortOrdering]
+			: schema.orderings,
+		preview: preview ?? {
+			select: {
+				title: "internalTitle",
+			},
+			prepare: ({ title }) => ({
+				title: title ?? schema?.title,
+			}),
+		},
+	};
 }

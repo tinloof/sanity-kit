@@ -1,12 +1,12 @@
-import { Page } from '@/components/Page'
-import { loadPage } from '@/data/sanity'
+import { Page } from "@/components/Page";
+import { loadPage } from "@/data/sanity";
 
 export default async function IndexRoute({
-  params,
+	params,
 }: {
-  params: Promise<{ locale: string }>
+	params: Promise<{ locale: string }>;
 }) {
-  const data = await loadPage('/', (await params).locale)
+	const data = await loadPage("/", (await params).locale);
 
-  return <Page data={data} />
+	return <Page data={data} />;
 }

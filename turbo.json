@@ -1,60 +1,59 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
-  "ui": "tui",
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "test": {
-      "cache": false
-    },
-    "typecheck": {},
-    "@examples/hello-world-i18n-studio#typegen": {
-      "outputs": [
-        "schema.json",
-        "../hello-world-i18n-next/types/sanity.generated.d.ts"
-      ],
-      "cache": true,
-      "env": [
-        "SANITY_STUDIO_DATASET",
-        "SANITY_STUDIO_PROJECT_ID",
-        "SANITY_STUDIO_API_VERSION"
-      ]
-    },
-    "@examples/hello-world-i18n-studio#typegen:watch": {
-      "outputs": [
-        "schema.json",
-        "../hello-world-i18n-next/types/sanity.generated.d.ts"
-      ],
-      "cache": false,
-      "persistent": true
-    },
-    "@examples/hello-world-i18n-studio#build": {
-      "dependsOn": ["@examples/hello-world-i18n-studio#typegen"],
-      "outputs": ["../hello-world-i18n-next/public/cms/**", "./sanity/**"],
-      "cache": true,
-      "env": [
-        "SANITY_STUDIO_DATASET",
-        "SANITY_STUDIO_PROJECT_ID",
-        "SANITY_STUDIO_API_VERSION"
-      ]
-    },
-    "@examples/hello-world-i18n-studio#dev": {
-      "with": ["@examples/hello-world-i18n-studio#typegen:watch"],
-      "persistent": true
-    },
-    "@examples/hello-world-i18n-next#build": {
-      "dependsOn": ["@examples/hello-world-i18n-studio#build"],
-      "cache": true
-    }
-  }
+	"$schema": "https://turbo.build/schema.json",
+	"globalDependencies": ["**/.env.*local"],
+	"ui": "tui",
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": [".next/**", "!.next/cache/**", "dist/**"]
+		},
+		"lint": {},
+		"check": {},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"test": {
+			"cache": false
+		},
+		"typecheck": {},
+		"@examples/hello-world-i18n-studio#typegen": {
+			"outputs": [
+				"schema.json",
+				"../hello-world-i18n-next/types/sanity.generated.d.ts"
+			],
+			"cache": true,
+			"env": [
+				"SANITY_STUDIO_DATASET",
+				"SANITY_STUDIO_PROJECT_ID",
+				"SANITY_STUDIO_API_VERSION"
+			]
+		},
+		"@examples/hello-world-i18n-studio#typegen:watch": {
+			"outputs": [
+				"schema.json",
+				"../hello-world-i18n-next/types/sanity.generated.d.ts"
+			],
+			"cache": false,
+			"persistent": true
+		},
+		"@examples/hello-world-i18n-studio#build": {
+			"dependsOn": ["@examples/hello-world-i18n-studio#typegen"],
+			"outputs": ["../hello-world-i18n-next/public/cms/**", "./sanity/**"],
+			"cache": true,
+			"env": [
+				"SANITY_STUDIO_DATASET",
+				"SANITY_STUDIO_PROJECT_ID",
+				"SANITY_STUDIO_API_VERSION"
+			]
+		},
+		"@examples/hello-world-i18n-studio#dev": {
+			"with": ["@examples/hello-world-i18n-studio#typegen:watch"],
+			"persistent": true
+		},
+		"@examples/hello-world-i18n-next#build": {
+			"dependsOn": ["@examples/hello-world-i18n-studio#build"],
+			"cache": true
+		}
+	}
 }

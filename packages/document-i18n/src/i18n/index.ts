@@ -1,4 +1,4 @@
-import {defineLocaleResourceBundle} from "sanity";
+import { defineLocaleResourceBundle } from "sanity";
 
 /**
  * The locale namespace for the document i18n plugin.
@@ -13,7 +13,7 @@ export const documentI18nLocaleNamespace = "document-i18n" as const;
  * @internal
  */
 export const documentI18nUsEnglishLocaleBundle = defineLocaleResourceBundle({
-  locale: "en-US",
-  namespace: documentI18nLocaleNamespace,
-  resources: () => import("./resources"),
+	locale: "en-US",
+	namespace: documentI18nLocaleNamespace,
+	resources: () => import("./resources"),
 });

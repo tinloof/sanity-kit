@@ -143,7 +143,7 @@ export async function resolveSanityRouteMetadata(
 	// 2. Fall back to parent.openGraph?.images (if available)
 	// 3. Default to empty array
 
-	let ogImages;
+	let ogImages: unknown[];
 
 	if (seo?.ogImage?.asset) {
 		try {

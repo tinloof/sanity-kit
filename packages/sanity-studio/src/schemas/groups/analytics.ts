@@ -1,5 +1,5 @@
-import {BarChartIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import { BarChartIcon } from "@sanity/icons";
+import type { FieldGroupDefinition } from "sanity";
 
 /**
  * Pre-configured analytics field group with chart icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: BarChartIcon,
-  name: "analytics",
-  title: "Analytics",
+	icon: BarChartIcon,
+	name: "analytics",
+	title: "Analytics",
 } as FieldGroupDefinition;

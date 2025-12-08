@@ -1,5 +1,5 @@
-import {ComposeIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import { ComposeIcon } from "@sanity/icons";
+import type { FieldGroupDefinition } from "sanity";
 
 /**
  * Pre-configured content field group with compose icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: ComposeIcon,
-  name: "content",
-  title: "Content",
+	icon: ComposeIcon,
+	name: "content",
+	title: "Content",
 } as FieldGroupDefinition;

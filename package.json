@@ -17,8 +17,8 @@
 		"dev:example:hello-world": "turbo run dev --filter=./examples/hello-world",
 		"dev:example:with-i18n": "turbo run dev --filter=./examples/with-i18n",
 		"dev:example:hello-world-i18n": "turbo run dev --filter=./examples/hello-world-i18n-*",
-		"lint": "turbo run lint",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"format-and-lint": "biome check .",
+		"format-and-lint:fix": "biome check . --write",
 		"publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish",
 		"typecheck": "turbo run typecheck",
 		"test": "turbo run test",
@@ -33,7 +33,7 @@
 		"turbo": "^2.6.2"
 	},
 	"devDependencies": {
-		"prettier": "^3.7.4",
+		"@biomejs/biome": "^2.3.8",
 		"rimraf": "^6.1.2"
 	}
 }

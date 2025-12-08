@@ -1,5 +1,5 @@
-import {defineEnableDraftMode} from "next-sanity/draft-mode";
-import type {SanityClient} from "@sanity/client";
+import type { SanityClient } from "@sanity/client";
+import { defineEnableDraftMode } from "next-sanity/draft-mode";
 
 /**
  * Creates a draft mode route handler for Next.js API routes
@@ -7,9 +7,9 @@ import type {SanityClient} from "@sanity/client";
  * @returns GET handler for the draft mode API route
  */
 export function createDraftModeRoute(client: SanityClient) {
-  return defineEnableDraftMode({
-    client,
-  });
+	return defineEnableDraftMode({
+		client,
+	});
 }
 
 /**
@@ -19,7 +19,7 @@ export function createDraftModeRoute(client: SanityClient) {
  * @returns Object with GET handler
  */
 export function defineDraftRoute(client: SanityClient) {
-  return createDraftModeRoute(client);
+	return createDraftModeRoute(client);
 }
 
 /**
@@ -28,20 +28,20 @@ export function defineDraftRoute(client: SanityClient) {
  * @returns Object with GET handler that returns an error response
  */
 export function createErrorDraftRoute(errorMessage: string) {
-  return {
-    GET: async () => {
-      return new Response(
-        JSON.stringify({
-          error: errorMessage,
-          message: "Draft mode configuration error",
-        }),
-        {
-          status: 500,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-    },
-  };
+	return {
+		GET: async () => {
+			return new Response(
+				JSON.stringify({
+					error: errorMessage,
+					message: "Draft mode configuration error",
+				}),
+				{
+					status: 500,
+					headers: {
+						"Content-Type": "application/json",
+					},
+				},
+			);
+		},
+	};
 }

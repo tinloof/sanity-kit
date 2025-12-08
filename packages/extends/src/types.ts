@@ -1,23 +1,23 @@
-import {
-  DocumentDefinition,
-  IntrinsicTypeName,
-  SchemaTypeDefinition,
+import type {
+	DocumentDefinition,
+	FieldDefinition,
+	IntrinsicTypeName,
+	SchemaTypeDefinition,
 } from "sanity";
-import {FieldDefinition} from "sanity";
 
 export type AbstractDefinition = Omit<DocumentDefinition, "type" | "fields"> & {
-  type: "abstract";
-  fields?: FieldDefinition<IntrinsicTypeName>[];
+	type: "abstract";
+	fields?: FieldDefinition<IntrinsicTypeName>[];
 };
 
 export type AbstractDefinitionResolver = (
-  document: DocumentDefinition,
-  options?: object | boolean,
+	document: DocumentDefinition,
+	options?: object | boolean,
 ) => AbstractDefinition;
 
 export type ExtendedType =
-  | SchemaTypeDefinition<IntrinsicTypeName>
-  | AbstractDefinitionResolver;
+	| SchemaTypeDefinition<IntrinsicTypeName>
+	| AbstractDefinitionResolver;
 
 /**
  * Registry for custom extends types. Users can extend this interface
@@ -56,53 +56,53 @@ export type ExtendedType =
  * extends: ["seo", "publishable"]                                 // ✓ array syntax
  * ```
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// biome-ignore lint/suspicious/noEmptyInterface: Empty interface needed for module augmentation
 export interface ExtendsRegistry {}
 
 type RegisteredExtendName = keyof ExtendsRegistry extends never
-  ? string
-  : keyof ExtendsRegistry | (string & {});
+	? string
+	: keyof ExtendsRegistry | (string & {});
 
 type TypedExtendsEntry = keyof ExtendsRegistry extends never
-  ? never
-  : {
-      [K in keyof ExtendsRegistry]: ExtendsRegistry[K] extends
-        | undefined
-        | void
-        | never
-        ? {type: K; parameters?: never}
-        : {} extends Required<ExtendsRegistry[K]>
-          ? {
-              type: K;
-              parameters?: ExtendsRegistry[K];
-            }
-          : {
-              type: K;
-              parameters: ExtendsRegistry[K];
-            };
-    }[keyof ExtendsRegistry];
+	? never
+	: {
+			[K in keyof ExtendsRegistry]: ExtendsRegistry[K] extends
+				| undefined
+				| void
+				| never
+				? { type: K; parameters?: never }
+				: {} extends Required<ExtendsRegistry[K]>
+					? {
+							type: K;
+							parameters?: ExtendsRegistry[K];
+						}
+					: {
+							type: K;
+							parameters: ExtendsRegistry[K];
+						};
+		}[keyof ExtendsRegistry];
 
 export type ExtendsOptionsArrayEntry = keyof ExtendsRegistry extends never
-  ? {type: string; parameters?: Record<string, any>}
-  : TypedExtendsEntry;
+	? { type: string; parameters?: Record<string, any> }
+	: TypedExtendsEntry;
 
 export type ExtendsOptionsArray = Array<
-  ExtendsOptionsArrayEntry | RegisteredExtendName
+	ExtendsOptionsArrayEntry | RegisteredExtendName
 >;
 
 export type ExtendsOption =
-  | ExtendsOptionsArray
-  | ExtendsOptionsArrayEntry
-  | RegisteredExtendName;
+	| ExtendsOptionsArray
+	| ExtendsOptionsArrayEntry
+	| RegisteredExtendName;
 
 declare module "sanity" {
-  export interface IntrinsicDefinitions {
-    abstract: AbstractDefinition;
-  }
+	export interface IntrinsicDefinitions {
+		abstract: AbstractDefinition;
+	}
 
-  export interface DocumentDefinition {
-    extends?: ExtendsOption;
-  }
+	export interface DocumentDefinition {
+		extends?: ExtendsOption;
+	}
 }
 
 /**
@@ -132,7 +132,7 @@ declare module "sanity" {
  * ```
  */
 export type CreateAbstractsConfig<T extends string> =
-  | false
-  | {
-      [K in T]?: boolean;
-    };
+	| false
+	| {
+			[K in T]?: boolean;
+	  };
