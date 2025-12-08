@@ -18,16 +18,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "pnpm"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 9
-          run_install: false
+          bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Detect changed packages
         id: changes
@@ -82,4 +80,4 @@ jobs:
           fi
 
           echo "Building changed packages with filters: ${filters[*]}"
-          pnpm turbo run build "${filters[@]}"
+          bun turbo run build "${filters[@]}"
