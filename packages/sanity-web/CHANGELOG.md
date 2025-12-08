@@ -1,5 +1,65 @@
 # @tinloof/sanity-web
 
+## 0.13.0
+
+### Minor Changes
+
+- 8fc83a4: Add `_SectionProps` to `createSections` for simplified type inference
+  - The component returned by `createSections` now exposes a `_SectionProps` property that provides fully typed props for each section type
+  - This eliminates the need for manually constructing `SectionProps` types with generics
+  - Section components can now use simple bracket notation: `SectionProps["section.hero"]` instead of `SectionProps<"section.hero">`
+  - Internal type handling updated to avoid circular dependencies when section components import `SectionProps` from the same file that creates the renderer
+
+  Example usage:
+
+  ```tsx
+  const Sections = createSections<
+    NonNullable<PAGE_QUERYResult["sections"]>,
+    {locale: string}
+  >({
+    components: {
+      "section.hero": HeroSection,
+      "section.text": TextSection,
+    },
+  });
+
+  // Infer SectionProps directly from the Sections component
+  type SectionProps = (typeof Sections)["_SectionProps"];
+
+  export {Sections, type SectionProps};
+
+  // In section components:
+  export default function HeroSection(props: SectionProps["section.hero"]) {
+    // fully typed props
+  }
+  ```
+
+- 739a759: Add type-safe generics and sharedProps support to createSections
+  - `createSections` now accepts two generic type parameters:
+    - `TSections`: The sections array type from your Sanity query result
+    - `TSharedProps`: Optional type for props shared across all section components
+  - Renamed `sectionComponentMap` to `components` for a cleaner API
+  - Added `sharedProps` option to pass props that are spread to all section components
+  - Section components now receive full type inference based on their `_type`
+  - Exported new `SectionProps` utility type for typing section components
+
+  Example usage:
+
+  ```tsx
+  type Sections = NonNullable<PAGE_QUERYResult>["sections"];
+  type SharedProps = {locale: string};
+
+  export const SectionsRenderer = createSections<Sections, SharedProps>({
+    components: {
+      "section.hero": HeroSection,
+      "section.text": TextSection,
+    },
+  });
+
+  // In your page
+  <SectionsRenderer data={page.sections} sharedProps={{locale: "en"}} />;
+  ```
+
 ## 0.12.1
 
 ### Patch Changes
