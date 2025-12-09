@@ -1,5 +1,12 @@
 # @examples/hello-world-i18n-next
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [105e9c3]
+  - @tinloof/sanity-next@1.2.0
+
 ## 0.1.3
 
 ### Patch Changes

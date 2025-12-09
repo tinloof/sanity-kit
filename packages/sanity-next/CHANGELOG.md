@@ -1,5 +1,15 @@
 # @tinloof/sanity-next
 
+## 1.2.0
+
+### Minor Changes
+
+- 105e9c3: fix(sanity-next): pass authenticated client to `defineLive` when custom `live` config is provided\*\*
+
+  When passing a custom `live` config to `initSanity()`, `sanityFetch` was broken because the client passed to `defineLive` wasn't configured with the token.
+
+  Now we pass `client.withConfig({ token: sanity_api_token })` to `defineLive`, consistent with how the default branch handles it.
+
 ## 1.1.0
 
 ### Minor Changes
@@ -13,7 +23,7 @@
 
   ```tsx
   // app/api/draft/route.ts
-  export {defineEnableDraftMode as GET} from "@/data/sanity/client";
+  export { defineEnableDraftMode as GET } from "@/data/sanity/client";
   ```
 
 ## 1.0.1
