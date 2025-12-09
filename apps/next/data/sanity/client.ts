@@ -1,4 +1,4 @@
-import { initSanity } from "@tinloof/sanity-next";
+import {initSanity} from "@tinloof/sanity-next";
 
 export const {
 	SanityImage,

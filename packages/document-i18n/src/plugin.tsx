@@ -1,21 +1,21 @@
-import { Stack } from "@sanity/ui";
-import { resolveAbstractSchemaTypes } from "@tinloof/sanity-extends";
-import type { DocumentDefinition } from "sanity";
+import {Stack} from "@sanity/ui";
+import {resolveAbstractSchemaTypes} from "@tinloof/sanity-extends";
+import type {DocumentDefinition} from "sanity";
 import {
 	definePlugin,
 	isSanityDocument,
 	type SchemaTypeDefinition,
 } from "sanity";
-import { ABSTRACTS_MAP } from "./abstracts";
-import { DeleteMetadataAction } from "./actions/delete-metadata-action";
+import {ABSTRACTS_MAP} from "./abstracts";
+import {DeleteMetadataAction} from "./actions/delete-metadata-action";
 import BulkPublish from "./components/bulk-publish";
-import { DocumentI18nProvider } from "./components/document-i18n-context";
-import { DocumentI18nMenu } from "./components/document-i18n-menu";
+import {DocumentI18nProvider} from "./components/document-i18n-context";
+import {DocumentI18nMenu} from "./components/document-i18n-menu";
 import LocaleBadge from "./components/locale-badge";
 import OptimisticallyStrengthen from "./components/optimistically-strengthen";
-import { DEFAULT_CONFIG, METADATA_SCHEMA_NAME } from "./constants";
-import { documentI18nUsEnglishLocaleBundle } from "./i18n";
-import type { PluginConfig, TranslationReference } from "./types";
+import {DEFAULT_CONFIG, METADATA_SCHEMA_NAME} from "./constants";
+import {documentI18nUsEnglishLocaleBundle} from "./i18n";
+import type {PluginConfig, TranslationReference} from "./types";
 
 function extractSchemaTypeNames(
 	schemas: SchemaTypeDefinition[],
@@ -34,8 +34,8 @@ function extractSchemaTypeNames(
 }
 
 export const documentI18n = definePlugin<PluginConfig>((config) => {
-	const pluginConfig = { ...DEFAULT_CONFIG, ...config };
-	const { locales, localeField, abstracts } = pluginConfig;
+	const pluginConfig = {...DEFAULT_CONFIG, ...config};
+	const {locales, localeField, abstracts} = pluginConfig;
 
 	const bulkPublish = false;
 
@@ -44,7 +44,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 		studio: {
 			components: {
 				layout: (props) => (
-					<DocumentI18nProvider {...props} pluginConfig={{ ...pluginConfig }} />
+					<DocumentI18nProvider {...props} pluginConfig={{...pluginConfig}} />
 				),
 			},
 		},
@@ -66,7 +66,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 						const translations =
 							(props?.value?.translations as TranslationReference[]) ?? [];
 						const weakAndTypedTranslations = translations.filter(
-							({ value }) => value?._weak && value._strengthenOnPublish,
+							({value}) => value?._weak && value._strengthenOnPublish,
 						);
 
 						return (
@@ -95,7 +95,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 		// - The `DeleteMetadataAction` action to the metadata document type
 		document: {
 			unstable_languageFilter: (prev, ctx) => {
-				const { schemaType, documentId } = ctx;
+				const {schemaType, documentId} = ctx;
 
 				const schemaTypes = extractSchemaTypeNames(
 					(ctx.schema._original?.types || []).filter(
@@ -113,7 +113,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 						]
 					: prev;
 			},
-			badges: (prev, { schemaType, schema }) => {
+			badges: (prev, {schemaType, schema}) => {
 				const schemaTypes = extractSchemaTypeNames(
 					(schema._original?.types || []).filter(
 						(type): type is DocumentDefinition => type.type === "document",
@@ -127,7 +127,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 
 				return [LocaleBadge, ...prev];
 			},
-			newDocumentOptions: (prev, { schema }) => {
+			newDocumentOptions: (prev, {schema}) => {
 				// Filter out:
 				//  - The translations meta document
 				//  - Default templates that have a locale field but no locale parameter, so only sanity-document-internationalization templates are shown
@@ -143,7 +143,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 					return !isMetadataSchema && !schemaHasLocaleField;
 				});
 			},
-			actions: (prev, { schemaType }) => {
+			actions: (prev, {schemaType}) => {
 				if (schemaType === METADATA_SCHEMA_NAME) {
 					return [...prev, DeleteMetadataAction];
 				}
@@ -161,7 +161,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 
 			// For every schema type this plugin is enabled on
 			// Create an initial value template to set the language
-			templates: (prev, { schema }) => {
+			templates: (prev, {schema}) => {
 				// Templates are not setup for async locales
 				if (!Array.isArray(locales)) {
 					return prev;
@@ -178,10 +178,8 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 					id: `${schemaType}-parameterized`,
 					title: `${schema?.get(schemaType)?.title ?? schemaType}: with locale`,
 					schemaType,
-					parameters: [
-						{ name: `localeId`, title: `Locale ID`, type: `string` },
-					],
-					value: ({ localeId }: { localeId: string }) => ({
+					parameters: [{name: `localeId`, title: `Locale ID`, type: `string`}],
+					value: ({localeId}: {localeId: string}) => ({
 						[localeField]: localeId,
 					}),
 				}));

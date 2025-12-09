@@ -1,6 +1,6 @@
 // Copied from https://github.com/sanity-io/sanity/blob/next/packages/sanity/src/core/form/inputs/Slug/utils/useAsync.tsx
 
-import { type DependencyList, useCallback, useRef, useState } from "react";
+import {type DependencyList, useCallback, useRef, useState} from "react";
 
 export type AsyncCompleteState<T> = {
 	status: "complete";
@@ -37,19 +37,19 @@ export function useAsync<T, U>(
 	const wrappedCallback = useCallback(
 		(arg: U) => {
 			const asyncId = ++lastId.current;
-			setState({ status: "pending" });
+			setState({status: "pending"});
 
 			Promise.resolve()
 				.then(() => fn(arg))
 				.then(
 					(res) => {
 						if (asyncId === lastId.current) {
-							setState({ status: "complete", result: res });
+							setState({status: "complete", result: res});
 						}
 					},
 					(err) => {
 						if (asyncId === lastId.current) {
-							setState({ status: "error", error: err });
+							setState({status: "error", error: err});
 						}
 					},
 				);

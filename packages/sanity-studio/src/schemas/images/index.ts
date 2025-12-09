@@ -1,1 +1,1 @@
-export { default as ogImageField } from "./og-image";
+export {default as ogImageField} from "./og-image";

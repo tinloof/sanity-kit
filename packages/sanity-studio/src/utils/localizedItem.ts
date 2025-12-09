@@ -1,6 +1,6 @@
-import { FolderIcon } from "@sanity/icons";
-import type { BaseSchemaDefinition } from "sanity";
-import type { ListItemBuilder, StructureBuilder } from "sanity/structure";
+import {FolderIcon} from "@sanity/icons";
+import type {BaseSchemaDefinition} from "sanity";
+import type {ListItemBuilder, StructureBuilder} from "sanity/structure";
 
 export type Locale = {
 	id: string;
@@ -43,9 +43,7 @@ export const localizedItem = (
 						.id(`${name}-all`)
 						.title("All")
 						.child(
-							S.documentTypeList(name)
-								.filter(`_type == $name`)
-								.params({ name }),
+							S.documentTypeList(name).filter(`_type == $name`).params({name}),
 						),
 					S.divider(),
 					...locales.map((locale) =>
@@ -55,7 +53,7 @@ export const localizedItem = (
 							.child(
 								S.documentTypeList(name)
 									.filter(`_type == $name && locale == $locale`)
-									.params({ locale: locale.id, name }),
+									.params({locale: locale.id, name}),
 							),
 					),
 				]),

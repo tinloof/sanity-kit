@@ -1,10 +1,10 @@
-import { Card, Flex, Spinner, Stack, Text } from "@sanity/ui";
-import { useEffect, useMemo } from "react";
-import type { SanityDocument } from "sanity";
-import { useListeningQuery } from "sanity-plugin-utils";
+import {Card, Flex, Spinner, Stack, Text} from "@sanity/ui";
+import {useEffect, useMemo} from "react";
+import type {SanityDocument} from "sanity";
+import {useListeningQuery} from "sanity-plugin-utils";
 
 import DocumentPreview from "./document-preview";
-import { separateReferences } from "./separate-references";
+import {separateReferences} from "./separate-references";
 
 type DeleteTranslationDialogProps = {
 	doc: SanityDocument;
@@ -15,14 +15,14 @@ type DeleteTranslationDialogProps = {
 export default function DeleteTranslationDialog(
 	props: DeleteTranslationDialogProps,
 ) {
-	const { doc, documentId, setTranslations } = props;
+	const {doc, documentId, setTranslations} = props;
 
 	// Get all references and check if any of them are translations metadata
-	const { data, loading } = useListeningQuery<SanityDocument[]>(
+	const {data, loading} = useListeningQuery<SanityDocument[]>(
 		`*[references($id)]{_id, _type}`,
-		{ params: { id: documentId }, initialValue: [] },
+		{params: {id: documentId}, initialValue: []},
 	);
-	const { translations, otherReferences } = useMemo(
+	const {translations, otherReferences} = useMemo(
 		() => separateReferences(data as SanityDocument[] | null),
 		[data],
 	);

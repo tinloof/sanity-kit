@@ -1,5 +1,5 @@
-import type { DocumentDefinition } from "sanity";
-import type { ExtendedType } from "./types";
+import type {DocumentDefinition} from "sanity";
+import type {ExtendedType} from "./types";
 
 /**
  * Generic utility for resolving abstract schema types from configuration
@@ -56,7 +56,7 @@ export function resolveAbstractSchemaTypes<
 				) => {
 					const baseOptions =
 						typeof resolverOptions === "object" ? resolverOptions : {};
-					return abstractResolver(schema, { ...baseOptions, ...options });
+					return abstractResolver(schema, {...baseOptions, ...options});
 				};
 				enabledAbstracts.push(wrappedResolver);
 			} else {

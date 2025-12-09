@@ -1,12 +1,12 @@
-import type { DocumentBadgeDescription, DocumentBadgeProps } from "sanity";
+import type {DocumentBadgeDescription, DocumentBadgeProps} from "sanity";
 
-import { useDocumentI18nContext } from "./document-i18n-context";
+import {useDocumentI18nContext} from "./document-i18n-context";
 
 export default function LocaleBadge(
 	props: DocumentBadgeProps,
 ): DocumentBadgeDescription | null {
 	const source = props?.draft || props?.published;
-	const { localeField, locales } = useDocumentI18nContext();
+	const {localeField, locales} = useDocumentI18nContext();
 	const localeId = source?.[localeField];
 
 	if (!localeId) {

@@ -10,4 +10,4 @@ export const ABSTRACTS_MAP = {
 	sync: syncAbstract,
 };
 
-export { orderableAbstract, singletonAbstract, syncAbstract };
+export {orderableAbstract, singletonAbstract, syncAbstract};

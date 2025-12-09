@@ -1,4 +1,4 @@
-import type { AbstractDefinitionResolver } from "./types";
+import type {AbstractDefinitionResolver} from "./types";
 
 /**
  * Helper function to define an abstract resolver with proper typing.

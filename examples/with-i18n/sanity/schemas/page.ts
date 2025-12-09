@@ -1,5 +1,5 @@
-import { definePathname } from "@tinloof/sanity-studio";
-import { defineType } from "sanity";
+import {definePathname} from "@tinloof/sanity-studio";
+import {defineType} from "sanity";
 import config from "@/config";
 
 export default defineType({

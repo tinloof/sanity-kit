@@ -1,7 +1,7 @@
-import type { DocumentDefinition, SchemaTypeDefinition } from "sanity";
-import { describe, expect, it } from "vitest";
-import type { AbstractDefinitionResolver, ExtendedType } from "../src";
-import { defineAbstractResolver, withExtends } from "../src";
+import type {DocumentDefinition, SchemaTypeDefinition} from "sanity";
+import {describe, expect, it} from "vitest";
+import type {AbstractDefinitionResolver, ExtendedType} from "../src";
+import {defineAbstractResolver, withExtends} from "../src";
 
 describe("schemaTypes", () => {
 	describe("Basic functionality", () => {
@@ -11,7 +11,7 @@ describe("schemaTypes", () => {
 					type: "document",
 					name: "article",
 					title: "Article",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -26,13 +26,13 @@ describe("schemaTypes", () => {
 					type: "object",
 					name: "seo",
 					title: "SEO",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -54,7 +54,7 @@ describe("schemaTypes", () => {
 					type: "document",
 					name: "article",
 					title: "Article",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -71,14 +71,14 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base",
 					title: "Base",
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "base",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -98,14 +98,14 @@ describe("schemaTypes", () => {
 					type: "document",
 					name: "base",
 					title: "Base",
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "base",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -126,20 +126,20 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "seo",
 					title: "SEO",
-					fields: [{ name: "metaTitle", type: "string" }],
+					fields: [{name: "metaTitle", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "timestamps",
 					title: "Timestamps",
-					fields: [{ name: "createdAt", type: "datetime" }],
+					fields: [{name: "createdAt", type: "datetime"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: ["seo", "timestamps"],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -159,21 +159,21 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base",
 					title: "Base",
-					fields: [{ name: "id", type: "string" }],
+					fields: [{name: "id", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "extended",
 					title: "Extended",
 					extends: "base",
-					fields: [{ name: "slug", type: "string" }],
+					fields: [{name: "slug", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "extended",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -193,35 +193,35 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "levelOne",
 					title: "Level One",
-					fields: [{ name: "field1", type: "string" }],
+					fields: [{name: "field1", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "levelTwo",
 					title: "Level Two",
 					extends: "levelOne",
-					fields: [{ name: "field2", type: "string" }],
+					fields: [{name: "field2", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "levelThree",
 					title: "Level Three",
 					extends: "levelTwo",
-					fields: [{ name: "field3", type: "string" }],
+					fields: [{name: "field3", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "levelFour",
 					title: "Level Four",
 					extends: "levelThree",
-					fields: [{ name: "field4", type: "string" }],
+					fields: [{name: "field4", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "levelFour",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -248,7 +248,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "article",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -264,14 +264,14 @@ describe("schemaTypes", () => {
 					name: "articleA",
 					title: "Article A",
 					extends: "articleB",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "articleB",
 					title: "Article B",
 					extends: "articleA",
-					fields: [{ name: "content", type: "text" }],
+					fields: [{name: "content", type: "text"}],
 				},
 			];
 
@@ -287,21 +287,21 @@ describe("schemaTypes", () => {
 					name: "typeA",
 					title: "Type A",
 					extends: "typeB",
-					fields: [{ name: "fieldA", type: "string" }],
+					fields: [{name: "fieldA", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "typeB",
 					title: "Type B",
 					extends: "typeC",
-					fields: [{ name: "fieldB", type: "string" }],
+					fields: [{name: "fieldB", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "typeC",
 					title: "Type C",
 					extends: "typeA",
-					fields: [{ name: "fieldC", type: "string" }],
+					fields: [{name: "fieldC", type: "string"}],
 				},
 			];
 
@@ -318,14 +318,14 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base",
 					title: "Base",
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "base",
-					fields: [{ name: "articleField", type: "string" }],
+					fields: [{name: "articleField", type: "string"}],
 				},
 			];
 
@@ -346,7 +346,7 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [],
-					options: { collapsed: true },
+					options: {collapsed: true},
 				},
 				{
 					type: "document",
@@ -354,7 +354,7 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [],
-					options: { modal: "dialog" as any },
+					options: {modal: "dialog" as any},
 				},
 			];
 
@@ -375,7 +375,7 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [],
-					components: { input: () => null } as any,
+					components: {input: () => null} as any,
 				},
 				{
 					type: "document",
@@ -383,7 +383,7 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [],
-					components: { preview: () => null } as any,
+					components: {preview: () => null} as any,
 				},
 			];
 
@@ -403,7 +403,7 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [],
-					initialValue: { status: "draft" },
+					initialValue: {status: "draft"},
 				},
 				{
 					type: "document",
@@ -411,7 +411,7 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [],
-					initialValue: { type: "article" },
+					initialValue: {type: "article"},
 				},
 			];
 
@@ -436,7 +436,7 @@ describe("schemaTypes", () => {
 						{
 							title: "Newest",
 							name: "newest",
-							by: [{ field: "_createdAt", direction: "desc" }],
+							by: [{field: "_createdAt", direction: "desc"}],
 						},
 					],
 				},
@@ -450,7 +450,7 @@ describe("schemaTypes", () => {
 						{
 							title: "A-Z",
 							name: "alpha",
-							by: [{ field: "title", direction: "asc" }],
+							by: [{field: "title", direction: "asc"}],
 						},
 					],
 				},
@@ -470,7 +470,7 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [],
-					groups: [{ name: "content", title: "Content" }],
+					groups: [{name: "content", title: "Content"}],
 				},
 				{
 					type: "document",
@@ -478,7 +478,7 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [],
-					groups: [{ name: "seo", title: "SEO" }],
+					groups: [{name: "seo", title: "SEO"}],
 				},
 			];
 
@@ -496,7 +496,7 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [],
-					fieldsets: [{ name: "timestamps", title: "Timestamps" }],
+					fieldsets: [{name: "timestamps", title: "Timestamps"}],
 				},
 				{
 					type: "document",
@@ -504,7 +504,7 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [],
-					fieldsets: [{ name: "publishing", title: "Publishing" }],
+					fieldsets: [{name: "publishing", title: "Publishing"}],
 				},
 			];
 
@@ -572,7 +572,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "nonExistent",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -587,13 +587,13 @@ describe("schemaTypes", () => {
 					type: "document",
 					name: "article",
 					title: "Article",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Another Article",
-					fields: [{ name: "content", type: "string" }],
+					fields: [{name: "content", type: "string"}],
 				},
 			];
 
@@ -656,21 +656,21 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "abstractBase",
 					title: "Abstract Base",
-					fields: [{ name: "field1", type: "string" }],
+					fields: [{name: "field1", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "documentBase",
 					title: "Document Base",
 					extends: "abstractBase",
-					fields: [{ name: "field2", type: "string" }],
+					fields: [{name: "field2", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "documentBase",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -691,21 +691,21 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base",
 					title: "Base",
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "base",
-					fields: [{ name: "articleField", type: "string" }],
+					fields: [{name: "articleField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "blog",
 					title: "Blog",
 					extends: "base",
-					fields: [{ name: "blogField", type: "string" }],
+					fields: [{name: "blogField", type: "string"}],
 				},
 			];
 
@@ -731,20 +731,20 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "first",
 					title: "First",
-					fields: [{ name: "firstField", type: "string" }],
+					fields: [{name: "firstField", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "second",
 					title: "Second",
-					fields: [{ name: "secondField", type: "string" }],
+					fields: [{name: "secondField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: ["first", "second"],
-					fields: [{ name: "articleField", type: "string" }],
+					fields: [{name: "articleField", type: "string"}],
 				},
 			];
 
@@ -765,27 +765,27 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "baseA",
 					title: "Base A",
-					fields: [{ name: "fieldA", type: "string" }],
+					fields: [{name: "fieldA", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "baseB",
 					title: "Base B",
-					fields: [{ name: "fieldB", type: "string" }],
+					fields: [{name: "fieldB", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "middle",
 					title: "Middle",
 					extends: ["baseA", "baseB"],
-					fields: [{ name: "fieldMiddle", type: "string" }],
+					fields: [{name: "fieldMiddle", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "middle",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -806,21 +806,21 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "baseAbstract",
 					title: "Base Abstract",
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "extendedAbstract",
 					title: "Extended Abstract",
 					extends: "baseAbstract",
-					fields: [{ name: "extendedField", type: "string" }],
+					fields: [{name: "extendedField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "extendedAbstract",
-					fields: [{ name: "articleField", type: "string" }],
+					fields: [{name: "articleField", type: "string"}],
 				},
 			];
 
@@ -846,21 +846,21 @@ describe("schemaTypes", () => {
 					type: "document",
 					name: "baseDocument",
 					title: "Base Document",
-					fields: [{ name: "docField", type: "string" }],
+					fields: [{name: "docField", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "abstractFromDoc",
 					title: "Abstract From Document",
 					extends: "baseDocument",
-					fields: [{ name: "abstractField", type: "string" }],
+					fields: [{name: "abstractField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "abstractFromDoc",
-					fields: [{ name: "articleField", type: "string" }],
+					fields: [{name: "articleField", type: "string"}],
 				},
 			];
 
@@ -895,8 +895,8 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [
-						{ name: "title", type: "string", title: "Base Title" },
-						{ name: "description", type: "string" },
+						{name: "title", type: "string", title: "Base Title"},
+						{name: "description", type: "string"},
 					],
 				},
 				{
@@ -904,7 +904,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "base",
-					fields: [{ name: "title", type: "text", title: "Article Title" }],
+					fields: [{name: "title", type: "text", title: "Article Title"}],
 				},
 			];
 
@@ -928,7 +928,7 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base",
 					title: "Base",
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "document",
@@ -936,8 +936,8 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [
-						{ name: "title", type: "string", title: "First Title" },
-						{ name: "title", type: "text", title: "Second Title" },
+						{name: "title", type: "string", title: "First Title"},
+						{name: "title", type: "text", title: "Second Title"},
 					],
 				},
 			];
@@ -962,8 +962,8 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [
-						{ name: "meta", type: "string", title: "First Meta" },
-						{ name: "meta", type: "text", title: "Second Meta" },
+						{name: "meta", type: "string", title: "First Meta"},
+						{name: "meta", type: "text", title: "Second Meta"},
 					],
 				},
 				{
@@ -971,7 +971,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "base",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -995,9 +995,9 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [
-						{ name: "meta", type: "string", title: "Parent Meta 1" },
-						{ name: "meta", type: "text", title: "Parent Meta 2" },
-						{ name: "other", type: "string" },
+						{name: "meta", type: "string", title: "Parent Meta 1"},
+						{name: "meta", type: "text", title: "Parent Meta 2"},
+						{name: "other", type: "string"},
 					],
 				},
 				{
@@ -1005,7 +1005,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "base",
-					fields: [{ name: "meta", type: "number", title: "Child Meta" }],
+					fields: [{name: "meta", type: "number", title: "Child Meta"}],
 				},
 			];
 
@@ -1031,8 +1031,8 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [
-						{ name: "shared", type: "string", title: "Parent Shared" },
-						{ name: "other", type: "string" },
+						{name: "shared", type: "string", title: "Parent Shared"},
+						{name: "other", type: "string"},
 					],
 				},
 				{
@@ -1041,8 +1041,8 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [
-						{ name: "shared", type: "text", title: "Child Shared 1" },
-						{ name: "shared", type: "number", title: "Child Shared 2" },
+						{name: "shared", type: "text", title: "Child Shared 1"},
+						{name: "shared", type: "number", title: "Child Shared 2"},
 					],
 				},
 			];
@@ -1066,23 +1066,21 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "grandparent",
 					title: "Grandparent",
-					fields: [
-						{ name: "field", type: "string", title: "Grandparent Field" },
-					],
+					fields: [{name: "field", type: "string", title: "Grandparent Field"}],
 				},
 				{
 					type: "abstract",
 					name: "parent",
 					title: "Parent",
 					extends: "grandparent",
-					fields: [{ name: "field", type: "text", title: "Parent Field" }],
+					fields: [{name: "field", type: "text", title: "Parent Field"}],
 				},
 				{
 					type: "document",
 					name: "child",
 					title: "Child",
 					extends: "parent",
-					fields: [{ name: "field", type: "number", title: "Child Field" }],
+					fields: [{name: "field", type: "number", title: "Child Field"}],
 				},
 			];
 
@@ -1104,9 +1102,9 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [
-						{ name: "fieldA", type: "string", title: "Base A" },
-						{ name: "fieldB", type: "string", title: "Base B" },
-						{ name: "fieldC", type: "string", title: "Base C" },
+						{name: "fieldA", type: "string", title: "Base A"},
+						{name: "fieldB", type: "string", title: "Base B"},
+						{name: "fieldC", type: "string", title: "Base C"},
 					],
 				},
 				{
@@ -1115,8 +1113,8 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [
-						{ name: "fieldA", type: "text", title: "Override A" },
-						{ name: "fieldC", type: "number", title: "Override C" },
+						{name: "fieldA", type: "text", title: "Override A"},
+						{name: "fieldC", type: "number", title: "Override C"},
 					],
 				},
 			];
@@ -1148,9 +1146,9 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					fields: [
-						{ name: "dup", type: "string", title: "Parent Dup 1" },
-						{ name: "dup", type: "text", title: "Parent Dup 2" },
-						{ name: "unique", type: "string", title: "Parent Unique" },
+						{name: "dup", type: "string", title: "Parent Dup 1"},
+						{name: "dup", type: "text", title: "Parent Dup 2"},
+						{name: "unique", type: "string", title: "Parent Unique"},
 					],
 				},
 				{
@@ -1159,9 +1157,9 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: "base",
 					fields: [
-						{ name: "dup", type: "number", title: "Child Dup 1" },
-						{ name: "dup", type: "boolean", title: "Child Dup 2" },
-						{ name: "dup", type: "date", title: "Child Dup 3" },
+						{name: "dup", type: "number", title: "Child Dup 1"},
+						{name: "dup", type: "boolean", title: "Child Dup 2"},
+						{name: "dup", type: "date", title: "Child Dup 3"},
 					],
 				},
 			];
@@ -1197,14 +1195,14 @@ describe("schemaTypes", () => {
 				defineAbstractResolver((doc) => ({
 					type: "abstract",
 					name: "dynamicAbstract",
-					fields: [{ name: `${doc.name}Slug`, type: "slug" }],
+					fields: [{name: `${doc.name}Slug`, type: "slug"}],
 				})),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "dynamicAbstract",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1226,7 +1224,7 @@ describe("schemaTypes", () => {
 					return {
 						type: "abstract" as const,
 						name: "inspectorAbstract",
-						fields: [{ name: "inspected", type: "boolean" }],
+						fields: [{name: "inspected", type: "boolean"}],
 					};
 				}),
 				{
@@ -1234,7 +1232,7 @@ describe("schemaTypes", () => {
 					name: "myDocument",
 					title: "My Document",
 					extends: "inspectorAbstract",
-					fields: [{ name: "content", type: "text" }],
+					fields: [{name: "content", type: "text"}],
 				},
 			];
 
@@ -1251,21 +1249,21 @@ describe("schemaTypes", () => {
 				defineAbstractResolver((doc) => ({
 					type: "abstract" as const,
 					name: "slugAbstract",
-					fields: [{ name: `${doc.name}Slug`, type: "slug" }],
+					fields: [{name: `${doc.name}Slug`, type: "slug"}],
 				})),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "slugAbstract",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "page",
 					title: "Page",
 					extends: "slugAbstract",
-					fields: [{ name: "heading", type: "string" }],
+					fields: [{name: "heading", type: "string"}],
 				},
 			];
 
@@ -1284,19 +1282,19 @@ describe("schemaTypes", () => {
 				{
 					type: "abstract",
 					name: "staticAbstract",
-					fields: [{ name: "staticField", type: "string" }],
+					fields: [{name: "staticField", type: "string"}],
 				},
 				defineAbstractResolver((doc) => ({
 					type: "abstract" as const,
 					name: "dynamicAbstract",
-					fields: [{ name: `${doc.name}Dynamic`, type: "string" }],
+					fields: [{name: `${doc.name}Dynamic`, type: "string"}],
 				})),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: ["staticAbstract", "dynamicAbstract"],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1315,20 +1313,20 @@ describe("schemaTypes", () => {
 				defineAbstractResolver((doc) => ({
 					type: "abstract" as const,
 					name: "dynamicBase",
-					fields: [{ name: `${doc.name}BaseField`, type: "string" }],
+					fields: [{name: `${doc.name}BaseField`, type: "string"}],
 				})),
 				{
 					type: "abstract",
 					name: "middleAbstract",
 					extends: "dynamicBase",
-					fields: [{ name: "middleField", type: "string" }],
+					fields: [{name: "middleField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "middleAbstract",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1348,26 +1346,26 @@ describe("schemaTypes", () => {
 				defineAbstractResolver((doc) => ({
 					type: "abstract" as const,
 					name: "deepResolver",
-					fields: [{ name: `${doc.name}Deep`, type: "string" }],
+					fields: [{name: `${doc.name}Deep`, type: "string"}],
 				})),
 				{
 					type: "abstract",
 					name: "level1",
 					extends: "deepResolver",
-					fields: [{ name: "level1Field", type: "string" }],
+					fields: [{name: "level1Field", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "level2",
 					extends: "level1",
-					fields: [{ name: "level2Field", type: "string" }],
+					fields: [{name: "level2Field", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "finalDoc",
 					title: "Final Document",
 					extends: "level2",
-					fields: [{ name: "docField", type: "string" }],
+					fields: [{name: "docField", type: "string"}],
 				},
 			];
 
@@ -1402,14 +1400,14 @@ describe("schemaTypes", () => {
 					name: "withTitle",
 					title: "With Title",
 					extends: "fieldInspector",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "withoutTitle",
 					title: "Without Title",
 					extends: "fieldInspector",
-					fields: [{ name: "body", type: "text" }],
+					fields: [{name: "body", type: "text"}],
 				},
 			];
 
@@ -1435,18 +1433,16 @@ describe("schemaTypes", () => {
 				defineAbstractResolver((doc) => ({
 					type: "abstract" as const,
 					name: "richAbstract",
-					fields: [
-						{ name: `${doc.name}Field`, type: "string", fieldset: "seo" },
-					],
-					fieldsets: [{ name: "seo", title: `${doc.name} SEO` }],
-					groups: [{ name: "metadata", title: `${doc.name} Metadata` }],
+					fields: [{name: `${doc.name}Field`, type: "string", fieldset: "seo"}],
+					fieldsets: [{name: "seo", title: `${doc.name} SEO`}],
+					groups: [{name: "metadata", title: `${doc.name} Metadata`}],
 				})),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "richAbstract",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1469,14 +1465,14 @@ describe("schemaTypes", () => {
 				defineAbstractResolver(() => ({
 					type: "abstract" as const,
 					name: "hiddenResolver",
-					fields: [{ name: "hidden", type: "string" }],
+					fields: [{name: "hidden", type: "string"}],
 				})),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "hiddenResolver",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1492,7 +1488,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "nonExistentResolver",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1510,7 +1506,7 @@ describe("schemaTypes", () => {
 					return {
 						type: "abstract" as const,
 						name: "sluggable",
-						fields: [{ name: "slug", type: "slug" }],
+						fields: [{name: "slug", type: "slug"}],
 					};
 				}),
 				{
@@ -1519,14 +1515,14 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: {
 						type: "sluggable",
-						parameters: { source: "title", maxLength: 96 },
+						parameters: {source: "title", maxLength: 96},
 					},
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
 			withExtends(types)([]);
-			expect(receivedOptions).toEqual({ source: "title", maxLength: 96 });
+			expect(receivedOptions).toEqual({source: "title", maxLength: 96});
 		});
 
 		it("should pass true to resolver when extending with boolean", () => {
@@ -1538,7 +1534,7 @@ describe("schemaTypes", () => {
 					return {
 						type: "abstract" as const,
 						name: "timestampable",
-						fields: [{ name: "createdAt", type: "datetime" }],
+						fields: [{name: "createdAt", type: "datetime"}],
 					};
 				}),
 				{
@@ -1546,7 +1542,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "timestampable",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1557,7 +1553,7 @@ describe("schemaTypes", () => {
 		it("should allow resolver to use options to customize fields", () => {
 			const types: ExtendedType[] = [
 				defineAbstractResolver((_doc, options) => {
-					const opts = options as { source?: string } | undefined;
+					const opts = options as {source?: string} | undefined;
 					return {
 						type: "abstract" as const,
 						name: "sluggable",
@@ -1565,7 +1561,7 @@ describe("schemaTypes", () => {
 							{
 								name: "slug",
 								type: "slug",
-								options: { source: opts?.source ?? "title" },
+								options: {source: opts?.source ?? "title"},
 							},
 						],
 					};
@@ -1574,8 +1570,8 @@ describe("schemaTypes", () => {
 					type: "document",
 					name: "article",
 					title: "Article",
-					extends: { type: "sluggable", parameters: { source: "name" } },
-					fields: [{ name: "title", type: "string" }],
+					extends: {type: "sluggable", parameters: {source: "name"}},
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1584,7 +1580,7 @@ describe("schemaTypes", () => {
 				(t) => t.name === "article",
 			) as DocumentDefinition;
 			const slugField = article.fields.find((f) => f.name === "slug");
-			expect(slugField?.options).toEqual({ source: "name" });
+			expect(slugField?.options).toEqual({source: "name"});
 		});
 
 		it("should pass different options to same resolver for different documents", () => {
@@ -1597,15 +1593,15 @@ describe("schemaTypes", () => {
 					return {
 						type: "abstract" as const,
 						name: "sluggable",
-						fields: [{ name: "slug", type: "slug" }],
+						fields: [{name: "slug", type: "slug"}],
 					};
 				}),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
-					extends: { type: "sluggable", parameters: { source: "title" } },
-					fields: [{ name: "title", type: "string" }],
+					extends: {type: "sluggable", parameters: {source: "title"}},
+					fields: [{name: "title", type: "string"}],
 				},
 				{
 					type: "document",
@@ -1613,14 +1609,14 @@ describe("schemaTypes", () => {
 					title: "Page",
 					extends: {
 						type: "sluggable",
-						parameters: { source: "heading", maxLength: 50 },
+						parameters: {source: "heading", maxLength: 50},
 					},
-					fields: [{ name: "heading", type: "string" }],
+					fields: [{name: "heading", type: "string"}],
 				},
 			];
 
 			withExtends(types)([]);
-			expect(receivedOptionsMap["article"]).toEqual({ source: "title" });
+			expect(receivedOptionsMap["article"]).toEqual({source: "title"});
 			expect(receivedOptionsMap["page"]).toEqual({
 				source: "heading",
 				maxLength: 50,
@@ -1635,14 +1631,14 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base",
 					title: "Base",
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: "base",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1662,20 +1658,20 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "seo",
 					title: "SEO",
-					fields: [{ name: "metaTitle", type: "string" }],
+					fields: [{name: "metaTitle", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "timestamps",
 					title: "Timestamps",
-					fields: [{ name: "createdAt", type: "datetime" }],
+					fields: [{name: "createdAt", type: "datetime"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: ["seo", "timestamps"],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1697,7 +1693,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: [],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1719,7 +1715,7 @@ describe("schemaTypes", () => {
 						{
 							name: "slug",
 							type: "slug",
-							options: { source: doc.name },
+							options: {source: doc.name},
 						},
 					],
 				})),
@@ -1728,7 +1724,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "sluggable",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1746,19 +1742,19 @@ describe("schemaTypes", () => {
 				defineAbstractResolver(() => ({
 					type: "abstract",
 					name: "sluggable",
-					fields: [{ name: "slug", type: "slug" }],
+					fields: [{name: "slug", type: "slug"}],
 				})),
 				defineAbstractResolver(() => ({
 					type: "abstract",
 					name: "publishable",
-					fields: [{ name: "publishedAt", type: "datetime" }],
+					fields: [{name: "publishedAt", type: "datetime"}],
 				})),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: ["sluggable", "publishable"],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1778,21 +1774,21 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "grandparent",
 					title: "Grandparent",
-					fields: [{ name: "grandparentField", type: "string" }],
+					fields: [{name: "grandparentField", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "parent",
 					title: "Parent",
 					extends: "grandparent",
-					fields: [{ name: "parentField", type: "string" }],
+					fields: [{name: "parentField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "child",
 					title: "Child",
 					extends: "parent",
-					fields: [{ name: "childField", type: "string" }],
+					fields: [{name: "childField", type: "string"}],
 				},
 			];
 
@@ -1812,27 +1808,27 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base1",
 					title: "Base 1",
-					fields: [{ name: "field1", type: "string" }],
+					fields: [{name: "field1", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "base2",
 					title: "Base 2",
-					fields: [{ name: "field2", type: "string" }],
+					fields: [{name: "field2", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "parent",
 					title: "Parent",
 					extends: ["base1", "base2"],
-					fields: [{ name: "parentField", type: "string" }],
+					fields: [{name: "parentField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "child",
 					title: "Child",
 					extends: "parent",
-					fields: [{ name: "childField", type: "string" }],
+					fields: [{name: "childField", type: "string"}],
 				},
 			];
 
@@ -1854,7 +1850,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "nonExistent",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1869,14 +1865,14 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base",
 					title: "Base",
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: ["base", "nonExistent"],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1892,7 +1888,7 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: "article",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1906,14 +1902,14 @@ describe("schemaTypes", () => {
 					name: "base",
 					title: "Base",
 					extends: ["article"],
-					fields: [{ name: "baseField", type: "string" }],
+					fields: [{name: "baseField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: ["base"],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1929,20 +1925,20 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "base1",
 					title: "Base 1",
-					fields: [{ name: "field1", type: "string" }],
+					fields: [{name: "field1", type: "string"}],
 				},
 				{
 					type: "abstract",
 					name: "base2",
 					title: "Base 2",
-					fields: [{ name: "field2", type: "string" }],
+					fields: [{name: "field2", type: "string"}],
 				},
 				defineAbstractResolver((_doc, options) => {
 					receivedOptions = options;
 					return {
 						type: "abstract",
 						name: "configurable",
-						fields: [{ name: "field3", type: "string" }],
+						fields: [{name: "field3", type: "string"}],
 					};
 				}),
 				{
@@ -1950,21 +1946,21 @@ describe("schemaTypes", () => {
 					name: "docWithString",
 					title: "Doc With String",
 					extends: "base1",
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "docWithArray",
 					title: "Doc With Array",
 					extends: ["base1", "base2"],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "docWithObject",
 					title: "Doc With Object",
-					extends: { type: "configurable", parameters: { custom: "option" } },
-					fields: [{ name: "title", type: "string" }],
+					extends: {type: "configurable", parameters: {custom: "option"}},
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -1988,7 +1984,7 @@ describe("schemaTypes", () => {
 			) as DocumentDefinition;
 			expect(docWithObject.fields).toHaveLength(2);
 			expect(docWithObject.fields.map((f) => f.name)).toContain("field3");
-			expect(receivedOptions).toEqual({ custom: "option" });
+			expect(receivedOptions).toEqual({custom: "option"});
 		});
 	});
 
@@ -2001,15 +1997,15 @@ describe("schemaTypes", () => {
 					return {
 						type: "abstract",
 						name: "sluggable",
-						fields: [{ name: "slug", type: "slug" }],
+						fields: [{name: "slug", type: "slug"}],
 					};
 				}),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
-					extends: { type: "sluggable", parameters: { source: "title" } },
-					fields: [{ name: "title", type: "string" }],
+					extends: {type: "sluggable", parameters: {source: "title"}},
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -2020,7 +2016,7 @@ describe("schemaTypes", () => {
 			expect(article.fields).toHaveLength(2);
 			expect(article.fields.map((f) => f.name)).toContain("slug");
 			expect(article.fields.map((f) => f.name)).toContain("title");
-			expect(receivedOptions).toEqual({ source: "title" });
+			expect(receivedOptions).toEqual({source: "title"});
 		});
 
 		it("should handle extends as an ExtendsOptionsArray", () => {
@@ -2034,7 +2030,7 @@ describe("schemaTypes", () => {
 					return {
 						type: "abstract",
 						name: "sluggable",
-						fields: [{ name: "slug", type: "slug" }],
+						fields: [{name: "slug", type: "slug"}],
 					};
 				}),
 				defineAbstractResolver((_doc, options) => {
@@ -2048,7 +2044,7 @@ describe("schemaTypes", () => {
 					return {
 						type: "abstract",
 						name: "seo",
-						fields: [{ name: "metaTitle", type: "string" }],
+						fields: [{name: "metaTitle", type: "string"}],
 					};
 				}),
 				{
@@ -2056,10 +2052,10 @@ describe("schemaTypes", () => {
 					name: "article",
 					title: "Article",
 					extends: [
-						{ type: "sluggable", parameters: { source: "title" } },
-						{ type: "seo", parameters: { defaultTitle: "My Site" } },
+						{type: "sluggable", parameters: {source: "title"}},
+						{type: "seo", parameters: {defaultTitle: "My Site"}},
 					],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -2071,8 +2067,8 @@ describe("schemaTypes", () => {
 			expect(article.fields.map((f) => f.name)).toContain("slug");
 			expect(article.fields.map((f) => f.name)).toContain("metaTitle");
 			expect(article.fields.map((f) => f.name)).toContain("title");
-			expect(receivedOptionsMap["sluggable"]).toEqual({ source: "title" });
-			expect(receivedOptionsMap["seo"]).toEqual({ defaultTitle: "My Site" });
+			expect(receivedOptionsMap["sluggable"]).toEqual({source: "title"});
+			expect(receivedOptionsMap["seo"]).toEqual({defaultTitle: "My Site"});
 		});
 
 		it("should handle mixed array with strings and ExtendsOptionsArrayEntry", () => {
@@ -2082,14 +2078,14 @@ describe("schemaTypes", () => {
 					type: "abstract",
 					name: "timestamps",
 					title: "Timestamps",
-					fields: [{ name: "createdAt", type: "datetime" }],
+					fields: [{name: "createdAt", type: "datetime"}],
 				},
 				defineAbstractResolver((_doc, options) => {
 					receivedOptions = options;
 					return {
 						type: "abstract",
 						name: "sluggable",
-						fields: [{ name: "slug", type: "slug" }],
+						fields: [{name: "slug", type: "slug"}],
 					};
 				}),
 				{
@@ -2098,9 +2094,9 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: [
 						"timestamps",
-						{ type: "sluggable", parameters: { source: "title" } },
+						{type: "sluggable", parameters: {source: "title"}},
 					],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -2112,7 +2108,7 @@ describe("schemaTypes", () => {
 			expect(article.fields.map((f) => f.name)).toContain("createdAt");
 			expect(article.fields.map((f) => f.name)).toContain("slug");
 			expect(article.fields.map((f) => f.name)).toContain("title");
-			expect(receivedOptions).toEqual({ source: "title" });
+			expect(receivedOptions).toEqual({source: "title"});
 		});
 
 		it("should handle ExtendsOptionsArrayEntry in parent chain", () => {
@@ -2123,22 +2119,22 @@ describe("schemaTypes", () => {
 					return {
 						type: "abstract",
 						name: "base",
-						fields: [{ name: "baseField", type: "string" }],
+						fields: [{name: "baseField", type: "string"}],
 					};
 				}),
 				{
 					type: "abstract",
 					name: "parent",
 					title: "Parent",
-					extends: { type: "base", parameters: { customOption: true } },
-					fields: [{ name: "parentField", type: "string" }],
+					extends: {type: "base", parameters: {customOption: true}},
+					fields: [{name: "parentField", type: "string"}],
 				},
 				{
 					type: "document",
 					name: "child",
 					title: "Child",
 					extends: "parent",
-					fields: [{ name: "childField", type: "string" }],
+					fields: [{name: "childField", type: "string"}],
 				},
 			];
 
@@ -2150,7 +2146,7 @@ describe("schemaTypes", () => {
 			expect(child.fields.map((f) => f.name)).toContain("baseField");
 			expect(child.fields.map((f) => f.name)).toContain("parentField");
 			expect(child.fields.map((f) => f.name)).toContain("childField");
-			expect(receivedOptions).toEqual({ customOption: true });
+			expect(receivedOptions).toEqual({customOption: true});
 		});
 
 		it("should throw error when ExtendsOptionsArrayEntry references non-existent type", () => {
@@ -2159,8 +2155,8 @@ describe("schemaTypes", () => {
 					type: "document",
 					name: "article",
 					title: "Article",
-					extends: { type: "nonExistent", parameters: { foo: "bar" } },
-					fields: [{ name: "title", type: "string" }],
+					extends: {type: "nonExistent", parameters: {foo: "bar"}},
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -2174,17 +2170,17 @@ describe("schemaTypes", () => {
 				defineAbstractResolver(() => ({
 					type: "abstract",
 					name: "existing",
-					fields: [{ name: "field", type: "string" }],
+					fields: [{name: "field", type: "string"}],
 				})),
 				{
 					type: "document",
 					name: "article",
 					title: "Article",
 					extends: [
-						{ type: "existing", parameters: {} },
-						{ type: "nonExistent", parameters: { foo: "bar" } },
+						{type: "existing", parameters: {}},
+						{type: "nonExistent", parameters: {foo: "bar"}},
 					],
-					fields: [{ name: "title", type: "string" }],
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 
@@ -2196,7 +2192,7 @@ describe("schemaTypes", () => {
 		it("should allow resolver to use parameters from ExtendsOptionsArrayEntry", () => {
 			const types: ExtendedType[] = [
 				defineAbstractResolver((_doc, options) => {
-					const opts = options as { source: string; maxLength?: number };
+					const opts = options as {source: string; maxLength?: number};
 					return {
 						type: "abstract",
 						name: "sluggable",
@@ -2218,9 +2214,9 @@ describe("schemaTypes", () => {
 					title: "Article",
 					extends: {
 						type: "sluggable",
-						parameters: { source: "headline", maxLength: 50 },
+						parameters: {source: "headline", maxLength: 50},
 					},
-					fields: [{ name: "headline", type: "string" }],
+					fields: [{name: "headline", type: "string"}],
 				},
 			];
 
@@ -2239,8 +2235,8 @@ describe("schemaTypes", () => {
 					type: "document",
 					name: "article",
 					title: "Article",
-					extends: { type: "article", parameters: {} },
-					fields: [{ name: "title", type: "string" }],
+					extends: {type: "article", parameters: {}},
+					fields: [{name: "title", type: "string"}],
 				},
 			];
 

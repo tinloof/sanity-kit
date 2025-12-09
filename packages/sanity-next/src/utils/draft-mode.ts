@@ -1,5 +1,5 @@
-import type { SanityClient } from "@sanity/client";
-import { defineEnableDraftMode } from "next-sanity/draft-mode";
+import type {SanityClient} from "@sanity/client";
+import {defineEnableDraftMode} from "next-sanity/draft-mode";
 
 /**
  * Creates a draft mode route handler for Next.js API routes

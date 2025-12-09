@@ -1,10 +1,10 @@
 import "tailwindcss/tailwind.css";
 
-import type { Metadata } from "next";
-import { revalidatePath, revalidateTag } from "next/cache";
-import { Inter } from "next/font/google";
-import { draftMode } from "next/headers";
-import { VisualEditing } from "next-sanity";
+import type {Metadata} from "next";
+import {revalidatePath, revalidateTag} from "next/cache";
+import {Inter} from "next/font/google";
+import {draftMode} from "next/headers";
+import {VisualEditing} from "next-sanity";
 
 import config from "@/config";
 
@@ -21,7 +21,7 @@ export default async function RootLayout({
 	params,
 	children,
 }: {
-	params: Promise<{ locale: string }>;
+	params: Promise<{locale: string}>;
 	children: React.ReactNode;
 }) {
 	const locale = (await params).locale;

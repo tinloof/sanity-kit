@@ -1,13 +1,7 @@
-import { localizePathname } from "@tinloof/sanity-web";
+import {localizePathname} from "@tinloof/sanity-web";
 import type React from "react";
-import {
-	createContext,
-	useContext,
-	useEffect,
-	useMemo,
-	useReducer,
-} from "react";
-import { type DocumentDefinition, useSchema } from "sanity";
+import {createContext, useContext, useEffect, useMemo, useReducer} from "react";
+import {type DocumentDefinition, useSchema} from "sanity";
 
 import type {
 	NavigatorContextType,
@@ -18,7 +12,7 @@ import type {
 	Tree,
 	TreeNode,
 } from "../../../types";
-import { buildTree, findTreeByPath } from "../utils";
+import {buildTree, findTreeByPath} from "../utils";
 
 const CURRENT_DIR_PARAM = "sw-dir";
 const CURRENT_LOCALE_PARAM = "sw-locale";
@@ -53,18 +47,18 @@ const actionTypes = {
 function reducer(state: State, action: ReducerAction) {
 	switch (action.type) {
 		case actionTypes.SET_CURRENT_DIR:
-			return { ...state, currentDir: action.payload };
+			return {...state, currentDir: action.payload};
 		case actionTypes.SET_CONTENT_TREE:
-			return { ...state, rootTree: action.payload };
+			return {...state, rootTree: action.payload};
 		case actionTypes.SET_SEARCH_TERM:
-			return { ...state, searchTerm: action.payload };
+			return {...state, searchTerm: action.payload};
 		case actionTypes.SET_LOCALE:
 			return {
 				...state,
 				locale: action.payload,
 			};
 		case actionTypes.REFRESH_TREE:
-			return { ...state, rootTree: {} };
+			return {...state, rootTree: {}};
 
 		default:
 			return state;
@@ -197,12 +191,12 @@ export const NavigatorProvider = ({
 	});
 
 	function handleSearch(input: string) {
-		dispatch({ type: actionTypes.SET_SEARCH_TERM, payload: input });
+		dispatch({type: actionTypes.SET_SEARCH_TERM, payload: input});
 	}
 
 	const actions = {
 		setCurrentDir: (dir: string) => {
-			dispatch({ type: actionTypes.SET_CURRENT_DIR, payload: dir });
+			dispatch({type: actionTypes.SET_CURRENT_DIR, payload: dir});
 			const url = new URL(window.location.href);
 			if (dir !== "") {
 				url.searchParams.set(CURRENT_DIR_PARAM, dir);
@@ -212,7 +206,7 @@ export const NavigatorProvider = ({
 			window.history.pushState({}, "", url);
 		},
 		setLocale: (locale: string) => {
-			dispatch({ type: actionTypes.SET_LOCALE, payload: locale });
+			dispatch({type: actionTypes.SET_LOCALE, payload: locale});
 			const url = new URL(window.location.href);
 			if (locale && locale !== initialLocaleId) {
 				url.searchParams.set(CURRENT_LOCALE_PARAM, locale);

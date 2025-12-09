@@ -1,4 +1,4 @@
-import type { PluginConfigContext } from "./types";
+import type {PluginConfigContext} from "./types";
 
 export const METADATA_SCHEMA_NAME = `translation.metadata`;
 
@@ -15,5 +15,5 @@ export const DEFAULT_CONFIG: PluginConfigContext = {
 	apiVersion: API_VERSION,
 	allowCreateMetaDoc: false,
 	callback: null,
-	abstracts: { i18n: true },
+	abstracts: {i18n: true},
 };

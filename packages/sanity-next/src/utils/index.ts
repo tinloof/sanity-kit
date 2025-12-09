@@ -1,5 +1,5 @@
-export { createDraftModeRoute, defineDraftRoute } from "./draft-mode";
-export { getRedirect, redirectIfNeeded } from "./redirect";
+export {createDraftModeRoute, defineDraftRoute} from "./draft-mode";
+export {getRedirect, redirectIfNeeded} from "./redirect";
 export {
 	type InitSanityI18nUtilsConfig,
 	type InitSanityUtilsConfig,

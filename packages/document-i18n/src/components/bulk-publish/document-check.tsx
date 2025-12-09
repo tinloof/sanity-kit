@@ -1,6 +1,6 @@
-import { Card, Spinner } from "@sanity/ui";
-import { useEffect, useMemo } from "react";
-import { Preview, useEditState, useSchema, useValidationStatus } from "sanity";
+import {Card, Spinner} from "@sanity/ui";
+import {useEffect, useMemo} from "react";
+import {Preview, useEditState, useSchema, useValidationStatus} from "sanity";
 
 type DocumentCheckProps = {
 	id: string;
@@ -24,7 +24,7 @@ export default function DocumentCheck(props: DocumentCheckProps) {
 		removeDraftId,
 	} = props;
 	const editState = useEditState(id, ``);
-	const { isValidating, validation } = useValidationStatus(id, ``);
+	const {isValidating, validation} = useValidationStatus(id, ``);
 	const schema = useSchema();
 
 	const validationHasErrors = useMemo(() => {

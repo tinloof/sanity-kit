@@ -1,5 +1,5 @@
-import { LinkIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {LinkIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured navigation field group with link icon.

@@ -1,4 +1,4 @@
-import type { TranslationReference } from "../../types";
+import type {TranslationReference} from "../../types";
 import ReferencePatcher from "./reference-patcher";
 
 type OptimisticallyStrengthenProps = {
@@ -11,7 +11,7 @@ type OptimisticallyStrengthenProps = {
 export default function OptimisticallyStrengthen(
 	props: OptimisticallyStrengthenProps,
 ) {
-	const { translations = [], metadataId } = props;
+	const {translations = [], metadataId} = props;
 
 	if (!translations.length) {
 		return null;

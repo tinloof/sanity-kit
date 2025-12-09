@@ -1,4 +1,4 @@
-import { defineField } from "sanity";
+import {defineField} from "sanity";
 
 export default defineField({
 	description: "e.g. https://example.com or /about-page",
@@ -12,12 +12,12 @@ export const hrefPt = defineField({
 	name: "hrefPt",
 	title: "Link",
 	type: "object",
-	fields: [{ name: "href", type: "href" }],
+	fields: [{name: "href", type: "href"}],
 	preview: {
 		select: {
 			href: "href",
 		},
-		prepare: ({ href }) => ({
+		prepare: ({href}) => ({
 			title: href,
 		}),
 	},

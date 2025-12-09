@@ -1,8 +1,8 @@
-import type { NextRequest } from "next/server";
-import type { DefinedSanityFetchType } from "next-sanity/live";
-import { redirectIfNeeded } from "./redirect";
-import { generateSanityI18nSitemap, generateSanitySitemap } from "./sitemap";
-import { getPathVariations, localizePathname } from "./urls";
+import type {NextRequest} from "next/server";
+import type {DefinedSanityFetchType} from "next-sanity/live";
+import {redirectIfNeeded} from "./redirect";
+import {generateSanityI18nSitemap, generateSanitySitemap} from "./sitemap";
+import {getPathVariations, localizePathname} from "./urls";
 
 export type InitSanityUtilsConfig = {
 	sanityFetch: DefinedSanityFetchType;
@@ -13,7 +13,7 @@ export type InitSanityI18nUtilsConfig = {
 	sanityFetch: DefinedSanityFetchType;
 	baseUrl: string;
 	i18n: {
-		locales: Array<{ id: string; title: string }>;
+		locales: Array<{id: string; title: string}>;
 		defaultLocaleId: string;
 	};
 };
@@ -32,18 +32,15 @@ export type InitSanityI18nUtilsConfig = {
  * const redirect = await sanityUtils.getRedirect("/old-page");
  * ```
  */
-export function initSanityUtils({
-	sanityFetch,
-	baseUrl,
-}: InitSanityUtilsConfig) {
+export function initSanityUtils({sanityFetch, baseUrl}: InitSanityUtilsConfig) {
 	return {
 		generateSitemap: () =>
 			generateSanitySitemap({
 				sanityFetch,
 				websiteBaseURL: baseUrl,
 			}),
-		redirectIfNeeded: async ({ request }: { request: NextRequest }) =>
-			await redirectIfNeeded({ request, sanityFetch }),
+		redirectIfNeeded: async ({request}: {request: NextRequest}) =>
+			await redirectIfNeeded({request, sanityFetch}),
 	};
 }
 
@@ -81,8 +78,8 @@ export function initSanityI18nUtils({
 				websiteBaseURL: baseUrl,
 				i18n,
 			}),
-		redirectIfNeeded: async ({ request }: { request: NextRequest }) =>
-			await redirectIfNeeded({ request, sanityFetch }),
+		redirectIfNeeded: async ({request}: {request: NextRequest}) =>
+			await redirectIfNeeded({request, sanityFetch}),
 		localizePathname,
 	};
 }

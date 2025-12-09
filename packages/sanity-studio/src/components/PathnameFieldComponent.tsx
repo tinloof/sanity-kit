@@ -16,15 +16,9 @@ import {
 	TextInput,
 } from "@sanity/ui";
 import * as PathUtils from "@sanity/util/paths";
-import { getDocumentPath, stringToPathname } from "@tinloof/sanity-web";
+import {getDocumentPath, stringToPathname} from "@tinloof/sanity-web";
 import type React from "react";
-import {
-	type ReactElement,
-	useCallback,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
+import {type ReactElement, useCallback, useMemo, useRef, useState} from "react";
 import {
 	FormFieldValidationStatus,
 	type FormPatch,
@@ -40,15 +34,15 @@ import {
 	usePresentationNavigate,
 	usePresentationParams,
 } from "sanity/presentation";
-import { styled } from "styled-components";
-import { useDebounce, useDebouncedCallback } from "use-debounce";
+import {styled} from "styled-components";
+import {useDebounce, useDebouncedCallback} from "use-debounce";
 
-import { useAsync } from "../hooks/useAsync";
+import {useAsync} from "../hooks/useAsync";
 import {
 	type SlugContext,
 	usePathnameContext,
 } from "../hooks/usePathnameContext";
-import { usePathnamePrefix } from "../hooks/usePathnamePrefix";
+import {usePathnamePrefix} from "../hooks/usePathnamePrefix";
 import type {
 	DocumentWithLocale,
 	PathnameInputProps,
@@ -82,8 +76,8 @@ export function PathnameFieldComponent(
 	props: PathnameInputProps,
 ): ReactElement {
 	const fieldOptions = props.schemaType.options as PathnameOptions | undefined;
-	const { prefix } = usePathnamePrefix(props);
-	const folderOptions = fieldOptions?.folder ?? { canUnlock: true };
+	const {prefix} = usePathnamePrefix(props);
+	const folderOptions = fieldOptions?.folder ?? {canUnlock: true};
 
 	const i18nOptions = useMemo(
 		() =>
@@ -98,7 +92,7 @@ export function PathnameFieldComponent(
 	const autoNavigate = fieldOptions?.autoNavigate ?? false;
 	const document = useFormValue([]) as DocumentWithLocale;
 	const {
-		inputProps: { onChange, value, readOnly },
+		inputProps: {onChange, value, readOnly},
 		title,
 		description,
 		validation = [],
@@ -226,7 +220,7 @@ export function PathnameFieldComponent(
 						border
 						radius={1}
 						tone="transparent"
-						style={{ position: "relative" }}
+						style={{position: "relative"}}
 					>
 						<Flex gap={2} align="center">
 							<Text muted>
@@ -297,7 +291,7 @@ export function PathnameFieldComponent(
 						ref={fullPathInputRef}
 						onBlur={handleBlur}
 						disabled={readOnly}
-						style={{ flex: 1 }}
+						style={{flex: 1}}
 						{...inputValidationProps}
 					/>
 				</Box>
@@ -397,7 +391,7 @@ function runChange({
 	// We use stringToPathname to ensure that the value is a valid pathname.
 	// We also allow trailing slashes to make it possible to create folders
 	const finalValue = value
-		? stringToPathname(value, { allowTrailingSlash: true })
+		? stringToPathname(value, {allowTrailingSlash: true})
 		: undefined;
 
 	onChange(
@@ -572,7 +566,7 @@ function useSafeNavigate() {
 function useSafePreview() {
 	try {
 		const presentationParams = usePresentationParams();
-		const { preview } = presentationParams;
+		const {preview} = presentationParams;
 		return preview;
 	} catch (e) {
 		return null;

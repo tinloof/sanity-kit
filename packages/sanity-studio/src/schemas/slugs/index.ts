@@ -1,1 +1,1 @@
-export { default as pathnameSlugField } from "./pathname";
+export {default as pathnameSlugField} from "./pathname";

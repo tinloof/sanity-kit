@@ -1,6 +1,6 @@
-import { definePathname } from "@tinloof/sanity-studio";
-import { defineField, defineType } from "sanity";
-import { sections } from "./sections";
+import {definePathname} from "@tinloof/sanity-studio";
+import {defineField, defineType} from "sanity";
+import {sections} from "./sections";
 
 export default defineType({
 	type: "document",
@@ -10,7 +10,7 @@ export default defineType({
 			type: "string",
 			name: "title",
 		},
-		definePathname({ name: "pathname" }),
+		definePathname({name: "pathname"}),
 		defineField({
 			name: "sectionsBody",
 			title: "Sections",

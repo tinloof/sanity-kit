@@ -1,7 +1,7 @@
-import { useListeningQuery } from "sanity-plugin-utils";
+import {useListeningQuery} from "sanity-plugin-utils";
 
-import { METADATA_SCHEMA_NAME } from "../constants";
-import type { Metadata } from "../types";
+import {METADATA_SCHEMA_NAME} from "../constants";
+import type {Metadata} from "../types";
 
 // Using references() seemed less reliable for updating the listener
 // results than querying raw values in the array
@@ -18,9 +18,9 @@ export function useTranslationMetadata(id: string): {
 	loading: boolean;
 	error: boolean | unknown | ProgressEvent;
 } {
-	const { data, loading, error } = useListeningQuery<Metadata[]>(query, {
-		params: { id, translationSchema: METADATA_SCHEMA_NAME },
+	const {data, loading, error} = useListeningQuery<Metadata[]>(query, {
+		params: {id, translationSchema: METADATA_SCHEMA_NAME},
 	});
 
-	return { data: data as Metadata[] | null, loading, error };
+	return {data: data as Metadata[] | null, loading, error};
 }

@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from "sanity";
+import {defineArrayMember, defineField, defineType} from "sanity";
 import createPtBody from "../../../helpers/create-pt-body";
 
 export default defineType({
@@ -24,7 +24,7 @@ export default defineType({
 							type: "string",
 						}),
 						defineField({
-							...createPtBody({ annotations: ["href"] }),
+							...createPtBody({annotations: ["href"]}),
 							name: "content",
 							validation: (Rule) => Rule.required(),
 						}),

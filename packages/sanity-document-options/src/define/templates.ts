@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ConfigContext, DocumentDefinition, Template } from "sanity";
+import type {ConfigContext, DocumentDefinition, Template} from "sanity";
 
 /**
  * Applies template configuration from schema options.

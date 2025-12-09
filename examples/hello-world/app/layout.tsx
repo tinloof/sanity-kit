@@ -1,6 +1,6 @@
 import "tailwindcss/tailwind.css";
 
-import { Inter } from "next/font/google";
+import {Inter} from "next/font/google";
 
 const sans = Inter({
 	variable: "--font-sans",

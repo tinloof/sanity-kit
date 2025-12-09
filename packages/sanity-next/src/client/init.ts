@@ -1,11 +1,11 @@
-import { type ClientConfig, createClient } from "@sanity/client";
-import { type DefineSanityLiveOptions, defineLive } from "next-sanity/live";
-import type { ComponentProps } from "react";
+import {type ClientConfig, createClient} from "@sanity/client";
+import {type DefineSanityLiveOptions, defineLive} from "next-sanity/live";
+import type {ComponentProps} from "react";
 import SanityImage from "../components/sanity-image";
-import { createErrorDraftRoute, defineDraftRoute } from "../utils/draft-mode";
-import { createSanityMetadataResolver } from "../utils/resolve-sanity-metadata";
-import { initSanityI18nUtils, initSanityUtils } from "../utils/sanity";
-import { getVercelBaseUrl } from "../utils/vercel-base-url";
+import {createErrorDraftRoute, defineDraftRoute} from "../utils/draft-mode";
+import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
+import {initSanityI18nUtils, initSanityUtils} from "../utils/sanity";
+import {getVercelBaseUrl} from "../utils/vercel-base-url";
 
 type InitSanityConfig = {
 	client?: ClientConfig;
@@ -58,10 +58,10 @@ export function initSanity(config?: InitSanityConfig) {
 			);
 		}
 
-		const { sanityFetch, ...rest } = defineLive({
+		const {sanityFetch, ...rest} = defineLive({
 			browserToken: sanity_api_token,
 			serverToken: sanity_api_token,
-			client,
+			client: client.withConfig({token: sanity_api_token}),
 		});
 
 		const utils =
@@ -70,9 +70,9 @@ export function initSanity(config?: InitSanityConfig) {
 						sanityFetch,
 						baseUrl,
 					})
-				: initSanityI18nUtils({ sanityFetch, baseUrl, i18n: config.i18n });
+				: initSanityI18nUtils({sanityFetch, baseUrl, i18n: config.i18n});
 
-		const clientWithToken = client.withConfig({ token: sanity_api_token });
+		const clientWithToken = client.withConfig({token: sanity_api_token});
 		const defineEnableDraftMode = defineDraftRoute(clientWithToken).GET;
 
 		return {
@@ -100,7 +100,14 @@ export function initSanity(config?: InitSanityConfig) {
 		};
 	}
 
-	const { sanityFetch, ...rest } = defineLive({ ...config.live, client });
+	const clientWithToken = client.withConfig({token: sanity_api_token});
+
+	const {sanityFetch, ...rest} = defineLive({
+		browserToken: sanity_api_token,
+		serverToken: sanity_api_token,
+		...config.live,
+		client: clientWithToken,
+	});
 
 	const utils =
 		typeof config.i18n === "undefined"
@@ -108,9 +115,7 @@ export function initSanity(config?: InitSanityConfig) {
 					sanityFetch,
 					baseUrl,
 				})
-			: initSanityI18nUtils({ sanityFetch, baseUrl, i18n: config.i18n });
-
-	const clientWithToken = client.withConfig({ token: sanity_api_token });
+			: initSanityI18nUtils({sanityFetch, baseUrl, i18n: config.i18n});
 
 	const defineEnableDraftMode = sanity_api_token
 		? defineDraftRoute(clientWithToken)

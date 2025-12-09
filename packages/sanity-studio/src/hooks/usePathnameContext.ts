@@ -3,7 +3,7 @@
  * Adapted from: https://github.com/sanity-io/sanity/blob/next/packages/sanity/src/core/form/inputs/Slug/utils/useSlugContext.ts
  */
 
-import { useMemo } from "react";
+import {useMemo} from "react";
 import {
 	type SlugSourceContext,
 	useClient,
@@ -16,7 +16,7 @@ import {
 export type SlugContext = Omit<SlugSourceContext, "parent" | "parentPath">;
 
 export function usePathnameContext(): SlugContext {
-	const client = useClient({ apiVersion: "2024-05-14" });
+	const client = useClient({apiVersion: "2024-05-14"});
 	const schema = useSchema();
 	const currentUser = useCurrentUser();
 	const projectId = useProjectId();

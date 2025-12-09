@@ -1,6 +1,6 @@
-import type { CreateAbstractsConfig } from "@tinloof/sanity-extends";
+import type {CreateAbstractsConfig} from "@tinloof/sanity-extends";
 import type * as React from "react";
-import type { DocumentPluginOptions, SchemaPluginOptions } from "sanity";
+import type {DocumentPluginOptions, SchemaPluginOptions} from "sanity";
 import type {
 	ListItemBuilder,
 	StructureBuilder,

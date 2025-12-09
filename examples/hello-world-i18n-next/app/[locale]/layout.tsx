@@ -1,24 +1,24 @@
-import { GLOBAL_QUERY } from "@examples/hello-world-i18n-studio/queries";
-import type { PageProps } from "@tinloof/sanity-next";
-import type { Metadata } from "next";
+import {GLOBAL_QUERY} from "@examples/hello-world-i18n-studio/queries";
+import type {PageProps} from "@tinloof/sanity-next";
+import type {Metadata} from "next";
 
 import "../globals.css";
-import { disableDraftMode } from "@tinloof/sanity-next/actions/disable-draft-mode";
+import {disableDraftMode} from "@tinloof/sanity-next/actions/disable-draft-mode";
 import ExitPreview from "@tinloof/sanity-next/components/exit-preview";
-import { draftMode } from "next/headers";
-import { VisualEditing } from "next-sanity/visual-editing";
-import { SanityLive, sanityFetch } from "@/data/sanity/client";
+import {draftMode} from "next/headers";
+import {VisualEditing} from "next-sanity/visual-editing";
+import {SanityLive, sanityFetch} from "@/data/sanity/client";
 
 type RootLayoutProps = PageProps<"locale">;
 
 export async function generateMetadata(
 	props: RootLayoutProps,
 ): Promise<Metadata> {
-	const { locale } = await props.params;
+	const {locale} = await props.params;
 
-	const { data } = await sanityFetch({
+	const {data} = await sanityFetch({
 		query: GLOBAL_QUERY,
-		params: { locale },
+		params: {locale},
 	});
 
 	return {
@@ -42,7 +42,7 @@ export default async function RootLayout({
 		children: React.ReactNode;
 	}
 >) {
-	const { locale } = await params;
+	const {locale} = await params;
 
 	return (
 		<html lang={locale}>

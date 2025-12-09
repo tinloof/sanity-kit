@@ -1,5 +1,5 @@
-import { CalendarIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {CalendarIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured events field group with calendar icon.

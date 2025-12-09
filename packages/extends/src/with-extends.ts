@@ -1,6 +1,6 @@
-import type { SchemaTypeDefinition } from "sanity";
-import { resolveExtends } from "./resolve-extends";
-import type { ExtendedType } from "./types";
+import type {SchemaTypeDefinition} from "sanity";
+import {resolveExtends} from "./resolve-extends";
+import type {ExtendedType} from "./types";
 
 /**
  * Creates a schema extension function that can be used with Sanity's schema configuration.

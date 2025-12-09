@@ -1,9 +1,9 @@
-import type { MetadataRoute } from "next";
-import type { DefinedSanityFetchType } from "next-sanity/live";
+import type {MetadataRoute} from "next";
+import type {DefinedSanityFetchType} from "next-sanity/live";
 
-import { I18N_SITEMAP_QUERY, SITEMAP_QUERY } from "../../queries";
-import type { i18nConfig } from "../../types";
-import { localizePathname, pathToAbsUrl } from "../../utils/urls";
+import {I18N_SITEMAP_QUERY, SITEMAP_QUERY} from "../../queries";
+import type {i18nConfig} from "../../types";
+import {localizePathname, pathToAbsUrl} from "../../utils/urls";
 
 const HOME_TYPE = "home";
 
@@ -34,7 +34,7 @@ export async function generateSanitySitemap({
 	sanityFetch,
 	websiteBaseURL,
 }: GenerateSanitySitemapProps) {
-	const { data: routes }: { data: SITEMAP_QUERYResult[] } = await sanityFetch({
+	const {data: routes}: {data: SITEMAP_QUERYResult[]} = await sanityFetch({
 		query: SITEMAP_QUERY,
 		params: {
 			homeType: HOME_TYPE,
@@ -49,7 +49,7 @@ export async function generateSanitySitemap({
 			const baseUrl = websiteBaseURL;
 			let url = websiteBaseURL;
 			if (isHomePage) {
-				url = pathToAbsUrl({ baseUrl, path: "/" }) ?? baseUrl;
+				url = pathToAbsUrl({baseUrl, path: "/"}) ?? baseUrl;
 			} else {
 				url = `${baseUrl}${route?.pathname ?? ""}`;
 			}
@@ -71,7 +71,7 @@ export async function generateSanityI18nSitemap({
 	// Fetch all routes for all locales
 	await Promise.all(
 		i18n.locales.map(async (locale) => {
-			const { data: routes }: { data: I18N_SITEMAP_QUERYResult[] } =
+			const {data: routes}: {data: I18N_SITEMAP_QUERYResult[]} =
 				await sanityFetch({
 					query: I18N_SITEMAP_QUERY,
 					perspective: "published",

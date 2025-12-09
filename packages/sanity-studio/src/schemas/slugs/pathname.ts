@@ -1,7 +1,7 @@
-import { defineField, type FieldDefinition, isDev } from "sanity";
+import {defineField, type FieldDefinition, isDev} from "sanity";
 
-import type { PathnameParams } from "../../types";
-import { definePathname } from "../../utils/definePathname";
+import type {PathnameParams} from "../../types";
+import {definePathname} from "../../utils/definePathname";
 
 /**
  * Configuration options for the pathname slug field
@@ -84,6 +84,6 @@ export default function pathnameSlugField(
 		}),
 		readOnly: disableCreation && !isDev,
 		hidden,
-		initialValue: { current: options?.initialValue },
+		initialValue: {current: options?.initialValue},
 	});
 }

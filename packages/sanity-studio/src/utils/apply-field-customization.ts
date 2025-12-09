@@ -1,4 +1,4 @@
-import type { FieldDefinition } from "sanity";
+import type {FieldDefinition} from "sanity";
 
 /**
  * Field customization options for controlling field behavior and visibility.

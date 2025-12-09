@@ -1,5 +1,5 @@
-import { defineQuery } from "next-sanity";
-import { TRANSLATIONS_FRAGMENT } from "../fragments";
+import {defineQuery} from "next-sanity";
+import {TRANSLATIONS_FRAGMENT} from "../fragments";
 
 /**
  * GROQ query to fetch redirect configuration from Sanity.

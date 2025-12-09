@@ -121,7 +121,7 @@ export function localizePathname({
 
 export function stringToPathname(
 	input: string,
-	options?: { allowTrailingSlash?: boolean },
+	options?: {allowTrailingSlash?: boolean},
 ) {
 	let sanitized = input
 		// Convert to lowercase first to ensure consistent character handling

@@ -1,11 +1,11 @@
-import type { BaseSchemaDefinition } from "sanity";
+import type {BaseSchemaDefinition} from "sanity";
 import type {
 	ListItemBuilder,
 	StructureBuilder,
 	StructureResolverContext,
 } from "sanity/structure";
 
-import type { Locale } from "../types";
+import type {Locale} from "../types";
 import singletonItem from "./singleton-item";
 
 /**
@@ -52,7 +52,7 @@ const localizedSingletonItem = ({
 	}
 
 	// Create translation metadata document
-	context.getClient({ apiVersion: "2025-11-14" }).createIfNotExists({
+	context.getClient({apiVersion: "2025-11-14"}).createIfNotExists({
 		_type: "translation.metadata",
 		_id: `${name}_translations_metadata`,
 		schemaTypes: [name],

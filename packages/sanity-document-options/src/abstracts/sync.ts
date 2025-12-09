@@ -1,4 +1,4 @@
-import { defineType, isDev } from "sanity";
+import {defineType, isDev} from "sanity";
 
 export default defineType({
 	name: "sync",
@@ -14,7 +14,7 @@ export default defineType({
 						);
 			},
 			newDocumentOptions: (prev, context) => {
-				const { creationContext } = context;
+				const {creationContext} = context;
 
 				if (
 					!isDev &&

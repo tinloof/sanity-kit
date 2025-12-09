@@ -1,5 +1,5 @@
-import { BarChartIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {BarChartIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured analytics field group with chart icon.

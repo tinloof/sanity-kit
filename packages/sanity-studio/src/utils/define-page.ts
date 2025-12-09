@@ -1,4 +1,4 @@
-import type { DocumentDefinition } from "sanity";
+import type {DocumentDefinition} from "sanity";
 
 import seoObjectField from "../schemas/objects/seo";
 import pathnameSlugField from "../schemas/slugs/pathname";
@@ -6,9 +6,7 @@ import {
 	applyFieldCustomization,
 	type FieldCustomization,
 } from "./apply-field-customization";
-import defineDocument, {
-	type DefineDocumentDefinition,
-} from "./define-document";
+import defineDocument, {type DefineDocumentDefinition} from "./define-document";
 
 type PathnameSlugFieldOptions = NonNullable<
 	Parameters<typeof pathnameSlugField>[0]
@@ -64,7 +62,7 @@ type PageDefinition = Omit<DocumentDefinition, "options" | "type"> & {
  * ```
  */
 export default function definePage(schema: PageDefinition): DocumentDefinition {
-	const { options, preview, fields, ...schemaWithoutOptions } = schema;
+	const {options, preview, fields, ...schemaWithoutOptions} = schema;
 
 	const {
 		defaultLocaleId,

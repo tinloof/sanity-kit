@@ -1,10 +1,10 @@
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import {Bars3Icon} from "@heroicons/react/24/outline";
 
 const navigation = [
-	{ name: "Product", href: "#" },
-	{ name: "Features", href: "#" },
-	{ name: "Marketplace", href: "#" },
-	{ name: "Company", href: "#" },
+	{name: "Product", href: "#"},
+	{name: "Features", href: "#"},
+	{name: "Marketplace", href: "#"},
+	{name: "Company", href: "#"},
 ];
 
 export function Hero(props: any) {

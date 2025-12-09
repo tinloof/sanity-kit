@@ -1,11 +1,11 @@
-import { useCallback, useContext } from "react";
-import { RouterContext } from "sanity/router";
-import { usePaneRouter } from "sanity/structure";
+import {useCallback, useContext} from "react";
+import {RouterContext} from "sanity/router";
+import {usePaneRouter} from "sanity/structure";
 
 export function useOpenInNewPane(id?: string | null, type?: string) {
 	// @ts-expect-error
 	const routerContext = useContext(RouterContext);
-	const { routerPanesState, groupIndex } = usePaneRouter();
+	const {routerPanesState, groupIndex} = usePaneRouter();
 
 	const openInNewPane = useCallback(() => {
 		if (!routerContext || !id || !type) {
@@ -14,7 +14,7 @@ export function useOpenInNewPane(id?: string | null, type?: string) {
 
 		// No panes open, function might be called outside Structure
 		if (!routerPanesState.length) {
-			routerContext.navigateIntent("edit", { id, type });
+			routerContext.navigateIntent("edit", {id, type});
 			return;
 		}
 
@@ -22,12 +22,12 @@ export function useOpenInNewPane(id?: string | null, type?: string) {
 		panes.splice(groupIndex + 1, 0, [
 			{
 				id: id,
-				params: { type },
+				params: {type},
 			},
 		]);
 
-		const href = routerContext.resolvePathFromState({ panes });
-		routerContext.navigateUrl({ path: href });
+		const href = routerContext.resolvePathFromState({panes});
+		routerContext.navigateUrl({path: href});
 	}, [id, type, routerContext, routerPanesState, groupIndex]);
 
 	return openInNewPane;

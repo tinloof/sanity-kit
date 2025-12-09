@@ -1,6 +1,6 @@
 import mergeWith from "lodash/mergeWith";
-import type { DocumentDefinition } from "sanity";
-import type { AbstractDefinition } from "./types";
+import type {DocumentDefinition} from "sanity";
+import type {AbstractDefinition} from "./types";
 
 export function mergeSchema(
 	baseSchema: DocumentDefinition | AbstractDefinition,
@@ -15,10 +15,10 @@ export function mergeSchema(
 				Array.isArray(srcValue)
 			) {
 				const childFieldNames = new Set(
-					srcValue.map((field: { name: string }) => field.name),
+					srcValue.map((field: {name: string}) => field.name),
 				);
 				const filteredParentFields = objValue.filter(
-					(field: { name: string }) => !childFieldNames.has(field.name),
+					(field: {name: string}) => !childFieldNames.has(field.name),
 				);
 				return [...filteredParentFields, ...srcValue];
 			}

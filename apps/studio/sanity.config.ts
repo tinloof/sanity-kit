@@ -1,9 +1,9 @@
-import { visionTool } from "@sanity/vision";
-import { documentI18n } from "@tinloof/sanity-document-i18n";
-import { documentOptions } from "@tinloof/sanity-document-options";
-import { withExtends } from "@tinloof/sanity-extends";
-import { pages } from "@tinloof/sanity-studio";
-import { defineConfig, isDev } from "sanity";
+import {visionTool} from "@sanity/vision";
+import {documentI18n} from "@tinloof/sanity-document-i18n";
+import {documentOptions} from "@tinloof/sanity-document-options";
+import {withExtends} from "@tinloof/sanity-extends";
+import {pages} from "@tinloof/sanity-studio";
+import {defineConfig, isDev} from "sanity";
 import config from "./config";
 import schemas from "./src/schemas";
 
@@ -16,15 +16,15 @@ export default defineConfig({
 		documentOptions({}),
 		documentI18n({
 			locales: [
-				{ id: "en", title: "English" },
-				{ id: "fr", title: "French" },
+				{id: "en", title: "English"},
+				{id: "fr", title: "French"},
 			],
 		}),
 		pages({
 			i18n: {
 				locales: [
-					{ id: "en", title: "English" },
-					{ id: "fr", title: "French" },
+					{id: "en", title: "English"},
+					{id: "fr", title: "French"},
 				],
 				defaultLocaleId: "en",
 			},
@@ -37,7 +37,7 @@ export default defineConfig({
 			},
 			allowOrigins: isDev ? ["http://localhost:3000"] : undefined,
 		}),
-		visionTool({ defaultApiVersion: config.apiVersion }),
+		visionTool({defaultApiVersion: config.apiVersion}),
 	],
 	schema: {
 		types: withExtends(schemas),

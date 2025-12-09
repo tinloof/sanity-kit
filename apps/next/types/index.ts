@@ -21,7 +21,7 @@ export interface PageProps<
 			}[TParams]
 		>
 	>;
-	searchParams: Promise<{ [K in TSearchParams]?: string | string[] }>;
+	searchParams: Promise<{[K in TSearchParams]?: string | string[]}>;
 }
 
 export type Prettify<T> = object & {

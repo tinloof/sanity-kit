@@ -1,13 +1,13 @@
-import { resolveAbstractSchemaTypes } from "@tinloof/sanity-extends";
-import { definePlugin } from "sanity";
-import { presentationTool } from "sanity/presentation";
+import {resolveAbstractSchemaTypes} from "@tinloof/sanity-extends";
+import {definePlugin} from "sanity";
+import {presentationTool} from "sanity/presentation";
 
-import type { SEOObjectProps } from "../../schemas/objects/seo";
-import type { PathnameSlugFieldOptions } from "../../schemas/slugs/pathname";
-import type { PagesNavigatorPluginOptions } from "../../types";
-import { ABSTRACTS_MAP } from "./abstracts";
-import { createPagesNavigator } from "./components/DefaultPagesNavigator";
-import { createPageTemplates, normalizeCreatablePages } from "./utils";
+import type {SEOObjectProps} from "../../schemas/objects/seo";
+import type {PathnameSlugFieldOptions} from "../../schemas/slugs/pathname";
+import type {PagesNavigatorPluginOptions} from "../../types";
+import {ABSTRACTS_MAP} from "./abstracts";
+import {createPagesNavigator} from "./components/DefaultPagesNavigator";
+import {createPageTemplates, normalizeCreatablePages} from "./utils";
 
 /**
  * The `pages` plugin is a wrapper around Sanity's `presentation` plugin.
@@ -43,7 +43,7 @@ export const pages = definePlugin<PagesNavigatorPluginOptions>((config) => {
 		schema: {
 			types: resolveAbstractSchemaTypes(
 				ABSTRACTS_MAP,
-				config?.abstracts ?? { page: true },
+				config?.abstracts ?? {page: true},
 				config?.i18n,
 			),
 			templates: createPageTemplates(normalizedCreatablePages),
@@ -77,6 +77,6 @@ export const pagesNavigator = pages;
 
 declare module "@tinloof/sanity-extends" {
 	interface ExtendsRegistry {
-		page?: { pathname?: PathnameSlugFieldOptions; seo?: SEOObjectProps };
+		page?: {pathname?: PathnameSlugFieldOptions; seo?: SEOObjectProps};
 	}
 }

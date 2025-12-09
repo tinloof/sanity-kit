@@ -1,5 +1,5 @@
-import { EarthGlobeIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {EarthGlobeIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured localization field group with earth globe icon.

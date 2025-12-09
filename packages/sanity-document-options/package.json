@@ -34,7 +34,7 @@
 		"link-watch": "plugin-kit link-watch",
 		"prepublishOnly": "npm run build",
 		"watch": "pkg-utils watch --strict",
-		"dev": "npm run watch"
+		"dev": "bun run watch"
 	},
 	"sanityPlugin": {
 		"verifyPackage": {

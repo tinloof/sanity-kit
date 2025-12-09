@@ -1,11 +1,11 @@
 import React from "react";
-import { useCurrentUser } from "sanity";
+import {useCurrentUser} from "sanity";
 
-import type { PagesNavigatorOptions } from "../../../types";
-import { NavigatorProvider } from "../context";
-import { useSanityFetch } from "../utils";
+import type {PagesNavigatorOptions} from "../../../types";
+import {NavigatorProvider} from "../context";
+import {useSanityFetch} from "../utils";
 import Header from "./Header";
-import { List } from "./List";
+import {List} from "./List";
 import LocaleSelect from "./LocaleSelect";
 import SearchBox from "./SearchBox";
 import ThemeProvider from "./ThemeProvider";

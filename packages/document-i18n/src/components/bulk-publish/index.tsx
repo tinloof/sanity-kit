@@ -1,17 +1,9 @@
-import {
-	Button,
-	Card,
-	Dialog,
-	Inline,
-	Stack,
-	Text,
-	useToast,
-} from "@sanity/ui";
-import { useCallback, useState } from "react";
-import { TextWithTone, useClient, useWorkspace } from "sanity";
+import {Button, Card, Dialog, Inline, Stack, Text, useToast} from "@sanity/ui";
+import {useCallback, useState} from "react";
+import {TextWithTone, useClient, useWorkspace} from "sanity";
 
-import { API_VERSION } from "../../constants";
-import type { TranslationReference } from "../../types";
+import {API_VERSION} from "../../constants";
+import type {TranslationReference} from "../../types";
 import DocumentCheck from "./document-check";
 import Info from "./info";
 
@@ -21,9 +13,9 @@ export type BulkPublishProps = {
 
 // A root-level component with UI for hitting the Publishing API
 export default function BulkPublish(props: BulkPublishProps) {
-	const { translations } = props;
-	const client = useClient({ apiVersion: API_VERSION });
-	const { projectId, dataset } = useWorkspace();
+	const {translations} = props;
+	const client = useClient({apiVersion: API_VERSION});
+	const {projectId, dataset} = useWorkspace();
 	const toast = useToast();
 	const [invalidIds, setInvalidIds] = useState<string[] | null>(null);
 	const [checkedIds, setCheckedIds] = useState<string[]>([]);

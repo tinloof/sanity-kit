@@ -1,4 +1,4 @@
-import { AddCircleIcon, SearchIcon, TrashIcon } from "@sanity/icons";
+import {AddCircleIcon, SearchIcon, TrashIcon} from "@sanity/icons";
 import {
 	Box,
 	Button,
@@ -9,11 +9,11 @@ import {
 	Text,
 	TextInput,
 } from "@sanity/ui";
-import { type ReactElement, useCallback, useState } from "react";
-import { set, unset } from "sanity";
-import { styled } from "styled-components";
+import {type ReactElement, useCallback, useState} from "react";
+import {set, unset} from "sanity";
+import {styled} from "styled-components";
 
-import type { IconInputProps, IconOptions } from "../types";
+import type {IconInputProps, IconOptions} from "../types";
 
 const IconContainer = styled(Box)`
   border-radius: 4px;
@@ -79,7 +79,7 @@ export function IconSelectComponent(props: IconInputProps): ReactElement {
 		elementProps,
 		onChange,
 		value = "",
-		schemaType: { options },
+		schemaType: {options},
 	} = props;
 
 	const iconOptions = options as IconOptions | undefined;
@@ -139,7 +139,7 @@ export function IconSelectComponent(props: IconInputProps): ReactElement {
 							<IconContainer
 								paddingX={2}
 								paddingY={1}
-								style={{ backgroundColor }}
+								style={{backgroundColor}}
 							>
 								<img
 									alt="icon"
@@ -178,7 +178,7 @@ export function IconSelectComponent(props: IconInputProps): ReactElement {
 					zOffset={1000}
 					width={100}
 				>
-					<Box padding={4} style={{ containerType: "inline-size" }}>
+					<Box padding={4} style={{containerType: "inline-size"}}>
 						<TextInput
 							icon={SearchIcon}
 							onChange={onSearchChange}
@@ -243,9 +243,9 @@ function BlockVariantCard({
 			<img
 				className="select-icon"
 				src={`${iconsPath}${icon}.svg`}
-				style={{ ...IconStyles, backgroundColor }}
+				style={{...IconStyles, backgroundColor}}
 			/>
-			<Text style={{ textAlign: "center" }} size={0}>
+			<Text style={{textAlign: "center"}} size={0}>
 				{addSpaceBeforeCapitalLetters(icon)}
 			</Text>
 		</BlockVariantCardContainer>

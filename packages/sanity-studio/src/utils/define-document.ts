@@ -2,14 +2,11 @@ import {
 	orderRankField,
 	orderRankOrdering,
 } from "@sanity/orderable-document-list";
-import { uniqBy } from "lodash";
-import type { DocumentDefinition, SortOrdering } from "sanity";
+import {uniqBy} from "lodash";
+import type {DocumentDefinition, SortOrdering} from "sanity";
 
-import { contentSchemaGroup, settingsSchemaGroup } from "../schemas/groups";
-import {
-	internalTitleStringField,
-	localeStringField,
-} from "../schemas/strings";
+import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";
+import {internalTitleStringField, localeStringField} from "../schemas/strings";
 import {
 	applyFieldCustomization,
 	type FieldCustomization,
@@ -73,7 +70,7 @@ export default function defineDocument(
 		"name",
 	);
 
-	const { options, preview, ...schemaWithoutOptions } = schema;
+	const {options, preview, ...schemaWithoutOptions} = schema;
 
 	const {
 		localized = false,
@@ -91,7 +88,7 @@ export default function defineDocument(
 		: null;
 
 	const orderRankFieldInstance = orderable
-		? orderRankField({ type: schema.name })
+		? orderRankField({type: schema.name})
 		: null;
 
 	const defaultFields = [
@@ -122,7 +119,7 @@ export default function defineDocument(
 			select: {
 				title: "internalTitle",
 			},
-			prepare: ({ title }) => ({
+			prepare: ({title}) => ({
 				title: title ?? schema?.title,
 			}),
 		},

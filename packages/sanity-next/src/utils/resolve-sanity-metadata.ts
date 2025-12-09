@@ -1,7 +1,7 @@
-import { createImageUrlBuilder } from "@sanity/image-url";
-import type { ResolvedMetadata } from "next";
-import type { Image, SanityClient } from "sanity";
-import { localizePathname, pathToAbsUrl } from "./urls";
+import {createImageUrlBuilder} from "@sanity/image-url";
+import type {ResolvedMetadata} from "next";
+import type {Image, SanityClient} from "sanity";
+import {localizePathname, pathToAbsUrl} from "./urls";
 
 type Seo = {
 	title?: string;
@@ -10,7 +10,7 @@ type Seo = {
 	indexable?: boolean;
 };
 
-type Translation = null | { locale: null | string; pathname: null | string };
+type Translation = null | {locale: null | string; pathname: null | string};
 
 type GetOgImagesProps = {
 	image: Image;
@@ -23,9 +23,9 @@ type GetOgImagesProps = {
  * @returns Array of Open Graph image objects with URL and width
  */
 export function getOgImages(props: GetOgImagesProps) {
-	const { image, client } = props;
+	const {image, client} = props;
 
-	const { dataset, projectId } = client.config();
+	const {dataset, projectId} = client.config();
 
 	const imageBuilder = createImageUrlBuilder({
 		dataset: dataset || "",
@@ -146,7 +146,7 @@ export async function resolveSanityRouteMetadata(
 
 	if (seo?.ogImage?.asset) {
 		try {
-			ogImages = getOgImages({ image: seo.ogImage, client });
+			ogImages = getOgImages({image: seo.ogImage, client});
 		} catch (error) {
 			console.warn("Failed to generate OG images from SEO image:", error);
 			ogImages = parent?.openGraph?.images || [];
@@ -177,20 +177,20 @@ export async function resolveSanityRouteMetadata(
 			}
 		}
 		languages["x-default"] =
-			pathToAbsUrl({ baseUrl: websiteBaseURL, path }) || "";
+			pathToAbsUrl({baseUrl: websiteBaseURL, path}) || "";
 	}
 
 	return {
 		alternates: {
 			canonical: canonicalUrl,
-			...(Object.keys(languages).length > 0 ? { languages } : {}),
+			...(Object.keys(languages).length > 0 ? {languages} : {}),
 		},
-		...(seo?.title ? { title: seo.title } : title ? { title } : {}),
-		...(seo?.description ? { description: seo.description } : {}),
+		...(seo?.title ? {title: seo.title} : title ? {title} : {}),
+		...(seo?.description ? {description: seo.description} : {}),
 		openGraph: {
 			images: ogImages,
 			url: canonicalUrl,
-			...(seo?.title ? { title: seo.title } : title ? { title } : {}),
+			...(seo?.title ? {title: seo.title} : title ? {title} : {}),
 		},
 		robots: !seo?.indexable ? "noindex nofollow" : undefined,
 	};
@@ -230,7 +230,7 @@ export function createSanityMetadataResolver(
 		"client" | "websiteBaseURL" | "defaultLocaleId"
 	>,
 ) {
-	const { client, websiteBaseURL, defaultLocaleId } = options;
+	const {client, websiteBaseURL, defaultLocaleId} = options;
 
 	// Validate required configuration
 	if (!client) {

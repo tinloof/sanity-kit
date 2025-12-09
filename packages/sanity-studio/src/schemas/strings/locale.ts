@@ -1,4 +1,4 @@
-import { defineField } from "sanity";
+import {defineField} from "sanity";
 
 /**
  * Creates a hidden locale string field for internationalization.

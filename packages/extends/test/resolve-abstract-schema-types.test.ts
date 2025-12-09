@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
-import { defineAbstractResolver } from "../src/define-abstract-resolver";
-import { resolveAbstractSchemaTypes } from "../src/resolve-abstract-schema-types";
-import type { AbstractDefinition, ExtendedType } from "../src/types";
+import {describe, expect, it, vi} from "vitest";
+import {defineAbstractResolver} from "../src/define-abstract-resolver";
+import {resolveAbstractSchemaTypes} from "../src/resolve-abstract-schema-types";
+import type {AbstractDefinition, ExtendedType} from "../src/types";
 
 describe("resolveAbstractSchemaTypes", () => {
 	describe("Basic functionality", () => {
@@ -10,7 +10,7 @@ describe("resolveAbstractSchemaTypes", () => {
 				singleton: defineAbstractResolver(() => ({
 					type: "abstract" as const,
 					name: "singleton",
-					fields: [{ name: "isSingleton", type: "boolean" }],
+					fields: [{name: "isSingleton", type: "boolean"}],
 				})),
 			};
 
@@ -24,7 +24,7 @@ describe("resolveAbstractSchemaTypes", () => {
 				singleton: defineAbstractResolver(() => ({
 					type: "abstract" as const,
 					name: "singleton",
-					fields: [{ name: "isSingleton", type: "boolean" }],
+					fields: [{name: "isSingleton", type: "boolean"}],
 				})),
 			};
 
@@ -38,12 +38,12 @@ describe("resolveAbstractSchemaTypes", () => {
 				singleton: defineAbstractResolver(() => ({
 					type: "abstract" as const,
 					name: "singleton",
-					fields: [{ name: "isSingleton", type: "boolean" }],
+					fields: [{name: "isSingleton", type: "boolean"}],
 				})),
 				sync: defineAbstractResolver(() => ({
 					type: "abstract" as const,
 					name: "sync",
-					fields: [{ name: "syncEnabled", type: "boolean" }],
+					fields: [{name: "syncEnabled", type: "boolean"}],
 				})),
 			};
 
@@ -59,13 +59,13 @@ describe("resolveAbstractSchemaTypes", () => {
 			const singletonResolver = defineAbstractResolver(() => ({
 				type: "abstract" as const,
 				name: "singleton",
-				fields: [{ name: "isSingleton", type: "boolean" }],
+				fields: [{name: "isSingleton", type: "boolean"}],
 			}));
 
 			const syncResolver = defineAbstractResolver(() => ({
 				type: "abstract" as const,
 				name: "sync",
-				fields: [{ name: "syncEnabled", type: "boolean" }],
+				fields: [{name: "syncEnabled", type: "boolean"}],
 			}));
 
 			const schemaMap = {
@@ -87,19 +87,19 @@ describe("resolveAbstractSchemaTypes", () => {
 			const singletonResolver = defineAbstractResolver(() => ({
 				type: "abstract" as const,
 				name: "singleton",
-				fields: [{ name: "isSingleton", type: "boolean" }],
+				fields: [{name: "isSingleton", type: "boolean"}],
 			}));
 
 			const syncResolver = defineAbstractResolver(() => ({
 				type: "abstract" as const,
 				name: "sync",
-				fields: [{ name: "syncEnabled", type: "boolean" }],
+				fields: [{name: "syncEnabled", type: "boolean"}],
 			}));
 
 			const seoResolver = defineAbstractResolver(() => ({
 				type: "abstract" as const,
 				name: "seo",
-				fields: [{ name: "metaTitle", type: "string" }],
+				fields: [{name: "metaTitle", type: "string"}],
 			}));
 
 			const schemaMap = {
@@ -123,7 +123,7 @@ describe("resolveAbstractSchemaTypes", () => {
 			const singletonSchema: AbstractDefinition = {
 				type: "abstract",
 				name: "singleton",
-				fields: [{ name: "isSingleton", type: "boolean" }],
+				fields: [{name: "isSingleton", type: "boolean"}],
 			};
 
 			const schemaMap: Record<string, ExtendedType> = {
@@ -142,7 +142,7 @@ describe("resolveAbstractSchemaTypes", () => {
 			const singletonSchema: AbstractDefinition = {
 				type: "abstract",
 				name: "singleton",
-				fields: [{ name: "isSingleton", type: "boolean" }],
+				fields: [{name: "isSingleton", type: "boolean"}],
 			};
 
 			const schemaMap: Record<string, ExtendedType> = {
@@ -151,8 +151,8 @@ describe("resolveAbstractSchemaTypes", () => {
 
 			const result = resolveAbstractSchemaTypes(
 				schemaMap,
-				{ singleton: true },
-				{ apiVersion: "2024-01-01" },
+				{singleton: true},
+				{apiVersion: "2024-01-01"},
 			);
 
 			expect(result).toHaveLength(1);
@@ -169,7 +169,7 @@ describe("resolveAbstractSchemaTypes", () => {
 				return {
 					type: "abstract" as const,
 					name: "singleton",
-					fields: [{ name: "isSingleton", type: "boolean" }],
+					fields: [{name: "isSingleton", type: "boolean"}],
 				};
 			});
 
@@ -179,8 +179,8 @@ describe("resolveAbstractSchemaTypes", () => {
 
 			const result = resolveAbstractSchemaTypes(
 				schemaMap,
-				{ singleton: true },
-				{ apiVersion: "2024-01-01" },
+				{singleton: true},
+				{apiVersion: "2024-01-01"},
 			);
 
 			expect(result).toHaveLength(1);
@@ -188,8 +188,8 @@ describe("resolveAbstractSchemaTypes", () => {
 			// Call the wrapped resolver to verify options are merged
 			const wrappedResolver = result[0] as typeof singletonResolver;
 			wrappedResolver(
-				{ type: "document", name: "test", fields: [] },
-				{ custom: "value" },
+				{type: "document", name: "test", fields: []},
+				{custom: "value"},
 			);
 
 			expect(receivedOptions[0]).toEqual({
@@ -202,14 +202,14 @@ describe("resolveAbstractSchemaTypes", () => {
 			const singletonResolver = defineAbstractResolver(() => ({
 				type: "abstract" as const,
 				name: "singleton",
-				fields: [{ name: "isSingleton", type: "boolean" }],
+				fields: [{name: "isSingleton", type: "boolean"}],
 			}));
 
 			const schemaMap = {
 				singleton: singletonResolver,
 			};
 
-			const result = resolveAbstractSchemaTypes(schemaMap, { singleton: true });
+			const result = resolveAbstractSchemaTypes(schemaMap, {singleton: true});
 
 			expect(result).toHaveLength(1);
 			expect(result[0]).toBe(singletonResolver);
@@ -227,7 +227,7 @@ describe("resolveAbstractSchemaTypes", () => {
 						{
 							name: "slug",
 							type: "slug",
-							options: { source: (options as any)?.source ?? "title" },
+							options: {source: (options as any)?.source ?? "title"},
 						},
 					],
 				};
@@ -239,15 +239,15 @@ describe("resolveAbstractSchemaTypes", () => {
 
 			const result = resolveAbstractSchemaTypes(
 				schemaMap,
-				{ sluggable: true },
-				{ globalOption: "global-value" },
+				{sluggable: true},
+				{globalOption: "global-value"},
 			);
 
 			// Call the wrapped resolver with resolver-specific options
 			const wrappedResolver = result[0] as typeof sluggableResolver;
 			wrappedResolver(
-				{ type: "document", name: "test", fields: [] },
-				{ source: "name", resolverOption: "resolver-value" },
+				{type: "document", name: "test", fields: []},
+				{source: "name", resolverOption: "resolver-value"},
 			);
 
 			expect(capturedOptions).toEqual({
@@ -269,18 +269,18 @@ describe("resolveAbstractSchemaTypes", () => {
 				};
 			});
 
-			const schemaMap = { test: resolver };
+			const schemaMap = {test: resolver};
 
 			const result = resolveAbstractSchemaTypes(
 				schemaMap,
-				{ test: true },
-				{ sharedKey: "global" },
+				{test: true},
+				{sharedKey: "global"},
 			);
 
 			const wrappedResolver = result[0] as typeof resolver;
 			wrappedResolver(
-				{ type: "document", name: "test", fields: [] },
-				{ sharedKey: "local" },
+				{type: "document", name: "test", fields: []},
+				{sharedKey: "local"},
 			);
 
 			// Global options should override local ones (spread order: {...resolverOptions, ...options})
@@ -341,20 +341,20 @@ describe("resolveAbstractSchemaTypes", () => {
 				type: "abstract" as const,
 				name: "contextual",
 				title: `Abstract for ${doc.name}`,
-				fields: [{ name: "contextField", type: "string" }],
+				fields: [{name: "contextField", type: "string"}],
 			}));
 
-			const schemaMap = { contextual: resolver };
+			const schemaMap = {contextual: resolver};
 
 			const result = resolveAbstractSchemaTypes(
 				schemaMap,
-				{ contextual: true },
-				{ someOption: true },
+				{contextual: true},
+				{someOption: true},
 			);
 
 			const wrappedResolver = result[0] as typeof resolver;
 			const resolved = wrappedResolver(
-				{ type: "document", name: "myDocument", fields: [] },
+				{type: "document", name: "myDocument", fields: []},
 				{},
 			);
 
@@ -435,19 +435,19 @@ describe("resolveAbstractSchemaTypes", () => {
 				fields: [],
 			}));
 
-			const schemaMap = { test: resolver };
+			const schemaMap = {test: resolver};
 
 			const options: Record<string, unknown> = {
 				stringOption: "value",
 				numberOption: 42,
 				booleanOption: true,
-				objectOption: { nested: "value" },
+				objectOption: {nested: "value"},
 				arrayOption: [1, 2, 3],
 			};
 
 			const result = resolveAbstractSchemaTypes(
 				schemaMap,
-				{ test: true },
+				{test: true},
 				options,
 			);
 
@@ -460,7 +460,7 @@ describe("resolveAbstractSchemaTypes", () => {
 			const singletonResolver = defineAbstractResolver(() => ({
 				type: "abstract" as const,
 				name: "singleton",
-				fields: [{ name: "isSingleton", type: "boolean", initialValue: true }],
+				fields: [{name: "isSingleton", type: "boolean", initialValue: true}],
 			}));
 
 			const sluggableResolver = defineAbstractResolver((_doc, options) => ({
@@ -482,9 +482,9 @@ describe("resolveAbstractSchemaTypes", () => {
 				type: "abstract" as const,
 				name: "seo",
 				fields: [
-					{ name: "metaTitle", type: "string" },
-					{ name: "metaDescription", type: "text" },
-					{ name: "ogImage", type: "image" },
+					{name: "metaTitle", type: "string"},
+					{name: "metaDescription", type: "text"},
+					{name: "ogImage", type: "image"},
 				],
 			}));
 
@@ -492,8 +492,8 @@ describe("resolveAbstractSchemaTypes", () => {
 				type: "abstract" as const,
 				name: "publishable",
 				fields: [
-					{ name: "publishedAt", type: "datetime" },
-					{ name: "status", type: "string" },
+					{name: "publishedAt", type: "datetime"},
+					{name: "status", type: "string"},
 				],
 			}));
 
@@ -513,7 +513,7 @@ describe("resolveAbstractSchemaTypes", () => {
 					seo: true,
 					publishable: false,
 				},
-				{ apiVersion: "2024-01-01" },
+				{apiVersion: "2024-01-01"},
 			);
 
 			expect(result).toHaveLength(2);
@@ -523,18 +523,18 @@ describe("resolveAbstractSchemaTypes", () => {
 		it("should work with plugin configuration pattern", () => {
 			// Simulating a plugin that exposes abstract schemas
 			const createPluginAbstracts = (
-				config: { singleton?: boolean; sync?: boolean } = {},
+				config: {singleton?: boolean; sync?: boolean} = {},
 			) => {
 				const schemaMap = {
 					singleton: defineAbstractResolver(() => ({
 						type: "abstract" as const,
 						name: "singleton",
-						fields: [{ name: "isSingleton", type: "boolean" }],
+						fields: [{name: "isSingleton", type: "boolean"}],
 					})),
 					sync: defineAbstractResolver(() => ({
 						type: "abstract" as const,
 						name: "sync",
-						fields: [{ name: "syncEnabled", type: "boolean" }],
+						fields: [{name: "syncEnabled", type: "boolean"}],
 					})),
 				};
 
@@ -545,7 +545,7 @@ describe("resolveAbstractSchemaTypes", () => {
 			};
 
 			// User enables only singleton
-			const abstracts = createPluginAbstracts({ singleton: true });
+			const abstracts = createPluginAbstracts({singleton: true});
 
 			expect(abstracts).toHaveLength(1);
 		});

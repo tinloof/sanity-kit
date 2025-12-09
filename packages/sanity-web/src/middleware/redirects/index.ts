@@ -1,6 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server";
-import type { DefinedSanityFetchType } from "next-sanity/live";
-import { getRedirect } from "../../utils/redirects";
+import {type NextRequest, NextResponse} from "next/server";
+import type {DefinedSanityFetchType} from "next-sanity/live";
+import {getRedirect} from "../../utils/redirects";
 
 export type RedirectIfNeededParams = {
 	pathname: string;

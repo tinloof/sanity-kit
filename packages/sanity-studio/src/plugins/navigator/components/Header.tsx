@@ -1,4 +1,4 @@
-import { AddIcon, ArrowLeftIcon, HomeIcon } from "@sanity/icons";
+import {AddIcon, ArrowLeftIcon, HomeIcon} from "@sanity/icons";
 import {
 	Button,
 	Card,
@@ -8,17 +8,17 @@ import {
 	MenuItem as MenuItemComponent,
 	Text,
 } from "@sanity/ui";
-import { type ReactElement, useCallback } from "react";
-import { useSchema } from "sanity";
-import { useIntentLink } from "sanity/router";
+import {type ReactElement, useCallback} from "react";
+import {useSchema} from "sanity";
+import {useIntentLink} from "sanity/router";
 
-import type { HeaderProps, NormalizedCreatablePage } from "../../../types";
-import { useNavigator } from "../context";
-import { getTemplateName, pathnameToTitle } from "../utils";
+import type {HeaderProps, NormalizedCreatablePage} from "../../../types";
+import {useNavigator} from "../context";
+import {getTemplateName, pathnameToTitle} from "../utils";
 import TooltipWrapper from "./ToolTipWrapper";
 
-const Header = ({ pages, domRef, children }: HeaderProps): ReactElement => {
-	const { currentDir, setCurrentDir, locale } = useNavigator();
+const Header = ({pages, domRef, children}: HeaderProps): ReactElement => {
+	const {currentDir, setCurrentDir, locale} = useNavigator();
 
 	const back = useCallback(() => {
 		if (currentDir) {
@@ -72,12 +72,12 @@ const Header = ({ pages, domRef, children }: HeaderProps): ReactElement => {
 						<MenuButton
 							id="create-new-page"
 							button={<Button fontSize={0} mode="bleed" icon={<AddIcon />} />}
-							popover={{ portal: true }}
+							popover={{portal: true}}
 							menu={
 								<Menu>
-									{pages?.map(({ type, title }) => (
+									{pages?.map(({type, title}) => (
 										<MenuItem
-											page={{ type, title }}
+											page={{type, title}}
 											locale={locale}
 											currentDir={currentDir}
 											key={type}
@@ -105,8 +105,8 @@ function MenuItem(props: {
 	currentDir: string;
 	page: NormalizedCreatablePage;
 }) {
-	const { locale, currentDir, page } = props;
-	const { type, title } = page;
+	const {locale, currentDir, page} = props;
+	const {type, title} = page;
 	const schema = useSchema();
 	const schemaType = schema.get(type);
 	const pathnameField =

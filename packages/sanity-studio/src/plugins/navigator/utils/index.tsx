@@ -1,7 +1,7 @@
-import { capitalize } from "lodash";
-import { useMemo } from "react";
-import { useObservable } from "react-rx";
-import { type QueryParams, useDocumentStore } from "sanity";
+import {capitalize} from "lodash";
+import {useMemo} from "react";
+import {useObservable} from "react-rx";
+import {type QueryParams, useDocumentStore} from "sanity";
 
 import type {
 	NormalizedCreatablePage,
@@ -79,7 +79,7 @@ export function buildTree(list: Page[]): Tree {
 			else if (isFolder && currentFolder[segment]._type !== "folder") {
 				currentFolder[segment] = {
 					...node,
-					children: { "": currentFolder[segment] },
+					children: {"": currentFolder[segment]},
 				};
 			}
 
@@ -134,20 +134,20 @@ export const getTemplateName = (template: string) => {
 };
 
 export function createPageTemplates(creatablePages: NormalizedCreatablePage[]) {
-	return creatablePages.map(({ type }) => {
+	return creatablePages.map(({type}) => {
 		return {
 			id: getTemplateName(type),
 			title: `${type} with pathname`,
 			schemaType: type,
 			parameters: [
-				{ name: "locale", type: "string" },
-				{ name: "pathname", type: "string" },
+				{name: "locale", type: "string"},
+				{name: "pathname", type: "string"},
 			],
 			value: (params: any) => {
 				return {
-					...(params.locale && { locale: params.locale }),
+					...(params.locale && {locale: params.locale}),
 					...(params.pathname
-						? { pathname: { _type: "slug", current: params.pathname } }
+						? {pathname: {_type: "slug", current: params.pathname}}
 						: {}),
 				};
 			},

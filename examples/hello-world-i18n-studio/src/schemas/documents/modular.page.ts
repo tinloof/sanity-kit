@@ -1,4 +1,4 @@
-import { defineType } from "sanity";
+import {defineType} from "sanity";
 
 export default defineType({
 	name: "modular.page",
@@ -26,7 +26,7 @@ export default defineType({
 			title: "title",
 			pathname: "pathname.current",
 		},
-		prepare: ({ locale, pathname, title }) => ({
+		prepare: ({locale, pathname, title}) => ({
 			title: `(${locale}) ${title}`,
 			subtitle: pathname,
 		}),

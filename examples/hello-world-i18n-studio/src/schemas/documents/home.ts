@@ -1,4 +1,4 @@
-import { defineType } from "sanity";
+import {defineType} from "sanity";
 
 export default defineType({
 	name: "home",
@@ -6,7 +6,7 @@ export default defineType({
 	type: "document",
 	extends: [
 		"singleton",
-		{ type: "page", parameters: { pathname: { disableCreation: true } } },
+		{type: "page", parameters: {pathname: {disableCreation: true}}},
 		"i18n",
 	],
 	options: {
@@ -28,7 +28,7 @@ export default defineType({
 		select: {
 			locale: "locale",
 		},
-		prepare: ({ locale }) => ({
+		prepare: ({locale}) => ({
 			title: `(${locale}) Home`,
 		}),
 	},

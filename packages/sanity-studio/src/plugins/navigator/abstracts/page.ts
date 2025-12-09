@@ -1,5 +1,5 @@
-import { defineAbstractResolver } from "@tinloof/sanity-extends";
-import { defineType } from "sanity";
+import {defineAbstractResolver} from "@tinloof/sanity-extends";
+import {defineType} from "sanity";
 
 import {
 	contentSchemaGroup,
@@ -7,12 +7,12 @@ import {
 	seoObjectField,
 	settingsSchemaGroup,
 } from "../../../schemas";
-import type { SEOObjectProps } from "../../../schemas/objects/seo";
-import type { PathnameSlugFieldOptions } from "../../../schemas/slugs/pathname";
-import type { PagesNavigatorPluginOptions } from "../../../types";
+import type {SEOObjectProps} from "../../../schemas/objects/seo";
+import type {PathnameSlugFieldOptions} from "../../../schemas/slugs/pathname";
+import type {PagesNavigatorPluginOptions} from "../../../types";
 
 export default defineAbstractResolver((_schema, options) => {
-	const { pathname, locales, defaultLocaleId, seo } =
+	const {pathname, locales, defaultLocaleId, seo} =
 		(options as {
 			pathname?: PathnameSlugFieldOptions;
 			seo?: SEOObjectProps;
@@ -24,7 +24,7 @@ export default defineAbstractResolver((_schema, options) => {
 		groups: [contentSchemaGroup, settingsSchemaGroup],
 		fields: [
 			{
-				...seoObjectField({ ...seo }),
+				...seoObjectField({...seo}),
 				group: "settings",
 			},
 			{

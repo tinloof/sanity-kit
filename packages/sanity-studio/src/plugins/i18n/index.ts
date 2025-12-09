@@ -69,7 +69,7 @@ export const documentI18n = definePlugin<SanityI18NPluginOptions>((options) => {
 		name: "tinloof-sanity-i18n",
 		title: "Sanity i18n",
 		document: {
-			newDocumentOptions: (prev: TemplateItem[], { schema }) => {
+			newDocumentOptions: (prev: TemplateItem[], {schema}) => {
 				// Filter out:
 				//  - The translations meta document
 				//  - Default templates that have a locale field but no locale parameter, so only sanity-document-internationalization templates are shown

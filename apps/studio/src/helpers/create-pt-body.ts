@@ -1,5 +1,5 @@
-import { defineArrayMember, defineField } from "sanity";
-import { hrefPt } from "../schemas/objects/href";
+import {defineArrayMember, defineField} from "sanity";
+import {hrefPt} from "../schemas/objects/href";
 
 const AVAILABLE_STYLES = {
 	h2: "H2",
@@ -14,7 +14,7 @@ const AVAILABLE_BLOCKS = {
 		type: "image",
 		name: "imagePtBlock",
 		title: "Image",
-		options: { hotspot: true },
+		options: {hotspot: true},
 		fields: [
 			defineField({
 				name: "caption",
@@ -92,19 +92,19 @@ const AVAILABLE_BLOCKS = {
 const AVAILABLE_INNER_BLOCKS = {} as const;
 
 const AVAILABLE_LISTS = {
-	bullet: { title: "Bullet list", value: "bullet" },
-	number: { title: "Numbered list", value: "number" },
+	bullet: {title: "Bullet list", value: "bullet"},
+	number: {title: "Numbered list", value: "number"},
 } as const;
 
 const AVAILABLE_DECORATORS = {
-	strong: { title: "Strong", value: "strong" },
-	em: { title: "Emphasis", value: "em" },
-	underline: { title: "Underline", value: "underline" },
-	strikeThrough: { title: "Strike through", value: "strike-through" },
+	strong: {title: "Strong", value: "strong"},
+	em: {title: "Emphasis", value: "em"},
+	underline: {title: "Underline", value: "underline"},
+	strikeThrough: {title: "Strike through", value: "strike-through"},
 } as const;
 
 const AVAILABLE_ANNOTATIONS = {
-	href: { ...hrefPt },
+	href: {...hrefPt},
 	inlineCode: {
 		name: "inlineCode",
 		type: "object",
@@ -158,7 +158,7 @@ export default ({
 					),
 				},
 				styles: [
-					{ title: "Paragraph", value: "normal" },
+					{title: "Paragraph", value: "normal"},
 					...styles.map((style) => ({
 						title:
 							AVAILABLE_STYLES[style as keyof typeof AVAILABLE_STYLES] || style,
@@ -172,9 +172,7 @@ export default ({
 					// ),
 				],
 			}),
-			...blocks.map((block) =>
-				defineArrayMember({ ...AVAILABLE_BLOCKS[block] }),
-			),
+			...blocks.map((block) => defineArrayMember({...AVAILABLE_BLOCKS[block]})),
 		],
 	});
 };

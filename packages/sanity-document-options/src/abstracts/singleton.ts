@@ -1,4 +1,4 @@
-import { defineType } from "sanity";
+import {defineType} from "sanity";
 
 export default defineType({
 	name: "singleton",
@@ -11,7 +11,7 @@ export default defineType({
 						!["delete", "duplicate", "unpublish"].includes(action.action || ""),
 				),
 			newDocumentOptions: (prev, context) => {
-				const { creationContext } = context;
+				const {creationContext} = context;
 
 				if (
 					["structure", "global", "document"].includes(creationContext.type)

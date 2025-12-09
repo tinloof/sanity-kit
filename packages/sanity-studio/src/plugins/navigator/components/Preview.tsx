@@ -1,9 +1,9 @@
-import { isImageSource, type SanityImageSource } from "@sanity/asset-utils";
-import { DocumentIcon } from "@sanity/icons";
-import { createImageUrlBuilder } from "@sanity/image-url";
-import React, { useMemo } from "react";
-import { isValidElementType } from "react-is";
-import { useObservable } from "react-rx";
+import {isImageSource, type SanityImageSource} from "@sanity/asset-utils";
+import {DocumentIcon} from "@sanity/icons";
+import {createImageUrlBuilder} from "@sanity/image-url";
+import React, {useMemo} from "react";
+import {isValidElementType} from "react-is";
+import {useObservable} from "react-rx";
 import {
 	getPreviewStateObservable,
 	getPreviewValueWithFallback,
@@ -17,7 +17,7 @@ import {
 	useSchema,
 } from "sanity";
 
-import type { FolderTreeNode, TreeNode } from "../../../types";
+import type {FolderTreeNode, TreeNode} from "../../../types";
 
 const PreviewElement = React.memo(function PreviewElement(props: {
 	item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
@@ -25,7 +25,7 @@ const PreviewElement = React.memo(function PreviewElement(props: {
 	fallback?: React.ReactNode | string;
 }): React.ReactNode {
 	const schema = useSchema();
-	const { _type } = props.item;
+	const {_type} = props.item;
 	const schemaType = schema.get(_type);
 
 	if (!schemaType) {
@@ -109,7 +109,7 @@ const Preview = React.memo(function Preview({
 });
 
 const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
-	const { icon, media: mediaProp, imageUrl, title } = props;
+	const {icon, media: mediaProp, imageUrl, title} = props;
 
 	const client = useClient({
 		apiVersion: "2024-03-12",
@@ -144,7 +144,7 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
 				<img
 					alt={isString(title) ? title : undefined}
 					referrerPolicy="strict-origin-when-cross-origin"
-					style={{ maxWidth: "100%" }}
+					style={{maxWidth: "100%"}}
 					src={
 						imageBuilder
 							.image(
@@ -214,4 +214,4 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
 
 PreviewMedia.displayName = "PreviewMedia";
 
-export { PreviewElement };
+export {PreviewElement};

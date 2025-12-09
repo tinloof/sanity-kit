@@ -1,1 +1,1 @@
-export { generateSitemap as default } from "@/data/sanity/client";
+export {generateSitemap as default} from "@/data/sanity/client";

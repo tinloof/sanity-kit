@@ -1,1 +1,1 @@
-export { default as seoObjectField } from "./seo";
+export {default as seoObjectField} from "./seo";
