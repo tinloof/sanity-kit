@@ -19,28 +19,29 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v3
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install dependencies
-        run: pnpm run build-install
+        run: bun install --frozen-lockfile
 
       - name: Build Packages
-        run: pnpm run build
+        run: bun run build
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          # Note: pnpm install after versioning is necessary to refresh lockfile
-          version: pnpm run version
-          publish: pnpm exec changeset publish
+          # Note: bun install after versioning is necessary to refresh lockfile
+          version: bun run version
+          publish: bunx changeset publish
           commit: "[ci] release"
           title: "[ci] release"
         env:
