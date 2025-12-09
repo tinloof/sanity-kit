@@ -1,6 +1,6 @@
-import { TrashIcon } from "@sanity/icons";
-import { type ButtonTone, useToast } from "@sanity/ui";
-import { useCallback, useMemo, useState } from "react";
+import {TrashIcon} from "@sanity/icons";
+import {type ButtonTone, useToast} from "@sanity/ui";
+import {useCallback, useMemo, useState} from "react";
 import {
 	type DocumentActionComponent,
 	type KeyedObject,
@@ -9,7 +9,7 @@ import {
 	useClient,
 } from "sanity";
 
-import { API_VERSION, TRANSLATIONS_ARRAY_NAME } from "../constants";
+import {API_VERSION, TRANSLATIONS_ARRAY_NAME} from "../constants";
 
 type TranslationReference = TypedObject &
 	KeyedObject & {
@@ -17,7 +17,7 @@ type TranslationReference = TypedObject &
 	};
 
 export const DeleteMetadataAction: DocumentActionComponent = (props) => {
-	const { id: documentId, published, draft, onComplete } = props;
+	const {id: documentId, published, draft, onComplete} = props;
 	const doc = draft || published;
 
 	const [isDialogOpen, setDialogOpen] = useState(false);
@@ -31,7 +31,7 @@ export const DeleteMetadataAction: DocumentActionComponent = (props) => {
 	);
 
 	const toast = useToast();
-	const client = useClient({ apiVersion: API_VERSION });
+	const client = useClient({apiVersion: API_VERSION});
 
 	// Remove translation reference and delete document in one transaction
 	const onProceed = useCallback(() => {

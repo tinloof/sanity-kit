@@ -1,4 +1,4 @@
-import { extractWithPath, Mutation } from "@sanity/mutator";
+import {extractWithPath, Mutation} from "@sanity/mutator";
 import {
 	isDocumentSchemaType,
 	type ObjectSchemaType,
@@ -64,7 +64,7 @@ function extractPaths(
 	return schemaType.fields.reduce<DocumentMember[]>((acc, field) => {
 		const fieldPath = [...path, field.name];
 		const fieldSchema = field.type;
-		const { value } = extractWithPath(pathToString(fieldPath), doc)[0] ?? {};
+		const {value} = extractWithPath(pathToString(fieldPath), doc)[0] ?? {};
 		if (!value) {
 			return acc;
 		}
@@ -85,13 +85,13 @@ function extractPaths(
 			fieldSchema.of.length &&
 			fieldSchema.of.some((item) => "fields" in item)
 		) {
-			const { value: arrayValue } =
+			const {value: arrayValue} =
 				extractWithPath(pathToString(fieldPath), doc)[0] ?? {};
 
 			let arrayPaths: DocumentMember[] = [];
 			if ((arrayValue as any)?.length) {
 				for (const item of arrayValue as any[]) {
-					const itemPath = [...fieldPath, { _key: item._key }];
+					const itemPath = [...fieldPath, {_key: item._key}];
 					let itemSchema = fieldSchema.of.find((t) => t.name === item._type);
 					if (!item._type) {
 						itemSchema = fieldSchema.of[0];

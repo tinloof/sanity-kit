@@ -1,9 +1,9 @@
 import "server-only";
 
-import { groq } from "next-sanity";
+import {groq} from "next-sanity";
 
 import config from "@/config";
-import { client } from "@/data/sanity/client";
+import {client} from "@/data/sanity/client";
 
 // Used in `generateStaticParams`
 export function generateStaticPaths(types: string[]) {
@@ -16,7 +16,7 @@ export function generateStaticPaths(types: string[]) {
 		})
 		.fetch<string[]>(
 			groq`*[_type in $types && defined(pathname.current)][].pathname.current`,
-			{ types },
+			{types},
 			{
 				next: {
 					tags: types,

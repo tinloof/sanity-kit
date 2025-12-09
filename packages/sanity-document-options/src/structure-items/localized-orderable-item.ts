@@ -1,15 +1,15 @@
-import { FolderIcon } from "@sanity/icons";
-import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
+import {FolderIcon} from "@sanity/icons";
+import {orderableDocumentListDeskItem} from "@sanity/orderable-document-list";
 import pluralize from "pluralize";
 import type * as React from "react";
-import type { BaseSchemaDefinition } from "sanity";
+import type {BaseSchemaDefinition} from "sanity";
 import type {
 	ListItemBuilder,
 	StructureBuilder,
 	StructureResolverContext,
 } from "sanity/structure";
 
-import type { Locale } from "../types";
+import type {Locale} from "../types";
 
 /**
  * Creates a localized orderable document list item with locale-specific drag-and-drop ordering.
@@ -71,7 +71,7 @@ const localizedOrderableItem = ({
 							icon: (icon as React.ComponentType) ?? FolderIcon,
 							type: name,
 							filter: `_type == $type && ${localeFieldName} == $locale`,
-							params: { locale: locale.id, type: name },
+							params: {locale: locale.id, type: name},
 							S,
 							context,
 							createIntent: false,

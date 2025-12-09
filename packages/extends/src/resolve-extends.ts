@@ -1,5 +1,5 @@
-import type { DocumentDefinition, SchemaTypeDefinition } from "sanity";
-import { mergeSchema } from "./merge-schema";
+import type {DocumentDefinition, SchemaTypeDefinition} from "sanity";
+import {mergeSchema} from "./merge-schema";
 import {
 	hasType,
 	isExtendsOptionsArrayEntry,

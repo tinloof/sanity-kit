@@ -1,15 +1,15 @@
-import { disableDraftMode } from "@tinloof/sanity-next/actions/disable-draft-mode";
-import { getOgImages } from "@tinloof/sanity-web";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { draftMode } from "next/headers";
-import { VisualEditing } from "next-sanity/visual-editing";
+import {disableDraftMode} from "@tinloof/sanity-next/actions/disable-draft-mode";
+import {getOgImages} from "@tinloof/sanity-web";
+import type {Metadata} from "next";
+import {Inter} from "next/font/google";
+import {draftMode} from "next/headers";
+import {VisualEditing} from "next-sanity/visual-editing";
 import ExitPreviewClient from "@/components/exit-preview";
 import config from "@/config";
 
-import { loadGlobalData } from "@/data/sanity";
-import { client } from "@/data/sanity/client";
-import { SanityLive } from "@/data/sanity/live";
+import {loadGlobalData} from "@/data/sanity";
+import {client} from "@/data/sanity/client";
+import {SanityLive} from "@/data/sanity/live";
 
 import "@/styles/index.css";
 
@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 		openGraph: {
 			images: !data?.fallbackSEO?.ogImage
 				? undefined
-				: getOgImages({ client, image: data.fallbackSEO.ogImage }),
+				: getOgImages({client, image: data.fallbackSEO.ogImage}),
 			title: config.siteName,
 		},
 		title: {

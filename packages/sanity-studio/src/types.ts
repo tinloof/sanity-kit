@@ -1,6 +1,6 @@
-import type { Language as Locale } from "@sanity/document-internationalization";
-import type { CreateAbstractsConfig } from "@tinloof/sanity-extends";
-import type { LocalizePathnameFn } from "@tinloof/sanity-web";
+import type {Language as Locale} from "@sanity/document-internationalization";
+import type {CreateAbstractsConfig} from "@tinloof/sanity-extends";
+import type {LocalizePathnameFn} from "@tinloof/sanity-web";
 import type {
 	FieldDefinitionBase,
 	ObjectDefinition,
@@ -21,7 +21,7 @@ import type {
 	PresentationPluginOptions,
 } from "sanity/presentation";
 
-import type { SlugContext } from "./hooks/usePathnameContext";
+import type {SlugContext} from "./hooks/usePathnameContext";
 
 export type NormalizedCreatablePage = {
 	title: string;
@@ -226,11 +226,11 @@ export type PathnameParams = Omit<
 };
 
 export type PathnameInputProps = ObjectFieldProps<SlugValue> & {
-	schemaType: { options?: PathnameOptions };
+	schemaType: {options?: PathnameOptions};
 };
 
 export type IconOptions = {
-	list: { title: string; value: string }[];
+	list: {title: string; value: string}[];
 	path: string;
 	backgroundColor?: string;
 };
@@ -244,7 +244,7 @@ export type IconParams = Omit<
 };
 
 export type IconInputProps = StringInputProps<StringSchemaType> & {
-	schemaType: { options?: IconOptions };
+	schemaType: {options?: IconOptions};
 };
 
 export type FieldOptions = boolean | "hidden";
@@ -266,6 +266,6 @@ declare module "sanity" {
 
 declare global {
 	interface ImportMeta {
-		glob(pattern: string, options?: { eager?: boolean }): Record<string, any>;
+		glob(pattern: string, options?: {eager?: boolean}): Record<string, any>;
 	}
 }

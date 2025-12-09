@@ -1,4 +1,4 @@
-import type { SchemaTypeDefinition } from "sanity";
+import type {SchemaTypeDefinition} from "sanity";
 
 /**
  * Type for Sanity schema modules that can be functions or objects

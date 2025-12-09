@@ -1,5 +1,5 @@
-import { redirectsSchema, seoObjectField } from "@tinloof/sanity-studio";
-import { defineField, defineType } from "sanity";
+import {redirectsSchema, seoObjectField} from "@tinloof/sanity-studio";
+import {defineField, defineType} from "sanity";
 
 export default defineType({
 	name: "settings",
@@ -7,7 +7,7 @@ export default defineType({
 	extends: ["singleton"],
 	fields: [
 		defineField({
-			...seoObjectField({ indexableStatus: false }),
+			...seoObjectField({indexableStatus: false}),
 			group: undefined,
 			name: "globalSeo",
 			title: "Global fallback SEO",
@@ -20,7 +20,7 @@ export default defineType({
 		select: {
 			locale: "locale",
 		},
-		prepare: ({ locale }) => ({
+		prepare: ({locale}) => ({
 			title: `(${locale}) Settings`,
 		}),
 	},

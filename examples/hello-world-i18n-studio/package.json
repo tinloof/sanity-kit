@@ -8,7 +8,7 @@
 		"build": "sanity build ../hello-world-i18n-next/public/cms -y",
 		"extract-types": "sanity schema extract",
 		"typegen:watch": "watch \"npm run typegen\" ./src",
-		"typegen": "pnpm run extract-types && sanity typegen generate",
+		"typegen": "bun run extract-types && sanity typegen generate",
 		"lint": "biome lint .",
 		"check": "biome check --write ."
 	},

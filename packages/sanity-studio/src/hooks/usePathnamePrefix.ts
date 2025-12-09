@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { type SanityDocument, useFormValue } from "sanity";
+import {useCallback, useEffect, useState} from "react";
+import {type SanityDocument, useFormValue} from "sanity";
 
-import type { PathnameInputProps, PathnamePrefix } from "../types";
-import { usePathnameContext } from "./usePathnameContext";
+import type {PathnameInputProps, PathnamePrefix} from "../types";
+import {usePathnameContext} from "./usePathnameContext";
 
 /**
  * Returns the prefix specified on this pathname field, via options.prefix.

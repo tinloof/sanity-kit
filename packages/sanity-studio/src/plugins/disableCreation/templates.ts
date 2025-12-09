@@ -1,4 +1,4 @@
-import type { Template } from "sanity";
+import type {Template} from "sanity";
 
 export default function getTemplates(
 	templates: Template[],

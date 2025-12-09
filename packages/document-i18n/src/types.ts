@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import type { CreateAbstractsConfig } from "@tinloof/sanity-extends";
+import type {CreateAbstractsConfig} from "@tinloof/sanity-extends";
 import type {
 	KeyedObject,
 	ObjectSchemaType,
@@ -9,7 +9,7 @@ import type {
 	SanityDocument,
 	SanityDocumentLike,
 } from "sanity";
-import type { ABSTRACTS_MAP } from "./abstracts";
+import type {ABSTRACTS_MAP} from "./abstracts";
 
 export type Locale = {
 	id: Intl.UnicodeBCP47LocaleIdentifier;

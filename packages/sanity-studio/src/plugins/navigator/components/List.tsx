@@ -6,15 +6,15 @@ import {
 	PublishIcon,
 	SearchIcon,
 } from "@sanity/icons";
-import { Badge, Box, Card, Flex, Stack, Text, Tooltip } from "@sanity/ui";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import React, { createElement, useRef } from "react";
-import { useColorSchemeValue, useSchema } from "sanity";
+import {Badge, Box, Card, Flex, Stack, Text, Tooltip} from "@sanity/ui";
+import {useVirtualizer} from "@tanstack/react-virtual";
+import React, {createElement, useRef} from "react";
+import {useColorSchemeValue, useSchema} from "sanity";
 import {
 	usePresentationNavigate,
 	usePresentationParams,
 } from "sanity/presentation";
-import { styled } from "styled-components";
+import {styled} from "styled-components";
 
 import type {
 	FoldersConfig,
@@ -22,9 +22,9 @@ import type {
 	PageTreeNode,
 	TreeNode,
 } from "../../../types";
-import { useNavigator } from "../context";
-import { countValidChildren } from "../utils";
-import { PreviewElement } from "./Preview";
+import {useNavigator} from "../context";
+import {countValidChildren} from "../utils";
+import {PreviewElement} from "./Preview";
 
 type PreviewStyleProps = {
 	$isPreviewed?: boolean;
@@ -150,16 +150,16 @@ const SkeletonSubtitle = styled.div<PreviewStyleProps>`
   color: inherit;
 `;
 
-const List = ({ loading }: { loading: boolean }) => {
-	const { items } = useNavigator();
+const List = ({loading}: {loading: boolean}) => {
+	const {items} = useNavigator();
 	const schema = useSchema();
 	const innerRef = useRef<HTMLUListElement>(null);
-	const { preview } = usePresentationParams();
+	const {preview} = usePresentationParams();
 
 	const documentSchemasNames =
 		schema._original?.types
-			.filter(({ type }) => type === "document")
-			.map(({ name }) => name) ?? [];
+			.filter(({type}) => type === "document")
+			.map(({name}) => name) ?? [];
 
 	const filteredItemsAndFolders = items.filter(
 		(item) => countValidChildren(item, documentSchemasNames) > 0,
@@ -248,7 +248,7 @@ const ListItem = React.memo(
 		});
 
 		const scheme = useColorSchemeValue();
-		const { preview } = usePresentationParams();
+		const {preview} = usePresentationParams();
 		const navigate = usePresentationNavigate();
 		const previewed = preview === path;
 
@@ -492,8 +492,8 @@ const FolderTitle = ({
 	return <>{item.title}</>;
 };
 
-const ItemIcon = ({ item }: { item: TreeNode }) => {
-	const { folders } = useNavigator();
+const ItemIcon = ({item}: {item: TreeNode}) => {
+	const {folders} = useNavigator();
 
 	if (item._type === "folder") {
 		return createElement(
@@ -512,7 +512,7 @@ const ItemIcon = ({ item }: { item: TreeNode }) => {
 	);
 };
 
-const SkeletonListItems = ({ items }: { items: number }) => {
+const SkeletonListItems = ({items}: {items: number}) => {
 	const scheme = useColorSchemeValue();
 
 	return (
@@ -553,4 +553,4 @@ const EmptySearchResults = (_props: any) => {
 
 EmptySearchResults.displayName = "EmptySearchResults";
 
-export { EmptySearchResults, List, SkeletonListItems };
+export {EmptySearchResults, List, SkeletonListItems};

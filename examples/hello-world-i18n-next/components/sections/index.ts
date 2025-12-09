@@ -1,5 +1,5 @@
-import type { PAGE_QUERYResult } from "@examples/hello-world-i18n-studio/types";
-import { createSectionsComponent } from "@tinloof/sanity-web/components/sections-renderer";
+import type {PAGE_QUERYResult} from "@examples/hello-world-i18n-studio/types";
+import {createSectionsComponent} from "@tinloof/sanity-web/components/sections-renderer";
 import ImageSection from "./image";
 import TextSection from "./text";
 
@@ -17,4 +17,4 @@ const Sections = createSectionsComponent<
 
 type SectionProps = (typeof Sections)["_SectionProps"];
 
-export { Sections, type SectionProps };
+export {Sections, type SectionProps};

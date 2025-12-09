@@ -1,7 +1,7 @@
-import { useRouter } from "next/navigation";
-import { useIsPresentationTool } from "next-sanity/hooks";
-import type { CSSProperties } from "react";
-import React, { useTransition } from "react";
+import {useRouter} from "next/navigation";
+import {useIsPresentationTool} from "next-sanity/hooks";
+import type {CSSProperties} from "react";
+import React, {useTransition} from "react";
 
 export type ExitPreviewProps = {
 	disableDraftMode: () => Promise<void>;

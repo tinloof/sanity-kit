@@ -2,8 +2,8 @@ import type {
 	HOME_QUERYResult,
 	PAGE_QUERYResult,
 } from "@examples/hello-world-i18n-studio/types";
-import { notFound } from "next/navigation";
-import { Sections } from "../sections";
+import {notFound} from "next/navigation";
+import {Sections} from "../sections";
 
 export default function PageTemplate({
 	data,
@@ -13,7 +13,5 @@ export default function PageTemplate({
 	if (!data?._type || !["modular.page", "home"].includes(data._type))
 		return notFound();
 
-	return (
-		<Sections sharedProps={{ locale: "en" }} data={data?.sections ?? []} />
-	);
+	return <Sections sharedProps={{locale: "en"}} data={data?.sections ?? []} />;
 }

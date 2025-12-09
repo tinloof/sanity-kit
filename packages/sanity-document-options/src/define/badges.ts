@@ -43,11 +43,11 @@ export default function defineBadges(
 	context: DocumentBadgesContext,
 ): DocumentBadgeComponent[] {
 	const {
-		schema: { _original },
+		schema: {_original},
 		schemaType,
 	} = context;
 
-	const { types: schemas = [] } = (_original as {
+	const {types: schemas = []} = (_original as {
 		types: SchemaTypeDefinition[];
 	}) || {
 		types: [],

@@ -1,5 +1,5 @@
-import { PinIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {PinIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured location field group with location icon.

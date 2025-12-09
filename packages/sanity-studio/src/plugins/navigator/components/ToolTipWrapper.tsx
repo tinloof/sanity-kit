@@ -1,7 +1,7 @@
-import { Box, Text, Tooltip } from "@sanity/ui";
+import {Box, Text, Tooltip} from "@sanity/ui";
 import React from "react";
 
-export default function TooltipWrapper({ children, tooltipText, ...rest }) {
+export default function TooltipWrapper({children, tooltipText, ...rest}) {
 	return (
 		<Tooltip
 			content={

@@ -1,5 +1,5 @@
-import { ShareIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {ShareIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured social field group with share icon.

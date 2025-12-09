@@ -1,6 +1,6 @@
-import type { DefinedSanityFetchType } from "next-sanity/live";
-import { REDIRECT_QUERY } from "../../queries";
-import { getPathVariations } from "../urls";
+import type {DefinedSanityFetchType} from "next-sanity/live";
+import {REDIRECT_QUERY} from "../../queries";
+import {getPathVariations} from "../urls";
 
 /**
  * Parameters for the getRedirect function.
@@ -47,8 +47,8 @@ export async function getRedirect({
 }: GetRedirectParams): Promise<RedirectData> {
 	const paths = getPathVariations(source);
 
-	const { data } = await sanityFetch({
-		params: { paths },
+	const {data} = await sanityFetch({
+		params: {paths},
 		query,
 		perspective: "published",
 		stega: false,

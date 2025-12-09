@@ -1,10 +1,10 @@
-import type { UnfilteredResponseQueryOptions } from "@sanity/client";
-import { draftMode } from "next/headers";
-import type { QueryParams } from "next-sanity";
+import type {UnfilteredResponseQueryOptions} from "@sanity/client";
+import {draftMode} from "next/headers";
+import type {QueryParams} from "next-sanity";
 import "server-only";
 
 import config from "@/config";
-import { client } from "@/data/sanity/client";
+import {client} from "@/data/sanity/client";
 
 const DEFAULT_PARAMS = {} as QueryParams;
 

@@ -1,4 +1,4 @@
-import { AddIcon, CheckmarkIcon, SplitVerticalIcon } from "@sanity/icons";
+import {AddIcon, CheckmarkIcon, SplitVerticalIcon} from "@sanity/icons";
 import {
 	Badge,
 	Box,
@@ -9,21 +9,21 @@ import {
 	Tooltip,
 	useToast,
 } from "@sanity/ui";
-import { uuid } from "@sanity/uuid";
-import { useCallback, useEffect, useState } from "react";
-import { type ObjectSchemaType, type SanityDocument, useClient } from "sanity";
+import {uuid} from "@sanity/uuid";
+import {useCallback, useEffect, useState} from "react";
+import {type ObjectSchemaType, type SanityDocument, useClient} from "sanity";
 
-import { METADATA_SCHEMA_NAME } from "../constants";
-import { useOpenInNewPane } from "../hooks/use-open-in-new-pane";
+import {METADATA_SCHEMA_NAME} from "../constants";
+import {useOpenInNewPane} from "../hooks/use-open-in-new-pane";
 import type {
 	Locale,
 	Metadata,
 	MetadataDocument,
 	TranslationReference,
 } from "../types";
-import { createReference } from "../utils/create-reference";
-import { removeExcludedPaths } from "../utils/exclude-paths";
-import { useDocumentI18nContext } from "./document-i18n-context";
+import {createReference} from "../utils/create-reference";
+import {removeExcludedPaths} from "../utils/exclude-paths";
+import {useDocumentI18nContext} from "./document-i18n-context";
 
 type LocaleOptionProps = {
 	locale: Locale;
@@ -63,9 +63,9 @@ export default function LocaleOption(props: LocaleOptionProps) {
 		.length
 		? metadata.translations.find((t) => t._key === locale.id)
 		: undefined;
-	const { apiVersion, localeField, weakReferences, callback } =
+	const {apiVersion, localeField, weakReferences, callback} =
 		useDocumentI18nContext();
-	const client = useClient({ apiVersion });
+	const client = useClient({apiVersion});
 	const toast = useToast();
 
 	const open = useOpenInNewPane(translation?.value?._ref, schemaType.name);
@@ -140,7 +140,7 @@ export default function LocaleOption(props: LocaleOptionProps) {
 		// This patch operation will have no effect
 		const metadataPatch = client
 			.patch(metadataId)
-			.setIfMissing({ translations: [sourceReference] })
+			.setIfMissing({translations: [sourceReference]})
 			.insert(`after`, `translations[-1]`, [newTranslationReference]);
 
 		transaction.patch(metadataPatch);

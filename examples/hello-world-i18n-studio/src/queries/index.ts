@@ -1,4 +1,4 @@
-import { defineQuery } from "groq";
+import {defineQuery} from "groq";
 
 const TRANSLATIONS_FRAGMENT = /* groq */ `
   "translations": *[_type == "translation.metadata" && references(^._id)].translations[].value->{

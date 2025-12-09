@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import { PatchEvent, unset, useClient, useEditState } from "sanity";
-import { useDocumentPane } from "sanity/structure";
+import {useEffect} from "react";
+import {PatchEvent, unset, useClient, useEditState} from "sanity";
+import {useDocumentPane} from "sanity/structure";
 
-import { API_VERSION } from "../../constants";
-import type { TranslationReference } from "../../types";
+import {API_VERSION} from "../../constants";
+import type {TranslationReference} from "../../types";
 
 type ReferencePatcherProps = {
 	translation: TranslationReference;
@@ -13,10 +13,10 @@ type ReferencePatcherProps = {
 
 // For every reference, check if it is published, and if so, strengthen the reference
 export default function ReferencePatcher(props: ReferencePatcherProps) {
-	const { translation, documentType, metadataId } = props;
+	const {translation, documentType, metadataId} = props;
 	const editState = useEditState(translation.value._ref, documentType);
-	const client = useClient({ apiVersion: API_VERSION });
-	const { onChange } = useDocumentPane();
+	const client = useClient({apiVersion: API_VERSION});
+	const {onChange} = useDocumentPane();
 
 	useEffect(() => {
 		if (
@@ -33,7 +33,7 @@ export default function ReferencePatcher(props: ReferencePatcherProps) {
 		) {
 			const referencePathBase = [
 				"translations",
-				{ _key: translation._key },
+				{_key: translation._key},
 				"value",
 			];
 

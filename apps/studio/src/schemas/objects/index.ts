@@ -1,4 +1,4 @@
-import href, { hrefPt } from "./href";
+import href, {hrefPt} from "./href";
 import sections from "./sections";
 import sectionsBody from "./sections-body";
 

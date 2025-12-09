@@ -1,4 +1,4 @@
-import { Button, Grid } from "@sanity/ui";
+import {Button, Grid} from "@sanity/ui";
 
 type DeleteTranslationFooterProps = {
 	translations: unknown[];
@@ -9,7 +9,7 @@ type DeleteTranslationFooterProps = {
 export default function DeleteTranslationFooter(
 	props: DeleteTranslationFooterProps,
 ) {
-	const { translations, onClose, onProceed } = props;
+	const {translations, onClose, onProceed} = props;
 
 	return (
 		<Grid columns={2} gap={2}>

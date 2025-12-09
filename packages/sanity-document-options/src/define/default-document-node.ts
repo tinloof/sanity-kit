@@ -1,4 +1,4 @@
-import type { DocumentDefinition } from "sanity";
+import type {DocumentDefinition} from "sanity";
 import type {
 	DefaultDocumentNodeContext,
 	DocumentBuilder,
@@ -14,10 +14,10 @@ export default function defineDefaultDocumentNode(
 	context: DefaultDocumentNodeContext,
 ): DocumentBuilder | null | undefined {
 	const {
-		schema: { _original },
+		schema: {_original},
 	} = context;
 	const documentSchemas = _original?.types.filter(
-		({ type }) => type === "document",
+		({type}) => type === "document",
 	) as DocumentDefinition[];
 
 	const schema = documentSchemas.find((s) => s.name === context.schemaType);

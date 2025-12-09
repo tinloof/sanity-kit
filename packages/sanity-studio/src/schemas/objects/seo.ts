@@ -1,12 +1,12 @@
-import { defineField, type FieldDefinition } from "sanity";
+import {defineField, type FieldDefinition} from "sanity";
 
 import {
 	applyFieldCustomization,
 	type FieldCustomization,
 } from "../../utils/apply-field-customization";
-import { indexableBooleanField } from "../booleans";
-import { ogImageField } from "../images";
-import { seoDescriptionStringField, seoTitleStringField } from "../strings";
+import {indexableBooleanField} from "../booleans";
+import {ogImageField} from "../images";
+import {seoDescriptionStringField, seoTitleStringField} from "../strings";
 
 /**
  * Configuration options for the SEO object field
@@ -85,7 +85,7 @@ export default function seoObjectField({
 		name: "seo",
 		title: "SEO",
 		type: "object",
-		options: { collapsed: false, collapsible: true },
+		options: {collapsed: false, collapsible: true},
 		fields: allFields,
 	});
 }

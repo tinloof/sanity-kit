@@ -1,5 +1,5 @@
-import { ComposeIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {ComposeIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured content field group with compose icon.

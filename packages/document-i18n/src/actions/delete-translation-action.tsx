@@ -1,6 +1,6 @@
-import { TrashIcon } from "@sanity/icons";
-import { type ButtonTone, useToast } from "@sanity/ui";
-import { useCallback, useState } from "react";
+import {TrashIcon} from "@sanity/icons";
+import {type ButtonTone, useToast} from "@sanity/ui";
+import {useCallback, useState} from "react";
 import {
 	type DocumentActionComponent,
 	type SanityDocument,
@@ -9,13 +9,13 @@ import {
 
 import DeleteTranslationDialog from "../components/delete-translation-dialog";
 import DeleteTranslationFooter from "../components/delete-translation-footer";
-import { useDocumentI18nContext } from "../components/document-i18n-context";
-import { API_VERSION, TRANSLATIONS_ARRAY_NAME } from "../constants";
+import {useDocumentI18nContext} from "../components/document-i18n-context";
+import {API_VERSION, TRANSLATIONS_ARRAY_NAME} from "../constants";
 
 export const DeleteTranslationAction: DocumentActionComponent = (props) => {
-	const { id: documentId, published, draft } = props;
+	const {id: documentId, published, draft} = props;
 	const doc = draft || published;
-	const { localeField } = useDocumentI18nContext();
+	const {localeField} = useDocumentI18nContext();
 
 	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [translations, setTranslations] = useState<SanityDocument[]>([]);
@@ -23,7 +23,7 @@ export const DeleteTranslationAction: DocumentActionComponent = (props) => {
 	const documentLocale = doc ? doc[localeField] : null;
 
 	const toast = useToast();
-	const client = useClient({ apiVersion: API_VERSION });
+	const client = useClient({apiVersion: API_VERSION});
 
 	// Remove translation reference and delete document in one transaction
 	const onProceed = useCallback(() => {

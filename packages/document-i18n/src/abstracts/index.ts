@@ -6,4 +6,4 @@ export const ABSTRACTS_MAP = {
 	i18n: i18nAbstract,
 };
 
-export { i18nAbstract };
+export {i18nAbstract};

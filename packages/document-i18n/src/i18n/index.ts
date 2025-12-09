@@ -1,4 +1,4 @@
-import { defineLocaleResourceBundle } from "sanity";
+import {defineLocaleResourceBundle} from "sanity";
 
 /**
  * The locale namespace for the document i18n plugin.

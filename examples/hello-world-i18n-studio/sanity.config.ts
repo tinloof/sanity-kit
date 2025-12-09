@@ -1,16 +1,16 @@
-import { visionTool } from "@sanity/vision";
-import { documentI18n } from "@tinloof/sanity-document-i18n";
-import { documentOptions } from "@tinloof/sanity-document-options";
-import { withExtends } from "@tinloof/sanity-extends";
-import { pages } from "@tinloof/sanity-studio";
-import { defineConfig, isDev } from "sanity";
+import {visionTool} from "@sanity/vision";
+import {documentI18n} from "@tinloof/sanity-document-i18n";
+import {documentOptions} from "@tinloof/sanity-document-options";
+import {withExtends} from "@tinloof/sanity-extends";
+import {pages} from "@tinloof/sanity-studio";
+import {defineConfig, isDev} from "sanity";
 import schemas from "./src/schemas";
 
 import "./globals.css";
 
 const locales = [
-	{ id: "en", title: "English" },
-	{ id: "fr", title: "French" },
+	{id: "en", title: "English"},
+	{id: "fr", title: "French"},
 ];
 
 export default defineConfig({
@@ -22,7 +22,7 @@ export default defineConfig({
 		documentI18n({
 			locales,
 		}),
-		documentOptions({ structure: { locales } }),
+		documentOptions({structure: {locales}}),
 		pages({
 			i18n: {
 				locales,

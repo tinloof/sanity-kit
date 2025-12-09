@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type {Metadata} from "next";
 import config from "@/config";
 import Studio from "./Studio";
 

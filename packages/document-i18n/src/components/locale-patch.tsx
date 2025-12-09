@@ -1,10 +1,10 @@
-import { EditIcon } from "@sanity/icons";
-import { Badge, Box, Button, Flex, Text, useToast } from "@sanity/ui";
-import { useCallback } from "react";
-import { type SanityDocument, useClient } from "sanity";
+import {EditIcon} from "@sanity/icons";
+import {Badge, Box, Button, Flex, Text, useToast} from "@sanity/ui";
+import {useCallback} from "react";
+import {type SanityDocument, useClient} from "sanity";
 
-import type { Locale } from "../types";
-import { useDocumentI18nContext } from "./document-i18n-context";
+import type {Locale} from "../types";
+import {useDocumentI18nContext} from "./document-i18n-context";
 
 type LocalePatchProps = {
 	locale: Locale;
@@ -13,10 +13,10 @@ type LocalePatchProps = {
 };
 
 export default function LocalePatch(props: LocalePatchProps) {
-	const { locale, source } = props;
-	const { apiVersion, localeField } = useDocumentI18nContext();
+	const {locale, source} = props;
+	const {apiVersion, localeField} = useDocumentI18nContext();
 	const disabled = props.disabled || !source;
-	const client = useClient({ apiVersion });
+	const client = useClient({apiVersion});
 	const toast = useToast();
 
 	const handleClick = useCallback(() => {
@@ -28,7 +28,7 @@ export default function LocalePatch(props: LocalePatchProps) {
 
 		client
 			.patch(currentId)
-			.set({ [localeField]: locale.id })
+			.set({[localeField]: locale.id})
 			.commit()
 			.then(() => {
 				toast.push({

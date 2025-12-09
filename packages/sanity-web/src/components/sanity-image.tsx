@@ -1,9 +1,9 @@
-import { getExtension, getImageDimensions } from "@sanity/asset-utils";
-import { createImageUrlBuilder } from "@sanity/image-url";
-import type { CSSProperties, ImgHTMLAttributes } from "react";
+import {getExtension, getImageDimensions} from "@sanity/asset-utils";
+import {createImageUrlBuilder} from "@sanity/image-url";
+import type {CSSProperties, ImgHTMLAttributes} from "react";
 import React from "react";
-import { preload } from "react-dom";
-import type { ImageUrlBuilder } from "sanity";
+import {preload} from "react-dom";
+import type {ImageUrlBuilder} from "sanity";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -98,7 +98,7 @@ export default function SanityImage({
 	}
 
 	const _ref = data.asset._ref;
-	const { height, width } = getImageDimensions(_ref);
+	const {height, width} = getImageDimensions(_ref);
 	const extension = getExtension(_ref);
 	const aspectRatioValues = aspectRatio?.split("/");
 

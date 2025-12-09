@@ -1,6 +1,6 @@
-import type { SanityDocument } from "sanity";
+import type {SanityDocument} from "sanity";
 
-import { METADATA_SCHEMA_NAME } from "../../constants";
+import {METADATA_SCHEMA_NAME} from "../../constants";
 
 export function separateReferences(data: SanityDocument[] | null = []): {
 	translations: SanityDocument[];
@@ -19,5 +19,5 @@ export function separateReferences(data: SanityDocument[] | null = []): {
 		});
 	}
 
-	return { translations, otherReferences };
+	return {translations, otherReferences};
 }

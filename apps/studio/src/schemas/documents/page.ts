@@ -1,4 +1,4 @@
-import { defineType } from "sanity";
+import {defineType} from "sanity";
 
 export default defineType({
 	name: "page",
@@ -9,6 +9,6 @@ export default defineType({
 			name: "title",
 			type: "string",
 		},
-		{ name: "sectionsBody", type: "sectionsBody" },
+		{name: "sectionsBody", type: "sectionsBody"},
 	],
 });

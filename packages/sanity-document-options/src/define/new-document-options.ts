@@ -43,7 +43,7 @@ export default function defineNewDocumentOptions(
 
 	return docsWithConfig.reduce(
 		(acc, fn, index) =>
-			fn(acc, { ...context, schemaType: allDocumentTypes[index].name }),
+			fn(acc, {...context, schemaType: allDocumentTypes[index].name}),
 		prev,
 	);
 }

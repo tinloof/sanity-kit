@@ -13,8 +13,8 @@ const config = {
 	baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "",
 	i18n: {
 		locales: [
-			{ id: "en", title: "English" },
-			{ id: "fr", title: "French" },
+			{id: "en", title: "English"},
+			{id: "fr", title: "French"},
 		],
 		defaultLocaleId: "en",
 	},

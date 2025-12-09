@@ -1,5 +1,5 @@
-import { CogIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {CogIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured settings field group with cog icon.

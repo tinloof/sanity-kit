@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import type {ComponentType} from "react";
 import {
 	defineField,
 	type FieldDefinition,
@@ -7,11 +7,11 @@ import {
 	type SlugValue,
 } from "sanity";
 
-import { PathnameFieldComponent } from "../components/PathnameFieldComponent";
-import type { PathnameParams } from "../types";
+import {PathnameFieldComponent} from "../components/PathnameFieldComponent";
+import type {PathnameParams} from "../types";
 
 export function definePathname(
-	schema: PathnameParams = { name: "pathname" },
+	schema: PathnameParams = {name: "pathname"},
 ): FieldDefinition<"slug"> {
 	const slugOptions = schema?.options;
 
@@ -38,8 +38,8 @@ async function isUnique(
 	slug: string,
 	context: SlugValidationContext,
 ): Promise<boolean> {
-	const { document, getClient } = context;
-	const client = getClient({ apiVersion: "2023-06-21" });
+	const {document, getClient} = context;
+	const client = getClient({apiVersion: "2023-06-21"});
 	const id = document?._id.replace(/^drafts\./, "");
 	const params = {
 		draft: `drafts.${id}`,

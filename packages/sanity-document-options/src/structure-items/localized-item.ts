@@ -1,9 +1,9 @@
-import { FolderIcon } from "@sanity/icons";
+import {FolderIcon} from "@sanity/icons";
 import pluralize from "pluralize";
-import type { BaseSchemaDefinition } from "sanity";
-import type { ListItemBuilder, StructureBuilder } from "sanity/structure";
+import type {BaseSchemaDefinition} from "sanity";
+import type {ListItemBuilder, StructureBuilder} from "sanity/structure";
 
-import type { Locale } from "../types";
+import type {Locale} from "../types";
 
 /**
  * Creates a localized document list item with locale-specific views.
@@ -56,7 +56,7 @@ const localizedItem = ({
 						.child(
 							S.documentTypeList(name)
 								.filter(`_type == $name`)
-								.params({ name })
+								.params({name})
 								.title(`All ${pluralize(title).toLowerCase()}`),
 						),
 					S.divider(),
@@ -68,7 +68,7 @@ const localizedItem = ({
 								S.documentTypeList(name)
 									.title(`${locale.title} ${pluralize(title).toLowerCase()}`)
 									.filter(`_type == $name && ${localeFieldName} == $locale`)
-									.params({ locale: locale.id, name })
+									.params({locale: locale.id, name})
 									.initialValueTemplates(
 										S.initialValueTemplateItem(`${name}-${locale.id}`),
 									),

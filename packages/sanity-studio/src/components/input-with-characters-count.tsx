@@ -1,20 +1,20 @@
-import type { BadgeTone } from "@sanity/ui";
-import { Badge, Flex, Stack } from "@sanity/ui";
-import type { ReactElement } from "react";
-import type { TextInputProps, TextOptions } from "sanity";
-import { useFormValue } from "sanity";
+import type {BadgeTone} from "@sanity/ui";
+import {Badge, Flex, Stack} from "@sanity/ui";
+import type {ReactElement} from "react";
+import type {TextInputProps, TextOptions} from "sanity";
+import {useFormValue} from "sanity";
 
 type CountedTextOptions = {
 	maxLength?: number;
 	minLength?: number;
 } & TextOptions;
 
-function CharacterCount(props: { value?: string } & CountedTextOptions) {
+function CharacterCount(props: {value?: string} & CountedTextOptions) {
 	if (!props.maxLength && !props.minLength) {
 		return null;
 	}
 
-	const { value = "" } = props;
+	const {value = ""} = props;
 
 	const maxPercentage =
 		props.maxLength && (value.length / props.maxLength) * 100;
@@ -44,7 +44,7 @@ export function InputWithCharacterCount(props: TextInputProps): ReactElement {
 		return props.renderDefault(props);
 	}
 
-	const { name, title } = document as {
+	const {name, title} = document as {
 		name?: string;
 		title?: string;
 	};

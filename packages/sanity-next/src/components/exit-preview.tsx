@@ -1,8 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useIsPresentationTool } from "next-sanity/hooks";
+import {useRouter} from "next/navigation";
+import {useIsPresentationTool} from "next-sanity/hooks";
 import type React from "react";
-import { useTransition } from "react";
+import {useTransition} from "react";
 
 export type ExitPreviewProps = {
 	disableDraftMode: () => Promise<void>;

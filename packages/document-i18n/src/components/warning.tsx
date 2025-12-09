@@ -1,9 +1,9 @@
-import { Card, Flex, Text } from "@sanity/ui";
-import type { PropsWithChildren } from "react";
+import {Card, Flex, Text} from "@sanity/ui";
+import type {PropsWithChildren} from "react";
 
 import ConstrainedBox from "./constrained-box";
 
-export default function Warning({ children }: PropsWithChildren) {
+export default function Warning({children}: PropsWithChildren) {
 	return (
 		<Card tone="caution" padding={3}>
 			<Flex justify="center">

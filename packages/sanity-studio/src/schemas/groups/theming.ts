@@ -1,5 +1,5 @@
-import { ColorWheelIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {ColorWheelIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured theming field group with color wheel icon.

@@ -1,11 +1,11 @@
-import { type NextRequest, NextResponse } from "next/server";
+import {type NextRequest, NextResponse} from "next/server";
 
-import { redirectIfNeeded } from "./data/sanity/client";
+import {redirectIfNeeded} from "./data/sanity/client";
 
 export async function proxy(request: NextRequest) {
-	const { pathname, searchParams } = request.nextUrl;
+	const {pathname, searchParams} = request.nextUrl;
 
-	await redirectIfNeeded({ request });
+	await redirectIfNeeded({request});
 
 	/**
 	 * Internationalization

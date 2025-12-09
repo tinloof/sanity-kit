@@ -1,4 +1,4 @@
-import type { ListItemBuilder, StructureBuilder } from "sanity/structure";
+import type {ListItemBuilder, StructureBuilder} from "sanity/structure";
 
 export const singletonListItem = (
 	S: StructureBuilder,

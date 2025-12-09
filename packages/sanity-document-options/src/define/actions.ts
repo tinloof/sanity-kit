@@ -39,11 +39,11 @@ export default function defineActions(
 	context: DocumentActionsContext,
 ): DocumentActionComponent[] {
 	const {
-		schema: { _original },
+		schema: {_original},
 		schemaType,
 	} = context;
 
-	const { types: schemas = [] } = (_original as {
+	const {types: schemas = []} = (_original as {
 		types: SchemaTypeDefinition[];
 	}) || {
 		types: [],

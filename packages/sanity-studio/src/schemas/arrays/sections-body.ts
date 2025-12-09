@@ -1,4 +1,4 @@
-import { defineField, type SchemaTypeDefinition } from "sanity";
+import {defineField, type SchemaTypeDefinition} from "sanity";
 
 /**
  * Props for the sections body array schema function.
@@ -8,7 +8,7 @@ export type SectionBodyArraySchemaProps = {
 	previewImage?: (type: string) => string;
 	/** Array of section schemas. This parameter is now required. */
 	sections:
-		| Array<{ name: string } & Record<string, unknown>>
+		| Array<{name: string} & Record<string, unknown>>
 		| SchemaTypeDefinition[];
 };
 
@@ -54,7 +54,7 @@ export type SectionBodyArraySchemaProps = {
 function sectionsBodyArraySchema(
 	props: SectionBodyArraySchemaProps,
 ): ReturnType<typeof defineField> {
-	const { sections, previewImage } = props;
+	const {sections, previewImage} = props;
 
 	const getPreviewImageUrl = (type: string): string => {
 		if (previewImage) {
@@ -64,7 +64,7 @@ function sectionsBodyArraySchema(
 		return `/static/sections/${type.replace("section.", "")}.png`;
 	};
 
-	const sectionFields = sections.map(({ name }) => ({
+	const sectionFields = sections.map(({name}) => ({
 		type: name,
 	}));
 

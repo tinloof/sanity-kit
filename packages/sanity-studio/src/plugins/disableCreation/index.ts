@@ -1,8 +1,8 @@
-import { definePlugin } from "sanity";
+import {definePlugin} from "sanity";
 
-import { actions } from "./actions";
+import {actions} from "./actions";
 import getTemplates from "./templates";
-import type { DisableCreationPluginOptions } from "./types";
+import type {DisableCreationPluginOptions} from "./types";
 
 /**
  * The `disableCreation` plugin can be used to disable creation of documents.
@@ -22,7 +22,7 @@ import type { DisableCreationPluginOptions } from "./types";
  * @param overrideDocumentActions - The document actions to override, defaults to publish, discardChanges, restore
  */
 export const disableCreation = definePlugin<DisableCreationPluginOptions>(
-	({ schemas, overrideDocumentActions }) => ({
+	({schemas, overrideDocumentActions}) => ({
 		name: "tinloof-sanity-disable-creation",
 		document: {
 			actions: (prev, context) =>

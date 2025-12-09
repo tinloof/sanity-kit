@@ -1,5 +1,5 @@
-import { Header } from "./Header";
-import { Hero } from "./Hero";
+import {Header} from "./Header";
+import {Hero} from "./Hero";
 import Logos from "./Logos";
 import Testimonials from "./Testimonials";
 
@@ -10,7 +10,7 @@ export const sections = {
 	"section.testimonials": Testimonials,
 };
 
-export function SectionRenderer(props: { section: any }) {
+export function SectionRenderer(props: {section: any}) {
 	const Section = sections[props.section._type];
 
 	if (!Section) {

@@ -1,6 +1,6 @@
-import { Box, type ButtonTone, Text, Tooltip } from "@sanity/ui";
-import type { ComponentType, PropsWithChildren } from "react";
-import { TextWithTone } from "sanity";
+import {Box, type ButtonTone, Text, Tooltip} from "@sanity/ui";
+import type {ComponentType, PropsWithChildren} from "react";
+import {TextWithTone} from "sanity";
 
 type InfoIconProps = PropsWithChildren & {
 	icon: ComponentType;
@@ -9,7 +9,7 @@ type InfoIconProps = PropsWithChildren & {
 };
 
 export default function InfoIcon(props: InfoIconProps) {
-	const { text, icon, tone, children } = props;
+	const {text, icon, tone, children} = props;
 	const Icon = icon;
 
 	return (

@@ -1,4 +1,4 @@
-import { TranslateIcon } from "@sanity/icons";
+import {TranslateIcon} from "@sanity/icons";
 import {
 	type DocumentDefinition,
 	defineField,
@@ -6,7 +6,7 @@ import {
 	type FieldDefinition,
 } from "sanity";
 
-import { METADATA_SCHEMA_NAME, TRANSLATIONS_ARRAY_NAME } from "../../constants";
+import {METADATA_SCHEMA_NAME, TRANSLATIONS_ARRAY_NAME} from "../../constants";
 
 export default (
 	schemaTypes: string[],
@@ -28,9 +28,9 @@ export default (
 				description:
 					"Optional: Used to filter the reference fields above so all translations share the same types.",
 				type: "array",
-				of: [{ type: "string" }],
-				options: { list: schemaTypes },
-				readOnly: ({ value }) => Boolean(value),
+				of: [{type: "string"}],
+				options: {list: schemaTypes},
+				readOnly: ({value}) => Boolean(value),
 			}),
 			...metadataFields,
 		],
@@ -40,14 +40,14 @@ export default (
 				documentSchemaTypes: "schemaTypes",
 			},
 			prepare(selection) {
-				const { translations = [], documentSchemaTypes = [] } = selection;
+				const {translations = [], documentSchemaTypes = []} = selection;
 				const title =
 					translations.length === 1
 						? `1 Translation`
 						: `${translations.length} Translations`;
 				const languageKeys = translations.length
 					? translations
-							.map((t: { _key: string }) => t._key.toUpperCase())
+							.map((t: {_key: string}) => t._key.toUpperCase())
 							.join(", ")
 					: ``;
 				const subtitle = [

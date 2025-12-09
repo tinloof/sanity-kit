@@ -1,6 +1,6 @@
-import { singletonListItem } from "@tinloof/sanity-studio";
-import { isDev } from "sanity";
-import type { StructureResolver } from "sanity/structure";
+import {singletonListItem} from "@tinloof/sanity-studio";
+import {isDev} from "sanity";
+import type {StructureResolver} from "sanity/structure";
 import documents from "./schemas/documents";
 
 export const structure: StructureResolver = (S) => {

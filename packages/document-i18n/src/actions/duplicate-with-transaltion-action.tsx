@@ -1,8 +1,8 @@
-import { CopyIcon } from "@sanity/icons";
-import { useToast } from "@sanity/ui";
-import { uuid } from "@sanity/uuid";
-import { useCallback, useMemo, useState } from "react";
-import { filter, firstValueFrom } from "rxjs";
+import {CopyIcon} from "@sanity/icons";
+import {useToast} from "@sanity/ui";
+import {uuid} from "@sanity/uuid";
+import {useCallback, useMemo, useState} from "react";
+import {filter, firstValueFrom} from "rxjs";
 import {
 	DEFAULT_STUDIO_CLIENT_OPTIONS,
 	type DocumentActionComponent,
@@ -16,12 +16,12 @@ import {
 	useDocumentStore,
 	useTranslation,
 } from "sanity";
-import { useRouter } from "sanity/router";
-import { structureLocaleNamespace } from "sanity/structure";
+import {useRouter} from "sanity/router";
+import {structureLocaleNamespace} from "sanity/structure";
 
-import { METADATA_SCHEMA_NAME, TRANSLATIONS_ARRAY_NAME } from "../constants";
-import { useTranslationMetadata } from "../hooks/use-locale-metadata";
-import { documentI18nLocaleNamespace } from "../i18n";
+import {METADATA_SCHEMA_NAME, TRANSLATIONS_ARRAY_NAME} from "../constants";
+import {useTranslationMetadata} from "../hooks/use-locale-metadata";
+import {documentI18nLocaleNamespace} from "../i18n";
 
 const DISABLED_REASON_KEY = {
 	METADATA_NOT_FOUND: "action.duplicate.disabled.missing-metadata",
@@ -36,24 +36,23 @@ export const DuplicateWithTranslationsAction: DocumentActionComponent = ({
 	onComplete,
 }) => {
 	const documentStore = useDocumentStore();
-	const { duplicate } = useDocumentOperation(id, type);
-	const { navigateIntent } = useRouter();
+	const {duplicate} = useDocumentOperation(id, type);
+	const {navigateIntent} = useRouter();
 	const [isDuplicating, setDuplicating] = useState(false);
 	const [permissions, isPermissionsLoading] = useDocumentPairPermissions({
 		id,
 		type,
 		permission: "duplicate",
 	});
-	const { data, loading: isMetadataDocumentLoading } =
-		useTranslationMetadata(id);
+	const {data, loading: isMetadataDocumentLoading} = useTranslationMetadata(id);
 	const hasOneMetadataDocument = useMemo(() => {
 		return Array.isArray(data) && data.length <= 1;
 	}, [data]);
 	const metadataDocument = Array.isArray(data) && data.length ? data[0] : null;
 	const client = useClient(DEFAULT_STUDIO_CLIENT_OPTIONS);
 	const toast = useToast();
-	const { t: s } = useTranslation(structureLocaleNamespace);
-	const { t: d } = useTranslation(documentI18nLocaleNamespace);
+	const {t: s} = useTranslation(structureLocaleNamespace);
+	const {t: d} = useTranslation(documentI18nLocaleNamespace);
 	const currentUser = useCurrentUser();
 
 	const handle = useCallback(async () => {
@@ -76,7 +75,7 @@ export const DuplicateWithTranslationsAction: DocumentActionComponent = ({
 						throw new Error("Translation document not found");
 					}
 
-					const { duplicate: duplicateTranslation } = await firstValueFrom(
+					const {duplicate: duplicateTranslation} = await firstValueFrom(
 						documentStore.pair
 							.editOperations(docId, type)
 							.pipe(filter((op) => op.duplicate.disabled !== "NOT_READY")),
@@ -101,7 +100,7 @@ export const DuplicateWithTranslationsAction: DocumentActionComponent = ({
 			);
 
 			// 2. Duplicate the metadata document
-			const { duplicate: duplicateMetadata } = await firstValueFrom(
+			const {duplicate: duplicateMetadata} = await firstValueFrom(
 				documentStore.pair
 					.editOperations(metadataDocument._id, METADATA_SCHEMA_NAME)
 					.pipe(filter((op) => op.duplicate.disabled !== "NOT_READY")),

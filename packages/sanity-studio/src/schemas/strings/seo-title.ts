@@ -1,6 +1,6 @@
-import { defineField } from "sanity";
+import {defineField} from "sanity";
 
-import { InputWithCharacterCount } from "../../components";
+import {InputWithCharacterCount} from "../../components";
 
 export default defineField({
 	components: {

@@ -1,4 +1,4 @@
-import { TranslateIcon } from "@sanity/icons";
+import {TranslateIcon} from "@sanity/icons";
 import {
 	Box,
 	Button,
@@ -9,22 +9,22 @@ import {
 	TextInput,
 	useClickOutside,
 } from "@sanity/ui";
-import { uuid } from "@sanity/uuid";
-import { type FormEvent, useCallback, useMemo, useState } from "react";
-import { useEditState } from "sanity";
+import {uuid} from "@sanity/uuid";
+import {type FormEvent, useCallback, useMemo, useState} from "react";
+import {useEditState} from "sanity";
 
-import { useTranslationMetadata } from "../hooks/use-locale-metadata";
-import type { DocumentI18nMenuProps } from "../types";
-import { useDocumentI18nContext } from "./document-i18n-context";
+import {useTranslationMetadata} from "../hooks/use-locale-metadata";
+import type {DocumentI18nMenuProps} from "../types";
+import {useDocumentI18nContext} from "./document-i18n-context";
 import LocaleManage from "./locale-manage";
 import LocaleOption from "./locale-option";
 import LocalePatch from "./locale-patch";
 import Warning from "./warning";
 
 export function DocumentI18nMenu(props: DocumentI18nMenuProps) {
-	const { documentId } = props;
+	const {documentId} = props;
 	const schemaType = props.schemaType;
-	const { localeField, locales } = useDocumentI18nContext();
+	const {localeField, locales} = useDocumentI18nContext();
 
 	// Search filter query
 	const [query, setQuery] = useState(``);
@@ -45,7 +45,7 @@ export function DocumentI18nMenu(props: DocumentI18nMenuProps) {
 	useClickOutside(handleClickOutside, [button, popover]);
 
 	// Get metadata from content lake
-	const { data, loading, error } = useTranslationMetadata(documentId);
+	const {data, loading, error} = useTranslationMetadata(documentId);
 	const metadata = Array.isArray(data) && data.length ? data[0] : null;
 
 	// Optimistically set a metadata ID for a newly created metadata document
@@ -61,7 +61,7 @@ export function DocumentI18nMenu(props: DocumentI18nMenuProps) {
 	}, [loading, metadata?._id]);
 
 	// Duplicate a new locale version from the most recent version of this document
-	const { draft, published } = useEditState(documentId, schemaType.name);
+	const {draft, published} = useEditState(documentId, schemaType.name);
 	const source = draft || published;
 
 	// Check for data issues

@@ -70,7 +70,7 @@ type TypedExtendsEntry = keyof ExtendsRegistry extends never
 				| undefined
 				| void
 				| never
-				? { type: K; parameters?: never }
+				? {type: K; parameters?: never}
 				: {} extends Required<ExtendsRegistry[K]>
 					? {
 							type: K;
@@ -83,7 +83,7 @@ type TypedExtendsEntry = keyof ExtendsRegistry extends never
 		}[keyof ExtendsRegistry];
 
 export type ExtendsOptionsArrayEntry = keyof ExtendsRegistry extends never
-	? { type: string; parameters?: Record<string, any> }
+	? {type: string; parameters?: Record<string, any>}
 	: TypedExtendsEntry;
 
 export type ExtendsOptionsArray = Array<

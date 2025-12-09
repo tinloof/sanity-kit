@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import {defineField, defineType} from "sanity";
 
 export default defineType({
 	name: "section.image",
@@ -8,8 +8,8 @@ export default defineType({
 		defineField({
 			name: "image",
 			type: "image",
-			fields: [defineField({ name: "alt", type: "string" })],
-			options: { hotspot: true },
+			fields: [defineField({name: "alt", type: "string"})],
+			options: {hotspot: true},
 			validation: (Rule) => Rule.required().assetRequired(),
 		}),
 	],

@@ -1,5 +1,5 @@
 import speakingurl from "speakingurl";
-import type { DocForPath, LocalizePathnameFn } from "../../types";
+import type {DocForPath, LocalizePathnameFn} from "../../types";
 
 /**
  * Removes leading and trailing slashes from a string.
@@ -109,7 +109,7 @@ export function localizePathname({
 
 export function stringToPathname(
 	input: string,
-	options?: { allowTrailingSlash?: boolean },
+	options?: {allowTrailingSlash?: boolean},
 ) {
 	let sanitized = input
 		// Convert to lowercase first to ensure consistent character handling

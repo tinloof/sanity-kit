@@ -1,4 +1,4 @@
-import { defineField } from "sanity";
+import {defineField} from "sanity";
 
 /**
  * Creates an internal title string field for document identification.

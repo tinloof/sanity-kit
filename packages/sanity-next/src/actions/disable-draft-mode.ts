@@ -1,6 +1,6 @@
 "use server";
 
-import { draftMode } from "next/headers";
+import {draftMode} from "next/headers";
 
 export async function disableDraftMode() {
 	"use server";

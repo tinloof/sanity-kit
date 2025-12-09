@@ -52,5 +52,14 @@
 				"useTemplate": "off"
 			}
 		}
+	},
+	"javascript": {
+		"formatter": {
+			"arrowParentheses": "always",
+			"indentStyle": "tab",
+			"indentWidth": 2,
+			"semicolons": "always",
+			"bracketSpacing": false
+		}
 	}
 }

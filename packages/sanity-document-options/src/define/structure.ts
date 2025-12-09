@@ -1,22 +1,22 @@
-import { FolderIcon } from "@sanity/icons";
-import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
+import {FolderIcon} from "@sanity/icons";
+import {orderableDocumentListDeskItem} from "@sanity/orderable-document-list";
 import pluralize from "pluralize";
 import type * as React from "react";
-import type { DocumentDefinition } from "sanity";
+import type {DocumentDefinition} from "sanity";
 import type {
 	StructureBuilder,
 	StructureResolver,
 	StructureResolverContext,
 } from "sanity/structure";
 
-import { LOCALE_FIELD_NAME, TOOL_TITLE } from "../constants";
+import {LOCALE_FIELD_NAME, TOOL_TITLE} from "../constants";
 import {
 	localizedItem,
 	localizedOrderableItem,
 	localizedSingletonItem,
 	singletonItem,
 } from "../structure-items";
-import type { InlineStructureProps, StructureBuiltinOptions } from "../types";
+import type {InlineStructureProps, StructureBuiltinOptions} from "../types";
 
 /**
  * Generates structure from document schema options.
@@ -28,10 +28,10 @@ export default function defineStructure(
 	options?: InlineStructureProps,
 ): StructureResolver | null {
 	const {
-		schema: { _original },
+		schema: {_original},
 	} = context;
 	const documentSchemas = _original?.types.filter(
-		({ type }) => type === "document",
+		({type}) => type === "document",
 	) as DocumentDefinition[];
 
 	const {

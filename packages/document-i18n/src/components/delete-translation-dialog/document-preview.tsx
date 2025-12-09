@@ -1,5 +1,5 @@
-import { Preview, useSchema } from "sanity";
-import { Feedback } from "sanity-plugin-utils";
+import {Preview, useSchema} from "sanity";
+import {Feedback} from "sanity-plugin-utils";
 
 type DocumentPreviewProps = {
 	value: unknown;

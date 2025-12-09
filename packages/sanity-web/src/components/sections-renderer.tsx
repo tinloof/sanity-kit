@@ -2,7 +2,7 @@ import type {
 	ArbitraryTypedObject,
 	PortableTextBlock,
 } from "@portabletext/types";
-import type { ComponentProps, ComponentType } from "react";
+import type {ComponentProps, ComponentType} from "react";
 import React from "react";
 
 // Type for individual section data
@@ -16,7 +16,7 @@ type ExtractSectionTypes<TSections extends readonly any[]> =
 type ExtractSectionByType<
 	TSections extends readonly any[],
 	TType extends string,
-> = Extract<TSections[number], { _type: TType }>;
+> = Extract<TSections[number], {_type: TType}>;
 
 // Base props that all section components receive from the renderer
 export type BaseSectionProps<
@@ -218,12 +218,12 @@ type MissingSectionProps = {
 };
 
 // Fallback component shown when section type is not found
-function MissingSection({ type, availableTypes }: MissingSectionProps) {
+function MissingSection({type, availableTypes}: MissingSectionProps) {
 	const isDev = process.env.NODE_ENV === "development";
 
 	return (
 		<section
-			style={{ width: "100%", backgroundColor: "#000000", color: "#ffffff" }}
+			style={{width: "100%", backgroundColor: "#000000", color: "#ffffff"}}
 		>
 			<div
 				style={{
@@ -249,7 +249,7 @@ function MissingSection({ type, availableTypes }: MissingSectionProps) {
 					>
 						Missing Section Component
 					</h2>
-					<p style={{ marginBottom: "1rem" }}>
+					<p style={{marginBottom: "1rem"}}>
 						No component found for section type{" "}
 						<code
 							style={{
@@ -343,8 +343,8 @@ export type ConfiguredSectionsRendererProps<
 	TSections extends readonly any[],
 	TSharedProps extends Record<string, any> = {},
 > = (keyof TSharedProps extends never
-	? { sharedProps?: TSharedProps }
-	: { sharedProps: TSharedProps }) & {
+	? {sharedProps?: TSharedProps}
+	: {sharedProps: TSharedProps}) & {
 	/** Array of section data objects to render */
 	data?: TSections;
 	/**

@@ -1,4 +1,4 @@
-export function Header(props: { title: string }) {
+export function Header(props: {title: string}) {
 	return (
 		<div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32">
 			<img

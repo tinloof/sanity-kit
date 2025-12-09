@@ -1,5 +1,5 @@
-import { SearchIcon } from "@sanity/icons";
-import { TextInput } from "@sanity/ui";
+import {SearchIcon} from "@sanity/icons";
+import {TextInput} from "@sanity/ui";
 import React from "react";
 import {
 	type ArrayOfObjectsInputProps,
@@ -30,7 +30,7 @@ function getBooleanString(permanent: boolean): string {
 }
 
 function matchesSearch(
-	item: { source: string; destination: string; permanent: boolean },
+	item: {source: string; destination: string; permanent: boolean},
 	search: string,
 ): boolean {
 	if (!item?.source || !item?.destination) return false;
@@ -127,7 +127,7 @@ export default defineField({
 			],
 
 			preview: {
-				prepare({ destination, permanent, source }) {
+				prepare({destination, permanent, source}) {
 					return {
 						media: <div>{permanent ? "P" : "T"}</div>,
 						subtitle: `Redirects to: ${destination}`,
@@ -144,7 +144,7 @@ export default defineField({
 	],
 });
 
-function ArrayInput({ members, ...props }: ArrayOfObjectsInputProps) {
+function ArrayInput({members, ...props}: ArrayOfObjectsInputProps) {
 	const [search, setSearch] = React.useState("");
 
 	const handleSearchChange = React.useCallback(
@@ -157,9 +157,9 @@ function ArrayInput({ members, ...props }: ArrayOfObjectsInputProps) {
 	const filteredMembers = !search
 		? members
 		: members?.filter((member) => {
-				const { item } = member as unknown as {
+				const {item} = member as unknown as {
 					item: {
-						value: { source: string; destination: string; permanent: boolean };
+						value: {source: string; destination: string; permanent: boolean};
 					};
 				};
 
@@ -171,8 +171,8 @@ function ArrayInput({ members, ...props }: ArrayOfObjectsInputProps) {
 	const isFiltered = search.length > 0;
 
 	return (
-		<div style={{ display: "grid", gap: 8 }}>
-			<div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+		<div style={{display: "grid", gap: 8}}>
+			<div style={{display: "flex", flexDirection: "column", gap: 4}}>
 				<TextInput
 					onChange={handleSearchChange}
 					placeholder={SEARCH_PLACEHOLDER}
@@ -181,14 +181,14 @@ function ArrayInput({ members, ...props }: ArrayOfObjectsInputProps) {
 					icon={SearchIcon}
 				/>
 				{isFiltered && (
-					<div style={{ fontSize: 12, color: "#666" }}>
+					<div style={{fontSize: 12, color: "#666"}}>
 						{filteredCount === 0
 							? "No redirects match your search"
 							: `Showing ${filteredCount} of ${totalMembers} redirect${totalMembers === 1 ? "" : "s"}`}
 					</div>
 				)}
 			</div>
-			{props.renderDefault({ ...props, members: filteredMembers })}
+			{props.renderDefault({...props, members: filteredMembers})}
 		</div>
 	);
 }

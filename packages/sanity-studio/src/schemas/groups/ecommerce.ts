@@ -1,5 +1,5 @@
-import { TagIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {TagIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured e-commerce field group with tag icon.

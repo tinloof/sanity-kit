@@ -1,12 +1,12 @@
-import { SearchIcon } from "@sanity/icons";
-import { Box, Card, Flex, TextInput, useGlobalKeyDown } from "@sanity/ui";
+import {SearchIcon} from "@sanity/icons";
+import {Box, Card, Flex, TextInput, useGlobalKeyDown} from "@sanity/ui";
 import type React from "react";
-import { useCallback, useRef } from "react";
+import {useCallback, useRef} from "react";
 
-import { useNavigator } from "../context";
+import {useNavigator} from "../context";
 
-const SearchBox = (props: { domRef?: React.RefObject<HTMLDivElement> }) => {
-	const { searchTerm, handleSearch } = useNavigator();
+const SearchBox = (props: {domRef?: React.RefObject<HTMLDivElement>}) => {
+	const {searchTerm, handleSearch} = useNavigator();
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	// Hotkeys

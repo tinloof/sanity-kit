@@ -1,5 +1,5 @@
-import { ImageIcon } from "@sanity/icons";
-import type { FieldGroupDefinition } from "sanity";
+import {ImageIcon} from "@sanity/icons";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured media field group with image icon.
