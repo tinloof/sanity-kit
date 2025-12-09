@@ -19,25 +19,21 @@ import {
 
 import type { FolderTreeNode, TreeNode } from "../../../types";
 
-const PreviewElement = React.memo(
-	(props: {
-		item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
-		type: "media" | "title" | "subtitle";
-		fallback?: React.ReactNode | string;
-	}): React.ReactElement | null => {
-		const schema = useSchema();
-		const { _type } = props.item;
-		const schemaType = schema.get(_type);
+const PreviewElement = React.memo(function PreviewElement(props: {
+	item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
+	type: "media" | "title" | "subtitle";
+	fallback?: React.ReactNode | string;
+}): React.ReactNode {
+	const schema = useSchema();
+	const { _type } = props.item;
+	const schemaType = schema.get(_type);
 
-		if (!schemaType) {
-			return null;
-		}
+	if (!schemaType) {
+		return null;
+	}
 
-		return <Preview schemaType={schemaType} {...props} />;
-	},
-);
-
-PreviewElement.displayName = "PreviewElement";
+	return <Preview schemaType={schemaType} {...props} />;
+});
 
 const Preview = React.memo(function Preview({
 	schemaType,
@@ -49,7 +45,7 @@ const Preview = React.memo(function Preview({
 	item: Exclude<TreeNode, FolderTreeNode>;
 	type: "media" | "title" | "subtitle";
 	fallback?: React.ReactNode | string;
-}) {
+}): React.ReactNode {
 	const documentPreviewStore = useDocumentPreviewStore();
 	const previewState = useObservable(
 		useMemo(
@@ -94,21 +90,23 @@ const Preview = React.memo(function Preview({
 	}
 
 	if (type === "title") {
-		return showPreview && previewValues?.title
-			? previewValues?.title
-			: fallback;
+		return showPreview && previewValues?.title ? (
+			<>{previewValues.title}</>
+		) : (
+			<>{fallback}</>
+		);
 	}
 
 	if (type === "subtitle") {
-		return showPreview && previewValues?.subtitle
-			? previewValues?.subtitle
-			: fallback;
+		return showPreview && previewValues?.subtitle ? (
+			<>{previewValues.subtitle}</>
+		) : (
+			<>{fallback}</>
+		);
 	}
 
 	return null;
 });
-
-Preview.displayName = "Preview";
 
 const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
 	const { icon, media: mediaProp, imageUrl, title } = props;
