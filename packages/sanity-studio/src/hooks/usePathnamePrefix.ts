@@ -11,6 +11,7 @@ import {usePathnameContext} from "./usePathnameContext";
 export function usePathnamePrefix(props: PathnameInputProps) {
   const sourceContext = usePathnameContext();
   const document = useFormValue([]) as SanityDocument | undefined;
+  const windowLocationOrigin = window.location.origin;
 
   const optionsPrefix = props.schemaType.options?.prefix as
     | PathnamePrefix
@@ -23,7 +24,7 @@ export function usePathnamePrefix(props: PathnameInputProps) {
       if (!doc) return;
 
       if (typeof optionsPrefix === "string") {
-        setUrlPrefix(optionsPrefix);
+        setUrlPrefix(`${windowLocationOrigin}/${optionsPrefix}`);
         return;
       }
 
@@ -32,7 +33,7 @@ export function usePathnamePrefix(props: PathnameInputProps) {
           const value = await Promise.resolve(
             optionsPrefix(doc, sourceContext),
           );
-          setUrlPrefix(value);
+          setUrlPrefix(`${windowLocationOrigin}/${value}`);
           return;
         } catch (error) {
           console.error(
@@ -44,7 +45,7 @@ export function usePathnamePrefix(props: PathnameInputProps) {
 
       setUrlPrefix(window.location.origin);
     },
-    [setUrlPrefix, optionsPrefix, sourceContext],
+    [optionsPrefix, windowLocationOrigin, sourceContext],
   );
 
   // Re-create the prefix whenever the document changes
