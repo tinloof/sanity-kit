@@ -1,13 +1,13 @@
-import { defineField } from 'sanity'
+import {defineField} from "sanity";
 
 export default defineField({
-  name: 'section.testimonials',
-  title: 'Testimonials',
-  type: 'object',
-  fields: [
-    defineField({
-      name: 'text',
-      type: 'string',
-    }),
-  ],
-})
+	name: "section.testimonials",
+	title: "Testimonials",
+	type: "object",
+	fields: [
+		defineField({
+			name: "text",
+			type: "string",
+		}),
+	],
+});

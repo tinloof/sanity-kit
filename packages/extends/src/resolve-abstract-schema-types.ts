@@ -1,5 +1,5 @@
-import {DocumentDefinition} from "sanity";
-import {ExtendedType} from "./types";
+import type {DocumentDefinition} from "sanity";
+import type {ExtendedType} from "./types";
 
 /**
  * Generic utility for resolving abstract schema types from configuration
@@ -35,35 +35,35 @@ import {ExtendedType} from "./types";
  * ```
  */
 export function resolveAbstractSchemaTypes<
-  T extends Record<string, ExtendedType>,
+	T extends Record<string, ExtendedType>,
 >(
-  abstractSchemaMap: T,
-  abstracts: Partial<Record<keyof T, boolean>> | false = {},
-  options?: Record<string, unknown>,
+	abstractSchemaMap: T,
+	abstracts: Partial<Record<keyof T, boolean>> | false = {},
+	options?: Record<string, unknown>,
 ): ExtendedType[] {
-  if (abstracts === false) return [];
+	if (abstracts === false) return [];
 
-  const enabledAbstracts: ExtendedType[] = [];
+	const enabledAbstracts: ExtendedType[] = [];
 
-  Object.entries(abstracts).forEach(([key, enabled]) => {
-    if (enabled && key in abstractSchemaMap) {
-      const abstractResolver = abstractSchemaMap[key as keyof T];
+	Object.entries(abstracts).forEach(([key, enabled]) => {
+		if (enabled && key in abstractSchemaMap) {
+			const abstractResolver = abstractSchemaMap[key as keyof T];
 
-      if (options && typeof abstractResolver === "function") {
-        const wrappedResolver = (
-          schema: DocumentDefinition,
-          resolverOptions?: object | boolean,
-        ) => {
-          const baseOptions =
-            typeof resolverOptions === "object" ? resolverOptions : {};
-          return abstractResolver(schema, {...baseOptions, ...options});
-        };
-        enabledAbstracts.push(wrappedResolver);
-      } else {
-        enabledAbstracts.push(abstractResolver);
-      }
-    }
-  });
+			if (options && typeof abstractResolver === "function") {
+				const wrappedResolver = (
+					schema: DocumentDefinition,
+					resolverOptions?: object | boolean,
+				) => {
+					const baseOptions =
+						typeof resolverOptions === "object" ? resolverOptions : {};
+					return abstractResolver(schema, {...baseOptions, ...options});
+				};
+				enabledAbstracts.push(wrappedResolver);
+			} else {
+				enabledAbstracts.push(abstractResolver);
+			}
+		}
+	});
 
-  return enabledAbstracts;
+	return enabledAbstracts;
 }

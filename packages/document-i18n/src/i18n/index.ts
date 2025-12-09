@@ -13,7 +13,7 @@ export const documentI18nLocaleNamespace = "document-i18n" as const;
  * @internal
  */
 export const documentI18nUsEnglishLocaleBundle = defineLocaleResourceBundle({
-  locale: "en-US",
-  namespace: documentI18nLocaleNamespace,
-  resources: () => import("./resources"),
+	locale: "en-US",
+	namespace: documentI18nLocaleNamespace,
+	resources: () => import("./resources"),
 });

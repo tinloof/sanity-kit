@@ -1,5 +1,5 @@
 import {EarthGlobeIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured localization field group with earth globe icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: EarthGlobeIcon,
-  name: "localization",
-  title: "Localization",
+	icon: EarthGlobeIcon,
+	name: "localization",
+	title: "Localization",
 } as FieldGroupDefinition;

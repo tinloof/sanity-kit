@@ -5,14 +5,14 @@ import {structureTool} from "sanity/structure";
 import {ABSTRACTS_MAP} from "./abstracts";
 import {LOCALE_FIELD_NAME, TOOL_TITLE} from "./constants";
 import {
-  defineActions,
-  defineBadges,
-  defineDefaultDocumentNode,
-  defineNewDocumentOptions,
-  defineStructure,
-  defineTemplates,
+	defineActions,
+	defineBadges,
+	defineDefaultDocumentNode,
+	defineNewDocumentOptions,
+	defineStructure,
+	defineTemplates,
 } from "./define";
-import {DocumentOptionsProps} from "./types";
+import type {DocumentOptionsProps} from "./types";
 
 /**
  * Configure document options and structure directly in schema definitions.
@@ -33,63 +33,63 @@ import {DocumentOptionsProps} from "./types";
  * @public
  */
 export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
-  const {
-    structure,
-    abstracts = {orderable: true, singleton: true, sync: true},
-  } = props ?? {};
+	const {
+		structure,
+		abstracts = {orderable: true, singleton: true, sync: true},
+	} = props ?? {};
 
-  // Resolve enabled abstract schema types
-  const enabledAbstractTypes = resolveAbstractSchemaTypes(
-    ABSTRACTS_MAP,
-    abstracts,
-  );
+	// Resolve enabled abstract schema types
+	const enabledAbstractTypes = resolveAbstractSchemaTypes(
+		ABSTRACTS_MAP,
+		abstracts,
+	);
 
-  // Skip structure tool if explicitly disabled
-  if (structure === false) {
-    return {
-      name: "tinloof-document-options",
-      document: {
-        actions: defineActions,
-        newDocumentOptions: defineNewDocumentOptions,
-        badges: defineBadges,
-      },
-      schema: {
-        templates: defineTemplates,
-        types: enabledAbstractTypes,
-      },
-    };
-  }
+	// Skip structure tool if explicitly disabled
+	if (structure === false) {
+		return {
+			name: "tinloof-document-options",
+			document: {
+				actions: defineActions,
+				newDocumentOptions: defineNewDocumentOptions,
+				badges: defineBadges,
+			},
+			schema: {
+				templates: defineTemplates,
+				types: enabledAbstractTypes,
+			},
+		};
+	}
 
-  const {
-    hide = [],
-    localeFieldName = LOCALE_FIELD_NAME,
-    locales = [],
-    toolTitle = TOOL_TITLE,
-  } = structure ?? {};
+	const {
+		hide = [],
+		localeFieldName = LOCALE_FIELD_NAME,
+		locales = [],
+		toolTitle = TOOL_TITLE,
+	} = structure ?? {};
 
-  return {
-    name: "tinloof-document-options",
-    plugins: [
-      structureTool({
-        title: toolTitle,
-        structure: (S, context) =>
-          defineStructure(S, context, {
-            locales,
-            hide,
-            localeFieldName,
-            toolTitle,
-          }),
-        defaultDocumentNode: defineDefaultDocumentNode,
-      }),
-    ],
-    document: {
-      actions: defineActions,
-      newDocumentOptions: defineNewDocumentOptions,
-      badges: defineBadges,
-    },
-    schema: {
-      templates: defineTemplates,
-      types: enabledAbstractTypes,
-    },
-  };
+	return {
+		name: "tinloof-document-options",
+		plugins: [
+			structureTool({
+				title: toolTitle,
+				structure: (S, context) =>
+					defineStructure(S, context, {
+						locales,
+						hide,
+						localeFieldName,
+						toolTitle,
+					}),
+				defaultDocumentNode: defineDefaultDocumentNode,
+			}),
+		],
+		document: {
+			actions: defineActions,
+			newDocumentOptions: defineNewDocumentOptions,
+			badges: defineBadges,
+		},
+		schema: {
+			templates: defineTemplates,
+			types: enabledAbstractTypes,
+		},
+	};
 });

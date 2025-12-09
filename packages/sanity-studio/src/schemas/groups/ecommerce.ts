@@ -1,5 +1,5 @@
 import {TagIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured e-commerce field group with tag icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: TagIcon,
-  name: "ecommerce",
-  title: "E-commerce",
+	icon: TagIcon,
+	name: "ecommerce",
+	title: "E-commerce",
 } as FieldGroupDefinition;

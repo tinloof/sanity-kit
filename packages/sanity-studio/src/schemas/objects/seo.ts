@@ -1,8 +1,8 @@
-import {defineField, FieldDefinition} from "sanity";
+import {defineField, type FieldDefinition} from "sanity";
 
 import {
-  applyFieldCustomization,
-  FieldCustomization,
+	applyFieldCustomization,
+	type FieldCustomization,
 } from "../../utils/apply-field-customization";
 import {indexableBooleanField} from "../booleans";
 import {ogImageField} from "../images";
@@ -12,14 +12,14 @@ import {seoDescriptionStringField, seoTitleStringField} from "../strings";
  * Configuration options for the SEO object field
  */
 export type SEOObjectProps = {
-  /** Control the indexable status field visibility */
-  indexableStatus?: FieldCustomization<typeof indexableBooleanField>;
-  /** Control the SEO title field visibility */
-  title?: FieldCustomization<typeof seoTitleStringField>;
-  /** Control the SEO description field visibility */
-  description?: FieldCustomization<typeof seoDescriptionStringField>;
-  /** Control the social sharing image field visibility */
-  ogImage?: FieldCustomization<typeof ogImageField>;
+	/** Control the indexable status field visibility */
+	indexableStatus?: FieldCustomization<typeof indexableBooleanField>;
+	/** Control the SEO title field visibility */
+	title?: FieldCustomization<typeof seoTitleStringField>;
+	/** Control the SEO description field visibility */
+	description?: FieldCustomization<typeof seoDescriptionStringField>;
+	/** Control the social sharing image field visibility */
+	ogImage?: FieldCustomization<typeof ogImageField>;
 };
 
 /**
@@ -52,40 +52,40 @@ export type SEOObjectProps = {
  * ```
  */
 export default function seoObjectField({
-  indexableStatus = true,
-  title = true,
-  description = true,
-  ogImage = true,
+	indexableStatus = true,
+	title = true,
+	description = true,
+	ogImage = true,
 }: SEOObjectProps): FieldDefinition {
-  const indexableField = indexableStatus
-    ? applyFieldCustomization(indexableBooleanField, indexableStatus)
-    : null;
-  const titleField = title
-    ? applyFieldCustomization(seoTitleStringField, title)
-    : null;
-  const descriptionField = description
-    ? applyFieldCustomization(seoDescriptionStringField, description)
-    : null;
-  const ogImageFieldCustomized = ogImage
-    ? applyFieldCustomization(ogImageField, ogImage)
-    : null;
+	const indexableField = indexableStatus
+		? applyFieldCustomization(indexableBooleanField, indexableStatus)
+		: null;
+	const titleField = title
+		? applyFieldCustomization(seoTitleStringField, title)
+		: null;
+	const descriptionField = description
+		? applyFieldCustomization(seoDescriptionStringField, description)
+		: null;
+	const ogImageFieldCustomized = ogImage
+		? applyFieldCustomization(ogImageField, ogImage)
+		: null;
 
-  const allFields = [
-    ...(indexableField ? [indexableField] : []),
-    ...(titleField ? [titleField] : []),
-    ...(descriptionField ? [descriptionField] : []),
-    ...(ogImageFieldCustomized ? [ogImageFieldCustomized] : []),
-  ];
+	const allFields = [
+		...(indexableField ? [indexableField] : []),
+		...(titleField ? [titleField] : []),
+		...(descriptionField ? [descriptionField] : []),
+		...(ogImageFieldCustomized ? [ogImageFieldCustomized] : []),
+	];
 
-  if (allFields.length === 0) {
-    throw new Error(`[seo] must define at least one field.`);
-  }
+	if (allFields.length === 0) {
+		throw new Error(`[seo] must define at least one field.`);
+	}
 
-  return defineField({
-    name: "seo",
-    title: "SEO",
-    type: "object",
-    options: {collapsed: false, collapsible: true},
-    fields: allFields,
-  });
+	return defineField({
+		name: "seo",
+		title: "SEO",
+		type: "object",
+		options: {collapsed: false, collapsible: true},
+		fields: allFields,
+	});
 }

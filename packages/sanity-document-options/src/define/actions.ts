@@ -1,9 +1,9 @@
-import {
-  DocumentActionComponent,
-  DocumentActionsContext,
-  DocumentDefinition,
-  DocumentPluginOptions,
-  type SchemaTypeDefinition,
+import type {
+	DocumentActionComponent,
+	DocumentActionsContext,
+	DocumentDefinition,
+	DocumentPluginOptions,
+	SchemaTypeDefinition,
 } from "sanity";
 
 /**
@@ -11,13 +11,13 @@ import {
  * @internal
  */
 function getDocumentActionsConfig(
-  schemas: SchemaTypeDefinition[],
-  schemaType: string,
+	schemas: SchemaTypeDefinition[],
+	schemaType: string,
 ): DocumentPluginOptions["actions"] {
-  const schema = schemas.find((s) => s.name === schemaType);
-  if (!schema || schema.type !== "document") return undefined;
+	const schema = schemas.find((s) => s.name === schemaType);
+	if (!schema || schema.type !== "document") return undefined;
 
-  return (schema as DocumentDefinition).options?.document?.actions;
+	return (schema as DocumentDefinition).options?.document?.actions;
 }
 
 /**
@@ -35,38 +35,38 @@ function getDocumentActionsConfig(
  * ```
  */
 export default function defineActions(
-  prev: DocumentActionComponent[],
-  context: DocumentActionsContext,
+	prev: DocumentActionComponent[],
+	context: DocumentActionsContext,
 ): DocumentActionComponent[] {
-  const {
-    schema: {_original},
-    schemaType,
-  } = context;
+	const {
+		schema: {_original},
+		schemaType,
+	} = context;
 
-  const {types: schemas = []} = (_original as {
-    types: SchemaTypeDefinition[];
-  }) || {
-    types: [],
-  };
+	const {types: schemas = []} = (_original as {
+		types: SchemaTypeDefinition[];
+	}) || {
+		types: [],
+	};
 
-  // Get the actions configuration for this schema type
-  const actionsConfig = getDocumentActionsConfig(schemas, schemaType);
+	// Get the actions configuration for this schema type
+	const actionsConfig = getDocumentActionsConfig(schemas, schemaType);
 
-  // If no actions config is found, return the original actions unchanged
-  if (!actionsConfig) {
-    return prev;
-  }
+	// If no actions config is found, return the original actions unchanged
+	if (!actionsConfig) {
+		return prev;
+	}
 
-  // If config is an array of actions, append them to existing actions
-  if (Array.isArray(actionsConfig)) {
-    return [...prev, ...actionsConfig];
-  }
+	// If config is an array of actions, append them to existing actions
+	if (Array.isArray(actionsConfig)) {
+		return [...prev, ...actionsConfig];
+	}
 
-  // If config is a function, call it with the previous actions and context
-  if (typeof actionsConfig === "function") {
-    return actionsConfig(prev, context);
-  }
+	// If config is a function, call it with the previous actions and context
+	if (typeof actionsConfig === "function") {
+		return actionsConfig(prev, context);
+	}
 
-  // Fallback: return original actions if config type is unexpected
-  return prev;
+	// Fallback: return original actions if config type is unexpected
+	return prev;
 }

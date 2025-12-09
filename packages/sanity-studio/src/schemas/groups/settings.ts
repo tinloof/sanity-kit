@@ -1,5 +1,5 @@
 import {CogIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured settings field group with cog icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: CogIcon,
-  name: "settings",
-  title: "Settings",
+	icon: CogIcon,
+	name: "settings",
+	title: "Settings",
 } as FieldGroupDefinition;

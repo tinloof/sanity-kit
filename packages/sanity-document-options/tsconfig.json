@@ -1,4 +1,4 @@
 {
-  "extends": "./tsconfig.settings",
-  "include": ["./src", "./package.config.ts"]
+	"extends": "./tsconfig.settings",
+	"include": ["./src", "./package.config.ts"]
 }

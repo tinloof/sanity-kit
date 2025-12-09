@@ -1,4 +1,4 @@
 export {
-  type SectionBodyArraySchemaProps,
-  default as sectionsBodyArraySchema,
+	default as sectionsBodyArraySchema,
+	type SectionBodyArraySchemaProps,
 } from "./sections-body";

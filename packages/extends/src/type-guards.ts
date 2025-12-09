@@ -1,5 +1,5 @@
-import type { IntrinsicTypeName, SchemaTypeDefinition } from "sanity";
-import type { AbstractDefinitionResolver, ExtendedType } from "./types";
+import type {IntrinsicTypeName, SchemaTypeDefinition} from "sanity";
+import type {AbstractDefinitionResolver, ExtendedType} from "./types";
 
 export const isResolver = (
 	type: ExtendedType,
@@ -17,8 +17,8 @@ export const hasType = (
 
 export const isExtendsOptionsArrayEntry = (
 	value: unknown,
-): value is { type: string; parameters?: Record<string, any> } =>
+): value is {type: string; parameters?: Record<string, any>} =>
 	typeof value === "object" &&
 	value !== null &&
 	"type" in value &&
-	typeof (value as { type: unknown }).type === "string";
+	typeof (value as {type: unknown}).type === "string";

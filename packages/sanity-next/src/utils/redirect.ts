@@ -1,30 +1,30 @@
-import {type DefinedSanityFetchType} from "next-sanity/live";
+import {type NextRequest, NextResponse} from "next/server";
 import {defineQuery} from "next-sanity";
-import {NextResponse, NextRequest} from "next/server";
+import type {DefinedSanityFetchType} from "next-sanity/live";
 import {getPathVariations} from "./urls";
 
 /**
  * Parameters for the getRedirect function.
  */
 export type GetRedirectParams = {
-  /** The source path to look up redirects for (e.g., "/old-page") */
-  source: string;
-  /** Sanity fetch function from next-sanity */
-  sanityFetch: DefinedSanityFetchType;
-  /** Optional custom GROQ query (defaults to REDIRECT_QUERY) */
-  query?: string;
+	/** The source path to look up redirects for (e.g., "/old-page") */
+	source: string;
+	/** Sanity fetch function from next-sanity */
+	sanityFetch: DefinedSanityFetchType;
+	/** Optional custom GROQ query (defaults to REDIRECT_QUERY) */
+	query?: string;
 };
 
 /**
  * Redirect configuration returned from Sanity.
  */
 export type RedirectData = {
-  /** The source path that triggers the redirect */
-  source: string;
-  /** The destination URL to redirect to */
-  destination: string;
-  /** Whether this is a permanent or temporary redirect */
-  permanent: boolean;
+	/** The source path that triggers the redirect */
+	source: string;
+	/** The destination URL to redirect to */
+	destination: string;
+	/** Whether this is a permanent or temporary redirect */
+	permanent: boolean;
 } | null;
 
 /**
@@ -49,39 +49,39 @@ const REDIRECT_QUERY = defineQuery(`
  * @returns Promise that resolves to redirect data or null if no redirect found
  */
 export async function getRedirect({
-  source,
-  sanityFetch,
-  query = REDIRECT_QUERY,
+	source,
+	sanityFetch,
+	query = REDIRECT_QUERY,
 }: GetRedirectParams): Promise<RedirectData> {
-  const paths = getPathVariations(source);
+	const paths = getPathVariations(source);
 
-  const {data} = await sanityFetch({
-    params: {paths},
-    query,
-    perspective: "published",
-    stega: false,
-  });
+	const {data} = await sanityFetch({
+		params: {paths},
+		query,
+		perspective: "published",
+		stega: false,
+	});
 
-  return data;
+	return data;
 }
 
 export type RedirectIfNeededParams = {
-  sanityFetch: DefinedSanityFetchType;
-  request: NextRequest;
+	sanityFetch: DefinedSanityFetchType;
+	request: NextRequest;
 };
 
 export async function redirectIfNeeded({
-  sanityFetch,
-  request,
+	sanityFetch,
+	request,
 }: RedirectIfNeededParams) {
-  const redirect = await getRedirect({
-    source: request.nextUrl.pathname,
-    sanityFetch,
-  });
+	const redirect = await getRedirect({
+		source: request.nextUrl.pathname,
+		sanityFetch,
+	});
 
-  if (redirect && redirect?.destination) {
-    return NextResponse.redirect(new URL(redirect.destination, request.url), {
-      status: redirect.permanent ? 301 : 302,
-    });
-  }
+	if (redirect && redirect?.destination) {
+		return NextResponse.redirect(new URL(redirect.destination, request.url), {
+			status: redirect.permanent ? 301 : 302,
+		});
+	}
 }

@@ -1,5 +1,5 @@
 import {ComposeIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured forms field group with form icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: ComposeIcon,
-  name: "forms",
-  title: "Forms",
+	icon: ComposeIcon,
+	name: "forms",
+	title: "Forms",
 } as FieldGroupDefinition;

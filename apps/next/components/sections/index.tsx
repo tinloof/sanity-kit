@@ -1,4 +1,4 @@
-import { createSectionsComponent } from "@tinloof/sanity-web/components/sections-renderer";
+import {createSectionsComponent} from "@tinloof/sanity-web/components/sections-renderer";
 
 import HeroSection from "./hero";
 

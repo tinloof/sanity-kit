@@ -1,5 +1,5 @@
-import page from './page'
+import page from "./page";
 
-const schemas = [page]
+const schemas = [page];
 
-export default schemas
+export default schemas;

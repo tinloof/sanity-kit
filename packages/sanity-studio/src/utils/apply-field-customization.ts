@@ -1,4 +1,4 @@
-import {FieldDefinition} from "sanity";
+import type {FieldDefinition} from "sanity";
 
 /**
  * Field customization options for controlling field behavior and visibility.
@@ -25,9 +25,9 @@ import {FieldDefinition} from "sanity";
  * ```
  */
 export type FieldCustomization<T extends FieldDefinition> =
-  | boolean
-  | ((field: T) => T)
-  | "hidden";
+	| boolean
+	| ((field: T) => T)
+	| "hidden";
 
 /**
  * Applies field customization to a field definition.
@@ -55,23 +55,23 @@ export type FieldCustomization<T extends FieldDefinition> =
  * in `defineField()` for maximum type safety.
  */
 export function applyFieldCustomization<T extends FieldDefinition>(
-  field: T,
-  customization: FieldCustomization<T> = true,
+	field: T,
+	customization: FieldCustomization<T> = true,
 ): T | null {
-  if (typeof customization === "function") {
-    return customization(field);
-  }
+	if (typeof customization === "function") {
+		return customization(field);
+	}
 
-  if (customization === "hidden") {
-    return {
-      ...field,
-      hidden: true,
-    } as T;
-  }
+	if (customization === "hidden") {
+		return {
+			...field,
+			hidden: true,
+		} as T;
+	}
 
-  if (customization === false) {
-    return null;
-  }
+	if (customization === false) {
+		return null;
+	}
 
-  return field;
+	return field;
 }

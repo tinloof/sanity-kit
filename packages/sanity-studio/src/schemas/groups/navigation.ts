@@ -1,5 +1,5 @@
 import {LinkIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured navigation field group with link icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: LinkIcon,
-  name: "navigation",
-  title: "Navigation",
+	icon: LinkIcon,
+	name: "navigation",
+	title: "Navigation",
 } as FieldGroupDefinition;

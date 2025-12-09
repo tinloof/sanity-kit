@@ -4,12 +4,12 @@ import LocaleSelect from "./LocaleSelect";
 import SearchBox from "./SearchBox";
 
 const Navigator = Object.assign({
-  Header,
-  SearchBox,
-  List,
-  LocaleSelect,
-  SkeletonListItems,
-  EmptySearchResults,
+	Header,
+	SearchBox,
+	List,
+	LocaleSelect,
+	SkeletonListItems,
+	EmptySearchResults,
 });
 
 export default Navigator;

@@ -6,7 +6,8 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "eslint"
+		"lint": "biome lint .",
+		"check": "biome check --write ."
 	},
 	"dependencies": {
 		"@examples/hello-world-i18n-studio": "workspace:*",
@@ -18,13 +19,12 @@
 		"react-dom": "19.2.1"
 	},
 	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
 		"@tailwindcss/postcss": "^4.1.17",
 		"@types/node": "^24.10.1",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
 		"babel-plugin-react-compiler": "1.0.0",
-		"eslint": "^9.39.1",
-		"eslint-config-next": "16.0.8",
 		"tailwindcss": "^4.1.17",
 		"typescript": "^5.9.3"
 	}

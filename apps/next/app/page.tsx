@@ -1,26 +1,26 @@
+import type {ResolvingMetadata} from "next";
+import {notFound} from "next/navigation";
 import {Page} from "@/components/pages/modular";
 import {loadPage} from "@/data/sanity";
 import {resolveSanityMetadata} from "@/data/sanity/client";
-import {ResolvingMetadata} from "next";
-import {notFound} from "next/navigation";
 
 export async function generateMetadata(
-  props,
-  parentPromise: ResolvingMetadata,
+	props,
+	parentPromise: ResolvingMetadata,
 ) {
-  const parent = await parentPromise;
+	const parent = await parentPromise;
 
-  const initialData = await loadPage("/");
+	const initialData = await loadPage("/");
 
-  if (!initialData) return notFound();
+	if (!initialData) return notFound();
 
-  return resolveSanityMetadata({...initialData, parent});
+	return resolveSanityMetadata({...initialData, parent});
 }
 
 export default async function IndexRoute() {
-  const data = await loadPage("/");
+	const data = await loadPage("/");
 
-  if (!data) return notFound();
+	if (!data) return notFound();
 
-  return <Page data={data} />;
+	return <Page data={data} />;
 }

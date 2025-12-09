@@ -5,30 +5,30 @@
 
 import {useMemo} from "react";
 import {
-  SlugSourceContext,
-  useClient,
-  useCurrentUser,
-  useDataset,
-  useProjectId,
-  useSchema,
+	type SlugSourceContext,
+	useClient,
+	useCurrentUser,
+	useDataset,
+	useProjectId,
+	useSchema,
 } from "sanity";
 
 export type SlugContext = Omit<SlugSourceContext, "parent" | "parentPath">;
 
 export function usePathnameContext(): SlugContext {
-  const client = useClient({apiVersion: "2024-05-14"});
-  const schema = useSchema();
-  const currentUser = useCurrentUser();
-  const projectId = useProjectId();
-  const dataset = useDataset();
+	const client = useClient({apiVersion: "2024-05-14"});
+	const schema = useSchema();
+	const currentUser = useCurrentUser();
+	const projectId = useProjectId();
+	const dataset = useDataset();
 
-  return useMemo(() => {
-    return {
-      getClient: () => client,
-      projectId,
-      dataset,
-      schema,
-      currentUser,
-    };
-  }, [client, schema, currentUser, projectId, dataset]);
+	return useMemo(() => {
+		return {
+			getClient: () => client,
+			projectId,
+			dataset,
+			schema,
+			currentUser,
+		};
+	}, [client, schema, currentUser, projectId, dataset]);
 }

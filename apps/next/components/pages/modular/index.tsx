@@ -1,12 +1,12 @@
-import type {PagePayload} from "@/types";
 import Sections from "@/components/sections";
+import type {PagePayload} from "@/types";
 
 export interface PageProps {
-  data: PagePayload | null;
+	data: PagePayload | null;
 }
 
 export function Page({data}: PageProps) {
-  const {sectionsBody} = data ?? {};
+	const {sectionsBody} = data ?? {};
 
-  return <Sections sectionsData={sectionsBody} />;
+	return <Sections sectionsData={sectionsBody} />;
 }

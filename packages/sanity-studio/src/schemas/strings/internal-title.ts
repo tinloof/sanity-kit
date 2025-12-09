@@ -30,9 +30,9 @@ import {defineField} from "sanity";
  * ```
  */
 export default defineField({
-  description:
-    "This title is only used internally in Sanity, it won't be displayed on the website.",
-  name: "internalTitle",
-  title: "Internal Title",
-  type: "string",
+	description:
+		"This title is only used internally in Sanity, it won't be displayed on the website.",
+	name: "internalTitle",
+	title: "Internal Title",
+	type: "string",
 });

@@ -1,71 +1,72 @@
 {
-  "name": "@tinloof/sanity-document-options",
-  "version": "1.2.1",
-  "description": "",
-  "keywords": [
-    "sanity",
-    "sanity-plugin"
-  ],
-  "license": "MIT",
-  "author": "Tinloof",
-  "sideEffects": false,
-  "type": "commonjs",
-  "exports": {
-    ".": {
-      "source": "./src/index.ts",
-      "import": "./dist/index.mjs",
-      "default": "./dist/index.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "sanity.json",
-    "src",
-    "v2-incompatible.js"
-  ],
-  "scripts": {
-    "build": "plugin-kit verify-package --silent && pkg-utils build --strict --check --clean",
-    "format": "prettier --write --cache --ignore-unknown .",
-    "link-watch": "plugin-kit link-watch",
-    "prepublishOnly": "npm run build",
-    "watch": "pkg-utils watch --strict",
-    "dev": "npm run watch"
-  },
-  "sanityPlugin": {
-    "verifyPackage": {
-      "eslintImports": false
-    }
-  },
-  "dependencies": {
-    "@sanity/icons": "^3.7.4",
-    "@sanity/incompatible-plugin": "^1.0.5",
-    "@sanity/orderable-document-list": "^1.4.0",
-    "pluralize": "^8.0.0"
-  },
-  "devDependencies": {
-    "@sanity/pkg-utils": "^10.1.1",
-    "@sanity/plugin-kit": "^4.0.20",
-    "@tinloof/sanity-extends": "workspace:*",
-    "@types/pluralize": "^0.0.33",
-    "@types/react": "^19.2.7",
-    "prettier": "^3.7.4",
-    "prettier-plugin-packagejson": "^2.5.20",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "sanity": "^4.20.1",
-    "styled-components": "^6.1.19",
-    "typescript": "^5.9.3"
-  },
-  "peerDependencies": {
-    "@tinloof/sanity-extends": "workspace:*",
-    "react": "^18 || ^19",
-    "react-dom": "^18 || ^19",
-    "sanity": "^3 || ^4"
-  },
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "@tinloof/sanity-document-options",
+	"version": "1.2.1",
+	"description": "",
+	"keywords": [
+		"sanity",
+		"sanity-plugin"
+	],
+	"license": "MIT",
+	"author": "Tinloof",
+	"sideEffects": false,
+	"type": "commonjs",
+	"exports": {
+		".": {
+			"source": "./src/index.ts",
+			"import": "./dist/index.mjs",
+			"default": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist",
+		"sanity.json",
+		"src",
+		"v2-incompatible.js"
+	],
+	"scripts": {
+		"build": "bunx --bun plugin-kit verify-package --silent && pkg-utils build --strict --check --clean",
+		"format": "biome format --write .",
+		"lint": "biome lint .",
+		"check": "biome check --write .",
+		"link-watch": "plugin-kit link-watch",
+		"prepublishOnly": "npm run build",
+		"watch": "pkg-utils watch --strict",
+		"dev": "bun run watch"
+	},
+	"sanityPlugin": {
+		"verifyPackage": {
+			"eslintImports": false
+		}
+	},
+	"dependencies": {
+		"@sanity/icons": "^3.7.4",
+		"@sanity/incompatible-plugin": "^1.0.5",
+		"@sanity/orderable-document-list": "^1.4.0",
+		"pluralize": "^8.0.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@sanity/pkg-utils": "^10.1.1",
+		"@sanity/plugin-kit": "^4.0.20",
+		"@tinloof/sanity-extends": "workspace:*",
+		"@types/pluralize": "^0.0.33",
+		"@types/react": "^19.2.7",
+		"react": "^19.2.1",
+		"react-dom": "^19.2.1",
+		"sanity": "^4.20.1",
+		"styled-components": "^6.1.19",
+		"typescript": "^5.9.3"
+	},
+	"peerDependencies": {
+		"@tinloof/sanity-extends": "workspace:*",
+		"react": "^18 || ^19",
+		"react-dom": "^18 || ^19",
+		"sanity": "^3 || ^4"
+	},
+	"engines": {
+		"node": ">=18"
+	}
 }

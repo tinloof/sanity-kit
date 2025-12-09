@@ -1,21 +1,21 @@
-import {type DefinedSanityFetchType} from "next-sanity/live";
-import {generateSanitySitemap, generateSanityI18nSitemap} from "./sitemap";
-import {getPathVariations, localizePathname} from "./urls";
-import {NextRequest} from "next/server";
+import type {NextRequest} from "next/server";
+import type {DefinedSanityFetchType} from "next-sanity/live";
 import {redirectIfNeeded} from "./redirect";
+import {generateSanityI18nSitemap, generateSanitySitemap} from "./sitemap";
+import {getPathVariations, localizePathname} from "./urls";
 
 export type InitSanityUtilsConfig = {
-  sanityFetch: DefinedSanityFetchType;
-  baseUrl: string;
+	sanityFetch: DefinedSanityFetchType;
+	baseUrl: string;
 };
 
 export type InitSanityI18nUtilsConfig = {
-  sanityFetch: DefinedSanityFetchType;
-  baseUrl: string;
-  i18n: {
-    locales: Array<{id: string; title: string}>;
-    defaultLocaleId: string;
-  };
+	sanityFetch: DefinedSanityFetchType;
+	baseUrl: string;
+	i18n: {
+		locales: Array<{id: string; title: string}>;
+		defaultLocaleId: string;
+	};
 };
 
 /**
@@ -33,15 +33,15 @@ export type InitSanityI18nUtilsConfig = {
  * ```
  */
 export function initSanityUtils({sanityFetch, baseUrl}: InitSanityUtilsConfig) {
-  return {
-    generateSitemap: () =>
-      generateSanitySitemap({
-        sanityFetch,
-        websiteBaseURL: baseUrl,
-      }),
-    redirectIfNeeded: async ({request}: {request: NextRequest}) =>
-      await redirectIfNeeded({request, sanityFetch}),
-  };
+	return {
+		generateSitemap: () =>
+			generateSanitySitemap({
+				sanityFetch,
+				websiteBaseURL: baseUrl,
+			}),
+		redirectIfNeeded: async ({request}: {request: NextRequest}) =>
+			await redirectIfNeeded({request, sanityFetch}),
+	};
 }
 
 /**
@@ -67,19 +67,19 @@ export function initSanityUtils({sanityFetch, baseUrl}: InitSanityUtilsConfig) {
  * ```
  */
 export function initSanityI18nUtils({
-  sanityFetch,
-  baseUrl,
-  i18n,
+	sanityFetch,
+	baseUrl,
+	i18n,
 }: InitSanityI18nUtilsConfig) {
-  return {
-    generateSitemap: () =>
-      generateSanityI18nSitemap({
-        sanityFetch,
-        websiteBaseURL: baseUrl,
-        i18n,
-      }),
-    redirectIfNeeded: async ({request}: {request: NextRequest}) =>
-      await redirectIfNeeded({request, sanityFetch}),
-    localizePathname,
-  };
+	return {
+		generateSitemap: () =>
+			generateSanityI18nSitemap({
+				sanityFetch,
+				websiteBaseURL: baseUrl,
+				i18n,
+			}),
+		redirectIfNeeded: async ({request}: {request: NextRequest}) =>
+			await redirectIfNeeded({request, sanityFetch}),
+		localizePathname,
+	};
 }

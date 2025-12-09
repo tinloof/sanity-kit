@@ -1,14 +1,14 @@
-import { Page } from '@/components/Page'
-import { loadPage } from '@/data/sanity'
+import {Page} from "@/components/Page";
+import {loadPage} from "@/data/sanity";
 
 export default async function DynamicRoute({
-  params,
+	params,
 }: {
-  params: Promise<{ path: string[]; locale: string }>
+	params: Promise<{path: string[]; locale: string}>;
 }) {
-  const { path, locale } = await params
-  const pathname = `/${path.join('/')}`
-  const data = await loadPage(pathname, locale)
+	const {path, locale} = await params;
+	const pathname = `/${path.join("/")}`;
+	const data = await loadPage(pathname, locale);
 
-  return <Page data={data} />
+	return <Page data={data} />;
 }

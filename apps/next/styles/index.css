@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 html {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	overflow-x: hidden;
 }
 
 p:not(:last-child) {
-  margin-bottom: 0.875rem;
+	margin-bottom: 0.875rem;
 }
 
 ol,
 ul {
-  margin-left: 1rem;
+	margin-left: 1rem;
 }
 
 ol {
-  list-style-type: disc;
+	list-style-type: disc;
 }

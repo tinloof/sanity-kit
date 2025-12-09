@@ -1,5 +1,5 @@
 import {ImageIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured media field group with image icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: ImageIcon,
-  name: "media",
-  title: "Media",
+	icon: ImageIcon,
+	name: "media",
+	title: "Media",
 } as FieldGroupDefinition;

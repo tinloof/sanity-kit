@@ -1,9 +1,9 @@
-import {
-  DocumentBadgeComponent,
-  DocumentBadgesContext,
-  DocumentDefinition,
-  DocumentPluginOptions,
-  type SchemaTypeDefinition,
+import type {
+	DocumentBadgeComponent,
+	DocumentBadgesContext,
+	DocumentDefinition,
+	DocumentPluginOptions,
+	SchemaTypeDefinition,
 } from "sanity";
 
 /**
@@ -11,13 +11,13 @@ import {
  * @internal
  */
 function getDocumentBadgesConfig(
-  schemas: SchemaTypeDefinition[],
-  schemaType: string,
+	schemas: SchemaTypeDefinition[],
+	schemaType: string,
 ): DocumentPluginOptions["badges"] {
-  const schema = schemas.find((s) => s.name === schemaType);
-  if (!schema || schema.type !== "document") return undefined;
+	const schema = schemas.find((s) => s.name === schemaType);
+	if (!schema || schema.type !== "document") return undefined;
 
-  return (schema as DocumentDefinition).options?.document?.badges;
+	return (schema as DocumentDefinition).options?.document?.badges;
 }
 
 /**
@@ -39,38 +39,38 @@ function getDocumentBadgesConfig(
  * @internal
  */
 export default function defineBadges(
-  prev: DocumentBadgeComponent[],
-  context: DocumentBadgesContext,
+	prev: DocumentBadgeComponent[],
+	context: DocumentBadgesContext,
 ): DocumentBadgeComponent[] {
-  const {
-    schema: {_original},
-    schemaType,
-  } = context;
+	const {
+		schema: {_original},
+		schemaType,
+	} = context;
 
-  const {types: schemas = []} = (_original as {
-    types: SchemaTypeDefinition[];
-  }) || {
-    types: [],
-  };
+	const {types: schemas = []} = (_original as {
+		types: SchemaTypeDefinition[];
+	}) || {
+		types: [],
+	};
 
-  // Get the badges configuration for this schema type
-  const badgesConfig = getDocumentBadgesConfig(schemas, schemaType);
+	// Get the badges configuration for this schema type
+	const badgesConfig = getDocumentBadgesConfig(schemas, schemaType);
 
-  // If no badges config is found, return the original badges unchanged
-  if (!badgesConfig) {
-    return prev;
-  }
+	// If no badges config is found, return the original badges unchanged
+	if (!badgesConfig) {
+		return prev;
+	}
 
-  // If config is an array of badges, append them to existing badges
-  if (Array.isArray(badgesConfig)) {
-    return [...prev, ...badgesConfig];
-  }
+	// If config is an array of badges, append them to existing badges
+	if (Array.isArray(badgesConfig)) {
+		return [...prev, ...badgesConfig];
+	}
 
-  // If config is a function, call it with the previous badges and context
-  if (typeof badgesConfig === "function") {
-    return badgesConfig(prev, context);
-  }
+	// If config is a function, call it with the previous badges and context
+	if (typeof badgesConfig === "function") {
+		return badgesConfig(prev, context);
+	}
 
-  // Fallback: return original badges if config type is unexpected
-  return prev;
+	// Fallback: return original badges if config type is unexpected
+	return prev;
 }

@@ -1,6 +1,6 @@
 import href, {hrefPt} from "./href";
-import sectionsBody from "./sections-body";
 import sections from "./sections";
+import sectionsBody from "./sections-body";
 
 const objects = [href, hrefPt, sectionsBody, ...sections];
 

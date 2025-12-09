@@ -1,5 +1,5 @@
 import {ShareIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured social field group with share icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: ShareIcon,
-  name: "social",
-  title: "Social",
+	icon: ShareIcon,
+	name: "social",
+	title: "Social",
 } as FieldGroupDefinition;

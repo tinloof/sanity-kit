@@ -1,7 +1,7 @@
 import React from "react";
 import {useCurrentUser} from "sanity";
 
-import {PagesNavigatorOptions} from "../../../types";
+import type {PagesNavigatorOptions} from "../../../types";
 import {NavigatorProvider} from "../context";
 import {useSanityFetch} from "../utils";
 import Header from "./Header";
@@ -11,28 +11,28 @@ import SearchBox from "./SearchBox";
 import ThemeProvider from "./ThemeProvider";
 
 export function createPagesNavigator(props: PagesNavigatorOptions) {
-  return function PagesNavigator() {
-    return <DefaultPagesNavigator {...props} />;
-  };
+	return function PagesNavigator() {
+		return <DefaultPagesNavigator {...props} />;
+	};
 }
 
 function DefaultPagesNavigator(props: PagesNavigatorOptions) {
-  const currentUser = useCurrentUser();
-  const filterBasedOnRoles = props?.filterBasedOnRoles;
+	const currentUser = useCurrentUser();
+	const filterBasedOnRoles = props?.filterBasedOnRoles;
 
-  const queryFilter = [`pathname.current != null`];
-  // Allow additional filters
-  if (filterBasedOnRoles) {
-    for (const f of filterBasedOnRoles) {
-      if (f.role === "all") {
-        queryFilter.push(`${f.filter}`);
-      } else if (currentUser?.roles.some((r) => r.name === f.role)) {
-        queryFilter.push(`${f.filter}`);
-      }
-    }
-  }
+	const queryFilter = [`pathname.current != null`];
+	// Allow additional filters
+	if (filterBasedOnRoles) {
+		for (const f of filterBasedOnRoles) {
+			if (f.role === "all") {
+				queryFilter.push(`${f.filter}`);
+			} else if (currentUser?.roles.some((r) => r.name === f.role)) {
+				queryFilter.push(`${f.filter}`);
+			}
+		}
+	}
 
-  const pagesRoutesQuery = `
+	const pagesRoutesQuery = `
   *[${queryFilter.join(" && ")}]{
     _rev,
     _id,
@@ -45,26 +45,26 @@ function DefaultPagesNavigator(props: PagesNavigatorOptions) {
   }
 `;
 
-  const [data, loading] = useSanityFetch({
-    query: pagesRoutesQuery,
-    variables: {},
-  });
+	const [data, loading] = useSanityFetch({
+		query: pagesRoutesQuery,
+		variables: {},
+	});
 
-  return (
-    <ThemeProvider>
-      <NavigatorProvider
-        i18n={props.i18n}
-        folders={props.folders}
-        data={data || []}
-      >
-        <Header pages={props.creatablePages}>
-          <SearchBox />
-          {props.i18n?.locales?.length && props.i18n.locales.length > 1 ? (
-            <LocaleSelect locales={props.i18n.locales} />
-          ) : null}
-        </Header>
-        <List loading={loading} />
-      </NavigatorProvider>
-    </ThemeProvider>
-  );
+	return (
+		<ThemeProvider>
+			<NavigatorProvider
+				i18n={props.i18n}
+				folders={props.folders}
+				data={data || []}
+			>
+				<Header pages={props.creatablePages}>
+					<SearchBox />
+					{props.i18n?.locales?.length && props.i18n.locales.length > 1 ? (
+						<LocaleSelect locales={props.i18n.locales} />
+					) : null}
+				</Header>
+				<List loading={loading} />
+			</NavigatorProvider>
+		</ThemeProvider>
+	);
 }

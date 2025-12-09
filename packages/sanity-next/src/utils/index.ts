@@ -1,35 +1,31 @@
-export {
-  stripMarginSlashes,
-  removeDoubleSlashes,
-  getPathVariations,
-  formatPath,
-  getDocumentPath,
-  localizePathname,
-  stringToPathname,
-  slugify,
-  isExternalUrl,
-  pathToAbsUrl,
-  type LocaleConfiguration,
-  type DocForPath,
-  type MinimalDocForPath,
-  type LocalizePathnameFn,
-} from "./urls";
-
-export {
-  initSanityUtils,
-  initSanityI18nUtils,
-  type InitSanityUtilsConfig,
-  type InitSanityI18nUtilsConfig,
-} from "./sanity";
-
-export {
-  generateSanitySitemap,
-  generateSanityI18nSitemap,
-  SITEMAP_QUERY,
-  I18N_SITEMAP_QUERY,
-  TRANSLATIONS_FRAGMENT,
-} from "./sitemap";
-
-export {redirectIfNeeded, getRedirect} from "./redirect";
-
 export {createDraftModeRoute, defineDraftRoute} from "./draft-mode";
+export {getRedirect, redirectIfNeeded} from "./redirect";
+export {
+	type InitSanityI18nUtilsConfig,
+	type InitSanityUtilsConfig,
+	initSanityI18nUtils,
+	initSanityUtils,
+} from "./sanity";
+export {
+	generateSanityI18nSitemap,
+	generateSanitySitemap,
+	I18N_SITEMAP_QUERY,
+	SITEMAP_QUERY,
+	TRANSLATIONS_FRAGMENT,
+} from "./sitemap";
+export {
+	type DocForPath,
+	formatPath,
+	getDocumentPath,
+	getPathVariations,
+	isExternalUrl,
+	type LocaleConfiguration,
+	type LocalizePathnameFn,
+	localizePathname,
+	type MinimalDocForPath,
+	pathToAbsUrl,
+	removeDoubleSlashes,
+	slugify,
+	stringToPathname,
+	stripMarginSlashes,
+} from "./urls";

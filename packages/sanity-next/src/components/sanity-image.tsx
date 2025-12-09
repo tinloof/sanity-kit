@@ -1,9 +1,8 @@
-import { getExtension, getImageDimensions } from "@sanity/asset-utils";
-import { createImageUrlBuilder } from "@sanity/image-url";
-import React from "react";
-// @ts-ignore
-import { preload } from "react-dom";
-import type { ImageUrlBuilder } from "sanity";
+import {getExtension, getImageDimensions} from "@sanity/asset-utils";
+import {createImageUrlBuilder} from "@sanity/image-url";
+import type React from "react";
+import {preload} from "react-dom";
+import type {ImageUrlBuilder} from "sanity";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -101,7 +100,7 @@ export default function SanityImage({
 	}
 
 	const _ref = data.asset._ref;
-	const { height, width } = getImageDimensions(_ref);
+	const {height, width} = getImageDimensions(_ref);
 	const extension = getExtension(_ref);
 	const aspectRatioValues = aspectRatio?.split("/");
 
@@ -112,10 +111,10 @@ export default function SanityImage({
 	}
 
 	const aspectRatioWidth = aspectRatioValues
-		? parseFloat(aspectRatioValues[0])
+		? Number.parseFloat(aspectRatioValues[0])
 		: undefined;
 	const aspectRatioHeight = aspectRatioValues
-		? parseFloat(aspectRatioValues[1])
+		? Number.parseFloat(aspectRatioValues[1])
 		: undefined;
 
 	const urlBuilder = createImageUrlBuilder({
@@ -214,7 +213,6 @@ export default function SanityImage({
 			fetchPriority: "high",
 			imageSizes: sizes ?? sizes,
 			imageSrcSet: srcSet ?? srcSet,
-			// @ts-ignore
 			as: "image",
 		});
 	}

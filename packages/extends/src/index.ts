@@ -1,15 +1,14 @@
 export type {
-  AbstractDefinition,
-  AbstractDefinitionResolver,
-  ExtendedType,
-  ExtendsRegistry,
-  CreateAbstractsConfig,
+	AbstractDefinition,
+	AbstractDefinitionResolver,
+	CreateAbstractsConfig,
+	ExtendedType,
+	ExtendsRegistry,
 } from "./types";
 
 import "./types";
 
-export {resolveAbstractSchemaTypes} from "./resolve-abstract-schema-types";
-
 export {defineAbstractResolver} from "./define-abstract-resolver";
+export {resolveAbstractSchemaTypes} from "./resolve-abstract-schema-types";
 
 export {withExtends} from "./with-extends";

@@ -1,102 +1,102 @@
 {
-  "name": "@tinloof/sanity-web",
-  "version": "0.13.0",
-  "description": "Sanity-related utilities for web development",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/tinloof/sanity-kit.git",
-    "directory": "packages/sanity-web"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./components": {
-      "import": "./dist/components/index.mjs",
-      "require": "./dist/components/index.js",
-      "types": "./dist/components/index.d.ts"
-    },
-    "./components/*": {
-      "import": "./dist/components/*.mjs",
-      "require": "./dist/components/*.js",
-      "types": "./dist/components/*.d.ts"
-    },
-    "./server": {
-      "import": "./dist/server/index.mjs",
-      "require": "./dist/server/index.js",
-      "types": "./dist/server/index.d.ts"
-    },
-    "./server/*": {
-      "import": "./dist/server/*.mjs",
-      "require": "./dist/server/*.js",
-      "types": "./dist/server/*.d.ts"
-    },
-    "./middleware": {
-      "import": "./dist/middleware/index.mjs",
-      "require": "./dist/middleware/index.js",
-      "types": "./dist/middleware/index.d.ts"
-    },
-    "./middleware/*": {
-      "import": "./dist/middleware/*.mjs",
-      "require": "./dist/middleware/*.js",
-      "types": "./dist/middleware/*.d.ts"
-    },
-    "./utils": {
-      "import": "./dist/utils/index.mjs",
-      "require": "./dist/utils/index.js",
-      "types": "./dist/utils/index.d.ts"
-    },
-    "./utils/*": {
-      "import": "./dist/utils/*.mjs",
-      "require": "./dist/utils/*.js",
-      "types": "./dist/utils/*.d.ts"
-    },
-    "./types": {
-      "import": "./dist/types/index.mjs",
-      "require": "./dist/types/index.js",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./fragments": {
-      "import": "./dist/fragments/index.mjs",
-      "require": "./dist/fragments/index.js",
-      "types": "./dist/fragments/index.d.ts"
-    },
-    "./package.json": "./package.json"
-  },
-  "scripts": {
-    "build": "tsup 'src/**/*.{ts,tsx}' --format cjs,esm --dts --outDir dist",
-    "dev": "tsup 'src/**/*.{ts,tsx}' --format cjs,esm --dts --outDir dist --watch",
-    "typecheck": "tsc --noEmit"
-  },
-  "author": "Tinloof",
-  "license": "ISC",
-  "devDependencies": {
-    "@portabletext/types": "^3.0.0",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
-    "next": "^16.0.7",
-    "next-sanity": "^11.6.10",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
-    "sanity": "^4.20.1",
-    "styled-components": "^6.1.19",
-    "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
-  },
-  "peerDependencies": {
-    "next": "^15 | ^16",
-    "next-sanity": "^9 | 10^ | ^11",
-    "react": "^18.3.1 || ^19",
-    "react-dom": "^18.3.1 || ^19",
-    "sanity": "^3.80.1 || ^4"
-  },
-  "dependencies": {
-    "@portabletext/react": "^5.0.0",
-    "@sanity/asset-utils": "^2.3.0",
-    "@sanity/client": "^7.13.1",
-    "@sanity/image-url": "^2.0.1",
-    "speakingurl": "^14.0.1"
-  }
+	"name": "@tinloof/sanity-web",
+	"version": "0.13.0",
+	"description": "Sanity-related utilities for web development",
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/tinloof/sanity-kit.git",
+		"directory": "packages/sanity-web"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./components": {
+			"import": "./dist/components/index.mjs",
+			"require": "./dist/components/index.js",
+			"types": "./dist/components/index.d.ts"
+		},
+		"./components/*": {
+			"import": "./dist/components/*.mjs",
+			"require": "./dist/components/*.js",
+			"types": "./dist/components/*.d.ts"
+		},
+		"./server": {
+			"import": "./dist/server/index.mjs",
+			"require": "./dist/server/index.js",
+			"types": "./dist/server/index.d.ts"
+		},
+		"./server/*": {
+			"import": "./dist/server/*.mjs",
+			"require": "./dist/server/*.js",
+			"types": "./dist/server/*.d.ts"
+		},
+		"./middleware": {
+			"import": "./dist/middleware/index.mjs",
+			"require": "./dist/middleware/index.js",
+			"types": "./dist/middleware/index.d.ts"
+		},
+		"./middleware/*": {
+			"import": "./dist/middleware/*.mjs",
+			"require": "./dist/middleware/*.js",
+			"types": "./dist/middleware/*.d.ts"
+		},
+		"./utils": {
+			"import": "./dist/utils/index.mjs",
+			"require": "./dist/utils/index.js",
+			"types": "./dist/utils/index.d.ts"
+		},
+		"./utils/*": {
+			"import": "./dist/utils/*.mjs",
+			"require": "./dist/utils/*.js",
+			"types": "./dist/utils/*.d.ts"
+		},
+		"./types": {
+			"import": "./dist/types/index.mjs",
+			"require": "./dist/types/index.js",
+			"types": "./dist/types/index.d.ts"
+		},
+		"./fragments": {
+			"import": "./dist/fragments/index.mjs",
+			"require": "./dist/fragments/index.js",
+			"types": "./dist/fragments/index.d.ts"
+		},
+		"./package.json": "./package.json"
+	},
+	"scripts": {
+		"build": "tsup 'src/**/*.{ts,tsx}' --format cjs,esm --dts --outDir dist",
+		"dev": "tsup 'src/**/*.{ts,tsx}' --format cjs,esm --dts --outDir dist --watch",
+		"typecheck": "tsc --noEmit"
+	},
+	"author": "Tinloof",
+	"license": "ISC",
+	"devDependencies": {
+		"@portabletext/types": "^3.0.0",
+		"@types/react": "^19.2.7",
+		"@types/react-dom": "^19.2.3",
+		"next": "^16.0.7",
+		"next-sanity": "^11.6.10",
+		"react": "^19.2.1",
+		"react-dom": "^19.2.1",
+		"sanity": "^4.20.1",
+		"styled-components": "^6.1.19",
+		"tsup": "^8.5.1",
+		"typescript": "^5.9.3"
+	},
+	"peerDependencies": {
+		"next": "^15 | ^16",
+		"next-sanity": "^9 || ^10 || ^11",
+		"react": "^18.3.1 || ^19",
+		"react-dom": "^18.3.1 || ^19",
+		"sanity": "^3.80.1 || ^4"
+	},
+	"dependencies": {
+		"@portabletext/react": "^5.0.0",
+		"@sanity/asset-utils": "^2.3.0",
+		"@sanity/client": "^7.13.1",
+		"@sanity/image-url": "^2.0.1",
+		"speakingurl": "^14.0.1"
+	}
 }

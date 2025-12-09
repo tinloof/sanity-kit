@@ -19,6 +19,6 @@ import {defineField} from "sanity";
  * ```
  */
 export default defineField({
-  name: "locale",
-  type: "string",
+	name: "locale",
+	type: "string",
 });

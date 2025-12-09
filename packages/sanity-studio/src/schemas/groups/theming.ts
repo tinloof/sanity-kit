@@ -1,5 +1,5 @@
 import {ColorWheelIcon} from "@sanity/icons";
-import {FieldGroupDefinition} from "sanity";
+import type {FieldGroupDefinition} from "sanity";
 
 /**
  * Pre-configured theming field group with color wheel icon.
@@ -33,7 +33,7 @@ import {FieldGroupDefinition} from "sanity";
  * ```
  */
 export default {
-  icon: ColorWheelIcon,
-  name: "theming",
-  title: "Theming",
+	icon: ColorWheelIcon,
+	name: "theming",
+	title: "Theming",
 } as FieldGroupDefinition;

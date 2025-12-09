@@ -1,9 +1,9 @@
-import { isImageSource, type SanityImageSource } from "@sanity/asset-utils";
-import { DocumentIcon } from "@sanity/icons";
-import { createImageUrlBuilder } from "@sanity/image-url";
-import React, { useMemo } from "react";
-import { isValidElementType } from "react-is";
-import { useObservable } from "react-rx";
+import {isImageSource, type SanityImageSource} from "@sanity/asset-utils";
+import {DocumentIcon} from "@sanity/icons";
+import {createImageUrlBuilder} from "@sanity/image-url";
+import React, {useMemo} from "react";
+import {isValidElementType} from "react-is";
+import {useObservable} from "react-rx";
 import {
 	getPreviewStateObservable,
 	getPreviewValueWithFallback,
@@ -17,27 +17,23 @@ import {
 	useSchema,
 } from "sanity";
 
-import type { FolderTreeNode, TreeNode } from "../../../types";
+import type {FolderTreeNode, TreeNode} from "../../../types";
 
-const PreviewElement = React.memo(
-	(props: {
-		item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
-		type: "media" | "title" | "subtitle";
-		fallback?: React.ReactNode | string;
-	}): React.ReactElement | null => {
-		const schema = useSchema();
-		const { _type } = props.item;
-		const schemaType = schema.get(_type);
+const PreviewElement = React.memo(function PreviewElement(props: {
+	item: Exclude<TreeNode, FolderTreeNode>; // Only accepts a PageTreeNode, FolderTreeNode is forbidden
+	type: "media" | "title" | "subtitle";
+	fallback?: React.ReactNode | string;
+}): React.ReactNode {
+	const schema = useSchema();
+	const {_type} = props.item;
+	const schemaType = schema.get(_type);
 
-		if (!schemaType) {
-			return null;
-		}
+	if (!schemaType) {
+		return null;
+	}
 
-		return <Preview schemaType={schemaType} {...props} />;
-	},
-);
-
-PreviewElement.displayName = "PreviewElement";
+	return <Preview schemaType={schemaType} {...props} />;
+});
 
 const Preview = React.memo(function Preview({
 	schemaType,
@@ -49,7 +45,7 @@ const Preview = React.memo(function Preview({
 	item: Exclude<TreeNode, FolderTreeNode>;
 	type: "media" | "title" | "subtitle";
 	fallback?: React.ReactNode | string;
-}) {
+}): React.ReactNode {
 	const documentPreviewStore = useDocumentPreviewStore();
 	const previewState = useObservable(
 		useMemo(
@@ -88,14 +84,14 @@ const Preview = React.memo(function Preview({
 				layout="default"
 				icon={schemaType?.icon}
 			/>
-		) : (
-			<>{!isLoading ? fallback : null}</>
-		);
+		) : !isLoading ? (
+			fallback
+		) : null;
 	}
 
 	if (type === "title") {
 		return showPreview && previewValues?.title ? (
-			<>{previewValues?.title}</>
+			<>{previewValues.title}</>
 		) : (
 			<>{fallback}</>
 		);
@@ -103,7 +99,7 @@ const Preview = React.memo(function Preview({
 
 	if (type === "subtitle") {
 		return showPreview && previewValues?.subtitle ? (
-			<>{previewValues?.subtitle}</>
+			<>{previewValues.subtitle}</>
 		) : (
 			<>{fallback}</>
 		);
@@ -112,10 +108,8 @@ const Preview = React.memo(function Preview({
 	return null;
 });
 
-Preview.displayName = "Preview";
-
 const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
-	const { icon, media: mediaProp, imageUrl, title } = props;
+	const {icon, media: mediaProp, imageUrl, title} = props;
 
 	const client = useClient({
 		apiVersion: "2024-03-12",
@@ -150,7 +144,7 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
 				<img
 					alt={isString(title) ? title : undefined}
 					referrerPolicy="strict-origin-when-cross-origin"
-					style={{ maxWidth: "100%" }}
+					style={{maxWidth: "100%"}}
 					src={
 						imageBuilder
 							.image(
@@ -220,4 +214,4 @@ const PreviewMedia = (props: SanityDefaultPreviewProps): React.ReactElement => {
 
 PreviewMedia.displayName = "PreviewMedia";
 
-export { PreviewElement };
+export {PreviewElement};
