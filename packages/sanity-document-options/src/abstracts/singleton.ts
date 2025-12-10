@@ -1,6 +1,6 @@
-import {defineType} from "sanity";
+import {defineAbstractResolver} from "@tinloof/sanity-extends";
 
-export default defineType({
+export default defineAbstractResolver((_, options) => ({
 	name: "singleton",
 	type: "abstract",
 	options: {
@@ -25,10 +25,15 @@ export default defineType({
 			},
 		},
 		structureOptions: {
-			singleton: true,
+			singleton:
+				typeof options === "object" &&
+				"id" in options &&
+				typeof options.id === "string"
+					? {id: options.id}
+					: true,
 		},
 		schema: {
 			templates: [],
 		},
 	},
-});
+}));

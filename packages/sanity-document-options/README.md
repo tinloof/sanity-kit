@@ -154,6 +154,32 @@ defineType({
 });
 ```
 
+### Singleton Documents with Custom ID
+
+By default, singleton documents use the schema type name as their document ID. You can specify a custom ID for more control:
+
+```ts
+defineType({
+  name: "homePage",
+  type: "document",
+  options: {
+    structureGroup: "pages",
+    structureOptions: {
+      singleton: {
+        id: "site-home-page",
+      },
+      icon: HomeIcon,
+      title: "Home Page",
+    },
+  },
+});
+```
+
+This is useful when:
+- You need predictable document IDs for API queries
+- You're migrating from another system with existing IDs
+- You want human-readable IDs in URLs
+
 ### Orderable Documents
 
 ```ts
@@ -270,7 +296,7 @@ interface DocumentOptions {
 
 ```ts
 type StructureBuiltinOptions = {
-  singleton?: boolean;
+  singleton?: boolean | { id?: string };
   orderable?: boolean;
   icon?: React.ComponentType | React.ReactNode;
   title?: string;

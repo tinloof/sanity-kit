@@ -155,6 +155,10 @@ export default function defineStructure(
 					title,
 					locales,
 					icon,
+					id:
+						typeof opts?.singleton === "object"
+							? opts?.singleton?.id
+							: undefined,
 				});
 			}
 
@@ -162,6 +166,8 @@ export default function defineStructure(
 				S,
 				type: schema.name,
 				title,
+				id:
+					typeof opts?.singleton === "object" ? opts?.singleton?.id : undefined,
 			}).icon(icon);
 		}
 
