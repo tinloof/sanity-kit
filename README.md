@@ -15,7 +15,7 @@ Packages to help developing powerful content management experiences with Sanity.
 2. Start turbo dev server for all packages by running
 
    ```
-   bun run dev
+   pnpm run dev
    ```
 
    from the root folder

@@ -32,14 +32,14 @@
 		"v2-incompatible.js"
 	],
 	"scripts": {
-		"build": "bunx --bun plugin-kit verify-package --silent && pkg-utils build --strict --check --clean",
+		"build": "plugin-kit verify-package --silent && pkg-utils build --strict --check --clean",
 		"format": "biome format --write .",
 		"lint": "biome lint .",
 		"check": "biome check --write .",
 		"link-watch": "plugin-kit link-watch",
 		"prepublishOnly": "npm run build",
 		"watch": "pkg-utils watch --strict",
-		"dev": "bun run watch"
+		"dev": "npm run watch"
 	},
 	"sanityPlugin": {
 		"verifyPackage": {

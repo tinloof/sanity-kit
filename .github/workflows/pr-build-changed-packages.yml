@@ -19,13 +19,11 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Detect changed packages
         id: changes
@@ -80,4 +78,4 @@ jobs:
           fi
 
           echo "Building changed packages with filters: ${filters[*]}"
-          bun turbo run build "${filters[@]}"
+          pnpm turbo run build "${filters[@]}"
