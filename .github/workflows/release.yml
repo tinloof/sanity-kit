@@ -42,9 +42,6 @@ jobs:
       - name: Build Packages
         run: pnpm run build
 
-      - name: Check npm OIDC auth
-        run: npm whoami || (echo "whoami failed" && exit 1)
-
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
