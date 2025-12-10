@@ -1,4 +1,3 @@
-export {default as ExitPreview} from "./exit-preview";
 export {default as SanityImage} from "./sanity-image";
 export {
 	type BaseSectionProps,
