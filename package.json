@@ -7,14 +7,13 @@
 		"packages/*"
 	],
 	"scripts": {
-		"build-install": "bun install --filter='./packages/*'",
+		"build-install": "pnpm install --filter='./packages/*'",
 		"build": "turbo run build --filter='./packages/*'",
 		"build:example:hello-world-i18n": "turbo run build --filter=./examples/hello-world-i18n-*",
 		"changeset": "changeset add",
 		"version": "changeset version",
-		"ci:version": "changeset version && bun update",
-		"ci:publish": "bunx changeset publish --no-git-tag",
-		"ci:tag": "changeset tag",
+		"ci:version": "changeset version",
+		"ci:publish": "changeset publish",
 		"dev": "turbo run dev --parallel --filter=./packages/*",
 		"dev:all": "turbo run dev",
 		"dev:example:hello-world": "turbo run dev --filter=./examples/hello-world",
@@ -30,7 +29,7 @@
 	"engines": {
 		"node": ">=18"
 	},
-	"packageManager": "bun@1.2.17",
+	"packageManager": "pnpm@9.15.0",
 	"dependencies": {
 		"@changesets/cli": "^2.29.8",
 		"turbo": "^2.6.3"
