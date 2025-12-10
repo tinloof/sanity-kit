@@ -27,6 +27,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          registry-url: "https://registry.npmjs.org"
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -39,6 +40,9 @@ jobs:
       - name: Build Packages
         run: bun run build
 
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - name: Test npm whoami with OIDC
         env:
           NPM_CONFIG_REGISTRY: https://registry.npmjs.org
@@ -50,11 +54,12 @@ jobs:
         uses: changesets/action@v1
         with:
           version: bun run version
-          publish: bunx changeset publish
+          publish: npx changeset publish
           commit: "[ci] release"
           title: "[ci] release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - uses: actions/github-script@v7
         if: steps.changesets.outputs.published == 'true'
