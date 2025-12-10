@@ -28,22 +28,24 @@ jobs:
         with:
           node-version: 20
 
-      - name: Update npm
-        run: npm install -g npm@latest
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install dependencies
-        run: npm install
+        run: bun install --frozen-lockfile
 
       - name: Build Packages
-        run: npm run build
+        run: bun run build
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          # Note: npm install after versioning is necessary to refresh lockfile
-          version: npm run version
-          publish: npx changeset publish
+          # Note: bun install after versioning is necessary to refresh lockfile
+          version: bun run version
+          publish: bunx changeset publish
           commit: "[ci] release"
           title: "[ci] release"
         env:
