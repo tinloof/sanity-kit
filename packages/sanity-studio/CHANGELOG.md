@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.15.6
+
+### Patch Changes
+
+- 6f1a866: Fixed critical publishing issue by migrating package manager from Bun to pnpm. Packages are now published with properly resolved workspace dependencies instead of broken `workspace:*` protocol references, making them installable from npm. Also fixed missing repository metadata and TypeScript errors that were blocking the publish process.
+
 ## 1.15.5
 
 ### Patch Changes
@@ -26,7 +32,6 @@
 ### Patch Changes
 
 - 0fb1b20: Update dependencies to latest versions
-
   - Update Sanity packages to latest stable versions
   - Update Next.js and React dependencies
   - Update TypeScript and build tooling dependencies
@@ -53,7 +58,6 @@
   The Pages Navigator plugin now provides a reusable `page` abstract that includes common page fields like SEO and pathname configuration. This abstract is automatically injected when using the plugin and requires `@tinloof/sanity-extends` to be configured.
 
   The page abstract includes:
-
   - SEO fields (meta title, description, og:image)
   - Pathname field with i18n support
   - Content and settings field groups
@@ -93,7 +97,6 @@
   This new function provides a convenient way to create array fields for sections in Sanity Studio documents. It operates synchronously and requires a `sections` array to be provided for maximum compatibility across all Sanity Studio setups.
 
   ## Features
-
   - **Required sections parameter**: Must provide a `sections` array containing the section schemas to use
   - **Simple preview image configuration**: Pass a function to customize image URLs for section insert menus
   - **Grid view insert menu**: Visual section picker with preview images
@@ -150,7 +153,6 @@
   Removes the hardcoded `group: "settings"` property from SEO object, pathname slug, and internal title fields to allow more flexible grouping in document schemas. This gives developers full control over field organization without being constrained by default group assignments.
 
   **Affected fields:**
-
   - `seo` object field
   - `pathname` slug field
   - `internalTitle` string field
@@ -168,7 +170,6 @@
   The `documentI18n` plugin has been moved to a separate package `@tinloof/sanity-document-i18n` with enhanced features and better template management.
 
   **Migration required:**
-
   1. Install the new package:
 
      ```bash
@@ -210,7 +211,6 @@
 - 85860d2: Fix pathname prefix handling in pages navigator and preview functionality
 
   This patch addresses several issues related to pathname prefixes in the pages navigator:
-
   - **Fixed preview button navigation**: The preview button in the pathname field component now correctly applies prefixes when navigating to pages, preventing broken links when pathname prefixes are configured
   - **Enhanced navigator context with prefix support**: Added automatic detection and application of pathname prefixes from document schema definitions to ensure consistent URL generation throughout the navigator
   - **Improved prefix normalization**: Implemented robust prefix handling that prevents double-prefixing and correctly formats URLs with leading/trailing slash management

@@ -1,5 +1,11 @@
 # @tinloof/sanity-document-options
 
+## 1.2.3
+
+### Patch Changes
+
+- 6f1a866: Fixed critical publishing issue by migrating package manager from Bun to pnpm. Packages are now published with properly resolved workspace dependencies instead of broken `workspace:*` protocol references, making them installable from npm. Also fixed missing repository metadata and TypeScript errors that were blocking the publish process.
+
 ## 1.2.2
 
 ### Patch Changes
@@ -11,7 +17,6 @@
 ### Patch Changes
 
 - 0fb1b20: Update dependencies to latest versions
-
   - Update Sanity packages to latest stable versions
   - Update Next.js and React dependencies
   - Update TypeScript and build tooling dependencies
