@@ -1,10 +1,17 @@
 # @tinloof/sanity-document-options
 
+## 1.2.2
+
+### Patch Changes
+
+- 204e4e7: Fixed publishing issue where packages were published with unresolved `workspace:*` protocol references, making them uninstallable from npm. Workspace dependencies are now properly resolved to actual version numbers during the publish process.
+
 ## 1.2.1
 
 ### Patch Changes
 
 - 0fb1b20: Update dependencies to latest versions
+
   - Update Sanity packages to latest stable versions
   - Update Next.js and React dependencies
   - Update TypeScript and build tooling dependencies

@@ -1,10 +1,17 @@
 # @tinloof/sanity-document-i18n
 
+## 1.1.2
+
+### Patch Changes
+
+- 204e4e7: Fixed publishing issue where packages were published with unresolved `workspace:*` protocol references, making them uninstallable from npm. Workspace dependencies are now properly resolved to actual version numbers during the publish process.
+
 ## 1.1.1
 
 ### Patch Changes
 
 - 0fb1b20: Update dependencies to latest versions
+
   - Update Sanity packages to latest stable versions
   - Update Next.js and React dependencies
   - Update TypeScript and build tooling dependencies
@@ -36,6 +43,7 @@
   The `documentI18n` plugin has been moved to a separate package `@tinloof/sanity-document-i18n` with enhanced features and better template management.
 
   **Migration required:**
+
   1. Install the new package:
 
      ```bash
@@ -46,10 +54,10 @@
 
      ```typescript
      // OLD (deprecated)
-     import {documentI18n} from "@tinloof/sanity-studio";
+     import { documentI18n } from "@tinloof/sanity-studio";
 
      // NEW (recommended)
-     import {documentI18n} from "@tinloof/sanity-document-i18n";
+     import { documentI18n } from "@tinloof/sanity-document-i18n";
      ```
 
   3. Update your configuration:
@@ -58,8 +66,8 @@
        plugins: [
          documentI18n({
            locales: [
-             {id: "en", title: "English"},
-             {id: "fr", title: "French"},
+             { id: "en", title: "English" },
+             { id: "fr", title: "French" },
            ],
          }),
        ],
