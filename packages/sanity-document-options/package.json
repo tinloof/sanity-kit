@@ -6,6 +6,11 @@
 		"sanity",
 		"sanity-plugin"
 	],
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/tinloof/sanity-kit.git",
+		"directory": "packages/sanity-document-options"
+	},
 	"license": "MIT",
 	"author": "Tinloof",
 	"sideEffects": false,
@@ -70,7 +75,6 @@
 		"node": ">=18"
 	},
 	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
+		"access": "public"
 	}
 }

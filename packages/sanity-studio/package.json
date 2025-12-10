@@ -95,7 +95,6 @@
 		"node": ">=14"
 	},
 	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
+		"access": "public"
 	}
 }

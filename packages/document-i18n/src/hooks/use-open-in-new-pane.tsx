@@ -3,7 +3,6 @@ import {RouterContext} from "sanity/router";
 import {usePaneRouter} from "sanity/structure";
 
 export function useOpenInNewPane(id?: string | null, type?: string) {
-	// @ts-expect-error
 	const routerContext = useContext(RouterContext);
 	const {routerPanesState, groupIndex} = usePaneRouter();
 

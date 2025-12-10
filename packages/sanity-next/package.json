@@ -94,12 +94,12 @@
 		"speakingurl": "^14.0.1"
 	},
 	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
+		"access": "public"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/tinloof/sanity-kit.git"
+		"url": "git+https://github.com/tinloof/sanity-kit.git",
+		"directory": "packages/sanity-next"
 	},
 	"bugs": {
 		"url": "https://github.com/tinloof/sanity-kit/issues"

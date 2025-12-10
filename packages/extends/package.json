@@ -37,7 +37,11 @@
 		"vitest": "^4.0.15"
 	},
 	"publishConfig": {
-		"access": "public",
-		"registry": "https://registry.npmjs.org/"
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/tinloof/sanity-kit.git",
+		"directory": "packages/extends"
 	}
 }
