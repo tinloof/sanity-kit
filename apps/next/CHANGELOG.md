@@ -1,5 +1,13 @@
 # next-non-embedded-studio
 
+## 1.3.7
+
+### Patch Changes
+
+- Updated dependencies [204e4e7]
+  - @tinloof/sanity-studio@1.15.5
+  - @examples/hello-world-i18n-studio@0.0.5
+
 ## 1.3.6
 
 ### Patch Changes
@@ -63,6 +71,7 @@
   Introduces a new `SectionsRenderer` component that dynamically renders sections based on their `_type` field. This component is designed for Sanity's modular content approach where pages contain arrays of section objects.
 
   Key features:
+
   - Dynamic section-to-component mapping via `sectionComponentMap`
   - Enhanced props for each section component including `_sectionIndex`, `_sections`, and `rootHtmlAttributes`
   - Deep link support with automatic ID generation
