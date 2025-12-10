@@ -1,5 +1,14 @@
 # vite-studio
 
+## 1.2.7
+
+### Patch Changes
+
+- Updated dependencies [6f1a866]
+  - @tinloof/sanity-document-options@1.2.3
+  - @tinloof/sanity-document-i18n@1.1.3
+  - @tinloof/sanity-studio@1.15.6
+
 ## 1.2.6
 
 ### Patch Changes
@@ -60,7 +69,6 @@
   Introduces a new `SectionsRenderer` component that dynamically renders sections based on their `_type` field. This component is designed for Sanity's modular content approach where pages contain arrays of section objects.
 
   Key features:
-
   - Dynamic section-to-component mapping via `sectionComponentMap`
   - Enhanced props for each section component including `_sectionIndex`, `_sections`, and `rootHtmlAttributes`
   - Deep link support with automatic ID generation
@@ -73,7 +81,6 @@
   This new function provides a convenient way to create array fields for sections in Sanity Studio documents. It operates synchronously and requires a `sections` array to be provided for maximum compatibility across all Sanity Studio setups.
 
   ## Features
-
   - **Required sections parameter**: Must provide a `sections` array containing the section schemas to use
   - **Simple preview image configuration**: Pass a function to customize image URLs for section insert menus
   - **Grid view insert menu**: Visual section picker with preview images
