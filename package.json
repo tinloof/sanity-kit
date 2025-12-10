@@ -13,7 +13,7 @@
 		"changeset": "changeset add",
 		"version": "changeset version",
 		"ci:version": "changeset version && bun update",
-		"ci:publish": "bun changeset publish --no-git-tag",
+		"ci:publish": "bunx changeset publish --no-git-tag",
 		"ci:tag": "changeset tag",
 		"dev": "turbo run dev --parallel --filter=./packages/*",
 		"dev:all": "turbo run dev",
