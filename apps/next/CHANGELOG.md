@@ -1,5 +1,14 @@
 # next-non-embedded-studio
 
+## 1.3.6
+
+### Patch Changes
+
+- Updated dependencies [739eb24]
+  - @tinloof/sanity-web@1.0.0
+  - @tinloof/sanity-studio@1.15.4
+  - @examples/hello-world-i18n-studio@0.0.4
+
 ## 1.3.5
 
 ### Patch Changes

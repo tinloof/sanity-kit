@@ -1,5 +1,42 @@
 # @tinloof/sanity-web
 
+## 1.0.0
+
+### Major Changes
+
+- 739eb24: BREAKING CHANGES: Removed Next.js-specific utilities that have been moved to @tinloof/sanity-next
+
+  The following exports have been completely removed from @tinloof/sanity-web:
+
+  **Components:**
+  - `ExitPreview` component
+
+  **Middleware:**
+  - `redirectIfNeeded` function
+  - All `/middleware/*` exports removed
+
+  **Server utilities:**
+  - `generateSanitySitemap`
+  - `generateSanityI18nSitemap`
+  - All `/server/*` exports removed
+
+  **Utils:**
+  - `getRedirect` function
+  - `resolveSanityRouteMetadata` function
+  - `createSanityMetadataResolver` function
+  - `getOgImages` function
+
+  **Queries:**
+  - `REDIRECT_QUERY`
+  - `SITEMAP_QUERY`
+  - `I18N_SITEMAP_QUERY`
+
+  **Peer dependencies removed:**
+  - `next` - no longer required
+  - `next-sanity` - no longer required
+
+  **Migration:** Install `@tinloof/sanity-next` and update your imports to use the new package locations.
+
 ## 0.13.0
 
 ### Minor Changes
@@ -15,7 +52,7 @@
   ```tsx
   const Sections = createSections<
     NonNullable<PAGE_QUERYResult["sections"]>,
-    {locale: string}
+    { locale: string }
   >({
     components: {
       "section.hero": HeroSection,
@@ -26,7 +63,7 @@
   // Infer SectionProps directly from the Sections component
   type SectionProps = (typeof Sections)["_SectionProps"];
 
-  export {Sections, type SectionProps};
+  export { Sections, type SectionProps };
 
   // In section components:
   export default function HeroSection(props: SectionProps["section.hero"]) {
@@ -47,7 +84,7 @@
 
   ```tsx
   type Sections = NonNullable<PAGE_QUERYResult>["sections"];
-  type SharedProps = {locale: string};
+  type SharedProps = { locale: string };
 
   export const SectionsRenderer = createSections<Sections, SharedProps>({
     components: {
@@ -57,7 +94,7 @@
   });
 
   // In your page
-  <SectionsRenderer data={page.sections} sharedProps={{locale: "en"}} />;
+  <SectionsRenderer data={page.sections} sharedProps={{ locale: "en" }} />;
   ```
 
 ## 0.12.1
@@ -88,7 +125,7 @@
 
   ```tsx
   type Sections = NonNullable<PAGE_QUERYResult>["sections"];
-  type SharedProps = {locale: string};
+  type SharedProps = { locale: string };
 
   export const SectionsRenderer = createSectionsRenderer<Sections, SharedProps>(
     {
@@ -102,7 +139,7 @@
   // In your page
   <SectionsRenderer
     sectionsData={page.sections}
-    sharedProps={{locale: "en"}}
+    sharedProps={{ locale: "en" }}
   />;
   ```
 

@@ -1,5 +1,11 @@
 # vite-studio
 
+## 1.2.5
+
+### Patch Changes
+
+- @tinloof/sanity-studio@1.15.4
+
 ## 1.2.4
 
 ### Patch Changes
@@ -66,7 +72,7 @@
   ## Usage
 
   ```typescript
-  import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+  import { sectionsBodyArraySchema } from "@tinloof/sanity-studio";
 
   // Basic usage
   export default defineType({
@@ -75,8 +81,8 @@
     fields: [
       sectionsBodyArraySchema({
         sections: [
-          {name: "hero", title: "Hero Section"},
-          {name: "banner", title: "Banner Section"},
+          { name: "hero", title: "Hero Section" },
+          { name: "banner", title: "Banner Section" },
         ],
       }),
     ],
@@ -89,8 +95,8 @@
     fields: [
       sectionsBodyArraySchema({
         sections: [
-          {name: "hero", title: "Hero Section"},
-          {name: "banner", title: "Banner Section"},
+          { name: "hero", title: "Hero Section" },
+          { name: "banner", title: "Banner Section" },
         ],
         previewImage: (type) =>
           `/static/sections/${type.replace("section.", "")}.png`,
