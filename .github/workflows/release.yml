@@ -47,13 +47,17 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          version: bun run version
-          publish: npx changeset publish
+          version: bun run ci:version
+          publish: bun run ci:publish
           commit: "[ci] release"
           title: "[ci] release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Tag releases
+        if: steps.changesets.outputs.published == 'true'
+        run: bun run ci:tag
 
       - uses: actions/github-script@v7
         if: steps.changesets.outputs.published == 'true'

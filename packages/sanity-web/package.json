@@ -75,5 +75,9 @@
 		"@sanity/image-url": "^2.0.1",
 		"groq": "^4.21.0",
 		"speakingurl": "^14.0.1"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
 	}
 }
