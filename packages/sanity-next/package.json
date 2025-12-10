@@ -77,6 +77,7 @@
 		"@types/node": "^24.10.1",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
+		"@types/speakingurl": "^13.0.6",
 		"next": "^16.0.7",
 		"next-sanity": "^11.6.10",
 		"react": "^19.2.1",
@@ -93,7 +94,8 @@
 		"speakingurl": "^14.0.1"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"registry": "https://registry.npmjs.org/"
 	},
 	"repository": {
 		"type": "git",
