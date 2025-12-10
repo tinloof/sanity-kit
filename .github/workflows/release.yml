@@ -43,7 +43,6 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          # Note: bun install after versioning is necessary to refresh lockfile
           version: bun run version
           publish: bunx changeset publish
           commit: "[ci] release"
