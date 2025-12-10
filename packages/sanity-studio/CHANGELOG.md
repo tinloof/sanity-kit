@@ -1,5 +1,12 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.15.4
+
+### Patch Changes
+
+- Updated dependencies [739eb24]
+  - @tinloof/sanity-web@1.0.0
+
 ## 1.15.3
 
 ### Patch Changes
@@ -87,7 +94,7 @@
   ## Usage
 
   ```typescript
-  import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+  import { sectionsBodyArraySchema } from "@tinloof/sanity-studio";
 
   // Basic usage
   export default defineType({
@@ -96,8 +103,8 @@
     fields: [
       sectionsBodyArraySchema({
         sections: [
-          {name: "hero", title: "Hero Section"},
-          {name: "banner", title: "Banner Section"},
+          { name: "hero", title: "Hero Section" },
+          { name: "banner", title: "Banner Section" },
         ],
       }),
     ],
@@ -110,8 +117,8 @@
     fields: [
       sectionsBodyArraySchema({
         sections: [
-          {name: "hero", title: "Hero Section"},
-          {name: "banner", title: "Banner Section"},
+          { name: "hero", title: "Hero Section" },
+          { name: "banner", title: "Banner Section" },
         ],
         previewImage: (type) =>
           `/static/sections/${type.replace("section.", "")}.png`,
@@ -161,10 +168,10 @@
 
      ```typescript
      // OLD (deprecated)
-     import {documentI18n} from "@tinloof/sanity-studio";
+     import { documentI18n } from "@tinloof/sanity-studio";
 
      // NEW (recommended)
-     import {documentI18n} from "@tinloof/sanity-document-i18n";
+     import { documentI18n } from "@tinloof/sanity-document-i18n";
      ```
 
   3. Update your configuration:
@@ -173,8 +180,8 @@
        plugins: [
          documentI18n({
            locales: [
-             {id: "en", title: "English"},
-             {id: "fr", title: "French"},
+             { id: "en", title: "English" },
+             { id: "fr", title: "French" },
            ],
          }),
        ],
