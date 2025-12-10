@@ -23,26 +23,6 @@
 			"require": "./dist/components/*.js",
 			"types": "./dist/components/*.d.ts"
 		},
-		"./server": {
-			"import": "./dist/server/index.mjs",
-			"require": "./dist/server/index.js",
-			"types": "./dist/server/index.d.ts"
-		},
-		"./server/*": {
-			"import": "./dist/server/*.mjs",
-			"require": "./dist/server/*.js",
-			"types": "./dist/server/*.d.ts"
-		},
-		"./middleware": {
-			"import": "./dist/middleware/index.mjs",
-			"require": "./dist/middleware/index.js",
-			"types": "./dist/middleware/index.d.ts"
-		},
-		"./middleware/*": {
-			"import": "./dist/middleware/*.mjs",
-			"require": "./dist/middleware/*.js",
-			"types": "./dist/middleware/*.d.ts"
-		},
 		"./utils": {
 			"import": "./dist/utils/index.mjs",
 			"require": "./dist/utils/index.js",
@@ -76,8 +56,6 @@
 		"@portabletext/types": "^3.0.0",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
-		"next": "^16.0.7",
-		"next-sanity": "^11.6.10",
 		"react": "^19.2.1",
 		"react-dom": "^19.2.1",
 		"sanity": "^4.20.1",
@@ -86,8 +64,6 @@
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
-		"next": "^15 | ^16",
-		"next-sanity": "^9 || ^10 || ^11",
 		"react": "^18.3.1 || ^19",
 		"react-dom": "^18.3.1 || ^19",
 		"sanity": "^3.80.1 || ^4"
@@ -97,6 +73,7 @@
 		"@sanity/asset-utils": "^2.3.0",
 		"@sanity/client": "^7.13.1",
 		"@sanity/image-url": "^2.0.1",
+		"groq": "^4.21.0",
 		"speakingurl": "^14.0.1"
 	}
 }

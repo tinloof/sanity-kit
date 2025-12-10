@@ -15,7 +15,7 @@
     },
     "apps/next": {
       "name": "next-basic-website",
-      "version": "1.3.4",
+      "version": "1.3.5",
       "dependencies": {
         "@examples/hello-world-i18n-studio": "workspace:*",
         "@sanity/client": "^7.13.1",
@@ -94,7 +94,7 @@
     },
     "examples/hello-world-i18n-next": {
       "name": "@examples/hello-world-i18n-next",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "dependencies": {
         "@examples/hello-world-i18n-studio": "workspace:*",
         "@tinloof/sanity-next": "workspace:*",
@@ -278,7 +278,7 @@
     },
     "packages/sanity-next": {
       "name": "@tinloof/sanity-next",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "dependencies": {
         "@sanity/asset-utils": "^2.3.0",
         "@sanity/client": "^7.13.1",
@@ -357,6 +357,7 @@
         "@sanity/asset-utils": "^2.3.0",
         "@sanity/client": "^7.13.1",
         "@sanity/image-url": "^2.0.1",
+        "groq": "^4.21.0",
         "speakingurl": "^14.0.1",
       },
       "devDependencies": {
@@ -3255,6 +3256,8 @@
     "@tailwindcss/oxide-wasm32-wasi/@tybys/wasm-util": ["@tybys/wasm-util@0.10.1", "", { "dependencies": { "tslib": "^2.4.0" }, "bundled": true }, "sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg=="],
 
     "@tailwindcss/oxide-wasm32-wasi/tslib": ["tslib@2.8.1", "", { "bundled": true }, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
+
+    "@tinloof/sanity-web/groq": ["groq@4.21.0", "", {}, "sha512-DK3HcM8c07EW4oreoV3a99bqP/HfCKw6wtYT1GtLJV9wM/35fbpq2YCZSHm2LpfH2Sba5J2WDsyaUr61plpFDQ=="],
 
     "@tybys/wasm-util/tslib": ["tslib@2.8.1", "", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 
