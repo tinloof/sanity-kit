@@ -1,6 +1,5 @@
 import type {CreateAbstractsConfig} from "@tinloof/sanity-extends";
 import type * as React from "react";
-import type {DocumentPluginOptions, SchemaPluginOptions} from "sanity";
 import type {
 	ListItemBuilder,
 	StructureBuilder,
@@ -54,7 +53,11 @@ export type CommonStructureOptions = {
  */
 export type StructureBuiltinOptions =
 	| ({
-			singleton: true;
+			singleton:
+				| true
+				| {
+						id?: string;
+				  };
 	  } & CommonStructureOptions)
 	| ({
 			// Case 2: non-singleton (or omitted)
@@ -91,7 +94,9 @@ declare module "sanity" {
 
 declare module "@tinloof/sanity-extends" {
 	interface ExtendsRegistry {
-		singleton: undefined;
+		singleton: {
+			id?: string;
+		};
 		orderable: undefined;
 		sync: undefined;
 	}

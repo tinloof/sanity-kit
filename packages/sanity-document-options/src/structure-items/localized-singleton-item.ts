@@ -19,6 +19,7 @@ type LocalizedSingletonItemProps = {
 	title: string;
 	locales: Locale[];
 	icon?: BaseSchemaDefinition["icon"];
+	id?: string;
 };
 
 const localizedSingletonItem = ({
@@ -28,6 +29,7 @@ const localizedSingletonItem = ({
 	title,
 	locales,
 	icon,
+	id,
 }: LocalizedSingletonItemProps): ListItemBuilder => {
 	// Input validation
 	if (!name || typeof name !== "string") {
@@ -81,7 +83,7 @@ const localizedSingletonItem = ({
 							S,
 							type: name,
 							title: `${locale.title} (${locale.id})`,
-							id: `${name}_${locale.id}`,
+							id: `${id || name}_${locale.id}`,
 						}).icon(icon),
 					),
 				),
