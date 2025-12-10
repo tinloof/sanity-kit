@@ -39,6 +39,12 @@ jobs:
       - name: Build Packages
         run: bun run build
 
+      - name: Test npm whoami with OIDC
+        env:
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org
+        run: |
+          npm whoami || echo "whoami failed"
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
