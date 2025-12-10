@@ -363,8 +363,6 @@
         "@portabletext/types": "^3.0.0",
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
-        "next": "^16.0.7",
-        "next-sanity": "^11.6.10",
         "react": "^19.2.1",
         "react-dom": "^19.2.1",
         "sanity": "^4.20.1",
@@ -373,8 +371,6 @@
         "typescript": "^5.9.3",
       },
       "peerDependencies": {
-        "next": "^15 | ^16",
-        "next-sanity": "^9 || ^10 || ^11",
         "react": "^18.3.1 || ^19",
         "react-dom": "^18.3.1 || ^19",
         "sanity": "^3.80.1 || ^4",
