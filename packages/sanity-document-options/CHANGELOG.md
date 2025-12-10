@@ -1,5 +1,23 @@
 # @tinloof/sanity-document-options
 
+## 1.3.0
+
+### Minor Changes
+
+- 4d7aab9: Add custom document ID support for singleton documents\*\*
+
+  Singletons now accept an optional `id` parameter to customize the document ID instead of defaulting to the schema type name.
+
+  ```ts
+  structureOptions: {
+    singleton: {
+      id: "custom-document-id",
+    },
+  }
+  ```
+
+  This applies to both regular and localized singletons.
+
 ## 1.2.3
 
 ### Patch Changes

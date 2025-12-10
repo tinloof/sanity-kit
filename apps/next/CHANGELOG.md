@@ -1,5 +1,11 @@
 # next-non-embedded-studio
 
+## 1.3.9
+
+### Patch Changes
+
+- @examples/hello-world-i18n-studio@0.0.7
+
 ## 1.3.8
 
 ### Patch Changes
