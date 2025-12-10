@@ -9,39 +9,39 @@
 	},
 	"exports": {
 		".": {
+			"types": "./dist/index.d.ts",
 			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"require": "./dist/index.js"
 		},
 		"./components": {
+			"types": "./dist/components/index.d.ts",
 			"import": "./dist/components/index.mjs",
-			"require": "./dist/components/index.js",
-			"types": "./dist/components/index.d.ts"
+			"require": "./dist/components/index.js"
 		},
 		"./components/*": {
+			"types": "./dist/components/*.d.ts",
 			"import": "./dist/components/*.mjs",
-			"require": "./dist/components/*.js",
-			"types": "./dist/components/*.d.ts"
+			"require": "./dist/components/*.js"
 		},
 		"./utils": {
+			"types": "./dist/utils/index.d.ts",
 			"import": "./dist/utils/index.mjs",
-			"require": "./dist/utils/index.js",
-			"types": "./dist/utils/index.d.ts"
+			"require": "./dist/utils/index.js"
 		},
 		"./utils/*": {
+			"types": "./dist/utils/*.d.ts",
 			"import": "./dist/utils/*.mjs",
-			"require": "./dist/utils/*.js",
-			"types": "./dist/utils/*.d.ts"
+			"require": "./dist/utils/*.js"
 		},
 		"./types": {
+			"types": "./dist/types/index.d.ts",
 			"import": "./dist/types/index.mjs",
-			"require": "./dist/types/index.js",
-			"types": "./dist/types/index.d.ts"
+			"require": "./dist/types/index.js"
 		},
 		"./fragments": {
+			"types": "./dist/fragments/index.d.ts",
 			"import": "./dist/fragments/index.mjs",
-			"require": "./dist/fragments/index.js",
-			"types": "./dist/fragments/index.d.ts"
+			"require": "./dist/fragments/index.js"
 		},
 		"./package.json": "./package.json"
 	},
