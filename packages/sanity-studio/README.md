@@ -14,6 +14,8 @@ npm install @tinloof/sanity-studio
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
+- [Validation utilities](#validation-utilities)
+  - [`isUnique`](#isunique)
 - [Schema utilities](#schema-utilities)
 - [Schema components](#schema-components)
   - [Field groups](#field-groups)
@@ -52,6 +54,119 @@ npm install @tinloof/sanity-studio
 - [Disable creation plugin](#disable-creation-plugin)
 - [Input with characters count](#input-with-characters-count)
 
+## Validation utilities
+
+### `isUnique`
+
+A validation helper that checks if a slug value is unique across documents in your Sanity dataset. This is particularly useful for validating pathname fields, slug fields, or any other field that needs to be unique.
+
+#### Basic usage with slug fields
+
+The most common way to use `isUnique` is with Sanity's built-in `slug` type using the `options.isUnique` property:
+
+```tsx
+import { isUnique } from "@tinloof/sanity-studio/utils";
+import { defineField, defineType } from "sanity";
+
+export default defineType({
+  name: "tag",
+  type: "document",
+  fields: [
+    defineField({
+      name: "slug",
+      type: "slug",
+      title: "Tag's URL-friendly path",
+      options: {
+        source: "title",
+        isUnique: (value, context) =>
+          isUnique(value, context, {
+            fieldPath: "slug.current",
+            filter: '_type == "blog.tag"',
+          }),
+      },
+    }),
+  ],
+});
+```
+
+#### Usage with custom validation
+
+You can also use it with custom validation for any field type:
+
+```tsx
+import { isUnique } from "@tinloof/sanity-studio/utils";
+import { defineField, defineType } from "sanity";
+
+export default defineType({
+  name: "post",
+  type: "document",
+  fields: [
+    defineField({
+      name: "pathname",
+      type: "slug",
+      validation: (Rule) =>
+        Rule.custom(async (value, context) => {
+          if (!value?.current) return true;
+          const unique = await isUnique(value.current, context);
+          return unique || "This pathname is already in use";
+        }),
+    }),
+  ],
+});
+```
+
+#### Custom field path
+
+By default, `isUnique` checks the `pathname.current` field. You can customize this to check any field:
+
+```tsx
+options: {
+  isUnique: (value, context) =>
+    isUnique(value, context, {
+      fieldPath: "slug.current",
+    }),
+}
+```
+
+#### Filter by document type
+
+You can restrict uniqueness checks to specific document types:
+
+```tsx
+options: {
+  isUnique: (value, context) =>
+    isUnique(value, context, {
+      fieldPath: "slug.current",
+      filter: '_type == "post"',
+    }),
+}
+```
+
+#### Combine multiple options
+
+```tsx
+options: {
+  isUnique: (value, context) =>
+    isUnique(value, context, {
+      fieldPath: "slug.current",
+      filter: '_type == "page" && locale == "en"',
+    }),
+}
+```
+
+#### Parameters
+
+- `slug` (string, required): The slug value to check for uniqueness
+- `context` (ValidationContext, required): The Sanity validation context
+- `options` (IsUniqueOptions, optional): Configuration options
+  - `fieldPath` (string): The field path to check. Defaults to "pathname.current"
+  - `filter` (string): Additional GROQ filter to apply to the query
+  - `apiVersion` (string): Sanity API version to use. Defaults to "2023-06-21"
+
+#### Returns
+
+`Promise<boolean>` - Returns `true` if the slug is unique, `false` otherwise
+
 ## Schema utilities
 
 ### Field groups
@@ -63,7 +178,7 @@ Pre-configured field groups for organizing document fields.
 A field group for content-related fields with a compose icon.
 
 ```tsx
-import {contentSchemaGroup} from "@tinloof/sanity-studio";
+import { contentSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "post",
@@ -80,7 +195,7 @@ export default defineType({
 A field group for settings-related fields with a cog icon.
 
 ```tsx
-import {settingsSchemaGroup} from "@tinloof/sanity-studio";
+import { settingsSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "post",
@@ -97,7 +212,7 @@ export default defineType({
 A field group for media-related fields with an image icon.
 
 ```tsx
-import {mediaSchemaGroup} from "@tinloof/sanity-studio";
+import { mediaSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "post",
@@ -118,7 +233,7 @@ export default defineType({
 A field group for navigation-related fields with a link icon.
 
 ```tsx
-import {navigationSchemaGroup} from "@tinloof/sanity-studio";
+import { navigationSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "page",
@@ -139,7 +254,7 @@ export default defineType({
 A field group for e-commerce-related fields with a tag icon.
 
 ```tsx
-import {ecommerceSchemaGroup} from "@tinloof/sanity-studio";
+import { ecommerceSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "product",
@@ -160,7 +275,7 @@ export default defineType({
 A field group for event-related fields with a calendar icon.
 
 ```tsx
-import {eventsSchemaGroup} from "@tinloof/sanity-studio";
+import { eventsSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "event",
@@ -181,7 +296,7 @@ export default defineType({
 A field group for form-related fields with a document icon.
 
 ```tsx
-import {formsSchemaGroup} from "@tinloof/sanity-studio";
+import { formsSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "contactForm",
@@ -202,7 +317,7 @@ export default defineType({
 A field group for analytics-related fields with a chart icon.
 
 ```tsx
-import {analyticsSchemaGroup} from "@tinloof/sanity-studio";
+import { analyticsSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "page",
@@ -223,7 +338,7 @@ export default defineType({
 A field group for social media-related fields with a share icon.
 
 ```tsx
-import {socialSchemaGroup} from "@tinloof/sanity-studio";
+import { socialSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "post",
@@ -244,7 +359,7 @@ export default defineType({
 A field group for localization-related fields with an earth globe icon.
 
 ```tsx
-import {localizationSchemaGroup} from "@tinloof/sanity-studio";
+import { localizationSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "page",
@@ -265,7 +380,7 @@ export default defineType({
 A field group for location-related fields with a pin icon.
 
 ```tsx
-import {locationSchemaGroup} from "@tinloof/sanity-studio";
+import { locationSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "venue",
@@ -286,7 +401,7 @@ export default defineType({
 A field group for theming-related fields with a color wheel icon.
 
 ```tsx
-import {themingSchemaGroup} from "@tinloof/sanity-studio";
+import { themingSchemaGroup } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "theme",
@@ -313,7 +428,7 @@ Creates a sections body array field schema for Sanity Studio. This function gene
 ##### Basic usage
 
 ```tsx
-import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+import { sectionsBodyArraySchema } from "@tinloof/sanity-studio";
 
 // Basic usage with sections array
 export default defineType({
@@ -322,8 +437,8 @@ export default defineType({
   fields: [
     sectionsBodyArraySchema({
       sections: [
-        {name: "hero", title: "Hero Section"},
-        {name: "banner", title: "Banner Section"},
+        { name: "hero", title: "Hero Section" },
+        { name: "banner", title: "Banner Section" },
       ],
     }),
   ],
@@ -336,8 +451,8 @@ export default defineType({
   fields: [
     sectionsBodyArraySchema({
       sections: [
-        {name: "hero", title: "Hero Section"},
-        {name: "banner", title: "Banner Section"},
+        { name: "hero", title: "Hero Section" },
+        { name: "banner", title: "Banner Section" },
       ],
       previewImage: (type) =>
         `/static/sections/${type.replace("section.", "")}.png`,
@@ -349,12 +464,12 @@ export default defineType({
 ##### Usage with provided sections
 
 ```tsx
-import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+import { sectionsBodyArraySchema } from "@tinloof/sanity-studio";
 
 const field = sectionsBodyArraySchema({
   sections: [
-    {name: "hero", title: "Hero Section"},
-    {name: "banner", title: "Banner Section"},
+    { name: "hero", title: "Hero Section" },
+    { name: "banner", title: "Banner Section" },
   ],
   previewImage: (type) =>
     `/static/sections/${type.replace("section.", "")}.png`,
@@ -364,12 +479,12 @@ const field = sectionsBodyArraySchema({
 ##### Custom preview image function
 
 ```tsx
-import {sectionsBodyArraySchema} from "@tinloof/sanity-studio";
+import { sectionsBodyArraySchema } from "@tinloof/sanity-studio";
 
 const field = sectionsBodyArraySchema({
   sections: [
-    {name: "hero", title: "Hero Section"},
-    {name: "banner", title: "Banner Section"},
+    { name: "hero", title: "Hero Section" },
+    { name: "banner", title: "Banner Section" },
   ],
   previewImage: (type) => `/custom/path/${type.replace("section.", "")}.jpg`,
 });
@@ -395,7 +510,7 @@ Reusable object field definitions for common use cases.
 A comprehensive SEO object field with configurable sub-fields using the `FieldCustomization` system.
 
 ```tsx
-import {seoObjectField} from "@tinloof/sanity-studio";
+import { seoObjectField } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "post",
@@ -434,7 +549,7 @@ Specialized slug field definitions with enhanced functionality.
 A pathname slug field with internationalization and folder support.
 
 ```tsx
-import {pathnameSlugField} from "@tinloof/sanity-studio";
+import { pathnameSlugField } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "page",
@@ -467,7 +582,7 @@ Common string field definitions for document metadata.
 A string field for internal document identification.
 
 ```tsx
-import {internalTitleStringField} from "@tinloof/sanity-studio";
+import { internalTitleStringField } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "post",
@@ -483,7 +598,7 @@ export default defineType({
 A hidden string field for locale identification in internationalized documents.
 
 ```tsx
-import {localeStringField} from "@tinloof/sanity-studio";
+import { localeStringField } from "@tinloof/sanity-studio";
 
 export default defineType({
   name: "post",
@@ -503,7 +618,7 @@ Pages is a plugin that wraps [Presentation](https://www.sanity.io/docs/presentat
 #### 1. Configure Pages:
 
 ```tsx
-import {pages} from "@tinloof/sanity-studio";
+import { pages } from "@tinloof/sanity-studio";
 
 export default defineConfig({
   // ... other Sanity Studio config
@@ -523,7 +638,7 @@ export default defineConfig({
 #### 2. Add a `pathname` field to page schemas using the `definePathname` helper:
 
 ```tsx
-import {definePathname} from "@tinloof/sanity-studio";
+import { definePathname } from "@tinloof/sanity-studio";
 
 export default defineType({
   type: "document",
@@ -541,7 +656,7 @@ Documents with a defined `pathname` field value are now recognized as pages and 
 Like Sanity's native `slug` type, the `pathname` supports a `source` option which can be used to generate the pathname from another field on the document, eg. the title:
 
 ```tsx
-import {definePathname} from "@tinloof/sanity-studio";
+import { definePathname } from "@tinloof/sanity-studio";
 
 export default defineType({
   type: "document",
@@ -569,7 +684,7 @@ When a page is created, it will automatically have the current folder in its pat
 </video>
 
 ```tsx
-import {pages} from "@tinloof/sanity-studio";
+import { pages } from "@tinloof/sanity-studio";
 
 export default defineConfig({
   // ... other Sanity Studio config
@@ -599,12 +714,12 @@ Path names are automatically validated to be unique across locales.
 </video>
 
 ```tsx
-import {pages} from "@tinloof/sanity-studio";
+import { pages } from "@tinloof/sanity-studio";
 
 const i18nConfig = {
   locales: [
-    {id: "en", title: "English"},
-    {id: "fr", title: "French"},
+    { id: "en", title: "English" },
+    { id: "fr", title: "French" },
   ],
   defaultLocaleId: "en",
 };
@@ -655,7 +770,7 @@ export default defineType({
 The `filterBasedOnRoles` option can be used to filter pages based on the current user's roles.
 
 ```tsx
-import {pages} from "@tinloof/sanity-studio";
+import { pages } from "@tinloof/sanity-studio";
 
 export default defineConfig({
   // ... other Sanity Studio config
@@ -668,8 +783,8 @@ export default defineConfig({
         },
       },
       filterBasedOnRoles: [
-        {role: "all", filter: "!(_id match 'singleton*')"},
-        {role: "contributor", filter: "_type == 'blog.post'"},
+        { role: "all", filter: "!(_id match 'singleton*')" },
+        { role: "contributor", filter: "_type == 'blog.post'" },
       ],
     }),
   ],
@@ -687,8 +802,8 @@ By default, when internationalization is enabled, only pages whose `locale` fiel
 ```ts
 const i18nConfig = {
   locales: [
-    {id: "en", title: "English"},
-    {id: "fr", title: "French"},
+    { id: "en", title: "English" },
+    { id: "fr", title: "French" },
   ],
   defaultLocaleId: "en",
   requireLocale: false,
@@ -702,7 +817,7 @@ Now all documents with a `pathname` field will show up in the list regardless of
 By default, folders can be renamed. Set the `folder.canUnlock` option to `false` to disable this.
 
 ```tsx
-import {definePathname} from "@tinloof/sanity-studio";
+import { definePathname } from "@tinloof/sanity-studio";
 
 export default defineType({
   type: "document",
@@ -746,7 +861,7 @@ export default {
       title: "title",
       media: "image",
     },
-    prepare({title, image}) {
+    prepare({ title, image }) {
       return {
         title,
         media: image,
@@ -786,7 +901,7 @@ export default defineConfig({
 By default, the `pathname` field comes with a "Preview" button which is used to navigate to the page within the Presentation iframe when the pathname changes. You can optionally disable this manual button and have the Presentation tool automatically navigate to the new pathname as it changes:
 
 ```tsx
-import {definePathname} from "@tinloof/sanity-studio";
+import { definePathname } from "@tinloof/sanity-studio";
 
 export default defineType({
   type: "document",
@@ -811,8 +926,8 @@ The Pages Navigator plugin provides a reusable `page` abstract type that can be 
 **Important:** This feature requires the `@tinloof/sanity-extends` package to be installed and configured:
 
 ```tsx
-import {withExtends} from "@tinloof/sanity-extends";
-import {defineConfig} from "sanity";
+import { withExtends } from "@tinloof/sanity-extends";
+import { defineConfig } from "sanity";
 
 export default defineConfig({
   schema: {
@@ -824,6 +939,7 @@ export default defineConfig({
 ```
 
 The `page` abstract is automatically injected by the Pages Navigator plugin and includes:
+
 - SEO fields (meta title, description, og:image)
 - Pathname field with i18n support
 - Content and settings field groups
@@ -831,7 +947,7 @@ The `page` abstract is automatically injected by the Pages Navigator plugin and 
 You can extend from it in your documents:
 
 ```tsx
-import {defineType} from "sanity";
+import { defineType } from "sanity";
 
 export default defineType({
   type: "document",
@@ -845,8 +961,8 @@ export default defineType({
       type: "object",
       group: "content",
       fields: [
-        {name: "title", type: "string"},
-        {name: "subtitle", type: "text"},
+        { name: "title", type: "string" },
+        { name: "subtitle", type: "text" },
       ],
     },
   ],
@@ -858,7 +974,7 @@ export default defineType({
 If you don't want to use the page abstract, you can disable it in the plugin configuration:
 
 ```tsx
-import {pages} from "@tinloof/sanity-studio";
+import { pages } from "@tinloof/sanity-studio";
 
 export default defineConfig({
   plugins: [
@@ -882,10 +998,11 @@ pages({
     page: false, // Specifically disable the page abstract
   },
   // ... other configuration
-})
+});
 ```
 
 When using the page abstract:
+
 - Your document automatically gets pathname and SEO fields
 - The pathname field respects i18n configuration from the plugin
 - Fields are organized into content and settings groups
@@ -931,7 +1048,7 @@ export const bannerSection = defineSection({
 ```tsx
 // @/sanity/schemas/sections/index.tsx
 
-import {bannerSection} from "@/sanity/schemas/sections/banner";
+import { bannerSection } from "@/sanity/schemas/sections/banner";
 
 export const sections = [bannerSection];
 ```
@@ -972,7 +1089,7 @@ export const sections = [bannerSection];
 ```tsx
 // @/sanity/schemas/index.tsx
 
-import {sections} from "@sanity/schemas/index";
+import { sections } from "@sanity/schemas/index";
 import page from "@/sanity/schemas/page";
 
 const schemas = [page, ...sections];
@@ -995,17 +1112,17 @@ npm install @tinloof/sanity-document-i18n
 
 ```typescript
 // OLD (deprecated)
-import {documentI18n} from "@tinloof/sanity-studio";
+import { documentI18n } from "@tinloof/sanity-studio";
 
 // NEW (recommended)
-import {documentI18n} from "@tinloof/sanity-document-i18n";
+import { documentI18n } from "@tinloof/sanity-document-i18n";
 
 export default defineConfig({
   plugins: [
     documentI18n({
       locales: [
-        {id: "en", title: "English"},
-        {id: "fr", title: "French"},
+        { id: "en", title: "English" },
+        { id: "fr", title: "French" },
       ],
     }),
   ],
@@ -1052,8 +1169,8 @@ You can include additional properties
 
 ```tsx
 const locales = [
-  {id: "en", title: "English", countryCode: "US", isDefault: true},
-  {id: "fr", title: "French", countryCode: "FR"},
+  { id: "en", title: "English", countryCode: "US", isDefault: true },
+  { id: "fr", title: "French", countryCode: "FR" },
 ];
 
 localizedItem(S, "blog.post", "Blog posts", locales, BookIcon);
@@ -1072,9 +1189,9 @@ The `singletonListItem` utility helps create singleton document list items in yo
 ### Basic usage
 
 ```tsx
-import {singletonListItem} from "@tinloof/sanity-studio";
-import {StructureResolver} from "sanity/structure";
-import {HomeIcon, CogIcon} from "@sanity/icons";
+import { singletonListItem } from "@tinloof/sanity-studio";
+import { StructureResolver } from "sanity/structure";
+import { HomeIcon, CogIcon } from "@sanity/icons";
 
 export const structure: StructureResolver = (S) => {
   return S.list()
@@ -1117,8 +1234,8 @@ Builds upon a string field with an options list to show a preview of the icon se
 #### Basic usage
 
 ```tsx
-import {iconSchema} from "@tinloof/sanity-studio";
-import {defineType} from "sanity";
+import { iconSchema } from "@tinloof/sanity-studio";
+import { defineType } from "sanity";
 
 export default defineType({
   type: "document",
@@ -1132,9 +1249,9 @@ export default defineType({
       ...iconSchema,
       options: {
         list: [
-          {title: "Calendar", value: "calendar"},
-          {title: "Chat", value: "chat"},
-          {title: "Clock", value: "clock"},
+          { title: "Calendar", value: "calendar" },
+          { title: "Chat", value: "chat" },
+          { title: "Clock", value: "clock" },
         ],
         path: "/icons/select",
         backgroundColor: "black",
@@ -1157,7 +1274,7 @@ The `redirectsSchema` field provides a convenient way to manage URL redirects in
 #### Basic usage
 
 ```tsx
-import {redirectsSchema} from "@tinloof/sanity-studio";
+import { redirectsSchema } from "@tinloof/sanity-studio";
 
 export default defineType({
   type: "document",
@@ -1207,7 +1324,7 @@ Plugin to disable the creation of documents with the `disableCreation` option se
 ```tsx
 sanity.config.ts;
 
-import {disableCreation} from "@tinloof/sanity-studio";
+import { disableCreation } from "@tinloof/sanity-studio";
 import schemas from "@/sanity/schemas";
 
 export default defineConfig({
@@ -1218,7 +1335,7 @@ export default defineConfig({
   schema: {
     types: schemas,
   },
-  plugins: [disableCreation({schemas: ["home", "header", "footer"]})],
+  plugins: [disableCreation({ schemas: ["home", "header", "footer"] })],
 });
 ```
 
