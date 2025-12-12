@@ -30,7 +30,7 @@ export type SanityImageProps = {
 	 * ```
 	 */
 	aspectRatio?: string;
-	config: {
+	config?: {
 		dataset: string;
 		projectId: string;
 	};
@@ -91,7 +91,10 @@ export default function SanityImage({
 	fetchPriority,
 	sizes,
 	style,
-	config,
+	config = {
+		projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "",
+		dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "",
+	},
 	lqip = false,
 	...passthroughProps
 }: SanityImageProps) {

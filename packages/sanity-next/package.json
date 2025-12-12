@@ -26,6 +26,11 @@
 			"import": "./dist/components/exit-preview.js",
 			"require": "./dist/components/exit-preview.cjs"
 		},
+		"./components/sanity-image": {
+			"types": "./dist/components/sanity-image.d.ts",
+			"import": "./dist/components/sanity-image.js",
+			"require": "./dist/components/sanity-image.cjs"
+		},
 		"./actions/disable-draft-mode": {
 			"types": "./dist/actions/disable-draft-mode.d.ts",
 			"import": "./dist/actions/disable-draft-mode.js",

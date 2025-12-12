@@ -4,6 +4,7 @@ export default defineConfig({
 	entry: {
 		index: "src/index.ts",
 		"components/exit-preview": "src/components/exit-preview.tsx",
+		"components/sanity-image": "src/components/sanity-image.tsx",
 		"actions/disable-draft-mode": "src/actions/disable-draft-mode.ts",
 	},
 	format: ["esm", "cjs"],

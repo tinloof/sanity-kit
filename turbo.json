@@ -54,6 +54,38 @@
 		"@examples/hello-world-i18n-next#build": {
 			"dependsOn": ["@examples/hello-world-i18n-studio#build"],
 			"cache": true
+		},
+		"@examples/blog-studio#typegen": {
+			"outputs": ["schema.json", "../blog-next/types/sanity.generated.d.ts"],
+			"cache": true,
+			"env": [
+				"SANITY_STUDIO_DATASET",
+				"SANITY_STUDIO_PROJECT_ID",
+				"SANITY_STUDIO_API_VERSION"
+			]
+		},
+		"@examples/blog-studio#typegen:watch": {
+			"outputs": ["schema.json", "../blog-next/types/sanity.generated.d.ts"],
+			"cache": false,
+			"persistent": true
+		},
+		"@examples/blog-studio#build": {
+			"dependsOn": ["@examples/blog-studio#typegen"],
+			"outputs": ["../blog-next/public/cms/**", "./sanity/**"],
+			"cache": true,
+			"env": [
+				"SANITY_STUDIO_DATASET",
+				"SANITY_STUDIO_PROJECT_ID",
+				"SANITY_STUDIO_API_VERSION"
+			]
+		},
+		"@examples/blog-studio#dev": {
+			"with": ["@examples/blog-studio#typegen:watch"],
+			"persistent": true
+		},
+		"@examples/blog-next#build": {
+			"dependsOn": ["@examples/blog-studio#build"],
+			"cache": true
 		}
 	}
 }

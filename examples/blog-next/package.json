@@ -1,0 +1,38 @@
+{
+	"name": "@examples/blog-next",
+	"version": "0.1.5",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "biome lint .",
+		"check": "biome check --write ."
+	},
+	"dependencies": {
+		"@examples/blog-studio": "workspace:*",
+		"@portabletext/react": "^6.0.0",
+		"@tinloof/sanity-next": "workspace:*",
+		"@tinloof/sanity-web": "workspace:*",
+		"clsx": "^2.1.1",
+		"next": "16.0.8",
+		"next-sanity": "^11.6.10",
+		"react": "19.2.1",
+		"react-dom": "19.2.1",
+		"react-syntax-highlighter": "^16.1.0",
+		"server-only": "0.0.1",
+		"tailwind-merge": "^3.4.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@portabletext/types": "^4.0.0",
+		"@tailwindcss/postcss": "^4.1.17",
+		"@types/node": "^24.10.1",
+		"@types/react": "^19.2.7",
+		"@types/react-dom": "^19.2.3",
+		"@types/react-syntax-highlighter": "^15.5.13",
+		"babel-plugin-react-compiler": "1.0.0",
+		"tailwindcss": "^4.1.17",
+		"typescript": "^5.9.3"
+	}
+}
