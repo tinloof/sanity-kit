@@ -55,6 +55,7 @@ export default defineType({
 				lists: ["bullet", "number"],
 				styles: ["normal", "h2", "h3", "h4", "blockquote"],
 			}),
+			name: "ptBody",
 			group: "content",
 			validation: (Rule) => Rule.required(),
 		}),
