@@ -31,6 +31,11 @@
 			"import": "./dist/components/sanity-image.js",
 			"require": "./dist/components/sanity-image.cjs"
 		},
+		"./components/rich-text": {
+			"types": "./dist/components/rich-text.d.ts",
+			"import": "./dist/components/rich-text.js",
+			"require": "./dist/components/rich-text.cjs"
+		},
 		"./actions/disable-draft-mode": {
 			"types": "./dist/actions/disable-draft-mode.d.ts",
 			"import": "./dist/actions/disable-draft-mode.js",
@@ -55,6 +60,11 @@
 			"types": "./dist/utils/sitemap.d.ts",
 			"import": "./dist/utils/sitemap.js",
 			"require": "./dist/utils/sitemap.cjs"
+		},
+		"./hooks": {
+			"types": "./dist/hooks/index.d.ts",
+			"import": "./dist/hooks/index.js",
+			"require": "./dist/hooks/index.cjs"
 		},
 		"./package.json": "./package.json"
 	},
@@ -91,6 +101,8 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
+		"@portabletext/react": "^6.0.0",
+		"@portabletext/types": "^4.0.0",
 		"@sanity/asset-utils": "^2.3.0",
 		"@sanity/client": "^7.13.1",
 		"@sanity/image-url": "^2.0.1",

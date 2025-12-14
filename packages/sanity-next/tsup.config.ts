@@ -6,6 +6,7 @@ export default defineConfig({
 		"components/exit-preview": "src/components/exit-preview.tsx",
 		"components/sanity-image": "src/components/sanity-image.tsx",
 		"actions/disable-draft-mode": "src/actions/disable-draft-mode.ts",
+		"hooks/index": "src/hooks/index.ts",
 	},
 	format: ["esm", "cjs"],
 	dts: true,

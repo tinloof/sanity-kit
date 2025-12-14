@@ -1,8 +1,7 @@
-import type {Table as TableType} from "@examples/blog-studio/types";
-
 import {cn} from "@/lib/utils";
+import {BlogPtBlock} from "../rich-text";
 
-export default function Table(data: TableType) {
+export default function Table(data: BlogPtBlock<"table">) {
 	if (!data?.rows?.length) {
 		return null;
 	}

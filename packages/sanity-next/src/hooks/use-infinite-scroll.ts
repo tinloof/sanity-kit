@@ -1,14 +1,23 @@
-import {BLOG_INDEX_QUERYResult} from "@examples/blog-studio/types";
 import {useCallback, useState} from "react";
 
-export type PaginatedQueryResult = BLOG_INDEX_QUERYResult;
+export type PaginatedQueryResult = {
+	entries?: Array<any>;
+	[key: string]: any;
+} | null;
 
-export function useInfiniteScroll<T extends PaginatedQueryResult>(
-	query: string,
-	initialData: T,
-	apiEndpoint: string,
-	additionalParams?: Record<string, any>,
-) {
+type UseInfiniteScrollProps<T> = {
+	query: string;
+	initialData: T;
+	apiEndpoint?: string;
+	additionalParams?: Record<string, any>;
+};
+
+export function useInfiniteScroll<T extends PaginatedQueryResult>({
+	query,
+	initialData,
+	apiEndpoint = "/api/load-more",
+	additionalParams,
+}: UseInfiniteScrollProps<T>) {
 	const [{data, pageNumber}, setState] = useState({
 		data: initialData,
 		pageNumber: 1,

@@ -6,6 +6,7 @@ import {createErrorDraftRoute, defineDraftRoute} from "../utils/draft-mode";
 import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
 import {initSanityI18nUtils, initSanityUtils} from "../utils/sanity";
 import {getVercelBaseUrl} from "../utils/vercel-base-url";
+import {createLoadMoreHandler} from "../api/load-more-handler";
 
 type InitSanityConfig = {
 	client?: ClientConfig;
@@ -95,6 +96,7 @@ export function initSanity(config?: InitSanityConfig) {
 			}),
 			clientWithToken,
 			defineEnableDraftMode,
+			loadMoreHandler: createLoadMoreHandler(sanityFetch),
 			...utils,
 			...rest,
 		};
@@ -118,13 +120,13 @@ export function initSanity(config?: InitSanityConfig) {
 			: initSanityI18nUtils({sanityFetch, baseUrl, i18n: config.i18n});
 
 	const defineEnableDraftMode = sanity_api_token
-		? defineDraftRoute(clientWithToken)
+		? defineDraftRoute(clientWithToken).GET
 		: createErrorDraftRoute(
 				"Draft mode is not configured. To enable draft mode, either:\n" +
 					"1. Set SANITY_API_TOKEN environment variable with a viewer token\n" +
 					"2. Pass a 'viewerToken' option to initSanity({ viewerToken: 'your-token' })\n" +
 					"Learn more: https://www.sanity.io/docs/draft-mode",
-			);
+			).GET;
 
 	return {
 		SanityImage: (props: Omit<ComponentProps<typeof SanityImage>, "config">) =>
@@ -144,6 +146,7 @@ export function initSanity(config?: InitSanityConfig) {
 		}),
 		defineEnableDraftMode,
 		clientWithToken,
+		loadMoreHandler: createLoadMoreHandler(sanityFetch),
 		...utils,
 		...rest,
 	};

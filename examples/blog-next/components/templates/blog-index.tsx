@@ -1,14 +1,12 @@
 "use client";
 
-import DynamicLink from "@/components/dynamic-link";
+import {BLOG_INDEX_QUERY} from "@examples/blog-studio/queries";
+import type {BLOG_INDEX_QUERYResult} from "@examples/blog-studio/types";
 import SanityImage from "@tinloof/sanity-next/components/sanity-image";
-import {useInView} from "@/hooks/use-in-view";
-import {useInfiniteScroll} from "@/hooks/use-infinite-scroll";
+import {useInfiniteLoad} from "@tinloof/sanity-next/hooks";
+import DynamicLink from "@/components/dynamic-link";
 import {formatDate} from "@/utils/strings";
 import {cn} from "@/utils/styles";
-import {BLOG_INDEX_QUERY} from "@examples/blog-studio/queries";
-import {BLOG_INDEX_QUERYResult} from "@examples/blog-studio/types";
-import {useEffect} from "react";
 
 export function BlogIndex({
 	entriesPerPage,
@@ -19,29 +17,14 @@ export function BlogIndex({
 	initialData: BLOG_INDEX_QUERYResult;
 	tagParam?: string;
 }) {
-	const {data, loadMore, pageNumber} = useInfiniteScroll(
-		BLOG_INDEX_QUERY,
+	const {data, hasNextPage, ref} = useInfiniteLoad({
+		query: BLOG_INDEX_QUERY,
 		initialData,
-		"/api/load-more",
-		{
+		additionalParams: {
 			entriesPerPage,
 			filterTag: tagParam ?? null,
 		},
-	);
-
-	const pagesTotal = Math.ceil(
-		(data?.entriesCount as number) / (data?.entriesPerPage as number),
-	);
-
-	const hasNextPage = pageNumber < pagesTotal;
-
-	const {inView, ref} = useInView();
-
-	useEffect(() => {
-		if (inView && hasNextPage) {
-			loadMore();
-		}
-	}, [hasNextPage, inView, loadMore]);
+	});
 
 	return (
 		<div className="mx-auto w-full px-6 md:px-global">

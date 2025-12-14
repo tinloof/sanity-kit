@@ -1,9 +1,9 @@
+import type {Code as CodeProps} from "@examples/blog-studio/types";
 import {Prism as SyntaxHighlighter} from "react-syntax-highlighter";
 import nord from "react-syntax-highlighter/dist/esm/styles/prism/nord";
+import type {BlogPtBlock} from "../rich-text";
 
-import type {Code as CodeProps} from "@examples/blog-studio/types";
-
-export default function Code({language = "bash", code}: CodeProps) {
+export default function Code({language = "bash", code}: BlogPtBlock<"code">) {
 	if (!code) return null;
 
 	return (
