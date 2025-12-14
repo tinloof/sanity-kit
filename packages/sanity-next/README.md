@@ -21,6 +21,12 @@ pnpm install @tinloof/sanity-next
 - [Components](#components)
   - [SanityImage](#sanityimage)
   - [ExitPreview](#exitpreview)
+- [Hooks](#hooks)
+  - [useInfiniteLoad](#useinfiniteload)
+  - [useInfiniteScroll](#useinfinitescroll)
+  - [useInView](#useinview)
+- [API Handlers](#api-handlers)
+  - [createLoadMoreHandler](#createloadmorehandler)
 - [Utils](#utils)
   - [Metadata Resolution](#metadata-resolution)
   - [URL Utilities](#url-utilities)
@@ -37,7 +43,7 @@ The `initSanity` function provides a complete setup for your Next.js application
 
 ```tsx
 // lib/sanity/index.ts
-import {initSanity} from "@tinloof/sanity-next/client/init";
+import { initSanity } from "@tinloof/sanity-next/client/init";
 
 export const {
   client,
@@ -69,7 +75,7 @@ SANITY_API_VERSION=2025-01-01
 ### Basic Setup
 
 ```tsx
-import {initSanity} from "@tinloof/sanity-next/client/init";
+import { initSanity } from "@tinloof/sanity-next/client/init";
 
 export const {
   client,
@@ -95,13 +101,13 @@ export const {
 ### With Internationalization
 
 ```tsx
-import {initSanity} from "@tinloof/sanity-next/client/init";
+import { initSanity } from "@tinloof/sanity-next/client/init";
 
 const i18nConfig = {
   locales: [
-    {id: "en", title: "English"},
-    {id: "fr", title: "Français"},
-    {id: "es", title: "Español"},
+    { id: "en", title: "English" },
+    { id: "fr", title: "Français" },
+    { id: "es", title: "Español" },
   ],
   defaultLocaleId: "en",
 };
@@ -132,7 +138,7 @@ Create your draft mode API route with a single line:
 
 ```tsx
 // app/api/draft/route.ts
-export {defineEnableDraftMode as GET} from "@/data/sanity/client";
+export { defineEnableDraftMode as GET } from "@/data/sanity/client";
 ```
 
 That's it! The `defineEnableDraftMode` handler:
@@ -149,9 +155,9 @@ That's it! The `defineEnableDraftMode` handler:
 An optimized image component that automatically generates responsive images with proper srcsets, LQIP support, and focal point positioning.
 
 ```tsx
-import {SanityImage} from "./lib/sanity";
+import { SanityImage } from "./lib/sanity";
 
-export default function MyComponent({image}) {
+export default function MyComponent({ image }) {
   return (
     <SanityImage
       data={image}
@@ -190,10 +196,10 @@ A client component for exiting Sanity's draft mode with a clean, accessible inte
 
 ```tsx
 // app/layout.tsx
-import {ExitPreview} from "@tinloof/sanity-next/components/exit-preview";
-import {disableDraftMode} from "@tinloof/sanity-next/actions";
+import { ExitPreview } from "@tinloof/sanity-next/components/exit-preview";
+import { disableDraftMode } from "@tinloof/sanity-next/actions";
 
-export default function RootLayout({children}) {
+export default function RootLayout({ children }) {
   return (
     <html>
       <body>
@@ -220,6 +226,357 @@ export default function RootLayout({children}) {
 - **Auto-refresh**: Refreshes the page after successful disable
 - **Accessible**: Proper disabled states and ARIA attributes
 
+## Hooks
+
+React hooks for implementing infinite scroll and pagination patterns with Sanity data.
+
+### useInfiniteLoad
+
+A high-level hook that combines infinite scroll with intersection observer for seamless pagination. This hook automatically loads more data when the user scrolls to a trigger element.
+
+```tsx
+"use client";
+
+import { useInfiniteLoad } from "@tinloof/sanity-next/hooks";
+import { BLOG_INDEX_QUERY } from "@/sanity/queries";
+import type { BLOG_INDEX_QUERYResult } from "@/sanity/types";
+
+export function BlogIndex({
+  initialData,
+  entriesPerPage = 12,
+}: {
+  initialData: BLOG_INDEX_QUERYResult;
+  entriesPerPage?: number;
+}) {
+  const { data, hasNextPage, ref, inView, pageNumber, pagesTotal } =
+    useInfiniteLoad({
+      query: BLOG_INDEX_QUERY,
+      initialData,
+      additionalParams: {
+        entriesPerPage,
+        filterTag: null,
+      },
+    });
+
+  return (
+    <div>
+      <div className="grid gap-4">
+        {data?.entries?.map((post) => (
+          <article key={post._id}>
+            <h2>{post.title}</h2>
+          </article>
+        ))}
+      </div>
+
+      {hasNextPage && (
+        <div ref={ref} className="text-center py-8">
+          Loading more posts...
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+#### Props
+
+| Prop                  | Type                                           | Description                                 |
+| --------------------- | ---------------------------------------------- | ------------------------------------------- |
+| `query`               | `string`                                       | The GROQ query to execute for fetching data |
+| `initialData`         | `T extends PaginatedQueryResult`               | Initial data loaded on the server           |
+| `additionalParams`    | `Record<string, any>` (optional)               | Additional parameters to pass to the query  |
+| `calculatePagesTotal` | `(data: T) => number` (optional)               | Custom function to calculate total pages    |
+| `apiEndpoint`         | `string` (optional, default: `/api/load-more`) | API endpoint for loading more data          |
+
+#### Returns
+
+| Property      | Type                  | Description                                    |
+| ------------- | --------------------- | ---------------------------------------------- |
+| `data`        | `T`                   | Current accumulated data                       |
+| `loadMore`    | `() => Promise<void>` | Function to manually trigger loading more data |
+| `pageNumber`  | `number`              | Current page number (1-indexed)                |
+| `hasNextPage` | `boolean`             | Whether there are more pages to load           |
+| `pagesTotal`  | `number`              | Total number of pages                          |
+| `ref`         | `Ref<HTMLDivElement>` | Ref to attach to trigger element               |
+| `inView`      | `boolean`             | Whether the trigger element is in the viewport |
+
+#### PaginatedQueryResult Type
+
+Your query result should follow this structure:
+
+```typescript
+type PaginatedQueryResult = {
+  entries?: Array<any>;
+  entriesCount?: number;
+  entriesPerPage?: number;
+  [key: string]: any;
+} | null;
+```
+
+#### Example with custom pagination calculation
+
+```tsx
+const { data, hasNextPage, ref } = useInfiniteLoad({
+  query: BLOG_INDEX_QUERY,
+  initialData,
+  calculatePagesTotal: (data) => {
+    // Custom logic for calculating total pages
+    return Math.ceil((data?.totalCount || 0) / (data?.pageSize || 1));
+  },
+});
+```
+
+### useInfiniteScroll
+
+A lower-level hook that handles the core pagination logic without intersection observer. Use this when you want to manually control when to load more data.
+
+```tsx
+"use client";
+
+import { useInfiniteScroll } from "@tinloof/sanity-next/hooks";
+import { BLOG_INDEX_QUERY } from "@/sanity/queries";
+
+export function BlogIndex({ initialData }) {
+  const { data, loadMore, pageNumber } = useInfiniteScroll({
+    query: BLOG_INDEX_QUERY,
+    initialData,
+    additionalParams: {
+      entriesPerPage: 12,
+    },
+  });
+
+  return (
+    <div>
+      <div className="grid gap-4">
+        {data?.entries?.map((post) => (
+          <article key={post._id}>
+            <h2>{post.title}</h2>
+          </article>
+        ))}
+      </div>
+
+      <button onClick={loadMore}>Load More (Page {pageNumber})</button>
+    </div>
+  );
+}
+```
+
+#### Props
+
+| Prop               | Type                                           | Description                 |
+| ------------------ | ---------------------------------------------- | --------------------------- |
+| `query`            | `string`                                       | The GROQ query to execute   |
+| `initialData`      | `T extends PaginatedQueryResult`               | Initial server-loaded data  |
+| `apiEndpoint`      | `string` (optional, default: `/api/load-more`) | API endpoint for pagination |
+| `additionalParams` | `Record<string, any>` (optional)               | Additional query parameters |
+
+#### Returns
+
+| Property     | Type                  | Description                     |
+| ------------ | --------------------- | ------------------------------- |
+| `data`       | `T`                   | Current accumulated data        |
+| `loadMore`   | `() => Promise<void>` | Function to load the next page  |
+| `pageNumber` | `number`              | Current page number (1-indexed) |
+
+#### How it works
+
+- Automatically calculates `pageStart`, `pageEnd`, and `pageNumber` based on `entriesPerPage`
+- Accumulates entries across page loads
+- Merges new data with existing data
+- Handles errors gracefully with console logging
+
+### useInView
+
+A lightweight React hook wrapper around the Intersection Observer API. Detects when an element enters the viewport.
+
+```tsx
+import { useInView } from "@tinloof/sanity-next/hooks";
+
+export function LazySection() {
+  const { inView, ref } = useInView({
+    threshold: 0.5,
+    rootMargin: "100px",
+  });
+
+  return (
+    <div ref={ref}>
+      {inView ? <ExpensiveComponent /> : <div>Scroll to load...</div>}
+    </div>
+  );
+}
+```
+
+#### Props
+
+| Prop         | Type                         | Description                                              |
+| ------------ | ---------------------------- | -------------------------------------------------------- |
+| `root`       | `Element \| null` (optional) | The element used as the viewport for checking visibility |
+| `rootMargin` | `string` (optional)          | Margin around the root (e.g., "10px 20px 30px 40px")     |
+| `threshold`  | `number` (optional)          | Number between 0 and 1 indicating visibility percentage  |
+
+#### Returns
+
+| Property | Type                  | Description                             |
+| -------- | --------------------- | --------------------------------------- |
+| `inView` | `boolean`             | Whether the element is in the viewport  |
+| `ref`    | `Ref<HTMLDivElement>` | Ref to attach to the element to observe |
+
+## API Handlers
+
+Server-side utilities for handling API routes.
+
+### createLoadMoreHandler
+
+Creates a POST handler for pagination API routes. This handler works seamlessly with the `useInfiniteLoad` and `useInfiniteScroll` hooks.
+
+```tsx
+// app/api/load-more/route.ts
+import { createLoadMoreHandler } from "@tinloof/sanity-next/api";
+import { sanityFetch } from "@/data/sanity/client";
+
+export const POST = createLoadMoreHandler(sanityFetch);
+
+// Optional: Set max duration for long-running queries
+export const maxDuration = 60;
+```
+
+#### Parameters
+
+| Parameter     | Type                     | Description                                  |
+| ------------- | ------------------------ | -------------------------------------------- |
+| `sanityFetch` | `DefinedSanityFetchType` | The Sanity fetch function from `next-sanity` |
+
+#### Request Body
+
+The handler expects a POST request with the following JSON body:
+
+```typescript
+{
+  query: string; // The GROQ query to execute
+  params: {
+    pageStart: number;
+    pageEnd: number;
+    pageNumber: number;
+    entriesPerPage: number;
+    // ... any additional query parameters
+  }
+}
+```
+
+#### Response
+
+Returns a JSON response:
+
+**Success:**
+
+```typescript
+{
+  success: true;
+  data: any; // The query result
+}
+```
+
+**Error:**
+
+```typescript
+{
+  success: false;
+  error: string; // Error message
+}
+```
+
+#### Complete Example
+
+**1. Create the API route:**
+
+```tsx
+// app/api/load-more/route.ts
+import { createLoadMoreHandler } from "@tinloof/sanity-next/api";
+import { sanityFetch } from "@/data/sanity/client";
+
+export const POST = createLoadMoreHandler(sanityFetch);
+export const maxDuration = 60;
+```
+
+**2. Create your query:**
+
+```tsx
+// sanity/queries/blog.ts
+import { defineQuery } from "next-sanity";
+
+export const BLOG_INDEX_QUERY = defineQuery(`
+  {
+    "entries": *[
+      _type == "blog.post" 
+      && (!defined($filterTag) || $filterTag in tags[]->slug.current)
+    ] | order(publishedAt desc) [$pageStart...$pageEnd] {
+      _id,
+      title,
+      "pathname": pathname.current,
+      publishedAt,
+      authors[]-> { name, avatar }
+    },
+    "entriesCount": count(*[_type == "blog.post"]),
+    "tags": *[_type == "blog.tag"] { _id, title, "slug": slug.current }
+  }
+`);
+```
+
+**3. Use in your component:**
+
+```tsx
+// app/blog/page.tsx
+import { BlogIndex } from "@/components/templates/blog-index";
+import { sanityFetch } from "@/data/sanity/client";
+import { BLOG_INDEX_QUERY } from "@/sanity/queries/blog";
+
+export default async function BlogPage() {
+  const initialData = await sanityFetch({
+    query: BLOG_INDEX_QUERY,
+    params: {
+      pageStart: 0,
+      pageEnd: 12,
+      entriesPerPage: 12,
+      filterTag: null,
+    },
+  });
+
+  return <BlogIndex initialData={initialData} entriesPerPage={12} />;
+}
+```
+
+**4. Client component with infinite scroll:**
+
+```tsx
+// components/templates/blog-index.tsx
+"use client";
+
+import { useInfiniteLoad } from "@tinloof/sanity-next/hooks";
+import { BLOG_INDEX_QUERY } from "@/sanity/queries/blog";
+
+export function BlogIndex({ initialData, entriesPerPage }) {
+  const { data, hasNextPage, ref } = useInfiniteLoad({
+    query: BLOG_INDEX_QUERY,
+    initialData,
+    additionalParams: {
+      entriesPerPage,
+      filterTag: null,
+    },
+  });
+
+  return (
+    <div>
+      {data?.entries?.map((post) => (
+        <article key={post._id}>{post.title}</article>
+      ))}
+      {hasNextPage && <div ref={ref}>Loading...</div>}
+    </div>
+  );
+}
+```
+
+See the [blog-next example](../../examples/blog-next) for a complete implementation.
+
 ## Utils
 
 ### Metadata Resolution
@@ -228,17 +585,17 @@ Generate comprehensive Next.js metadata from Sanity content, including SEO tags,
 
 ```tsx
 // In your page or layout
-import {resolveSanityMetadata} from "./lib/sanity";
-import {loadPage} from "./lib/sanity/queries";
+import { resolveSanityMetadata } from "./lib/sanity";
+import { loadPage } from "./lib/sanity/queries";
 
 export async function generateMetadata(
-  {params}: {params: Promise<{slug: string; locale: string}>},
-  parentPromise: Promise<ResolvedMetadata>,
+  { params }: { params: Promise<{ slug: string; locale: string }> },
+  parentPromise: Promise<ResolvedMetadata>
 ) {
   const parent = await parentPromise;
-  const {slug, locale} = await params;
+  const { slug, locale } = await params;
 
-  const data = await loadPage({slug, locale});
+  const data = await loadPage({ slug, locale });
 
   if (!data) return {};
 
@@ -270,8 +627,8 @@ Handle dynamic redirects managed through Sanity CMS. The `redirectIfNeeded` util
 
 ```tsx
 // middleware.ts
-import {NextRequest} from "next/server";
-import {redirectIfNeeded} from "./lib/sanity";
+import { NextRequest } from "next/server";
+import { redirectIfNeeded } from "./lib/sanity";
 
 export async function middleware(request: NextRequest) {
   // This handles the redirect logic automatically
@@ -287,7 +644,7 @@ Generate XML sitemaps from your Sanity content. The sitemap utilities automatica
 
 ```tsx
 // app/sitemap.ts
-import {generateSanitySitemap} from "./lib/sanity";
+import { generateSanitySitemap } from "./lib/sanity";
 
 export default function Sitemap() {
   return generateSanitySitemap();
@@ -298,7 +655,7 @@ export default function Sitemap() {
 
 ```tsx
 // app/sitemap.ts
-import {generateSanityI18nSitemap} from "./lib/sanity";
+import { generateSanityI18nSitemap } from "./lib/sanity";
 
 export default function Sitemap() {
   return generateSanityI18nSitemap();
@@ -313,10 +670,10 @@ A pre-built server action for disabling Sanity's draft mode.
 
 ```tsx
 // Use the built-in action directly in your layout
-import {disableDraftMode} from "@tinloof/sanity-next/actions";
-import {ExitPreview} from "@tinloof/sanity-next/components/exit-preview";
+import { disableDraftMode } from "@tinloof/sanity-next/actions";
+import { ExitPreview } from "@tinloof/sanity-next/components/exit-preview";
 
-export default function RootLayout({children}) {
+export default function RootLayout({ children }) {
   return (
     <html>
       <body>
@@ -334,7 +691,7 @@ export default function RootLayout({children}) {
 ### Custom Client Configuration
 
 ```tsx
-import {initSanity} from "@tinloof/sanity-next/client/init";
+import { initSanity } from "@tinloof/sanity-next/client/init";
 
 export const sanity = initSanity({
   client: {
@@ -355,7 +712,7 @@ export const sanity = initSanity({
 ### Custom Base URL Detection
 
 ```tsx
-import {initSanity} from "@tinloof/sanity-next/client/init";
+import { initSanity } from "@tinloof/sanity-next/client/init";
 
 export const sanity = initSanity({
   baseUrl:

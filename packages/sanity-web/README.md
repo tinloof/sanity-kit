@@ -35,6 +35,254 @@ npm install @tinloof/sanity-web
 
 ## Components
 
+### RichText
+
+A type-safe React component for rendering Sanity Portable Text with automatic TypeScript inference from your Sanity schema. This component builds on `@portabletext/react` with additional features like automatic heading slug generation and enhanced type safety.
+
+#### Features
+
+- **Full Type Safety**: Automatically infers types from your Sanity typegen
+- **Automatic Heading Slugs**: Generates `id` attributes for h1-h6 elements based on their text content
+- **Custom Components**: Support for blocks, marks, lists, and custom types
+- **Component Enhancement**: User-provided heading components are automatically enhanced with slug IDs
+- **Zero Runtime Overhead**: Type inference happens at compile time
+
+#### Basic Usage
+
+```tsx
+import { RichText } from "@tinloof/sanity-web/components/rich-text";
+import type { BLOG_POST_QUERYResult } from "@/sanity/types";
+
+type PTBody = NonNullable<BLOG_POST_QUERYResult>["ptBody"];
+
+function BlogPost({ data }: { data: BLOG_POST_QUERYResult }) {
+  return (
+    <article>
+      <h1>{data.title}</h1>
+      <RichText<PTBody> value={data.ptBody} />
+    </article>
+  );
+}
+```
+
+#### Custom Component Styling
+
+```tsx
+import { RichText } from "@tinloof/sanity-web/components/rich-text";
+import type { BLOG_POST_QUERYResult } from "@/sanity/types";
+
+type PTBody = NonNullable<BLOG_POST_QUERYResult>["ptBody"];
+
+function BlogPost({ data }: { data: BLOG_POST_QUERYResult }) {
+  return (
+    <RichText<PTBody>
+      value={data.ptBody}
+      components={{
+        block: {
+          h2: ({ children }) => (
+            <h2 className="mb-4 mt-8 text-2xl font-bold">{children}</h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="mb-4 mt-6 text-xl font-semibold">{children}</h3>
+          ),
+          normal: ({ children }) => (
+            <p className="leading-relaxed">{children}</p>
+          ),
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-4 pl-4 italic">
+              {children}
+            </blockquote>
+          ),
+        },
+        list: {
+          bullet: ({ children }) => (
+            <ul className="list-disc space-y-2 pl-6">{children}</ul>
+          ),
+          number: ({ children }) => (
+            <ol className="list-decimal space-y-2 pl-6">{children}</ol>
+          ),
+        },
+        marks: {
+          link: ({ children, value }) => (
+            <a href={value?.url} className="underline">
+              {children}
+            </a>
+          ),
+          strong: ({ children }) => (
+            <strong className="font-semibold">{children}</strong>
+          ),
+          em: ({ children }) => <span className="italic">{children}</span>,
+          code: ({ children }) => (
+            <code className="bg-gray-100 px-1 py-0.5 font-mono">
+              {children}
+            </code>
+          ),
+        },
+      }}
+    />
+  );
+}
+```
+
+#### Custom Block Types
+
+Handle custom portable text blocks with full type safety:
+
+```tsx
+import { RichText } from "@tinloof/sanity-web/components/rich-text";
+import { ExtractPtBlock, ExtractPtBlockType } from "@tinloof/sanity-web/utils";
+import type { BLOG_POST_QUERYResult } from "@/sanity/types";
+
+type PTBody = NonNullable<BLOG_POST_QUERYResult>["ptBody"];
+
+// Extract and type a specific block type
+type ImageBlock = ExtractPtBlock<PTBody, "imagePtBlock">;
+
+function ImageComponent(props: ImageBlock) {
+  return (
+    <figure>
+      <img src={props.asset?._ref} alt={props.alt || ""} />
+      {props.caption && <figcaption>{props.caption}</figcaption>}
+    </figure>
+  );
+}
+
+function BlogPost({ data }: { data: BLOG_POST_QUERYResult }) {
+  return (
+    <RichText<PTBody>
+      value={data.ptBody}
+      components={{
+        types: {
+          imagePtBlock: ImageComponent,
+          code: ({ value }) => (
+            <pre>
+              <code>{value.code}</code>
+            </pre>
+          ),
+          table: ({ value }) => <table>{/* Render table from value */}</table>,
+        },
+      }}
+    />
+  );
+}
+```
+
+#### Props
+
+| Prop         | Type                             | Description                                |
+| ------------ | -------------------------------- | ------------------------------------------ |
+| `value`      | `T \| null` (optional)           | The portable text array from Sanity        |
+| `components` | `TypedPortableTextComponents<T>` | Custom component overrides for rendering   |
+| ...props     | `PortableTextProps`              | All other props from `@portabletext/react` |
+
+#### TypedPortableTextComponents
+
+The `components` prop is fully typed based on your Sanity schema:
+
+```typescript
+type TypedPortableTextComponents<T> = {
+  // Block styles (e.g., h1, h2, normal, blockquote)
+  block?: {
+    [K in ExtractedBlockStyles]?: PortableTextBlockComponent;
+  };
+
+  // List types (e.g., bullet, number)
+  list?: {
+    [K in ExtractedListTypes]?: PortableTextListComponent;
+  };
+
+  // List item types
+  listItem?: {
+    [K in ExtractedListTypes]?: PortableTextListItemComponent;
+  };
+
+  // Marks/annotations (e.g., link, strong, em)
+  marks?: {
+    [K in ExtractedMarkTypes]?: PortableTextMarkComponent;
+  };
+
+  // Custom block types (e.g., image, code, table)
+  types?: {
+    [K in ExtractedCustomTypes]?: PortableTextTypeComponent;
+  };
+
+  // Fallback handlers
+  unknownType?: PortableTextComponents["unknownType"];
+  unknownMark?: PortableTextComponents["unknownMark"];
+  unknownList?: PortableTextComponents["unknownList"];
+  unknownBlockStyle?: PortableTextComponents["unknownBlockStyle"];
+  hardBreak?: PortableTextComponents["hardBreak"];
+};
+```
+
+#### Automatic Heading Slug Generation
+
+All heading components (h1-h6) automatically get an `id` attribute based on their text content. This enables:
+
+- Anchor links to specific sections
+- Table of contents generation
+- Deep linking to headings
+
+```tsx
+// Input portable text
+{
+  _type: "block",
+  style: "h2",
+  children: [{ text: "Getting Started with Sanity" }]
+}
+
+// Rendered output
+<h2 id="getting-started-with-sanity">Getting Started with Sanity</h2>
+```
+
+Custom heading components are also enhanced with slugs:
+
+```tsx
+<RichText
+  value={ptBody}
+  components={{
+    block: {
+      h2: ({ children }) => (
+        <h2 className="custom-heading">{children}</h2>
+      ),
+    },
+  }}
+/>
+
+// Renders as:
+<h2 id="your-heading-text" className="custom-heading">Your Heading Text</h2>
+```
+
+#### Portable Text Type Utilities
+
+The package also exports utility types for working with portable text:
+
+```tsx
+import type {
+  ExtractPtBlockType,
+  ExtractPtBlock,
+} from "@tinloof/sanity-web/utils/portable-text";
+
+type PTBody = NonNullable<BLOG_POST_QUERYResult>["ptBody"];
+
+// Get all custom block type names (excludes "block")
+type CustomTypes = ExtractPtBlockType<PTBody>;
+// Result: "imagePtBlock" | "code" | "table"
+
+// Get the shape of a specific block type
+type ImageBlock = ExtractPtBlock<PTBody, "imagePtBlock">;
+// Result: Full type definition of the image block
+```
+
+#### Complete Example
+
+See the [blog-next example](../../examples/blog-next/components/rich-text.tsx) for a production-ready implementation with:
+
+- Custom styling for all block types
+- List rendering with nested list support
+- Mark components for links, code, emphasis
+- Custom block components for images, code blocks, and tables
+
 ### ExitPreview
 
 A React component that provides a UI for exiting Sanity's draft mode/preview mode. The component renders a fixed-position button that allows users to disable draft mode and refresh the page.
@@ -43,10 +291,10 @@ A React component that provides a UI for exiting Sanity's draft mode/preview mod
 
 ```tsx
 import ExitPreviewClient from "./components/exit-preview-client";
-import {disableDraftMode} from "./actions";
+import { disableDraftMode } from "./actions";
 
 // In your app/layout.tsx or similar
-export default function RootLayout({children}) {
+export default function RootLayout({ children }) {
   return (
     <html>
       <body>
@@ -63,7 +311,7 @@ Create a client component wrapper in `app/components/exit-preview-client.tsx`:
 ```tsx
 "use client";
 
-import {ExitPreview, ExitPreviewProps} from "@tinloof/sanity-web";
+import { ExitPreview, ExitPreviewProps } from "@tinloof/sanity-web";
 
 export default function ExitPreviewClient(props: ExitPreviewProps) {
   return <ExitPreview {...props} />;
@@ -75,7 +323,7 @@ Create the server action in `app/actions.ts`:
 ```tsx
 "use server";
 
-import {draftMode} from "next/headers";
+import { draftMode } from "next/headers";
 
 export async function disableDraftMode() {
   "use server";
@@ -114,7 +362,7 @@ The component provides flexible styling options:
 ```tsx
 <ExitPreview
   disableDraftMode={disableDraftMode}
-  styles={{backgroundColor: "blue", borderRadius: "8px"}}
+  styles={{ backgroundColor: "blue", borderRadius: "8px" }}
 />
 ```
 
@@ -140,12 +388,12 @@ A React component that dynamically renders sections based on their `_type` field
 #### Usage
 
 ```tsx
-import {SectionsRenderer} from "@tinloof/sanity-web";
+import { SectionsRenderer } from "@tinloof/sanity-web";
 import HeroSection from "./sections/hero-section";
 import CallToAction from "./sections/call-to-action";
 
 // Basic usage
-export default function Page({sections}) {
+export default function Page({ sections }) {
   return (
     <SectionsRenderer
       data={sections}
@@ -194,7 +442,7 @@ export default function Page({sections}) {
 <SectionsRenderer
   data={sections}
   components={componentMap}
-  fallbackComponent={({type, availableTypes}) => (
+  fallbackComponent={({ type, availableTypes }) => (
     <div className="p-4 bg-yellow-100 border border-yellow-400 rounded">
       <h3>Missing Component: {type}</h3>
       <p>Available: {availableTypes.join(", ")}</p>
@@ -241,8 +489,8 @@ Create reusable, pre-configured, type-safe renderers with `createSectionsCompone
 
 ```tsx
 // components/sections/index.ts
-import {createSectionsComponent} from "@tinloof/sanity-web/components";
-import type {PAGE_QUERYResult} from "@/sanity/types";
+import { createSectionsComponent } from "@tinloof/sanity-web/components";
+import type { PAGE_QUERYResult } from "@/sanity/types";
 import HeroSection from "./hero-section";
 import CallToAction from "./call-to-action";
 import TextSection from "./text-section";
@@ -258,22 +506,22 @@ const Sections = createSectionsComponent<
   },
   className: "space-y-16",
   showDevWarnings: true,
-  fallbackComponent: ({type}) => <div>Custom fallback for: {type}</div>,
+  fallbackComponent: ({ type }) => <div>Custom fallback for: {type}</div>,
 });
 
 // Infer SectionProps directly from the Sections component
 type SectionProps = (typeof Sections)["_SectionProps"];
 
-export {Sections, type SectionProps};
+export { Sections, type SectionProps };
 ```
 
 Use throughout your app with minimal props:
 
 ```tsx
 // pages/[slug].tsx
-import {Sections} from "@/components/sections";
+import { Sections } from "@/components/sections";
 
-export default function Page({sections}) {
+export default function Page({ sections }) {
   return <Sections data={sections} />;
 }
 ```
@@ -284,15 +532,15 @@ Pass props that are shared across all section components using `sharedProps`:
 
 ```tsx
 // components/sections/index.ts
-import {createSectionsComponent} from "@tinloof/sanity-web/components";
-import type {PAGE_QUERYResult} from "@/sanity/types";
+import { createSectionsComponent } from "@tinloof/sanity-web/components";
+import type { PAGE_QUERYResult } from "@/sanity/types";
 import HeroSection from "./hero-section";
 import CallToAction from "./call-to-action";
 
 // Create renderer with shared props type
 const Sections = createSectionsComponent<
   NonNullable<NonNullable<PAGE_QUERYResult>["sections"]>,
-  {locale: string; isPreview: boolean}
+  { locale: string; isPreview: boolean }
 >({
   components: {
     "section.hero": HeroSection,
@@ -303,21 +551,18 @@ const Sections = createSectionsComponent<
 // Infer SectionProps directly from the Sections component
 type SectionProps = (typeof Sections)["_SectionProps"];
 
-export {Sections, type SectionProps};
+export { Sections, type SectionProps };
 ```
 
 Usage - `sharedProps` is required when shared props type is defined:
 
 ```tsx
 // pages/[slug].tsx
-import {Sections} from "@/components/sections";
+import { Sections } from "@/components/sections";
 
-export default function Page({sections, locale}) {
+export default function Page({ sections, locale }) {
   return (
-    <Sections
-      data={sections}
-      sharedProps={{locale, isPreview: false}}
-    />
+    <Sections data={sections} sharedProps={{ locale, isPreview: false }} />
   );
 }
 ```
@@ -326,12 +571,12 @@ Section components receive shared props along with their section data:
 
 ```tsx
 // components/sections/hero-section.tsx
-import type {SectionProps} from ".";
+import type { SectionProps } from ".";
 
 export default function HeroSection({
   title,
-  locale,      // From sharedProps
-  isPreview,   // From sharedProps
+  locale, // From sharedProps
+  isPreview, // From sharedProps
 }: SectionProps["section.hero"]) {
   return (
     <section>
@@ -348,8 +593,8 @@ The component provides full TypeScript support with automatic type inference fro
 
 ```tsx
 // components/sections/index.ts
-import {createSectionsComponent} from "@tinloof/sanity-web/components";
-import type {PAGE_QUERYResult} from "@/sanity/types";
+import { createSectionsComponent } from "@tinloof/sanity-web/components";
+import type { PAGE_QUERYResult } from "@/sanity/types";
 import HeroSection from "./hero-section";
 import CallToAction from "./call-to-action";
 
@@ -366,14 +611,14 @@ const Sections = createSectionsComponent<
 // Infer SectionProps from the Sections component using _SectionProps
 type SectionProps = (typeof Sections)["_SectionProps"];
 
-export {Sections, type SectionProps};
+export { Sections, type SectionProps };
 ```
 
 Section components import `SectionProps` and access their specific type using bracket notation:
 
 ```tsx
 // components/sections/hero-section.tsx
-import type {SectionProps} from ".";
+import type { SectionProps } from ".";
 
 // Props are fully typed based on your Sanity schema
 export default function HeroSection({
@@ -412,8 +657,8 @@ Utilities for generating Next.js metadata from Sanity CMS content. These functio
 Creates a configured metadata resolver function that can be reused across multiple pages.
 
 ```typescript
-import {createSanityMetadataResolver} from "@tinloof/sanity-web";
-import {client} from "./sanity/client";
+import { createSanityMetadataResolver } from "@tinloof/sanity-web";
+import { client } from "./sanity/client";
 
 // Create a configured metadata resolver
 export const resolveSanityMetadata = createSanityMetadataResolver({
@@ -428,26 +673,26 @@ export const resolveSanityMetadata = createSanityMetadataResolver({
 Use the metadata resolver in your page or layout components:
 
 ```typescript
-import {resolveSanityMetadata} from "@/lib/sanity/metadata";
-import {loadHome} from "@/data/sanity";
-import {notFound} from "next/navigation";
+import { resolveSanityMetadata } from "@/lib/sanity/metadata";
+import { loadHome } from "@/data/sanity";
+import { notFound } from "next/navigation";
 
 type IndexRouteProps = {
-  params: Promise<{locale: string}>;
+  params: Promise<{ locale: string }>;
 };
 
 export async function generateMetadata(
   props: IndexRouteProps,
-  parentPromise: ResolvingMetadata,
+  parentPromise: ResolvingMetadata
 ) {
   const parent = await parentPromise;
   const locale = (await props.params).locale;
 
-  const initialData = await loadHome({locale});
+  const initialData = await loadHome({ locale });
 
   if (!initialData) return notFound();
 
-  return resolveSanityMetadata({...initialData, parent});
+  return resolveSanityMetadata({ ...initialData, parent });
 }
 ```
 
@@ -482,8 +727,8 @@ Utilities for handling URL redirects managed through Sanity CMS. These functions
 Fetches redirect configuration from Sanity for a given source path. This function automatically generates path variations to handle different URL formats and queries Sanity to find matching redirect rules.
 
 ```tsx
-import {getRedirect} from "@tinloof/sanity-web";
-import {sanityFetch} from "@/data/sanity/client";
+import { getRedirect } from "@tinloof/sanity-web";
+import { sanityFetch } from "@/data/sanity/client";
 
 // In Next.js middleware
 export async function middleware(request: NextRequest) {
@@ -523,7 +768,7 @@ export async function middleware(request: NextRequest) {
 Generates path variations for flexible redirect matching. This function creates multiple variations of a path to handle different URL formats that users might access.
 
 ```tsx
-import {getPathVariations} from "@tinloof/sanity-web";
+import { getPathVariations } from "@tinloof/sanity-web";
 
 getPathVariations("/about-us/");
 // Returns: ["about-us", "/about-us/", "about-us/", "/about-us"]
@@ -553,7 +798,7 @@ A GROQ query constant for fetching redirect configuration from Sanity settings.
 For the best experience, use the `redirectsSchema` from `@tinloof/sanity-studio` which provides a searchable interface and validation for managing redirects. See the [redirectsSchema documentation](../../packages/sanity-studio/README.md#redirectsschema) for setup instructions.
 
 ```tsx
-import {redirectsSchema} from "@tinloof/sanity-studio";
+import { redirectsSchema } from "@tinloof/sanity-studio";
 
 export default defineType({
   type: "document",
@@ -574,9 +819,9 @@ Utilities for generating sitemaps from Sanity content for Next.js applications. 
 Generates a sitemap for single-language Next.js applications using Sanity content.
 
 ```tsx
-import {generateSanitySitemap} from "@tinloof/sanity-web";
+import { generateSanitySitemap } from "@tinloof/sanity-web";
 
-import {sanityFetch} from "@/data/sanity/live";
+import { sanityFetch } from "@/data/sanity/live";
 
 export default function Sitemap() {
   return generateSanitySitemap({
@@ -600,15 +845,15 @@ export default function Sitemap() {
 Generates a sitemap for multi-language Next.js applications using Sanity content with internationalization support.
 
 ```tsx
-import {generateSanityI18nSitemap} from "@tinloof/sanity-web";
+import { generateSanityI18nSitemap } from "@tinloof/sanity-web";
 
-import {sanityFetch} from "@/data/sanity/live";
+import { sanityFetch } from "@/data/sanity/live";
 
 const i18n = {
   defaultLocaleId: "en",
   locales: [
-    {id: "en", title: "English"},
-    {id: "fr", title: "Français"},
+    { id: "en", title: "English" },
+    { id: "fr", title: "Français" },
   ],
 };
 
@@ -659,7 +904,7 @@ Here are some common usage patterns for the `TRANSLATIONS_FRAGMENT`:
 **Modular page query:**
 
 ```tsx
-import {TRANSLATIONS_FRAGMENT} from "@tinloof/sanity-web";
+import { TRANSLATIONS_FRAGMENT } from "@tinloof/sanity-web";
 
 export const MODULAR_PAGE_QUERY = defineQuery(`
   *[_type == "modular.page" && pathname.current == $pathname && locale == $locale][0] {
@@ -672,7 +917,7 @@ export const MODULAR_PAGE_QUERY = defineQuery(`
 **Sitemap query:**
 
 ```tsx
-import {TRANSLATIONS_FRAGMENT} from "@tinloof/sanity-web";
+import { TRANSLATIONS_FRAGMENT } from "@tinloof/sanity-web";
 
 export const SITEMAP_QUERY = defineQuery(`
   *[((pathname.current != null || _type == "home") && seo.indexable && locale == $defaultLocale)] {

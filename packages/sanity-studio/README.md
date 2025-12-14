@@ -16,6 +16,8 @@ npm install @tinloof/sanity-studio
 - [Table of contents](#table-of-contents)
 - [Validation utilities](#validation-utilities)
   - [`isUnique`](#isunique)
+- [Portable Text](#portable-text)
+  - [`definePortableTextFactory`](#defineportabletextfactory)
 - [Schema utilities](#schema-utilities)
 - [Schema components](#schema-components)
   - [Field groups](#field-groups)
@@ -166,6 +168,235 @@ options: {
 #### Returns
 
 `Promise<boolean>` - Returns `true` if the slug is unique, `false` otherwise
+
+## Portable Text
+
+Utilities for creating type-safe, reusable portable text field configurations in Sanity Studio.
+
+### `definePortableTextFactory`
+
+Creates a portable text field factory function with a predefined registry. This factory pattern allows you to define blocks, annotations, styles, decorators, and lists once in a central registry, then reference them by key throughout your schemas.
+
+#### Why use this?
+
+Instead of manually defining blocks, annotations, and styles for every portable text field in your schema, you can:
+
+- Define them once in a central registry
+- Reference them by key when creating fields
+- Ensure consistency across your entire schema
+- Reduce code duplication and maintenance burden
+- Get full TypeScript type safety
+
+#### Basic usage
+
+**Step 1: Create your portable text registry**
+
+Create a helper file that defines your portable text registry and exports a factory function:
+
+```tsx
+// helpers/create-pt-body.ts
+import {
+  definePortableTextFactory,
+  defaultPTStyles,
+  defaultPTLists,
+  defaultPTDecorators,
+} from "@tinloof/sanity-studio/utils";
+import { defineField } from "sanity";
+
+// Define your custom blocks
+const blocks = {
+  image: defineField({
+    type: "image",
+    name: "imagePtBlock",
+    title: "Image",
+    options: { hotspot: true },
+    fields: [
+      defineField({ name: "alt", type: "string", title: "Alt text" }),
+      defineField({ name: "caption", type: "string", title: "Caption" }),
+    ],
+  }),
+  code: defineField({
+    type: "code",
+    name: "code",
+    title: "Code Block",
+  }),
+  table: defineField({
+    type: "table",
+    name: "table",
+    title: "Table",
+  }),
+};
+
+// Define your custom annotations
+const annotations = {
+  link: defineField({
+    name: "link",
+    type: "object",
+    title: "Link",
+    fields: [
+      defineField({
+        name: "url",
+        type: "string",
+        title: "URL",
+        description: "e.g. https://example.com or /about-page",
+        validation: (Rule) => Rule.required(),
+      }),
+    ],
+  }),
+};
+
+// Create the factory function with your registry
+export const createPtBody = definePortableTextFactory({
+  styles: defaultPTStyles, // Use defaults or define your own
+  lists: defaultPTLists, // Use defaults or define your own
+  decorators: defaultPTDecorators, // Use defaults or define your own
+  blocks,
+  annotations,
+});
+```
+
+**Step 2: Use the factory in your schemas**
+
+Now you can easily create portable text fields by selecting which features you want:
+
+```tsx
+// schemas/documents/blog-post.ts
+import { defineField, defineType } from "sanity";
+import { createPtBody } from "../../helpers/create-pt-body";
+
+export default defineType({
+  name: "blog.post",
+  type: "document",
+  title: "Blog Post",
+  fields: [
+    defineField({
+      name: "title",
+      type: "string",
+      title: "Title",
+    }),
+    // Use the factory to create a portable text field
+    defineField({
+      ...createPtBody({
+        styles: ["normal", "h2", "h3", "h4", "blockquote"],
+        decorators: ["strong", "em", "code", "underline"],
+        lists: ["bullet", "number"],
+        blocks: ["image", "code", "table"],
+        annotations: ["link"],
+      }),
+      validation: (Rule) => Rule.required(),
+    }),
+  ],
+});
+```
+
+#### Registry structure
+
+The registry accepts the following properties:
+
+```typescript
+type PortableTextRegistry = {
+  // Text styles (e.g., normal, h1, h2, blockquote)
+  styles?: Record<string, BlockDefinitionType<"styles">>;
+
+  // Block-level elements (e.g., image, code, video)
+  blocks?: Record<string, BlockDefinitionType<"of">>;
+
+  // Inline blocks (e.g., inline references)
+  innerBlocks?: Record<string, FieldDefinition>;
+
+  // List types (e.g., bullet, number)
+  lists?: Record<string, BlockDefinitionType<"lists">>;
+
+  // Text decorators (e.g., strong, em, underline)
+  decorators?: Record<string, BlockMarkType<"decorators">>;
+
+  // Annotations (e.g., link, highlight)
+  annotations?: Record<string, BlockMarkType<"annotations">>;
+};
+```
+
+#### Using default values
+
+The package exports default registries that you can use or extend:
+
+```tsx
+import {
+  defaultPTStyles,
+  defaultPTLists,
+  defaultPTDecorators,
+  definePortableTextFactory,
+} from "@tinloof/sanity-studio/utils";
+
+// defaultPTStyles includes:
+// - normal, h1, h2, h3, h4, h5, h6, blockquote
+
+// defaultPTLists includes:
+// - bullet, number
+
+// defaultPTDecorators includes:
+// - strong, em, underline, strikeThrough, code
+
+export const createPtBody = definePortableTextFactory({
+  styles: defaultPTStyles,
+  lists: defaultPTLists,
+  decorators: defaultPTDecorators,
+  blocks: {
+    /* your custom blocks */
+  },
+  annotations: {
+    /* your custom annotations */
+  },
+});
+```
+
+#### Advanced: Custom styles, lists, or decorators
+
+You can define your own styles, lists, and decorators:
+
+```tsx
+import { definePortableTextFactory } from "@tinloof/sanity-studio/utils";
+
+export const createPtBody = definePortableTextFactory({
+  styles: {
+    normal: { title: "Normal", value: "normal" },
+    h1: { title: "Heading 1", value: "h1" },
+    h2: { title: "Heading 2", value: "h2" },
+    h3: { title: "Heading 3", value: "h3" },
+    quote: { title: "Quote", value: "blockquote" },
+    // Add custom styles
+    callout: { title: "Callout", value: "callout" },
+  },
+  decorators: {
+    strong: { title: "Bold", value: "strong" },
+    em: { title: "Italic", value: "em" },
+    // Add custom decorators
+    highlight: { title: "Highlight", value: "highlight" },
+  },
+  lists: {
+    bullet: { title: "Bullet List", value: "bullet" },
+    number: { title: "Numbered List", value: "number" },
+    // Add custom list types
+    check: { title: "Checklist", value: "check" },
+  },
+  // ... blocks and annotations
+});
+```
+
+#### Complete example
+
+See the [blog-studio example](../../examples/blog-studio/src/helpers/create-pt-body.ts) for a complete, production-ready implementation.
+
+#### TypeScript support
+
+The factory function is fully typed and provides autocomplete for:
+
+- Available style keys
+- Available block keys
+- Available decorator keys
+- Available list keys
+- Available annotation keys
+
+The resulting field definition is also fully typed and compatible with all Sanity field options.
 
 ## Schema utilities
 
