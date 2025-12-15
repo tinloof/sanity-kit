@@ -11,5 +11,4 @@ export const {
 	resolveSanityMetadata,
 	sanityFetch,
 	defineEnableDraftMode,
-	loadMoreHandler,
 } = initSanity();

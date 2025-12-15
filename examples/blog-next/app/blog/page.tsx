@@ -31,7 +31,7 @@ export async function generateMetadata(
 	});
 }
 
-const ENTRIES_PER_PAGE = 2;
+const ENTRIES_PER_PAGE = 1;
 
 export default async function BlogIndexRoute({params}: BlogRouteProps) {
 	const {tag} = await params;

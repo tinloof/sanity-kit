@@ -1,6 +1,9 @@
 import type {BLOG_POST_QUERYResult} from "@examples/blog-studio/types";
-import {RichText} from "@tinloof/sanity-next/components/rich-text";
-import {ExtractPtBlock, ExtractPtBlockType} from "@tinloof/sanity-web/utils";
+import {PortableText} from "@tinloof/sanity-web/components/portable-text";
+import type {
+	ExtractPtBlock,
+	ExtractPtBlockType,
+} from "@tinloof/sanity-web/utils";
 
 import DynamicLink from "./dynamic-link";
 import Code from "./pt-blocks/code";
@@ -12,9 +15,9 @@ type PTBody = NonNullable<NonNullable<BLOG_POST_QUERYResult>["ptBody"]>;
 export type BlogPtBlock<TType extends ExtractPtBlockType<PTBody>> =
 	ExtractPtBlock<PTBody, TType>;
 
-export const BlogRichText = ({value = []}: {value?: PTBody}) => {
+export const BlogPortableText = ({value = []}: {value?: PTBody}) => {
 	return (
-		<RichText<PTBody>
+		<PortableText<PTBody>
 			value={value ?? []}
 			components={{
 				block: {

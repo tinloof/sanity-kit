@@ -20,6 +20,9 @@ export default defineType({
 	options: {structureGroup: "blog", structureOptions: {title: "Index"}},
 	extends: [
 		{type: "page", parameters: {pathname: {disableCreation: true}}},
-		"singleton",
+		{
+			type: "singleton",
+			parameters: {id: "e87ee5ae-b03c-42a6-8543-71335215a323"},
+		},
 	],
 });

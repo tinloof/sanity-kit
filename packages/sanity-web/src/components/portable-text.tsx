@@ -1,16 +1,19 @@
 import type {
-	PortableTextComponents,
-	PortableTextProps,
 	PortableTextBlockComponent,
+	PortableTextComponents,
 	PortableTextListComponent,
 	PortableTextListItemComponent,
 	PortableTextMarkComponent,
+	PortableTextProps,
 	PortableTextTypeComponent,
 } from "@portabletext/react";
+import {
+	PortableText as BasePortableText,
+	toPlainText,
+} from "@portabletext/react";
 import type {PortableTextBlock} from "@portabletext/types";
-import {PortableText, toPlainText} from "@portabletext/react";
-import getSlug from "speakingurl";
 import React, {cloneElement, isValidElement} from "react";
+import getSlug from "speakingurl";
 
 type NonUndefined<T> = T extends undefined ? never : T;
 
@@ -134,11 +137,11 @@ export type TypedPortableTextComponents<T> = {
 	hardBreak?: PortableTextComponents["hardBreak"];
 };
 
-export type RichTextProps<T extends ReadonlyArray<any>> = Omit<
+export type PortableTextComponentProps<T extends ReadonlyArray<any>> = Omit<
 	PortableTextProps,
 	"components" | "value"
 > & {
-	value?: T | null;
+	value: T;
 	components?: TypedPortableTextComponents<T>;
 };
 
@@ -201,18 +204,18 @@ const mergeComponentsWithSlugs = <T extends ReadonlyArray<any>>(
 };
 
 /**
- * Type-safe RichText component for rendering Sanity Portable Text
+ * Type-safe PortableText component for rendering Sanity Portable Text
  *
  * @example
  * ```tsx
- * import { RichText } from '@tinloof/sanity-next/components/rich-text';
+ * import { PortableText } from '@tinloof/sanity-web/components/portable-text';
  * import type { BLOG_POST_QUERYResult } from './sanity.types';
  *
  * type PTBody = NonNullable<BLOG_POST_QUERYResult>['ptBody'];
  *
  * function BlogPost({ data }: { data: BLOG_POST_QUERYResult }) {
  *   return (
- *     <RichText<PTBody>
+ *     <PortableText<PTBody>
  *       value={data.ptBody}
  *       components={{
  *         block: {
@@ -230,11 +233,11 @@ const mergeComponentsWithSlugs = <T extends ReadonlyArray<any>>(
  * }
  * ```
  */
-export function RichText<T extends ReadonlyArray<any>>({
+export function PortableText<T extends ReadonlyArray<any>>({
 	value,
 	components,
 	...props
-}: RichTextProps<T>) {
+}: PortableTextComponentProps<T>) {
 	if (!value || value.length === 0) {
 		return null;
 	}
@@ -242,7 +245,7 @@ export function RichText<T extends ReadonlyArray<any>>({
 	const mergedComponents = mergeComponentsWithSlugs(components);
 
 	return (
-		<PortableText
+		<BasePortableText
 			value={value as unknown as PortableTextBlock | PortableTextBlock[]}
 			components={mergedComponents}
 			{...props}

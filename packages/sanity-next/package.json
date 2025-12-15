@@ -31,11 +31,6 @@
 			"import": "./dist/components/sanity-image.js",
 			"require": "./dist/components/sanity-image.cjs"
 		},
-		"./components/rich-text": {
-			"types": "./dist/components/rich-text.d.ts",
-			"import": "./dist/components/rich-text.js",
-			"require": "./dist/components/rich-text.cjs"
-		},
 		"./actions/disable-draft-mode": {
 			"types": "./dist/actions/disable-draft-mode.d.ts",
 			"import": "./dist/actions/disable-draft-mode.js",
@@ -65,6 +60,16 @@
 			"types": "./dist/hooks/index.d.ts",
 			"import": "./dist/hooks/index.js",
 			"require": "./dist/hooks/index.cjs"
+		},
+		"./components/infinite-scroll": {
+			"types": "./dist/components/infinite-scroll.d.ts",
+			"import": "./dist/components/infinite-scroll.js",
+			"require": "./dist/components/infinite-scroll.cjs"
+		},
+		"./components/infinite-scroll-base": {
+			"types": "./dist/components/infinite-scroll-base.d.ts",
+			"import": "./dist/components/infinite-scroll-base.js",
+			"require": "./dist/components/infinite-scroll-base.cjs"
 		},
 		"./package.json": "./package.json"
 	},
@@ -108,7 +113,8 @@
 		"@sanity/image-url": "^2.0.1",
 		"sanity": "^4.20.1",
 		"sanity-plugin-utils": "^1.7.0",
-		"speakingurl": "^14.0.1"
+		"speakingurl": "^14.0.1",
+		"swr": "^2.3.8"
 	},
 	"publishConfig": {
 		"access": "public"

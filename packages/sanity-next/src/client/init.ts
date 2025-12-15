@@ -6,7 +6,6 @@ import {createErrorDraftRoute, defineDraftRoute} from "../utils/draft-mode";
 import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
 import {initSanityI18nUtils, initSanityUtils} from "../utils/sanity";
 import {getVercelBaseUrl} from "../utils/vercel-base-url";
-import {createLoadMoreHandler} from "../api/load-more-handler";
 
 type InitSanityConfig = {
 	client?: ClientConfig;
@@ -96,7 +95,6 @@ export function initSanity(config?: InitSanityConfig) {
 			}),
 			clientWithToken,
 			defineEnableDraftMode,
-			loadMoreHandler: createLoadMoreHandler(sanityFetch),
 			...utils,
 			...rest,
 		};
@@ -146,7 +144,6 @@ export function initSanity(config?: InitSanityConfig) {
 		}),
 		defineEnableDraftMode,
 		clientWithToken,
-		loadMoreHandler: createLoadMoreHandler(sanityFetch),
 		...utils,
 		...rest,
 	};
