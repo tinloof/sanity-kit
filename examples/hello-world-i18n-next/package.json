@@ -13,19 +13,19 @@
 		"@examples/hello-world-i18n-studio": "workspace:*",
 		"@tinloof/sanity-next": "workspace:*",
 		"@tinloof/sanity-web": "workspace:*",
-		"next": "16.0.10",
-		"next-sanity": "^11.6.10",
-		"react": "19.2.1",
-		"react-dom": "19.2.1"
+		"next": "16.1.0",
+		"next-sanity": "^11.6.12",
+		"react": "19.2.3",
+		"react-dom": "19.2.3"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
-		"@tailwindcss/postcss": "^4.1.17",
-		"@types/node": "^24.10.1",
+		"@biomejs/biome": "2.3.10",
+		"@tailwindcss/postcss": "^4.1.18",
+		"@types/node": "^24.10.4",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
 		"babel-plugin-react-compiler": "1.0.0",
-		"tailwindcss": "^4.1.17",
+		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3"
 	}
 }
