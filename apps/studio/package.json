@@ -15,7 +15,7 @@
 		"sanity"
 	],
 	"dependencies": {
-		"@sanity/vision": "^4.22.0",
+		"@sanity/vision": "^5.1.0",
 		"@tinloof/sanity-document-i18n": "workspace:*",
 		"@tinloof/sanity-document-options": "workspace:*",
 		"@tinloof/sanity-extends": "workspace:*",
@@ -23,12 +23,12 @@
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",
 		"react-is": "^19.2.3",
-		"sanity": "^4.22.0",
+		"sanity": "^5.1.0",
 		"styled-components": "^6.1.19"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.10",
-		"@sanity/types": "^4.22.0",
+		"@sanity/types": "^5.1.0",
 		"@types/react": "^19.2.7",
 		"typescript": "^5.9.3"
 	}
