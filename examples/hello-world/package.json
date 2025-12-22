@@ -11,18 +11,18 @@
 	},
 	"dependencies": {
 		"@sanity/client": "^7.13.2",
-		"@sanity/preview-url-secret": "^3.0.0",
-		"@sanity/vision": "^4.22.0",
+		"@sanity/preview-url-secret": "^4.0.1",
+		"@sanity/vision": "^5.1.0",
 		"@tailwindcss/typography": "0.5.19",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
 		"classnames": "2.5.1",
 		"lucide-react": "^0.562.0",
 		"next": "16.1.0",
-		"next-sanity": "^11.6.12",
+		"next-sanity": "^12.0.5",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",
-		"sanity": "^4.22.0",
+		"sanity": "^5.1.0",
 		"server-only": "0.0.1"
 	},
 	"devDependencies": {
