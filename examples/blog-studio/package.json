@@ -23,6 +23,7 @@
 		"@sanity/vision": "^5.10.0",
 		"@tinloof/sanity-document-options": "workspace:*",
 		"@tinloof/sanity-extends": "workspace:*",
+		"@tinloof/sanity-media": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
 		"groq": "^5.10.0",
 		"react": "^19.2.4",
