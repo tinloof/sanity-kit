@@ -1,0 +1,14 @@
+{
+	"title": "Sanity Next",
+	"description": "Next.js utilities and components for Sanity",
+	"root": true,
+	"pages": [
+		"index",
+		"configuration",
+		"draft-mode",
+		"components",
+		"utils",
+		"server-actions",
+		"advanced"
+	]
+}

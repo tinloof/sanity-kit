@@ -1,0 +1,36 @@
+---
+title: Getting Started
+description: A comprehensive collection of Next.js utilities, components, and server actions for seamless Sanity integration
+---
+
+# @tinloof/sanity-next
+
+A comprehensive collection of Next.js utilities, components, and server actions for seamless Sanity integration. This package provides everything you need to build modern, performant Next.js applications with Sanity CMS, including internationalization support, metadata resolution, image optimization, and more.
+
+## Installation
+
+```sh
+pnpm install @tinloof/sanity-next
+```
+
+## Quick Start
+
+The `initSanity` function provides a complete setup for your Next.js application with sensible defaults:
+
+```tsx
+// lib/sanity/index.ts
+import {initSanity} from "@tinloof/sanity-next/client/init";
+
+export const {
+  client,
+  sanityFetch,
+  SanityImage,
+  resolveSanityMetadata,
+  // Draft mode handler
+  defineEnableDraftMode,
+  // Redirect utilities
+  redirectIfNeeded,
+  // Sitemap utilities
+  generateSanitySitemap,
+} = initSanity();
+```

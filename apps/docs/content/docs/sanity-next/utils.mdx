@@ -1,0 +1,90 @@
+---
+title: Utils
+description: Utility functions for metadata resolution, redirects, and sitemap generation
+---
+
+# Utils
+
+## Metadata Resolution
+
+Generate comprehensive Next.js metadata from Sanity content, including SEO tags, Open Graph images, and internationalization support.
+
+```tsx
+// In your page or layout
+import {resolveSanityMetadata} from "./lib/sanity";
+import {loadPage} from "./lib/sanity/queries";
+
+export async function generateMetadata(
+  {params}: {params: Promise<{slug: string; locale: string}>},
+  parentPromise: Promise<ResolvedMetadata>,
+) {
+  const parent = await parentPromise;
+  const {slug, locale} = await params;
+
+  const data = await loadPage({slug, locale});
+
+  if (!data) return {};
+
+  return resolveSanityMetadata({
+    parent,
+    title: data.title,
+    seo: data.seo,
+    pathname: data.pathname,
+    locale,
+    translations: data.translations,
+  });
+}
+```
+
+### ResolveSanityMetadata Props
+
+| Prop           | Type                        | Description                               |
+| -------------- | --------------------------- | ----------------------------------------- |
+| `parent`       | `ResolvedMetadata`          | Parent metadata from Next.js              |
+| `title`        | `string` (optional)         | Page title                                |
+| `seo`          | `object` (optional)         | SEO configuration object                  |
+| `pathname`     | `string\|object` (optional) | Page pathname or slug object              |
+| `locale`       | `string` (optional)         | Current locale                            |
+| `translations` | `array` (optional)          | Array of translation objects for hreflang |
+
+## Redirects
+
+Handle dynamic redirects managed through Sanity CMS. The `redirectIfNeeded` utility from `initSanity` provides a streamlined approach:
+
+```tsx
+// middleware.ts
+import {NextRequest} from "next/server";
+import {redirectIfNeeded} from "./lib/sanity";
+
+export async function middleware(request: NextRequest) {
+  // This handles the redirect logic automatically
+  await redirectIfNeeded(request);
+}
+```
+
+## Sitemap Generation
+
+Generate XML sitemaps from your Sanity content. The sitemap utilities automatically find all documents that have a `pathname.current` field and are marked as indexable.
+
+### Single Language
+
+```tsx
+// app/sitemap.ts
+import {generateSanitySitemap} from "./lib/sanity";
+
+export default function Sitemap() {
+  return generateSanitySitemap();
+}
+```
+
+### Multi-language
+
+```tsx
+// app/sitemap.ts
+import {generateSanityI18nSitemap} from "./lib/sanity";
+
+export default function Sitemap() {
+  return generateSanityI18nSitemap();
+}
+```
+

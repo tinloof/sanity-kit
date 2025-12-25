@@ -1,0 +1,7 @@
+{
+	"title": "Sanity Document Options",
+	"description": "Configure document actions, badges, and templates in schemas",
+	"root": true,
+	"pages": ["index", "usage", "options"]
+}
+

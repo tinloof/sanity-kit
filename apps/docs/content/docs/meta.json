@@ -1,0 +1,10 @@
+{
+	"pages": [
+		"sanity-next",
+		"sanity-web",
+		"sanity-studio",
+		"sanity-document-options",
+		"sanity-document-i18n",
+		"sanity-extends"
+	]
+}

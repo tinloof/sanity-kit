@@ -1,0 +1,58 @@
+---
+title: Options
+description: Plugin options, schema options, and built-in structure options
+---
+
+# Plugin Options
+
+```ts
+documentOptions({
+  structure?: {
+    locales?: Locale[];        // Locale configuration
+    hide?: string[];           // Document types to hide
+    toolTitle?: string;        // Structure tool title
+    localeFieldName?: string;  // Locale field name (default: "locale")
+  } | false,                   // Pass false to disable structure tool
+});
+```
+
+# Schema Options
+
+```ts
+interface DocumentOptions {
+  // Structure configuration
+  structureGroup?: string;
+  structureOptions?:
+    | StructureBuiltinOptions
+    | ((
+        S: StructureBuilder,
+        context: StructureResolverContext,
+      ) => ListItemBuilder);
+  localized?: boolean;
+
+  // Document options
+  document?: {
+    actions?: (prev, context) => DocumentActionComponent[];
+    badges?: (prev, context) => DocumentBadgeComponent[];
+    newDocumentOptions?: (prev, context) => TemplateItem[];
+  };
+
+  // Schema options
+  schema?: {
+    templates?: Template[] | ((prev, context) => Template[]);
+  };
+}
+```
+
+# Built-in Structure Options
+
+```ts
+type StructureBuiltinOptions = {
+  singleton?: boolean | { id?: string };
+  orderable?: boolean;
+  icon?: React.ComponentType | React.ReactNode;
+  title?: string;
+  views?: (S: StructureBuilder) => (View | ViewBuilder)[];
+};
+```
+

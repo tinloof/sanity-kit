@@ -1,0 +1,373 @@
+---
+title: Components
+description: React components for Sanity integration including ExitPreview and SectionsRenderer
+---
+
+# Components
+
+## ExitPreview
+
+A React component that provides a UI for exiting Sanity's draft mode/preview mode. The component renders a fixed-position button that allows users to disable draft mode and refresh the page.
+
+### Usage
+
+```tsx
+import ExitPreviewClient from "./components/exit-preview-client";
+import {disableDraftMode} from "./actions";
+
+// In your app/layout.tsx or similar
+export default function RootLayout({children}) {
+  return (
+    <html>
+      <body>
+        {children}
+        <ExitPreviewClient disableDraftMode={disableDraftMode} />
+      </body>
+    </html>
+  );
+}
+```
+
+Create a client component wrapper in `app/components/exit-preview-client.tsx`:
+
+```tsx
+"use client";
+
+import {ExitPreview, ExitPreviewProps} from "@tinloof/sanity-web";
+
+export default function ExitPreviewClient(props: ExitPreviewProps) {
+  return <ExitPreview {...props} />;
+}
+```
+
+Create the server action in `app/actions.ts`:
+
+```tsx
+"use server";
+
+import {draftMode} from "next/headers";
+
+export async function disableDraftMode() {
+  "use server";
+  await Promise.allSettled([
+    (await draftMode()).disable(),
+    // Simulate a delay to show the loading state
+    new Promise((resolve) => setTimeout(resolve, 1000)),
+  ]);
+}
+```
+
+### Props
+
+| Prop               | Type                             | Description                                                                                              |
+| ------------------ | -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `disableDraftMode` | `() => Promise<void>`            | A function that disables draft mode. This should handle clearing preview cookies and revalidating paths. |
+| `className`        | `string` (optional)              | CSS class name to apply to the button. When provided, default styles are not applied.                    |
+| `styles`           | `React.CSSProperties` (optional) | Additional inline styles to merge with default styles. Only applied when `className` is not provided.    |
+
+### Features
+
+- **Conditional rendering**: Only shows when not in Sanity's Presentation Tool
+- **Loading state**: Shows "Disabling..." text while the draft mode is being disabled
+- **Auto-refresh**: Automatically refreshes the page after disabling draft mode
+- **Fixed positioning**: Positioned at the bottom center of the screen with high z-index
+- **Accessible**: Properly disabled during loading state
+
+### Styling
+
+The component provides flexible styling options:
+
+**Default styling**: When no `className` is provided, the component uses inline styles for a black button with white text, positioned fixed at the bottom center of the screen.
+
+**Custom styles with `styles` prop**: You can merge additional styles with the defaults:
+
+```tsx
+<ExitPreview
+  disableDraftMode={disableDraftMode}
+  styles={{backgroundColor: "blue", borderRadius: "8px"}}
+/>
+```
+
+**Custom styling with `className` prop**: For complete control, provide a `className`. This disables all default styles:
+
+```tsx
+<ExitPreview
+  disableDraftMode={disableDraftMode}
+  className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-blue-500 text-white rounded-md py-2 px-4"
+/>
+```
+
+### Dependencies
+
+- Requires `next-sanity/hooks` for `useIsPresentationTool`
+- Requires `next/navigation` for `useRouter`
+- Built for Next.js App Router with React 18+ (uses `useTransition`)
+
+## SectionsRenderer
+
+A React component that dynamically renders sections based on their `_type` field. This component is designed to work with Sanity's modular content approach, where pages contain arrays of section objects that need to be rendered with different components.
+
+### Usage
+
+```tsx
+import {SectionsRenderer} from "@tinloof/sanity-web";
+import HeroSection from "./sections/hero-section";
+import CallToAction from "./sections/call-to-action";
+
+// Basic usage
+export default function Page({sections}) {
+  return (
+    <SectionsRenderer
+      data={sections}
+      components={{
+        "section.hero": HeroSection,
+        "section.cta": CallToAction,
+      }}
+    />
+  );
+}
+```
+
+### Props
+
+| Prop                | Type                                                             | Description                                                  |
+| ------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| `data`              | `TSections` (optional)                                           | Array of section data objects to render                      |
+| `components`        | `SectionComponentMap<TSections, TSharedProps>`                   | Map of section type strings to their React components        |
+| `sharedProps`       | `TSharedProps` (optional)                                        | Props shared across all section components                   |
+| `className`         | `string` (optional)                                              | Optional container class name                                |
+| `fallbackComponent` | `(props: {type: string, availableTypes: string[]}) => ReactNode` | Custom fallback component callback for missing section types |
+| `showDevWarnings`   | `boolean` (optional, default: true in development)               | Show dev warnings for missing components                     |
+
+### Features
+
+**Dynamic Section Rendering**: Automatically maps section `_type` fields to React components, making it easy to build modular page layouts.
+
+**Enhanced Component Props**: Each section component receives:
+
+- All original section data as props
+- `_sectionIndex`: The index of the section in the array
+- `_sections`: Reference to the complete sections array
+- `rootHtmlAttributes`: Object with `data-section` attribute and deep-link `id` (based on the section's `_key`)
+
+**Deep Link Support**: Automatically generates unique IDs for each section using the section's `_key`, enabling smooth anchor navigation.
+
+**Development-Friendly**:
+
+- Shows helpful warnings when section components are missing
+- Displays a fallback component with available section types
+- Validates section data structure
+
+**Custom Fallback Components**: Provide a callback function that receives the missing section type and available types:
+
+```tsx
+<SectionsRenderer
+  data={sections}
+  components={componentMap}
+  fallbackComponent={({type, availableTypes}) => (
+    <div className="p-4 bg-yellow-100 border border-yellow-400 rounded">
+      <h3>Missing Component: {type}</h3>
+      <p>Available: {availableTypes.join(", ")}</p>
+    </div>
+  )}
+/>
+```
+
+**Section Component Structure**: Your section components will receive enhanced props:
+
+```tsx
+type SectionComponentProps = {
+  // Your section data fields
+  title?: string;
+  content?: any;
+  // Enhanced props from SectionsRenderer
+  _key: string;
+  _type: string;
+  _sectionIndex: number;
+  _sections: SectionData[];
+  rootHtmlAttributes: {
+    "data-section": string;
+    id: string;
+  };
+};
+
+export default function HeroSection({
+  title,
+  content,
+  _sectionIndex,
+}: SectionComponentProps) {
+  return (
+    <section>
+      <h1>{title}</h1>
+      <div>{content}</div>
+    </section>
+  );
+}
+```
+
+### Factory Function
+
+Create reusable, pre-configured, type-safe renderers with `createSectionsComponent`:
+
+```tsx
+// components/sections/index.ts
+import {createSectionsComponent} from "@tinloof/sanity-web/components";
+import type {PAGE_QUERYResult} from "@/sanity/types";
+import HeroSection from "./hero-section";
+import CallToAction from "./call-to-action";
+import TextSection from "./text-section";
+
+// Create the sections renderer
+const Sections = createSectionsComponent<
+  NonNullable<NonNullable<PAGE_QUERYResult>["sections"]>
+>({
+  components: {
+    "section.hero": HeroSection,
+    "section.cta": CallToAction,
+    "section.text": TextSection,
+  },
+  className: "space-y-16",
+  showDevWarnings: true,
+  fallbackComponent: ({type}) => <div>Custom fallback for: {type}</div>,
+});
+
+// Infer SectionProps directly from the Sections component
+type SectionProps = (typeof Sections)["_SectionProps"];
+
+export {Sections, type SectionProps};
+```
+
+Use throughout your app with minimal props:
+
+```tsx
+// pages/[slug].tsx
+import {Sections} from "@/components/sections";
+
+export default function Page({sections}) {
+  return <Sections data={sections} />;
+}
+```
+
+### Shared Props
+
+Pass props that are shared across all section components using `sharedProps`:
+
+```tsx
+// components/sections/index.ts
+import {createSectionsComponent} from "@tinloof/sanity-web/components";
+import type {PAGE_QUERYResult} from "@/sanity/types";
+import HeroSection from "./hero-section";
+import CallToAction from "./call-to-action";
+
+// Create renderer with shared props type
+const Sections = createSectionsComponent<
+  NonNullable<NonNullable<PAGE_QUERYResult>["sections"]>,
+  {locale: string; isPreview: boolean}
+>({
+  components: {
+    "section.hero": HeroSection,
+    "section.cta": CallToAction,
+  },
+});
+
+// Infer SectionProps directly from the Sections component
+type SectionProps = (typeof Sections)["_SectionProps"];
+
+export {Sections, type SectionProps};
+```
+
+Usage - `sharedProps` is required when shared props type is defined:
+
+```tsx
+// pages/[slug].tsx
+import {Sections} from "@/components/sections";
+
+export default function Page({sections, locale}) {
+  return (
+    <Sections
+      data={sections}
+      sharedProps={{locale, isPreview: false}}
+    />
+  );
+}
+```
+
+Section components receive shared props along with their section data:
+
+```tsx
+// components/sections/hero-section.tsx
+import type {SectionProps} from ".";
+
+export default function HeroSection({
+  title,
+  locale,      // From sharedProps
+  isPreview,   // From sharedProps
+}: SectionProps["section.hero"]) {
+  return (
+    <section>
+      <h1>{title}</h1>
+      <p>Locale: {locale}</p>
+    </section>
+  );
+}
+```
+
+### TypeScript Support
+
+The component provides full TypeScript support with automatic type inference from your Sanity schema. The `_SectionProps` property on the created renderer gives you access to fully typed props for each section:
+
+```tsx
+// components/sections/index.ts
+import {createSectionsComponent} from "@tinloof/sanity-web/components";
+import type {PAGE_QUERYResult} from "@/sanity/types";
+import HeroSection from "./hero-section";
+import CallToAction from "./call-to-action";
+
+// Create the sections renderer
+const Sections = createSectionsComponent<
+  NonNullable<NonNullable<PAGE_QUERYResult>["sections"]>
+>({
+  components: {
+    "section.hero": HeroSection,
+    "section.cta": CallToAction,
+  },
+});
+
+// Infer SectionProps from the Sections component using _SectionProps
+type SectionProps = (typeof Sections)["_SectionProps"];
+
+export {Sections, type SectionProps};
+```
+
+Section components import `SectionProps` and access their specific type using bracket notation:
+
+```tsx
+// components/sections/hero-section.tsx
+import type {SectionProps} from ".";
+
+// Props are fully typed based on your Sanity schema
+export default function HeroSection({
+  title,
+  subtitle,
+  _sectionIndex,
+  _key,
+  rootHtmlAttributes,
+}: SectionProps["section.hero"]) {
+  return (
+    <section {...rootHtmlAttributes}>
+      <h1>{title}</h1>
+      {subtitle && <h2>{subtitle}</h2>}
+    </section>
+  );
+}
+```
+
+The `SectionProps` type is a mapped type where each key is a section `_type` (e.g., `"section.hero"`, `"section.cta"`) and the value is the fully typed props for that section, including:
+
+- All fields from your Sanity schema for that section type
+- `_key`: Unique key for the section
+- `_sectionIndex`: Index of the section in the array
+- `_sections`: The full sections array
+- `rootHtmlAttributes`: Object with `data-section` and `id` for deep linking
+- Any shared props defined in the second generic parameter
+

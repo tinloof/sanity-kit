@@ -1,0 +1,68 @@
+---
+title: Getting Started
+description: Configure document actions, badges, templates, and structure directly in your schema definitions
+---
+
+# @tinloof/sanity-document-options
+
+Configure document actions, badges, templates, and structure directly in your schema definitions.
+
+## Installation
+
+```sh
+npm install @tinloof/sanity-document-options
+```
+
+## Basic Setup
+
+Add the plugin to your `sanity.config.ts`:
+
+```ts
+import {defineConfig} from "sanity";
+import {documentOptions} from "@tinloof/sanity-document-options";
+
+export default defineConfig({
+  plugins: [documentOptions()],
+});
+```
+
+### Disable Structure Tool
+
+If you want to use only document options (actions, badges, templates) without the structure tool:
+
+```ts
+export default defineConfig({
+  plugins: [documentOptions({structure: false})],
+});
+```
+
+## Features
+
+### ✅ Zero Configuration
+
+Works out of the box - automatically creates structure from your schemas.
+
+### ✅ Document Actions & Badges
+
+Configure actions and badges directly in schema options.
+
+### ✅ Document Templates
+
+Define initial value templates in schemas.
+
+### ✅ Structure Options
+
+Control how documents appear in the studio structure.
+
+### ✅ Grouping & Organization
+
+Organize documents into collapsible groups.
+
+### ✅ Singletons & Ordering
+
+Create single-instance documents or enable drag-and-drop ordering.
+
+### ✅ Localization Support
+
+Multi-language content with locale-specific views.
+

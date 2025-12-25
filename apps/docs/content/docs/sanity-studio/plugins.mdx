@@ -1,0 +1,87 @@
+---
+title: Plugins
+description: Additional plugins including disable creation and input with character count
+---
+
+# Disable creation plugin
+
+Plugin to disable the creation of documents with the `disableCreation` option set to true. The plugin does this by:
+
+- limiting the document's action to (these options can be overridden):
+  - publish
+  - restore
+  - discard changes
+- removing document type from create button found on the top left of the Studio
+
+## Basic usage
+
+```tsx
+sanity.config.ts;
+
+import {disableCreation} from "@tinloof/sanity-studio";
+import schemas from "@/sanity/schemas";
+
+export default defineConfig({
+  name: "studio",
+  title: "Studio",
+  projectId: "12345678",
+  dataset: "production",
+  schema: {
+    types: schemas,
+  },
+  plugins: [disableCreation({schemas: ["home", "header", "footer"]})],
+});
+```
+
+## Parameters
+
+- `schemas`: String array of document types
+- `overrideDocumentActions`: The document actions to override, defaults to publish, discardChanges, restore
+
+## Important notice
+
+When using this plugin, make sure you are placing it after the `structureTool()`.
+
+```tsx
+plugins: [
+  structureTool(),
+  visionTool(),
+  disableCreation({
+    schemaTypes: schemaTypes as SchemaTypeDefinition[],
+  }),
+],
+```
+
+# Input with characters count
+
+This is a custom component which shows a characters count below a string input. Requires you to specify the minimum and maximum length of the string in order to render and also show tone states.
+
+## Basic usage
+
+Add as a `input` under `components` and include the options `minLength` and `maxLength`.
+
+```tsx
+{
+  type: 'object',
+  name: 'seo',
+  fields: [
+    {
+      type: 'string',
+      name: 'title',
+      components: {
+        input: InputWithCharacterCount,
+      },
+      options: {
+        maxLength: 100,
+        minLength: 10,
+      },
+    },
+  ],
+},
+```
+
+## Parameters
+
+- `minLength`: Number, minimum length of string
+- `maxLength`: Number, maximum length of string
+

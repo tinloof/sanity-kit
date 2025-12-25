@@ -1,0 +1,70 @@
+---
+title: Configuration
+description: Configure Sanity Next with environment variables, basic setup, and internationalization
+---
+
+# Configuration
+
+## Environment Variables
+
+Create a `.env.local` file with the following required variables:
+
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_TOKEN=your-viewer-token
+SANITY_API_VERSION=2025-01-01
+```
+
+## Basic Setup
+
+```tsx
+import {initSanity} from "@tinloof/sanity-next/client/init";
+
+export const {
+  client,
+  sanityFetch,
+  SanityImage,
+  resolveSanityMetadata,
+  generateSanitySitemap,
+} = initSanity({
+  baseUrl: "https://yoursite.com",
+  client: {
+    // Override default client config
+    apiVersion: "2024-01-01",
+    useCdn: true,
+  },
+  live: {
+    // Override default live config
+    browserToken: process.env.SANITY_API_TOKEN,
+    serverToken: process.env.SANITY_API_TOKEN,
+  },
+});
+```
+
+## With Internationalization
+
+```tsx
+import {initSanity} from "@tinloof/sanity-next/client/init";
+
+const i18nConfig = {
+  locales: [
+    {id: "en", title: "English"},
+    {id: "fr", title: "Français"},
+    {id: "es", title: "Español"},
+  ],
+  defaultLocaleId: "en",
+};
+
+export const {
+  client,
+  sanityFetch,
+  SanityImage,
+  resolveSanityMetadata,
+  // I18n-specific utilities
+  generateSanityI18nSitemap,
+} = initSanity({
+  i18n: i18nConfig,
+});
+```
+

@@ -1,0 +1,243 @@
+---
+title: Utils
+description: Utility functions for metadata resolution, redirects, and sitemap generation
+---
+
+# Utils
+
+## Metadata Resolution
+
+Utilities for generating Next.js metadata from Sanity CMS content. These functions help create comprehensive metadata including SEO tags, Open Graph images, canonical URLs, and internationalization support.
+
+### createSanityMetadataResolver
+
+Creates a configured metadata resolver function that can be reused across multiple pages.
+
+```typescript
+import {createSanityMetadataResolver} from "@tinloof/sanity-web";
+import {client} from "./sanity/client";
+
+// Create a configured metadata resolver
+export const resolveSanityMetadata = createSanityMetadataResolver({
+  client,
+  websiteBaseURL: "https://example.com",
+  defaultLocaleId: "en",
+});
+```
+
+### Usage in Next.js Pages
+
+Use the metadata resolver in your page or layout components:
+
+```typescript
+import {resolveSanityMetadata} from "@/lib/sanity/metadata";
+import {loadHome} from "@/data/sanity";
+import {notFound} from "next/navigation";
+
+type IndexRouteProps = {
+  params: Promise<{locale: string}>;
+};
+
+export async function generateMetadata(
+  props: IndexRouteProps,
+  parentPromise: ResolvingMetadata,
+) {
+  const parent = await parentPromise;
+  const locale = (await props.params).locale;
+
+  const initialData = await loadHome({locale});
+
+  if (!initialData) return notFound();
+
+  return resolveSanityMetadata({...initialData, parent});
+}
+```
+
+**Props for resolveSanityMetadata:**
+
+| Prop           | Type                        | Description                                       |
+| -------------- | --------------------------- | ------------------------------------------------- |
+| `parent`       | `ResolvedMetadata`          | Parent metadata from Next.js                      |
+| `title`        | `string` (optional)         | Page title                                        |
+| `seo`          | `object` (optional)         | SEO configuration with title, description, images |
+| `pathname`     | `string\|object` (optional) | Page pathname (string or slug object)             |
+| `locale`       | `string` (optional)         | Current locale                                    |
+| `translations` | `array` (optional)          | Array of translation objects                      |
+| `indexable`    | `boolean` (optional)        | Whether page should be indexed by search engines  |
+
+**SEO Object Structure:**
+
+```typescript
+type Seo = {
+  title?: string;
+  description?: string;
+  image?: Image; // Sanity image asset
+};
+```
+
+## Redirects
+
+Utilities for handling URL redirects managed through Sanity CMS. These functions help you implement dynamic redirects that can be managed by content editors without code changes.
+
+### getRedirect
+
+Fetches redirect configuration from Sanity for a given source path. This function automatically generates path variations to handle different URL formats and queries Sanity to find matching redirect rules.
+
+```tsx
+import {getRedirect} from "@tinloof/sanity-web";
+import {sanityFetch} from "@/data/sanity/client";
+
+// In Next.js middleware
+export async function middleware(request: NextRequest) {
+  const redirect = await getRedirect({
+    source: request.nextUrl.pathname,
+    sanityFetch,
+  });
+
+  if (redirect) {
+    return NextResponse.redirect(new URL(redirect.destination, request.url), {
+      status: redirect.permanent ? 301 : 302,
+    });
+  }
+}
+```
+
+**Props:**
+
+| Prop          | Type                     | Description                                    |
+| ------------- | ------------------------ | ---------------------------------------------- |
+| `source`      | `string`                 | The source path to look up (e.g., "/old-page") |
+| `sanityFetch` | `DefinedSanityFetchType` | Sanity fetch function from next-sanity         |
+| `query`       | `string` (optional)      | Custom GROQ query (defaults to REDIRECT_QUERY) |
+
+**Returns:** Promise that resolves to redirect data or null if no redirect found.
+
+**Redirect Data:**
+
+| Property      | Type      | Description                                       |
+| ------------- | --------- | ------------------------------------------------- |
+| `source`      | `string`  | The source path that triggers the redirect        |
+| `destination` | `string`  | The destination URL to redirect to                |
+| `permanent`   | `boolean` | Whether this is a permanent or temporary redirect |
+
+### getPathVariations
+
+Generates path variations for flexible redirect matching. This function creates multiple variations of a path to handle different URL formats that users might access.
+
+```tsx
+import {getPathVariations} from "@tinloof/sanity-web";
+
+getPathVariations("/about-us/");
+// Returns: ["about-us", "/about-us/", "about-us/", "/about-us"]
+
+getPathVariations("contact");
+// Returns: ["contact", "/contact/", "contact/", "/contact"]
+```
+
+**Props:**
+
+| Prop   | Type     | Description                               |
+| ------ | -------- | ----------------------------------------- |
+| `path` | `string` | The input path to generate variations for |
+
+**Returns:** Array of path variations to match against redirect rules.
+
+### REDIRECT_QUERY
+
+A GROQ query constant for fetching redirect configuration from Sanity settings.
+
+```
+*[_type == "settings"][0].redirects[@.source in $paths][0]
+```
+
+### Schema Setup
+
+For the best experience, use the `redirectsSchema` from `@tinloof/sanity-studio` which provides a searchable interface and validation for managing redirects. See the [redirectsSchema documentation](../../sanity-studio/schemas) for setup instructions.
+
+```tsx
+import {redirectsSchema} from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "settings",
+  fields: [
+    redirectsSchema,
+    // ... other fields
+  ],
+});
+```
+
+## Sitemap
+
+Utilities for generating sitemaps from Sanity content for Next.js applications. These functions help create dynamic sitemaps that include all indexable pages from your Sanity CMS.
+
+### generateSanitySitemap
+
+Generates a sitemap for single-language Next.js applications using Sanity content.
+
+```tsx
+import {generateSanitySitemap} from "@tinloof/sanity-web";
+
+import {sanityFetch} from "@/data/sanity/live";
+
+export default function Sitemap() {
+  return generateSanitySitemap({
+    sanityFetch,
+    websiteBaseURL: "https://tinloof.com",
+  });
+}
+```
+
+**Props:**
+
+| Prop             | Type                     | Description                            |
+| ---------------- | ------------------------ | -------------------------------------- |
+| `websiteBaseURL` | `string`                 | The base URL of your website           |
+| `sanityFetch`    | `DefinedSanityFetchType` | Sanity fetch function from next-sanity |
+
+**Returns:** Array of sitemap entries with `url` and `lastModified` properties.
+
+### generateSanityI18nSitemap
+
+Generates a sitemap for multi-language Next.js applications using Sanity content with internationalization support.
+
+```tsx
+import {generateSanityI18nSitemap} from "@tinloof/sanity-web";
+
+import {sanityFetch} from "@/data/sanity/live";
+
+const i18n = {
+  defaultLocaleId: "en",
+  locales: [
+    {id: "en", title: "English"},
+    {id: "fr", title: "Français"},
+  ],
+};
+
+export default function Sitemap() {
+  return generateSanityI18nSitemap({
+    sanityFetch,
+    websiteBaseURL: "https://tinloof.com",
+    i18n,
+  });
+}
+```
+
+**Props:**
+
+| Prop             | Type                     | Description                               |
+| ---------------- | ------------------------ | ----------------------------------------- |
+| `websiteBaseURL` | `string`                 | The base URL of your website              |
+| `sanityFetch`    | `DefinedSanityFetchType` | Sanity fetch function from next-sanity    |
+| `i18n`           | `i18nConfig`             | Internationalization configuration object |
+
+**Returns:** Array of sitemap entries with `url`, `lastModified`, and `alternates.languages` properties for multi-language support.
+
+**Requirements:**
+
+- Documents must have a boolean field called `indexable` set to `true` to be included in the sitemap
+- Documents must have a slug field called `pathname` (typically `pathname.current`) containing the URL path, or be of type "home"
+- For i18n sitemaps, documents must have a `locale` field
+- Translation metadata must be properly configured for alternate language URLs
+- The sitemap functions should be used in a `sitemap.ts` file in your Next.js app directory
+

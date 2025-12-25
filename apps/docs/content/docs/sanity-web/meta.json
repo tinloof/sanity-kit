@@ -1,0 +1,6 @@
+{
+	"title": "Sanity Web",
+	"description": "Sanity utilities for web development",
+	"root": true,
+	"pages": ["index", "components", "utils", "fragments"]
+}

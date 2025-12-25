@@ -1,0 +1,94 @@
+---
+title: Sections
+description: Define section schemas and use the section picker in your Sanity documents
+---
+
+# Sections
+
+The `defineSection` field lets you easily define a new section schema. Used in combination with the `SectionsArrayInput` component, it will render a useful section picker in your Sanity documents.
+
+<video controls src="https://github.com/tinloof/sanity-kit/assets/10447155/6215f0b5-0b6e-44e8-bd52-84f59d8d0304">
+</video>
+
+#### 1. Create a new section schema
+
+```tsx
+// @/sanity/schemas/sections/banner.tsx
+export const bannerSection = defineSection({
+  name: "block.banner",
+  title: "Banner",
+  type: "object",
+  options: {
+    variants: [
+      {
+        /**
+         * Will be used to display a preview image
+         * when opening the section picker
+         */
+        assetUrl: "/images/blocks/hero.png",
+      },
+    ],
+  },
+  fields: [
+    defineField({
+      name: "bannerSection",
+      type: "string",
+    }),
+  ],
+});
+```
+
+#### 2. Create a sections list array
+
+```tsx
+// @/sanity/schemas/sections/index.tsx
+
+import {bannerSection} from "@/sanity/schemas/sections/banner";
+
+export const sections = [bannerSection];
+```
+
+#### 3. Add a section picker to your document
+
+Here, the `SectionsArrayInput` component is used to render a useful section picker in your Sanity documents.
+
+```tsx
+// @/sanity/schemas/sections/index.tsx
+
+import { sections } = "@/sanity/schemas/sections/index";
+import { SectionsArrayInput } from "@tinloof/sanity-studio";
+
+export default defineType({
+  name: "page",
+  type: "document",
+  // ... other fields
+  fields: [
+    defineField({
+      name: 'sectionPicker',
+      title: 'Section Picker',
+      type: 'array',
+      of: sections.map((section) => ({
+        type: section.name,
+      })),
+      components: {
+        input: SectionsArrayInput,
+      },
+    }),
+  ]
+})
+export const sections = [bannerSection];
+```
+
+#### 4. Add sections to your Sanity schema
+
+```tsx
+// @/sanity/schemas/index.tsx
+
+import {sections} from "@sanity/schemas/index";
+import page from "@/sanity/schemas/page";
+
+const schemas = [page, ...sections];
+
+export default schemas;
+```
+

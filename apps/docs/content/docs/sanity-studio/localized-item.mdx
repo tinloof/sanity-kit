@@ -1,0 +1,56 @@
+---
+title: localizedItem
+description: Create localized document lists in your Sanity Studio structure
+---
+
+# `localizedItem`
+
+The `localizedItem` utility helps create localized document lists in your Sanity Studio's structure. It creates a nested list structure that groups documents by locale, with an "All" option to view all documents regardless of locale.
+
+## Basic usage
+
+```tsx
+import { localizedItem } from '@tinloof/sanity-studio';
+import { StructureResolver } from 'sanity/structure';
+import { BookIcon } from '@sanity/icons';
+
+const locales = [
+    { id: 'en', title: 'English' },
+    { id: 'fr', title: 'French' },
+  ];
+
+export const structure: StructureResolver = (S) => {
+  return S.list()
+    .title('Content')
+    .items([
+      localizedItem(S, 'blog.post', 'Blog posts', locales, BookIcon),
+    ]);
+```
+
+## Parameters
+
+- `S`: The Sanity Structure Builder instance
+- `name`: The document type name (string)
+- `title`: The display title for the list (string)
+- `locales`: An array of locale objects with `id` and `title` properties
+- `icon`: (Optional) Icon to show instead of the default Sanity folder icon to assist with readability
+
+## Example with additional locale properties
+
+You can include additional properties
+
+```tsx
+const locales = [
+  {id: "en", title: "English", countryCode: "US", isDefault: true},
+  {id: "fr", title: "French", countryCode: "FR"},
+];
+
+localizedItem(S, "blog.post", "Blog posts", locales, BookIcon);
+```
+
+The utility will create a nested structure with:
+
+- A top-level item with the provided title
+- An "All" option showing all documents of the specified type
+- Individual locale options that filter documents by their `locale` field
+

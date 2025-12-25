@@ -1,0 +1,7 @@
+{
+	"title": "Sanity Studio",
+	"description": "Studio plugins, fields, and components for Sanity",
+	"root": true,
+	"pages": ["index", "schema-utilities", "pages", "sections", "document-i18n-deprecated", "localized-item", "singleton-list-item", "schemas", "plugins"]
+}
+

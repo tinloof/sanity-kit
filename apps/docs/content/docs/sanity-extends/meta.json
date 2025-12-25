@@ -1,0 +1,13 @@
+{
+	"title": "Sanity Extends",
+	"description": "Schema extension utilities for Sanity CMS",
+	"root": true,
+	"pages": [
+		"index",
+		"abstract-resolvers",
+		"type-safe",
+		"utility",
+		"api-reference",
+		"features"
+	]
+}
