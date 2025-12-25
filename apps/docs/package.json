@@ -7,7 +7,8 @@
 		"dev": "next dev",
 		"start": "next start",
 		"types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
-		"postinstall": "fumadocs-mdx"
+		"postinstall": "fumadocs-mdx",
+		"docs:generate-readme": "tsx scripts/generate-readme-from-docs.ts"
 	},
 	"dependencies": {
 		"fumadocs-core": "16.4.0",
@@ -26,6 +27,7 @@
 		"@types/react-dom": "^19.2.3",
 		"postcss": "^8.5.6",
 		"tailwindcss": "^4.1.18",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"
 	}
 }
