@@ -1,3 +1,9 @@
 {
-	"pages": ["sanity-next", "sanity-web"]
+	"pages": [
+		"sanity-next",
+		"sanity-web",
+		"sanity-studio",
+		"sanity-document-options",
+		"document-i18n"
+	]
 }

@@ -1,0 +1,7 @@
+{
+	"title": "Document I18n",
+	"description": "Internationalization plugin for Sanity documents",
+	"root": true,
+	"pages": ["index", "i18n-abstract"]
+}
+

@@ -1,6 +1,6 @@
 {
 	"title": "Sanity Web",
-	"description": "Hello world from Sanity Web desc",
+	"description": "Sanity utilities for web development",
 	"root": true,
-	"pages": ["index", "test"]
+	"pages": ["index", "components", "utils", "fragments"]
 }

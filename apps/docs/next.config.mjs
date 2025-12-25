@@ -9,7 +9,7 @@ const config = {
     return [
       {
         source: '/',
-        destination: '/docs',
+        destination: '/docs/sanity-next',
         permanent: true
       },
     ];
