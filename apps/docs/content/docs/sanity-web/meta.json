@@ -1,0 +1,6 @@
+{
+	"title": "Sanity Web",
+	"description": "Hello world from Sanity Web desc",
+	"root": true,
+	"pages": ["index", "test"]
+}

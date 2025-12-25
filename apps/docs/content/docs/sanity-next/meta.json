@@ -1,0 +1,6 @@
+{
+	"title": "Sanity Next",
+	"description": "Hello world from Sanity Next desc",
+	"root": true,
+	"pages": ["index", "test"]
+}
