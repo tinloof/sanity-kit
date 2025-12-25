@@ -4,6 +4,7 @@
 		"sanity-web",
 		"sanity-studio",
 		"sanity-document-options",
-		"document-i18n"
+		"sanity-document-i18n",
+		"sanity-extends"
 	]
 }

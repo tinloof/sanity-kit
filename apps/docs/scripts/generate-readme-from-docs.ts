@@ -7,7 +7,8 @@ const DOCS_TO_PACKAGE: Record<string, string> = {
 	"sanity-web": "sanity-web",
 	"sanity-studio": "sanity-studio",
 	"sanity-document-options": "sanity-document-options",
-	"document-i18n": "document-i18n",
+	"sanity-document-i18n": "document-i18n",
+	"sanity-extends": "extends",
 };
 
 // Sections to preserve from existing README
