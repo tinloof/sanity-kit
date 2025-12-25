@@ -8,6 +8,11 @@ const config = {
   redirects: () => {
     return [
       {
+        source: '/',
+        destination: '/docs/sanity-next',
+        permanent: true
+      },
+      {
         source: '/docs',
         destination: '/docs/sanity-next',
         permanent: true
