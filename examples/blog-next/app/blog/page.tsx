@@ -1,11 +1,10 @@
-import {resolveSanityMetadata} from "@/data/sanity/client";
-import {notFound} from "next/navigation";
-import type {PageProps} from "@tinloof/sanity-next";
-import {sanityFetch} from "@/data/sanity/client";
-import {defineQuery} from "next-sanity";
-import {ResolvingMetadata} from "next";
 import {BLOG_INDEX_QUERY} from "@examples/blog-studio/queries";
+import type {PageProps} from "@tinloof/sanity-next";
+import type {ResolvingMetadata} from "next";
+import {notFound} from "next/navigation";
+import {defineQuery} from "next-sanity";
 import {BlogIndex} from "@/components/templates/blog-index";
+import {resolveSanityMetadata, sanityFetch} from "@/data/sanity/client";
 
 type BlogRouteProps = PageProps<"tag">;
 
@@ -32,7 +31,7 @@ export async function generateMetadata(
 	});
 }
 
-const ENTRIES_PER_PAGE = 2;
+const ENTRIES_PER_PAGE = 1;
 
 export default async function BlogIndexRoute({params}: BlogRouteProps) {
 	const {tag} = await params;

@@ -1,9 +1,9 @@
 import type {PageProps} from "@tinloof/sanity-next";
 import type {ResolvingMetadata} from "next";
 import {notFound} from "next/navigation";
+import {defineQuery} from "next-sanity";
 import PageTemplate from "@/components/templates/page";
 import {resolveSanityMetadata, sanityFetch} from "@/data/sanity/client";
-import {defineQuery} from "next-sanity";
 
 const HOME_QUERY = defineQuery(`
   *[_type == "home"][0] {

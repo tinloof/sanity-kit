@@ -1,6 +1,6 @@
-import BlogRoute, {generateMetadata} from "../../page";
 import {defineQuery} from "next-sanity";
 import {sanityFetch} from "@/data/sanity/client";
+import BlogRoute, {generateMetadata} from "../../page";
 
 export {generateMetadata};
 

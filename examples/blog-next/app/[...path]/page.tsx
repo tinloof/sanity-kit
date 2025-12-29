@@ -1,10 +1,10 @@
 import type {PageProps} from "@tinloof/sanity-next";
 import type {ResolvingMetadata} from "next";
 import {notFound} from "next/navigation";
-import PageTemplate from "@/components/templates/page";
-import {resolveSanityMetadata, sanityFetch} from "@/data/sanity/client";
 import {defineQuery} from "next-sanity";
 import BlogPostTemplate from "@/components/templates/blog-post";
+import PageTemplate from "@/components/templates/page";
+import {resolveSanityMetadata, sanityFetch} from "@/data/sanity/client";
 
 type CatchAllRouteProps = PageProps<"...path">;
 

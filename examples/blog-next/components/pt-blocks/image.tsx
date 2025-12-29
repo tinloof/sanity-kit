@@ -1,9 +1,7 @@
 import {SanityImage} from "@/data/sanity/client";
-import {BlogPost} from "@examples/blog-studio/types";
+import type {BlogPtBlock} from "../portable-text";
 
-export default function ImageBlock(
-	props: Extract<NonNullable<BlogPost["ptBody"]>[0], {_type: "imagePtBlock"}>,
-) {
+export default function ImageBlock(props: BlogPtBlock<"imagePtBlock">) {
 	return (
 		<figure className="my-8">
 			<div className="overflow-hidden rounded-lg">

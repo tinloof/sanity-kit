@@ -21,6 +21,11 @@
 			"import": "./dist/client/init.js",
 			"require": "./dist/client/init.cjs"
 		},
+		"./client/create-client": {
+			"types": "./dist/client/create-client.d.ts",
+			"import": "./dist/client/create-client.js",
+			"require": "./dist/client/create-client.cjs"
+		},
 		"./components/exit-preview": {
 			"types": "./dist/components/exit-preview.d.ts",
 			"import": "./dist/components/exit-preview.js",
@@ -56,6 +61,21 @@
 			"import": "./dist/utils/sitemap.js",
 			"require": "./dist/utils/sitemap.cjs"
 		},
+		"./hooks": {
+			"types": "./dist/hooks/index.d.ts",
+			"import": "./dist/hooks/index.js",
+			"require": "./dist/hooks/index.cjs"
+		},
+		"./components/infinite-scroll": {
+			"types": "./dist/components/infinite-scroll.d.ts",
+			"import": "./dist/components/infinite-scroll.js",
+			"require": "./dist/components/infinite-scroll.cjs"
+		},
+		"./components/infinite-scroll-base": {
+			"types": "./dist/components/infinite-scroll-base.d.ts",
+			"import": "./dist/components/infinite-scroll-base.js",
+			"require": "./dist/components/infinite-scroll-base.cjs"
+		},
 		"./package.json": "./package.json"
 	},
 	"main": "./dist/index.cjs",
@@ -79,7 +99,7 @@
 		"react-dom": "^18 || ^19.0.0"
 	},
 	"devDependencies": {
-		"@types/node": "^24.10.1",
+		"@types/node": "^24.10.4",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
 		"@types/speakingurl": "^13.0.6",
@@ -91,12 +111,15 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
+		"@portabletext/react": "^6.0.0",
+		"@portabletext/types": "^4.0.0",
 		"@sanity/asset-utils": "^2.3.0",
 		"@sanity/client": "^7.13.1",
 		"@sanity/image-url": "^2.0.1",
 		"sanity": "^4.20.1",
 		"sanity-plugin-utils": "^1.7.0",
-		"speakingurl": "^14.0.1"
+		"speakingurl": "^14.0.1",
+		"swr": "^2.3.8"
 	},
 	"publishConfig": {
 		"access": "public"

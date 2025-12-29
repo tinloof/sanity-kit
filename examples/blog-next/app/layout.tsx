@@ -4,9 +4,9 @@ import "./globals.css";
 import {disableDraftMode} from "@tinloof/sanity-next/actions/disable-draft-mode";
 import ExitPreview from "@tinloof/sanity-next/components/exit-preview";
 import {draftMode} from "next/headers";
+import {defineQuery} from "next-sanity";
 import {VisualEditing} from "next-sanity/visual-editing";
 import {SanityLive, sanityFetch} from "@/data/sanity/client";
-import {defineQuery} from "next-sanity";
 
 const GLOBAL_QUERY = defineQuery(`
   {

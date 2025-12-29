@@ -1,5 +1,5 @@
+import {isUnique} from "@tinloof/sanity-studio";
 import {defineType} from "sanity";
-import {isUnique} from "../../helpers/is-unique";
 
 export default defineType({
 	fields: [
@@ -12,7 +12,11 @@ export default defineType({
 		{
 			name: "slug",
 			options: {
-				isUnique,
+				isUnique: (value, context) =>
+					isUnique(value, context, {
+						fieldPath: "slug.current",
+						filter: "_type == 'blog.tag'",
+					}),
 				source: "title",
 			},
 			title: "Tag's URL-friendly path",

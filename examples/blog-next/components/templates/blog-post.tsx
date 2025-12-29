@@ -1,7 +1,7 @@
 import type {BLOG_POST_QUERYResult} from "@examples/blog-studio/types";
-import {RichText} from "../rich-text";
 import {SanityImage} from "@/data/sanity/client";
 import DynamicLink from "../dynamic-link";
+import {BlogPortableText} from "../portable-text";
 
 export default function BlogPostTemplate({
 	data,
@@ -40,8 +40,8 @@ export default function BlogPostTemplate({
 				</div>
 			)}
 			{data?.ptBody && (
-				<div className="max-w-none">
-					<RichText value={data.ptBody} />
+				<div className="max-w-none space-y-4 first:mt-0 last:mb-0">
+					<BlogPortableText value={data.ptBody} />
 				</div>
 			)}
 		</article>
