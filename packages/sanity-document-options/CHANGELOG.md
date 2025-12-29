@@ -1,5 +1,13 @@
 # @tinloof/sanity-document-options
 
+## 1.3.1
+
+### Patch Changes
+
+- cc1b86d:
+- Updated dependencies [cc1b86d]
+  - @tinloof/sanity-extends@1.2.2
+
 ## 1.3.0
 
 ### Minor Changes
