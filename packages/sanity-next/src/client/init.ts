@@ -1,7 +1,5 @@
 import {type ClientConfig, createClient} from "@sanity/client";
 import {type DefineSanityLiveOptions, defineLive} from "next-sanity/live";
-import type {ComponentProps} from "react";
-import SanityImage from "../components/sanity-image";
 import {createErrorDraftRoute, defineDraftRoute} from "../utils/draft-mode";
 import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
 import {initSanityI18nUtils, initSanityUtils} from "../utils/sanity";
@@ -76,16 +74,6 @@ export function initSanity(config?: InitSanityConfig) {
 		const defineEnableDraftMode = defineDraftRoute(clientWithToken).GET;
 
 		return {
-			SanityImage: (
-				props: Omit<ComponentProps<typeof SanityImage>, "config">,
-			) =>
-				SanityImage({
-					...props,
-					config: {
-						dataset,
-						projectId,
-					},
-				}),
 			client,
 			sanityFetch,
 			resolveSanityMetadata: createSanityMetadataResolver({
@@ -127,14 +115,6 @@ export function initSanity(config?: InitSanityConfig) {
 			).GET;
 
 	return {
-		SanityImage: (props: Omit<ComponentProps<typeof SanityImage>, "config">) =>
-			SanityImage({
-				...props,
-				config: {
-					dataset,
-					projectId,
-				},
-			}),
 		client,
 		sanityFetch,
 		resolveSanityMetadata: createSanityMetadataResolver({
