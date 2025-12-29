@@ -1,5 +1,13 @@
 # @tinloof/sanity-document-i18n
 
+## 1.1.4
+
+### Patch Changes
+
+- cc1b86d:
+- Updated dependencies [cc1b86d]
+  - @tinloof/sanity-extends@1.2.2
+
 ## 1.1.3
 
 ### Patch Changes
