@@ -10,28 +10,28 @@
 		"type-check": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@sanity/client": "^7.13.1",
-		"@sanity/preview-url-secret": "^3.0.0",
-		"@sanity/vision": "^4.20.3",
+		"@sanity/client": "^7.13.2",
+		"@sanity/preview-url-secret": "^4.0.1",
+		"@sanity/vision": "^5.1.0",
 		"@tailwindcss/typography": "0.5.19",
 		"@tinloof/sanity-document-i18n": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
 		"classnames": "2.5.1",
-		"lucide-react": "^0.556.0",
-		"next": "16.0.10",
-		"next-sanity": "^11.6.10",
-		"react": "^19.2.1",
-		"react-dom": "^19.2.1",
-		"sanity": "^4.20.3",
+		"lucide-react": "^0.562.0",
+		"next": "16.1.1",
+		"next-sanity": "^12.0.5",
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3",
+		"sanity": "^5.1.0",
 		"server-only": "0.0.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
+		"@biomejs/biome": "2.3.10",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
-		"autoprefixer": "10.4.22",
+		"autoprefixer": "10.4.23",
 		"postcss": "8.5.6",
-		"tailwindcss": "4.1.17",
+		"tailwindcss": "4.1.18",
 		"typescript": "^5.9.3"
 	}
 }
