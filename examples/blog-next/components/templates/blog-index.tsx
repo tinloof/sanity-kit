@@ -2,22 +2,16 @@
 
 import {BLOG_INDEX_QUERY} from "@examples/blog-studio/queries";
 import type {BLOG_INDEX_QUERYResult} from "@examples/blog-studio/types";
-
+import {createClient} from "@tinloof/sanity-next/client/create-client";
 import {InfiniteScroll} from "@tinloof/sanity-next/components/infinite-scroll";
 import SanityImage from "@tinloof/sanity-next/components/sanity-image";
-import {createClient} from "next-sanity";
 import DynamicLink from "@/components/dynamic-link";
 import {formatDate} from "@/utils/strings";
 import {cn} from "@/utils/styles";
 
 const client = createClient({
-	projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-	dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-	apiVersion: "2025-10-10",
-	useCdn: true,
-	stega: {
-		studioUrl: "http://localhost:3333",
-	},
+	withCredentials: true,
+	token: process.env.SANITY_API_TOKEN,
 });
 
 export function BlogIndex({
@@ -61,7 +55,6 @@ export function BlogIndex({
 				query={BLOG_INDEX_QUERY}
 				initialData={initialData}
 				pageSize={entriesPerPage}
-				draftPageSize={500}
 				params={{filterTag: tagParam ?? null}}
 			>
 				{({data, hasMore, ref}) => {

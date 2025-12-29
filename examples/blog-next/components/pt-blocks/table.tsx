@@ -1,5 +1,5 @@
 import {cn} from "@/lib/utils";
-import {BlogPtBlock} from "../rich-text";
+import type {BlogPtBlock} from "../portable-text";
 
 export default function Table(data: BlogPtBlock<"table">) {
 	if (!data?.rows?.length) {

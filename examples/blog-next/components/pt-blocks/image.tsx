@@ -1,5 +1,5 @@
 import {SanityImage} from "@/data/sanity/client";
-import type {BlogPtBlock} from "../rich-text";
+import type {BlogPtBlock} from "../portable-text";
 
 export default function ImageBlock(props: BlogPtBlock<"imagePtBlock">) {
 	return (

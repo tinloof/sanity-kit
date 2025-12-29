@@ -21,6 +21,11 @@
 			"import": "./dist/client/init.js",
 			"require": "./dist/client/init.cjs"
 		},
+		"./client/create-client": {
+			"types": "./dist/client/create-client.d.ts",
+			"import": "./dist/client/create-client.js",
+			"require": "./dist/client/create-client.cjs"
+		},
 		"./components/exit-preview": {
 			"types": "./dist/components/exit-preview.d.ts",
 			"import": "./dist/components/exit-preview.js",
@@ -94,7 +99,7 @@
 		"react-dom": "^18 || ^19.0.0"
 	},
 	"devDependencies": {
-		"@types/node": "^24.10.1",
+		"@types/node": "^24.10.4",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
 		"@types/speakingurl": "^13.0.6",
