@@ -61,7 +61,7 @@
 		"@types/react": "^19.2.7",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",
-		"sanity": "^4.22.0",
+		"sanity": "^5.1.0",
 		"styled-components": "^6.1.19",
 		"typescript": "^5.9.3"
 	},
@@ -69,7 +69,7 @@
 		"@tinloof/sanity-extends": "workspace:*",
 		"react": "^18 || ^19",
 		"react-dom": "^18 || ^19",
-		"sanity": "^3 || ^4"
+		"sanity": "^3 || ^4 || ^5.0.0"
 	},
 	"engines": {
 		"node": ">=18"
