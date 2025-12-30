@@ -29,19 +29,19 @@
 	"sideEffects": false,
 	"peerDependencies": {
 		"@sanity/icons": "^3.7.4",
-		"@sanity/mutator": "^3.0.0 || ^4.0.0",
+		"@sanity/mutator": "^3.0.0 || ^4.0.0 || ^5.0.0",
 		"@sanity/ui": "^3.1.11",
 		"@sanity/uuid": "^3.0.2",
 		"@tinloof/sanity-extends": "workspace:*",
 		"react": "^18.0.0 || ^19.0.0",
 		"react-dom": "^18.0.0 || ^19.0.0",
 		"rxjs": "^7.8.2",
-		"sanity": "^3.80.1 || ^4.0.0",
+		"sanity": "^3.80.1 || ^4.0.0 || ^5.0.0",
 		"styled-components": "^6.1.19"
 	},
 	"devDependencies": {
 		"@sanity/icons": "^3.7.4",
-		"@sanity/mutator": "^4.22.0",
+		"@sanity/mutator": "^5.1.0",
 		"@sanity/ui": "^3.1.11",
 		"@sanity/uuid": "^3.0.2",
 		"@tinloof/sanity-extends": "workspace:*",
@@ -50,7 +50,7 @@
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",
 		"rxjs": "^7.8.2",
-		"sanity": "^4.22.0",
+		"sanity": "^5.1.0",
 		"styled-components": "^6.1.19",
 		"tsup": "^8.5.1",
 		"typescript": "^5.9.3"

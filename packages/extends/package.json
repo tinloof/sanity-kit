@@ -28,7 +28,7 @@
 		"lodash": "^4.17.21"
 	},
 	"peerDependencies": {
-		"sanity": "^4.22.0"
+		"sanity": "^5.1.0"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.17.21",
