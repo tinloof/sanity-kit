@@ -57,7 +57,8 @@
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.800.0",
 		"@aws-sdk/s3-request-presigner": "^3.800.0",
-		"@sanity/studio-secrets": "^3.0.3"
+		"@sanity/studio-secrets": "^3.0.3",
+		"swr": "^2.3.3"
 	},
 	"publishConfig": {
 		"access": "public"

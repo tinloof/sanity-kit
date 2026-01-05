@@ -1,6 +1,60 @@
-import { DocumentIcon, ImageIcon, PlayIcon } from "@sanity/icons";
+import { DocumentIcon, ImageIcon, PlayIcon, TagIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 import type { StorageAdapter } from "./adapters";
+
+/**
+ * Generate tag document type (generic, not adapter-specific)
+ * Used to organize and filter media assets across all adapters
+ */
+export function generateTagType() {
+  return defineType({
+    name: "media.tag",
+    title: "Media Tag",
+    type: "document",
+    icon: TagIcon,
+    __experimental_omnisearch_visibility: false,
+    fields: [
+      defineField({
+        name: "name",
+        title: "Name",
+        type: "string",
+        validation: (Rule) => Rule.required(),
+      }),
+      defineField({
+        name: "color",
+        title: "Color",
+        type: "string",
+        options: {
+          list: [
+            { title: "Gray", value: "gray" },
+            { title: "Blue", value: "blue" },
+            { title: "Purple", value: "purple" },
+            { title: "Magenta", value: "magenta" },
+            { title: "Red", value: "red" },
+            { title: "Orange", value: "orange" },
+            { title: "Yellow", value: "yellow" },
+            { title: "Green", value: "green" },
+            { title: "Cyan", value: "cyan" },
+          ],
+        },
+        initialValue: "gray",
+      }),
+    ],
+
+    preview: {
+      select: {
+        title: "name",
+        color: "color",
+      },
+      prepare({ title, color }) {
+        return {
+          title: title || "Untitled Tag",
+          subtitle: color,
+        };
+      },
+    },
+  });
+}
 
 /**
  * Generate imageAsset document type for an adapter
@@ -112,6 +166,28 @@ export function generateImageAssetType(adapter: StorageAdapter) {
         readOnly: true,
         hidden: true,
       }),
+
+      // Tags for organization
+      defineField({
+        name: "tags",
+        title: "Tags",
+        type: "array",
+        of: [{ type: "reference", weak: true, to: [{ type: "media.tag" }] }],
+      }),
+
+      // Default user-facing metadata (can be overridden in media.image)
+      defineField({
+        name: "alt",
+        title: "Alt Text",
+        type: "string",
+        description: "Default alt text for accessibility",
+      }),
+      defineField({
+        name: "caption",
+        title: "Caption",
+        type: "text",
+        description: "Default caption for this image",
+      }),
     ],
 
     preview: {
@@ -201,6 +277,28 @@ export function generateFileAssetType(adapter: StorageAdapter) {
         initialValue: adapter.id,
         readOnly: true,
         hidden: true,
+      }),
+
+      // Tags for organization
+      defineField({
+        name: "tags",
+        title: "Tags",
+        type: "array",
+        of: [{ type: "reference", weak: true, to: [{ type: "media.tag" }] }],
+      }),
+
+      // Default user-facing metadata (can be overridden in media.file)
+      defineField({
+        name: "title",
+        title: "Title",
+        type: "string",
+        description: "Default title for this file",
+      }),
+      defineField({
+        name: "description",
+        title: "Description",
+        type: "text",
+        description: "Default description for this file",
       }),
     ],
 
@@ -356,6 +454,28 @@ export function generateVideoAssetType(adapter: StorageAdapter) {
         initialValue: adapter.id,
         readOnly: true,
         hidden: true,
+      }),
+
+      // Tags for organization
+      defineField({
+        name: "tags",
+        title: "Tags",
+        type: "array",
+        of: [{ type: "reference", weak: true, to: [{ type: "media.tag" }] }],
+      }),
+
+      // Default user-facing metadata (can be overridden in media.video)
+      defineField({
+        name: "title",
+        title: "Title",
+        type: "string",
+        description: "Default title for this video",
+      }),
+      defineField({
+        name: "description",
+        title: "Description",
+        type: "text",
+        description: "Default description for this video",
       }),
     ],
 

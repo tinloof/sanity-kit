@@ -6,6 +6,7 @@ import { MediaImageInput } from "./components/media-image-input";
 import { MediaTool } from "./components/media-tool";
 import { MediaVideoInput } from "./components/media-video-input";
 import { AdapterProvider } from "./context/adapter-context";
+import { MediaSelectionProvider } from "./context/selection-context";
 import { useCredentials } from "./hooks/use-credentials";
 import {
   generateFileAssetType,
@@ -13,6 +14,7 @@ import {
   generateMediaFileType,
   generateMediaImageType,
   generateMediaVideoType,
+  generateTagType,
   generateVideoAssetType,
 } from "./schema-generator";
 
@@ -51,6 +53,7 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
   const { adapter } = options;
 
   // Generate schema types
+  const tagType = generateTagType();
   const imageAssetType = generateImageAssetType(adapter);
   const fileAssetType = generateFileAssetType(adapter);
   const videoAssetType = generateVideoAssetType(adapter);
@@ -113,6 +116,7 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
     name: "@tinloof/sanity-media",
     schema: {
       types: [
+        tagType,
         imageAssetType,
         fileAssetType,
         videoAssetType,
@@ -125,7 +129,11 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
       {
         name: "media",
         title: "Media",
-        component: () => <MediaTool adapter={adapter} />,
+        component: () => (
+          <MediaSelectionProvider>
+            <MediaTool adapter={adapter} />
+          </MediaSelectionProvider>
+        ),
       },
     ],
   };
