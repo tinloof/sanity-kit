@@ -6,6 +6,7 @@ export interface MediaStoragePluginConfig {
 
 /**
  * media.image value structure
+ * alt and caption can be set here to override the defaults from the asset document
  */
 export interface MediaImageValue {
   _type: "media.image";
@@ -13,7 +14,9 @@ export interface MediaImageValue {
     _type: "reference";
     _ref: string;
   };
+  /** Overrides asset.alt if set */
   alt?: string;
+  /** Overrides asset.caption if set */
   caption?: string;
   crop?: {
     _type: "sanity.imageCrop";
@@ -33,6 +36,7 @@ export interface MediaImageValue {
 
 /**
  * media.file value structure
+ * title and description can be set here to override the defaults from the asset document
  */
 export interface MediaFileValue {
   _type: "media.file";
@@ -40,7 +44,9 @@ export interface MediaFileValue {
     _type: "reference";
     _ref: string;
   };
+  /** Overrides asset.title if set */
   title?: string;
+  /** Overrides asset.description if set */
   description?: string;
 }
 

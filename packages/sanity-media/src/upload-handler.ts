@@ -9,6 +9,33 @@ import { uploadFile } from "./storage-client";
 import { isImageContentType, isVideoContentType } from "./types";
 
 /**
+ * Metadata that can be provided during image upload
+ */
+export interface ImageUploadMetadata {
+  alt?: string;
+  caption?: string;
+  tags?: string[]; // Array of tag IDs
+}
+
+/**
+ * Metadata that can be provided during video upload
+ */
+export interface VideoUploadMetadata {
+  title?: string;
+  description?: string;
+  tags?: string[]; // Array of tag IDs
+}
+
+/**
+ * Metadata that can be provided during file upload
+ */
+export interface FileUploadMetadata {
+  title?: string;
+  description?: string;
+  tags?: string[]; // Array of tag IDs
+}
+
+/**
  * Handle image upload to custom storage and create asset document
  */
 export async function handleImageUpload(
@@ -17,6 +44,7 @@ export async function handleImageUpload(
   credentials: StorageCredentials,
   client: SanityClient,
   onProgress?: (progress: number) => void,
+  userMetadata?: ImageUploadMetadata,
 ): Promise<{ _ref: string }> {
   const uploadResult = await uploadFile(credentials, file, onProgress);
   const metadata = await extractImageMetadata(file);
@@ -45,6 +73,16 @@ export async function handleImageUpload(
           }
         : undefined,
     adapter: adapter.id,
+    // User-provided metadata
+    ...(userMetadata?.alt && { alt: userMetadata.alt }),
+    ...(userMetadata?.caption && { caption: userMetadata.caption }),
+    ...(userMetadata?.tags?.length && {
+      tags: userMetadata.tags.map((tagId) => ({
+        _type: "reference",
+        _ref: tagId,
+        _key: tagId,
+      })),
+    }),
   };
 
   const createdAsset = await client.create(assetDoc);
@@ -91,6 +129,7 @@ export async function handleVideoUpload(
   credentials: StorageCredentials,
   client: SanityClient,
   onProgress?: (progress: number) => void,
+  userMetadata?: VideoUploadMetadata,
 ): Promise<{ _ref: string }> {
   const metadata = await extractVideoMetadata(file);
   const uploadResult = await uploadFile(credentials, file, onProgress);
@@ -131,6 +170,16 @@ export async function handleVideoUpload(
         : undefined,
     thumbnail: thumbnailRef,
     adapter: adapter.id,
+    // User-provided metadata
+    ...(userMetadata?.title && { title: userMetadata.title }),
+    ...(userMetadata?.description && { description: userMetadata.description }),
+    ...(userMetadata?.tags?.length && {
+      tags: userMetadata.tags.map((tagId) => ({
+        _type: "reference",
+        _ref: tagId,
+        _key: tagId,
+      })),
+    }),
   };
 
   const createdAsset = await client.create(assetDoc);
