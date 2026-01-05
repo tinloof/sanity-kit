@@ -53,7 +53,7 @@
 		"pluralize": "^8.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.10",
+		"@biomejs/biome": "2.3.11",
 		"@sanity/pkg-utils": "^10.1.1",
 		"@sanity/plugin-kit": "^4.0.20",
 		"@tinloof/sanity-extends": "workspace:*",

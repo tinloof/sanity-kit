@@ -111,8 +111,8 @@
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"@portabletext/react": "^6.0.0",
-		"@portabletext/types": "^4.0.0",
+		"@portabletext/react": "^6.0.2",
+		"@portabletext/types": "^4.0.1",
 		"@sanity/asset-utils": "^2.3.0",
 		"@sanity/client": "^7.13.2",
 		"@sanity/image-url": "^2.0.2",
