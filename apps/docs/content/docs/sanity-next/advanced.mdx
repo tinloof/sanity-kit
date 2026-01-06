@@ -1,0 +1,41 @@
+---
+title: Advanced Configuration
+description: Advanced configuration options for custom client setup and base URL detection
+---
+
+# Advanced Configuration
+
+## Custom Client Configuration
+
+```tsx
+import {initSanity} from "@tinloof/sanity-next/client/init";
+
+export const sanity = initSanity({
+  client: {
+    projectId: "custom-project",
+    dataset: "development",
+    apiVersion: "2024-01-01",
+    useCdn: false,
+    perspective: "previewDrafts",
+    token: process.env.SANITY_WRITE_TOKEN,
+  },
+  live: {
+    browserToken: process.env.NEXT_PUBLIC_SANITY_BROWSER_TOKEN,
+    serverToken: process.env.SANITY_SERVER_TOKEN,
+  },
+});
+```
+
+## Custom Base URL Detection
+
+```tsx
+import {initSanity} from "@tinloof/sanity-next/client/init";
+
+export const sanity = initSanity({
+  baseUrl:
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://production-site.com",
+});
+```
+

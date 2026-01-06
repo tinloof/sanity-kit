@@ -1,0 +1,402 @@
+---
+title: Pages
+description: Pages plugin for displaying website pages in a sitemap-like navigation
+---
+
+# Pages
+
+Pages is a plugin that wraps [Presentation](https://www.sanity.io/docs/presentation) to display your website pages in a sitemap-like navigation and make it possible to create new ones.
+
+## Basic usage
+
+### 1. Configure Pages:
+
+```tsx
+import {pages} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      // Presentation's configuration
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+    }),
+  ],
+});
+```
+
+### 2. Add a `pathname` field to page schemas using the `definePathname` helper:
+
+```tsx
+import {definePathname} from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+    }),
+  ],
+});
+```
+
+Documents with a defined `pathname` field value are now recognized as pages and are automatically grouped into directories in the pages navigator.
+
+Like Sanity's native `slug` type, the `pathname` supports a `source` option which can be used to generate the pathname from another field on the document, eg. the title:
+
+```tsx
+import {definePathname} from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        source: "title",
+      },
+    }),
+  ],
+});
+```
+
+The `source` can also be a function (which can be asynchronous), returning the generated pathname.
+
+## Enabling page creation
+
+Use the `creatablePages` option to define which schema types can be used to create pages.
+
+When a page is created, it will automatically have the current folder in its pathname.
+
+<video controls src="https://github.com/tinloof/sanity-kit/assets/10447155/bd8efb2b-c0cf-45da-bf9b-8a06be9ee620">
+</video>
+
+```tsx
+import {pages} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      // Add any documents you want to be creatable from the pages navigator
+      creatablePages: ["page"],
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+    }),
+  ],
+});
+```
+
+## Enabling internationalization
+
+The `i18n` option can be used to support filtering pages by a `locale` field and display internationalized URLs.
+
+When page creation is enabled, the currently selected `locale` is also used as an initial value to create new pages.
+
+Path names are automatically validated to be unique across locales.
+
+<video controls src="https://github.com/tinloof/sanity-kit/assets/10447155/5f6a063d-833c-4e96-8c3b-58e7611f4b43">
+</video>
+
+```tsx
+import {pages} from "@tinloof/sanity-studio";
+
+const i18nConfig = {
+  locales: [
+    {id: "en", title: "English"},
+    {id: "fr", title: "French"},
+  ],
+  defaultLocaleId: "en",
+};
+
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      i18n: i18nConfig,
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+    }),
+  ],
+});
+
+/**
+ * Don't forget to add i18n options and locale field to your document schema
+ */
+export default defineType({
+  type: "document",
+  name: "page",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        // Add i18n options
+        i18n: {
+          enabled: true,
+          defaultLocaleId: i18nConfig.defaultLocaleId,
+        },
+      },
+    }),
+    // Add locale field
+    defineField({
+      type: "string",
+      name: "locale",
+      hidden: true,
+    }),
+  ],
+});
+```
+
+### Filtering pages based on user roles
+
+The `filterBasedOnRoles` option can be used to filter pages based on the current user's roles.
+
+```tsx
+import {pages} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      // Presentation's configuration
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+      filterBasedOnRoles: [
+        {role: "all", filter: "!(_id match 'singleton*')"},
+        {role: "contributor", filter: "_type == 'blog.post'"},
+      ],
+    }),
+  ],
+});
+```
+
+This allows you to build upon the base filter, `pathname.current != null`, to filter pages based on the current user's roles.
+
+Setting `role: "all"` will set the filter to all roles while anything else will filter based on the current user's roles.
+
+#### Support documents without a locale
+
+By default, when internationalization is enabled, only pages whose `locale` field matches the currently selected locale will be shown in the list. If you have page types that are not translated but you still want them to show up in the list, you can set the `requireLocale` option to false in your `i18n` config:
+
+```ts
+const i18nConfig = {
+  locales: [
+    {id: "en", title: "English"},
+    {id: "fr", title: "French"},
+  ],
+  defaultLocaleId: "en",
+  requireLocale: false,
+};
+```
+
+Now all documents with a `pathname` field will show up in the list regardless of the filtered locale, even if they don't have a `locale` field (or their `locale` is `null`).
+
+### Lock folder renaming
+
+By default, folders can be renamed. Set the `folder.canUnlock` option to `false` to disable this.
+
+```tsx
+import {definePathname} from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        folder: {
+          canUnlock: false,
+        },
+      },
+    }),
+  ],
+});
+```
+
+### Customizing pages previews
+
+Documents can have their preview customized on the pages navigator using the [List Previews API](https://www.sanity.io/docs/previews-list-views):
+
+```tsx
+export default {
+  name: "movie",
+  type: "document",
+  fields: [
+    {
+      title: "Title",
+      name: "title",
+      type: "string",
+    },
+    {
+      type: "image",
+      name: "image",
+      title: "Image",
+    },
+  ],
+  // Preview information
+  preview: {
+    select: {
+      title: "title",
+      media: "image",
+    },
+    prepare({title, image}) {
+      return {
+        title,
+        media: image,
+      };
+    },
+  },
+};
+```
+
+### Customizing folders
+
+By default, folders will have a folder icon and use the pathname/prefix capitalized as the title. You can customize this for individual folders using the `folders` config option on the plugin:
+
+```tsx
+export default defineConfig({
+  // ... other Sanity Studio config
+  plugins: [
+    pages({
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+      folders: {
+        "/news": {
+          title: "Articles",
+          icon: NewspaperIcon,
+        },
+      },
+    }),
+  ],
+});
+```
+
+### Automatically navigate on pathname change
+
+By default, the `pathname` field comes with a "Preview" button which is used to navigate to the page within the Presentation iframe when the pathname changes. You can optionally disable this manual button and have the Presentation tool automatically navigate to the new pathname as it changes:
+
+```tsx
+import {definePathname} from "@tinloof/sanity-studio";
+
+export default defineType({
+  type: "document",
+  name: "modularPage",
+  fields: [
+    definePathname({
+      name: "pathname",
+      options: {
+        autoNavigate: true,
+      },
+    }),
+  ],
+});
+```
+
+The Presentation tool will now automatically navigate to the new pathname as the user types, with a 1 second debounce.
+
+### Using the Page Abstract
+
+The Pages Navigator plugin provides a reusable `page` abstract type that can be extended by your page documents. This abstract includes common page fields like SEO and pathname configuration.
+
+**Important:** This feature requires the `@tinloof/sanity-extends` package to be installed and configured:
+
+```tsx
+import {withExtends} from "@tinloof/sanity-extends";
+import {defineConfig} from "sanity";
+
+export default defineConfig({
+  schema: {
+    types: withExtends([
+      // Your schema types here
+    ]),
+  },
+});
+```
+
+The `page` abstract is automatically injected by the Pages Navigator plugin and includes:
+- SEO fields (meta title, description, og:image)
+- Pathname field with i18n support
+- Content and settings field groups
+
+You can extend from it in your documents:
+
+```tsx
+import {defineType} from "sanity";
+
+export default defineType({
+  type: "document",
+  name: "landingPage",
+  title: "Landing Page",
+  extends: "page", // Extend from the page abstract
+  fields: [
+    // Add your custom fields here
+    {
+      name: "hero",
+      type: "object",
+      group: "content",
+      fields: [
+        {name: "title", type: "string"},
+        {name: "subtitle", type: "text"},
+      ],
+    },
+  ],
+});
+```
+
+#### Disabling the Page Abstract
+
+If you don't want to use the page abstract, you can disable it in the plugin configuration:
+
+```tsx
+import {pages} from "@tinloof/sanity-studio";
+
+export default defineConfig({
+  plugins: [
+    pages({
+      abstracts: false, // Disable the page abstract
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft",
+        },
+      },
+    }),
+  ],
+});
+```
+
+You can also selectively enable/disable it:
+
+```tsx
+pages({
+  abstracts: {
+    page: false, // Specifically disable the page abstract
+  },
+  // ... other configuration
+})
+```
+
+When using the page abstract:
+- Your document automatically gets pathname and SEO fields
+- The pathname field respects i18n configuration from the plugin
+- Fields are organized into content and settings groups
+- All Pages Navigator features work seamlessly
+

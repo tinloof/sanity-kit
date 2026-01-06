@@ -1,0 +1,29 @@
+---
+title: Server Actions
+description: Pre-built server actions for Sanity integration
+---
+
+# Server Actions
+
+## disableDraftMode
+
+A pre-built server action for disabling Sanity's draft mode.
+
+```tsx
+// Use the built-in action directly in your layout
+import {disableDraftMode} from "@tinloof/sanity-next/actions";
+import {ExitPreview} from "@tinloof/sanity-next/components/exit-preview";
+
+export default function RootLayout({children}) {
+  return (
+    <html>
+      <body>
+        {children}
+        {/* ExitPreview is already a client component */}
+        <ExitPreview disableDraftMode={disableDraftMode} />
+      </body>
+    </html>
+  );
+}
+```
+

@@ -1,0 +1,94 @@
+---
+title: Utility
+description: resolveAbstractSchemaTypes utility for building configurable schema packages
+---
+
+# Utility: `resolveAbstractSchemaTypes`
+
+When building reusable schema packages or plugins, use `resolveAbstractSchemaTypes` to let users enable/disable specific abstracts via configuration:
+
+```typescript
+import {
+  resolveAbstractSchemaTypes,
+  defineAbstractResolver,
+  withExtends,
+  type ExtendedType,
+} from "@tinloof/sanity-extends";
+
+// Define your abstract resolvers
+const seoAbstract = defineAbstractResolver((doc) => ({
+  type: "abstract",
+  name: "seo",
+  fields: [
+    {name: "metaTitle", type: "string"},
+    {name: "metaDescription", type: "text"},
+  ],
+}));
+
+const publishableAbstract = defineAbstractResolver((doc) => ({
+  type: "abstract",
+  name: "publishable",
+  fields: [
+    {name: "publishedAt", type: "datetime"},
+    {name: "status", type: "string"},
+  ],
+}));
+
+// Create a map of available abstracts
+const abstractSchemaMap = {
+  seo: seoAbstract,
+  publishable: publishableAbstract,
+} as const;
+
+// User configuration
+type AbstractsConfig = Partial<Record<keyof typeof abstractSchemaMap, boolean>>;
+
+// Plugin or schema factory function
+export function createSchemaTypes(config: {
+  abstracts?: AbstractsConfig | false;
+}) {
+  const enabledAbstracts = resolveAbstractSchemaTypes(
+    abstractSchemaMap,
+    config.abstracts ?? {seo: true, publishable: true}, // defaults
+  );
+
+  return withExtends([
+    ...enabledAbstracts,
+    // ... your document types
+  ]);
+}
+
+// Usage
+export default defineConfig({
+  schema: {
+    types: createSchemaTypes({
+      abstracts: {
+        seo: true,
+        publishable: false, // Disable publishable
+      },
+    }),
+  },
+});
+```
+
+## Passing Global Options to Resolvers
+
+You can pass global options that will be merged into all resolver calls:
+
+```typescript
+const enabledAbstracts = resolveAbstractSchemaTypes(
+  abstractSchemaMap,
+  {seo: true, publishable: true},
+  {apiVersion: "2024-01-01", projectId: "abc123"}, // Global options
+);
+```
+
+## Disabling All Abstracts
+
+Pass `false` to disable all abstracts:
+
+```typescript
+const types = resolveAbstractSchemaTypes(abstractSchemaMap, false);
+// Returns: []
+```
+

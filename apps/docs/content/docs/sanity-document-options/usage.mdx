@@ -1,0 +1,195 @@
+---
+title: Usage Examples
+description: Examples of using document actions, badges, templates, and structure options
+---
+
+# Usage Examples
+
+## Document Actions
+
+```ts
+defineType({
+  name: "post",
+  type: "document",
+  options: {
+    document: {
+      actions: (prev, context) => {
+        // Remove delete for published posts
+        if (context.published) {
+          return prev.filter((action) => action.action !== "delete");
+        }
+        return prev;
+      },
+    },
+  },
+});
+```
+
+## Document Badges
+
+```ts
+defineType({
+  name: "article",
+  type: "document",
+  options: {
+    document: {
+      badges: (prev, context) =>
+        [
+          ...prev,
+          context.published && {
+            label: "Published",
+            color: "success",
+          },
+        ].filter(Boolean),
+    },
+  },
+});
+```
+
+## Document Templates
+
+```ts
+defineType({
+  name: "page",
+  type: "document",
+  options: {
+    schema: {
+      templates: [
+        {
+          id: "page-blog",
+          title: "Blog Post",
+          schemaType: "page",
+          value: {category: "blog"},
+        },
+      ],
+    },
+  },
+});
+```
+
+## Structure Groups
+
+```ts
+defineType({
+  name: "settings",
+  type: "document",
+  options: {
+    structureGroup: "configuration",
+  },
+});
+```
+
+## Singleton Documents
+
+```ts
+defineType({
+  name: "homePage",
+  type: "document",
+  options: {
+    structureGroup: "pages",
+    structureOptions: {
+      singleton: true,
+      icon: HomeIcon,
+      title: "Home Page",
+    },
+  },
+});
+```
+
+## Singleton Documents with Custom ID
+
+By default, singleton documents use the schema type name as their document ID. You can specify a custom ID for more control:
+
+```ts
+defineType({
+  name: "homePage",
+  type: "document",
+  options: {
+    structureGroup: "pages",
+    structureOptions: {
+      singleton: {
+        id: "site-home-page",
+      },
+      icon: HomeIcon,
+      title: "Home Page",
+    },
+  },
+});
+```
+
+This is useful when:
+- You need predictable document IDs for API queries
+- You're migrating from another system with existing IDs
+- You want human-readable IDs in URLs
+
+## Orderable Documents
+
+```ts
+defineType({
+  name: "menuItem",
+  type: "document",
+  options: {
+    structureGroup: "navigation",
+    structureOptions: {
+      orderable: true,
+      icon: MenuIcon,
+    },
+  },
+});
+```
+
+## Localized Documents
+
+```ts
+// Plugin configuration
+documentOptions({
+  structure: {
+    locales: [
+      {id: "en", title: "English"},
+      {id: "fr", title: "French"},
+    ],
+  },
+});
+
+// Schema configuration
+defineType({
+  name: "article",
+  type: "document",
+  options: {
+    localized: true,
+  },
+  fields: [
+    {name: "locale", type: "string", hidden: true},
+    // ... other fields
+  ],
+});
+```
+
+## Custom Structure Builder
+
+```ts
+defineType({
+  name: "product",
+  type: "document",
+  options: {
+    structureGroup: "commerce",
+    structureOptions: (S, context) =>
+      S.listItem()
+        .title("Products by Category")
+        .child(
+          S.list()
+            .title("Categories")
+            .items([
+              S.listItem()
+                .title("Electronics")
+                .child(
+                  S.documentTypeList("product").filter(
+                    'category == "electronics"',
+                  ),
+                ),
+            ]),
+        ),
+  },
+});
+```
+

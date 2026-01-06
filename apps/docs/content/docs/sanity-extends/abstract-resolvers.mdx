@@ -1,0 +1,72 @@
+---
+title: Abstract Resolvers
+description: Functions that generate abstract types dynamically based on the extending document
+---
+
+# Abstract Resolvers
+
+Abstract resolvers are functions that generate abstract types dynamically based on the extending document. Use `defineAbstractResolver` to create one:
+
+```typescript
+import {defineAbstractResolver, withExtends} from "@tinloof/sanity-extends";
+
+const seoFields = defineAbstractResolver((doc) => ({
+  type: "abstract",
+  name: "seoFields",
+  fields: [
+    {name: `${doc.name}MetaTitle`, type: "string"},
+    {name: `${doc.name}MetaDescription`, type: "text"},
+  ],
+}));
+
+const article = defineType({
+  type: "document",
+  name: "article",
+  extends: "seoFields",
+  fields: [{name: "title", type: "string"}],
+});
+
+// article will have: title, articleMetaTitle, articleMetaDescription
+```
+
+The resolver receives the full document definition, so you can generate field names, conditionally include fields, or create dynamic fieldsets based on the document's properties.
+
+In extension chains, resolvers always receive the **root document** (the final document), not intermediate abstracts.
+
+## Parameterized Abstract Resolvers
+
+Abstract resolvers can accept an optional `options` parameter, allowing you to customize the generated fields per document:
+
+```typescript
+import {defineAbstractResolver, withExtends} from "@tinloof/sanity-extends";
+
+const sluggable = defineAbstractResolver((doc, options) => ({
+  type: "abstract",
+  name: "sluggable",
+  fields: [
+    {
+      name: "slug",
+      type: "slug",
+      options: {
+        source: options?.source ?? "title",
+        maxLength: options?.maxLength ?? 96,
+      },
+    },
+  ],
+}));
+
+const article = defineType({
+  type: "document",
+  name: "article",
+  extends: {type: "sluggable", parameters: {source: "headline"}},
+  fields: [{name: "headline", type: "string"}],
+});
+
+const author = defineType({
+  type: "document",
+  name: "author",
+  extends: {type: "sluggable", parameters: {source: "name", maxLength: 50}},
+  fields: [{name: "name", type: "string"}],
+});
+```
+
