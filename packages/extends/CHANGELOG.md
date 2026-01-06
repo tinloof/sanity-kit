@@ -1,5 +1,11 @@
 # @tinloof/sanity-extends
 
+## 1.2.2
+
+### Patch Changes
+
+- cc1b86d:
+
 ## 1.2.1
 
 ### Patch Changes
@@ -23,8 +29,8 @@
     ```ts
     declare module "@tinloof/sanity-extends" {
       interface ExtendsRegistry {
-        sluggable: {source: string};
-        seo: {defaultTitle?: string};
+        sluggable: { source: string };
+        seo: { defaultTitle?: string };
         publishable: undefined;
       }
     }

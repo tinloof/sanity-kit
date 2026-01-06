@@ -1,7 +1,5 @@
 import {type ClientConfig, createClient} from "@sanity/client";
 import {type DefineSanityLiveOptions, defineLive} from "next-sanity/live";
-import type {ComponentProps} from "react";
-import SanityImage from "../components/sanity-image";
 import {createErrorDraftRoute, defineDraftRoute} from "../utils/draft-mode";
 import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
 import {initSanityI18nUtils, initSanityUtils} from "../utils/sanity";
@@ -76,16 +74,6 @@ export function initSanity(config?: InitSanityConfig) {
 		const defineEnableDraftMode = defineDraftRoute(clientWithToken).GET;
 
 		return {
-			SanityImage: (
-				props: Omit<ComponentProps<typeof SanityImage>, "config">,
-			) =>
-				SanityImage({
-					...props,
-					config: {
-						dataset,
-						projectId,
-					},
-				}),
 			client,
 			sanityFetch,
 			resolveSanityMetadata: createSanityMetadataResolver({
@@ -118,23 +106,15 @@ export function initSanity(config?: InitSanityConfig) {
 			: initSanityI18nUtils({sanityFetch, baseUrl, i18n: config.i18n});
 
 	const defineEnableDraftMode = sanity_api_token
-		? defineDraftRoute(clientWithToken)
+		? defineDraftRoute(clientWithToken).GET
 		: createErrorDraftRoute(
 				"Draft mode is not configured. To enable draft mode, either:\n" +
 					"1. Set SANITY_API_TOKEN environment variable with a viewer token\n" +
 					"2. Pass a 'viewerToken' option to initSanity({ viewerToken: 'your-token' })\n" +
 					"Learn more: https://www.sanity.io/docs/draft-mode",
-			);
+			).GET;
 
 	return {
-		SanityImage: (props: Omit<ComponentProps<typeof SanityImage>, "config">) =>
-			SanityImage({
-				...props,
-				config: {
-					dataset,
-					projectId,
-				},
-			}),
 		client,
 		sanityFetch,
 		resolveSanityMetadata: createSanityMetadataResolver({

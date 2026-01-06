@@ -1,0 +1,41 @@
+{
+	"name": "@examples/blog-studio",
+	"private": true,
+	"version": "0.0.5",
+	"main": "package.json",
+	"scripts": {
+		"dev": "sanity dev",
+		"build": "sanity build ../blog-next/public/cms -y",
+		"extract-types": "sanity schema extract",
+		"typegen:watch": "watch \"npm run typegen\" ./src ../blog-next/app",
+		"typegen": "pnpm run extract-types && sanity typegen generate",
+		"lint": "biome lint .",
+		"check": "biome check --write ."
+	},
+	"exports": {
+		"./queries": "./src/queries/index.ts",
+		"./types": "./sanity.types.ts"
+	},
+	"dependencies": {
+		"@sanity/client": "^7.13.1",
+		"@sanity/code-input": "^6.0.3",
+		"@sanity/table": "^2.0.0",
+		"@sanity/vision": "^4.20.3",
+		"@tinloof/sanity-document-options": "workspace:*",
+		"@tinloof/sanity-extends": "workspace:*",
+		"@tinloof/sanity-studio": "workspace:*",
+		"groq": "^4.20.3",
+		"react": "^19.2.1",
+		"react-dom": "^19.2.1",
+		"sanity": "^4.20.3",
+		"styled-components": "^6.1.19"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@types/node": "^24.10.1",
+		"@types/react": "^19.2.7",
+		"@types/react-dom": "^19.2.3",
+		"typescript": "^5.9.3",
+		"watch": "^1.0.2"
+	}
+}

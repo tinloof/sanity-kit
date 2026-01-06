@@ -1,5 +1,6 @@
 import type {SanityClient} from "@sanity/client";
 import {defineEnableDraftMode} from "next-sanity/draft-mode";
+import type {NextRequest} from "next/server";
 
 /**
  * Creates a draft mode route handler for Next.js API routes
@@ -16,10 +17,17 @@ export function createDraftModeRoute(client: SanityClient) {
  * Helper to create the draft mode API route handlers
  * This should be exported from your /api/draft/route.ts file
  * @param client - Sanity client instance with token already configured
- * @returns Object with GET handler
+ * @returns Object with GET handler compatible with Next.js 16
  */
 export function defineDraftRoute(client: SanityClient) {
-	return createDraftModeRoute(client);
+	const handler = createDraftModeRoute(client);
+	return {
+		// Wrap the handler to match Next.js 16's expected signature
+		GET: async (request: NextRequest, context: {params: Promise<{}>}) => {
+			// @ts-expect-error - next-sanity handler expects different signature
+			return handler.GET(request, context);
+		},
+	};
 }
 
 /**

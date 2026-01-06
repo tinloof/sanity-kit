@@ -10,6 +10,7 @@
 		"build-install": "pnpm install --filter='./packages/*'",
 		"build": "turbo run build --filter='./packages/*'",
 		"build:example:hello-world-i18n": "turbo run build --filter=./examples/hello-world-i18n-*",
+		"build:example:blog": "turbo run build --filter=./examples/blog-*",
 		"changeset": "changeset add",
 		"version": "changeset version",
 		"ci:version": "changeset version",
@@ -19,12 +20,13 @@
 		"dev:example:hello-world": "turbo run dev --filter=./examples/hello-world",
 		"dev:example:with-i18n": "turbo run dev --filter=./examples/with-i18n",
 		"dev:example:hello-world-i18n": "turbo run dev --filter=./examples/hello-world-i18n-*",
+		"dev:example:blog": "turbo run dev --filter=./examples/blog-*",
 		"format-and-lint": "biome check .",
 		"format-and-lint:fix": "biome check . --write",
 		"publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish",
 		"typecheck": "turbo run typecheck",
 		"test": "turbo run test",
-		"clean": "rimraf .turbo apps/**/{.next,.sanity,dist,node_modules} packages/**/{.next,.sanity,dist,node_modules} node_modules"
+		"clean": "rimraf .turbo apps/**/{.next,.sanity,dist,node_modules} packages/**/{.next,.sanity,dist,node_modules} examples/**/{.next,.sanity,dist,node_modules} node_modules"
 	},
 	"engines": {
 		"node": ">=18"

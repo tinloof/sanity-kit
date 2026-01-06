@@ -1,6 +1,6 @@
 {
 	"name": "@tinloof/sanity-web",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Sanity-related utilities for web development",
 	"repository": {
 		"type": "git",
@@ -43,6 +43,11 @@
 			"import": "./dist/fragments/index.mjs",
 			"require": "./dist/fragments/index.js"
 		},
+		"./hooks": {
+			"types": "./dist/hooks/index.d.ts",
+			"import": "./dist/hooks/index.mjs",
+			"require": "./dist/hooks/index.js"
+		},
 		"./package.json": "./package.json"
 	},
 	"scripts": {
@@ -53,17 +58,20 @@
 	"author": "Tinloof",
 	"license": "ISC",
 	"devDependencies": {
-		"@portabletext/types": "^3.0.0",
+		"@portabletext/types": "^3.0.1",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
-		"react": "^19.2.1",
-		"react-dom": "^19.2.1",
-		"sanity": "^4.20.1",
+		"@types/speakingurl": "^13.0.6",
+		"next-sanity": "^11.6.12",
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3",
+		"sanity": "^4.22.0",
 		"styled-components": "^6.1.19",
 		"tsup": "^8.5.1",
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
+		"next-sanity": "^9 || ^10 || ^11",
 		"react": "^18.3.1 || ^19",
 		"react-dom": "^18.3.1 || ^19",
 		"sanity": "^3.80.1 || ^4"
@@ -71,9 +79,9 @@
 	"dependencies": {
 		"@portabletext/react": "^5.0.0",
 		"@sanity/asset-utils": "^2.3.0",
-		"@sanity/client": "^7.13.1",
-		"@sanity/image-url": "^2.0.1",
-		"groq": "^4.21.0",
+		"@sanity/client": "^7.13.2",
+		"@sanity/image-url": "^2.0.2",
+		"groq": "^4.22.0",
 		"speakingurl": "^14.0.1"
 	},
 	"publishConfig": {
