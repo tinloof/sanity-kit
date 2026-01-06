@@ -1,5 +1,11 @@
 # @tinloof/sanity-document-options
 
+## 1.3.2
+
+### Patch Changes
+
+- 17e5837: Updated singleton abstract resolver so document actions only target the schema using the abstract, creation context handling, and configurable singleton IDs in structure options
+
 ## 1.3.1
 
 ### Patch Changes
