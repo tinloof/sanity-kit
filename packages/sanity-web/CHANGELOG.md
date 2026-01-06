@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 1.1.1
+
+### Patch Changes
+
+- c0fce45: Add @types/node
+
 ## 1.1.0
 
 ### Minor Changes
