@@ -1,6 +1,6 @@
 import {defineAbstractResolver} from "@tinloof/sanity-extends";
 
-export default defineAbstractResolver((_, options) => ({
+export default defineAbstractResolver((schema, options) => ({
 	name: "singleton",
 	type: "abstract",
 	options: {
@@ -17,7 +17,7 @@ export default defineAbstractResolver((_, options) => ({
 					["structure", "global", "document"].includes(creationContext.type)
 				) {
 					return prev.filter(
-						(templateItem) => templateItem.templateId !== context.schemaType,
+						(templateItem) => templateItem.templateId !== schema.name,
 					);
 				}
 
