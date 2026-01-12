@@ -1,6 +1,6 @@
 {
 	"name": "@examples/blog-next",
-	"version": "0.1.7",
+	"version": "0.0.0-20260112150832",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
