@@ -1,3 +1,24 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+
+
+
+
+:root {
+  --fd-layout-width: 100vw;
+  --color-fd-border: #e0e0e0;
+  --color-fd-background: white;
+  --color-fd-foreground: black;
+  --rounded-sm: 0.25rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.25rem;
+  --radius-2xl: 0.25rem;
+}
+
+.dark {
+  --color-fd-border: #242424;
+  --color-fd-background: black;
+  --color-fd-foreground: white;
+}

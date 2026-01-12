@@ -5,5 +5,8 @@ export function baseOptions(): BaseLayoutProps {
 		nav: {
 			title: "Sanity kit",
 		},
+		themeSwitch: {
+			mode: "light-dark-system",
+		},
 	};
 }
