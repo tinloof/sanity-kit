@@ -1,5 +1,11 @@
 # @tinloof/sanity-media
 
+## 0.0.0-20260112150832
+
+### Patch Changes
+
+- Initial release - A Sanity plugin for managing media assets with S3-compatible storage. Includes media library, bulk operations, tagging, and support for images, videos, and files.
+
 ## 0.0.1
 
 ### Initial Release

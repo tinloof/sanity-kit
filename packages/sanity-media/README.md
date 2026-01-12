@@ -1,14 +1,18 @@
 # @tinloof/sanity-media
 
-A Sanity plugin that enables custom S3-compatible storage for images and files, while using Sanity's native image and file types.
+A Sanity plugin for managing media assets with S3-compatible storage. Includes a full-featured media library, support for images and videos, tagging, bulk operations, and more.
 
 ## Features
 
-- 🎨 **Native Sanity Types** - Uses `sanity.imageAsset` and `sanity.fileAsset` for full ecosystem compatibility
-- 🗄️ **Custom Storage** - Store assets in your own S3-compatible storage (Cloudflare R2, AWS S3, etc.)
-- 🔌 **Asset Source Integration** - Seamlessly integrates with Sanity's asset picker
-- 📦 **No Custom Schema** - Works with standard Sanity image and file fields
-- 🚀 **Easy Setup** - Configure once, use everywhere
+- **Media Library Tool** - Browse, search, filter, and manage all your media assets in one place
+- **S3-Compatible Storage** - Store assets in Cloudflare R2, AWS S3, or any S3-compatible provider
+- **Image and Video Support** - Upload and manage both images and videos with thumbnail generation
+- **Tagging System** - Organize assets with custom colored tags
+- **Bulk Operations** - Select multiple assets for bulk tagging or deletion
+- **Advanced Filtering** - Filter by type, tags, usage status, document type, and metadata
+- **Metadata Management** - Edit alt text, captions, titles, and descriptions
+- **Reference Tracking** - See which documents use each asset
+- **Grid and List Views** - Switch between viewing modes in the media library
 
 ## Installation
 
@@ -36,9 +40,21 @@ export default defineConfig({
 });
 ```
 
-### 2. Use in Your Schema
+### 2. Configure Storage Credentials
 
-Use Sanity's native `image` type with the custom storage source:
+Open the "Media" tool in your Sanity Studio. You'll be prompted to enter your storage credentials on first use.
+
+For Cloudflare R2, you'll need:
+
+- **Account ID** - Your Cloudflare account ID
+- **Access Key ID** - R2 API token access key ID
+- **Secret Access Key** - R2 API token secret access key
+- **Bucket Name** - Name of your R2 bucket
+- **Public URL** - (Optional) Custom domain or R2.dev URL for public access
+
+### 3. Use in Your Schema
+
+Use the provided field types in your schema:
 
 ```ts
 import { defineField, defineType } from "sanity";
@@ -49,57 +65,60 @@ export default defineType({
   fields: [
     defineField({
       name: "coverImage",
-      type: "image",
-      options: {
-        sources: ["custom-storage"], // Use your custom storage
-      },
-      fields: [
-        {
-          name: "alt",
-          type: "string",
-          title: "Alternative text",
-        },
-      ],
-    }),
-  ],
-});
-```
-
-Or use the helper function:
-
-```ts
-import { defineMediaField } from "@tinloof/sanity-media";
-
-export default defineType({
-  name: "post",
-  type: "document",
-  fields: [
-    defineMediaField({
-      name: "coverImage",
       title: "Cover Image",
+      type: "media.image",
+    }),
+    defineField({
+      name: "video",
+      title: "Video",
+      type: "media.video",
+    }),
+    defineField({
+      name: "attachment",
+      title: "Attachment",
+      type: "media.file",
     }),
   ],
 });
 ```
 
-### 3. Configure Storage Credentials
+## Schema Types
 
-Since credentials are stored in localStorage, you need to configure them once. Add this to your studio:
+The plugin provides three field types:
 
-1. Open the browser console
-2. Run:
+### `media.image`
 
-```js
-const credentials = {
-  accountId: "your-account-id",
-  accessKeyId: "your-access-key",
-  secretAccessKey: "your-secret-key",
-  bucketName: "your-bucket-name",
-  publicUrl: "https://your-custom-domain.com", // Optional
-};
+For image uploads. Supports:
+- Alt text (on asset and per-field override)
+- Caption (on asset and per-field override)
+- Crop and hotspot
+- Tags
 
-localStorage.setItem("sanity-media-cloudflare-r2", JSON.stringify(credentials));
-```
+### `media.video`
+
+For video uploads. Supports:
+- Title (on asset and per-field override)
+- Description (on asset and per-field override)
+- Auto-generated thumbnails
+- Tags
+
+### `media.file`
+
+For general file uploads. Supports:
+- Title (on asset and per-field override)
+- Description (on asset and per-field override)
+- Tags
+
+## Media Library
+
+The plugin adds a "Media" tool to your Sanity Studio with:
+
+- **Upload** - Drag and drop or click to upload multiple files at once
+- **Search** - Find assets by filename
+- **Filter** - Filter by type (images/videos), tags, usage status, and more
+- **Tags** - Create, edit, and delete tags with custom colors
+- **Bulk Actions** - Select multiple assets for bulk tagging or deletion
+- **Detail Panel** - View and edit asset metadata, see references, copy URLs
 
 ## Adapters
 
@@ -113,14 +132,6 @@ mediaPlugin({
 });
 ```
 
-Required credentials:
-
-- `accountId` - Your Cloudflare account ID
-- `accessKeyId` - R2 API token access key ID
-- `secretAccessKey` - R2 API token secret access key
-- `bucketName` - Name of your R2 bucket
-- `publicUrl` - (Optional) Custom domain or R2.dev URL
-
 ### Custom Adapter
 
 Create your own adapter for other S3-compatible services:
@@ -132,6 +143,7 @@ const MyCustomAdapter = (): StorageAdapter => ({
   id: "my-storage",
   name: "My Storage",
   description: "Custom storage provider",
+  typePrefix: "myStorage",
   fields: [
     {
       key: "endpoint",
@@ -139,96 +151,95 @@ const MyCustomAdapter = (): StorageAdapter => ({
       type: "url",
       required: true,
     },
-    // ... more fields
+    {
+      key: "accessKeyId",
+      label: "Access Key ID",
+      type: "text",
+      required: true,
+    },
+    {
+      key: "secretAccessKey",
+      label: "Secret Access Key",
+      type: "password",
+      required: true,
+    },
+    {
+      key: "bucketName",
+      label: "Bucket Name",
+      type: "text",
+      required: true,
+    },
   ],
   toCredentials: (values) => ({
     endpoint: values.endpoint,
     accessKeyId: values.accessKeyId,
     secretAccessKey: values.secretAccessKey,
     bucketName: values.bucketName,
-    region: values.region || "auto",
+    region: "auto",
   }),
 });
 ```
 
-## API Reference
+## Querying Assets
 
-### `defineMediaField(options)`
-
-Helper to create an image field with custom storage.
-
-```ts
-defineMediaField({
-  name: "image",
-  title: "Image",
-  description: "Upload an image",
-  validation: (Rule) => Rule.required(),
-});
-```
-
-### `defineMediaFileField(options)`
-
-Helper to create a file field with custom storage.
-
-```ts
-defineMediaFileField({
-  name: "document",
-  title: "Document",
-  description: "Upload a file",
-});
-```
-
-## How It Works
-
-This plugin uses Sanity's [Asset Source API](https://www.sanity.io/docs/asset-sources) to intercept file uploads:
-
-1. When a user uploads a file through the image/file field, they can choose "Custom Storage"
-2. The file is uploaded to your S3-compatible storage
-3. A `sanity.imageAsset` or `sanity.fileAsset` document is created with your storage URL
-4. The asset is linked to your document using standard Sanity references
-
-**Benefits:**
-
-- Full compatibility with Sanity's ecosystem (image queries, GROQ, etc.)
-- No vendor lock-in - assets are stored in your infrastructure
-- Standard Sanity data structure - no custom types needed
-- Works with existing Sanity tools and plugins
-
-## Querying Images
-
-Since this uses native Sanity types, you can query images normally:
+Query assets using GROQ:
 
 ```groq
+// Get image URL and metadata
 *[_type == "post"] {
   title,
   "imageUrl": coverImage.asset->url,
-  "imageAlt": coverImage.alt,
-  "imageDimensions": coverImage.asset->metadata.dimensions
+  "imageAlt": coalesce(coverImage.alt, coverImage.asset->alt),
+  "dimensions": coverImage.asset->metadata.dimensions
 }
+
+// Get video with thumbnail
+*[_type == "post"] {
+  title,
+  "videoUrl": video.asset->url,
+  "thumbnailUrl": video.asset->thumbnail.url,
+  "duration": video.asset->metadata.duration
+}
+
+// Get assets by tag
+*[_type == "r2.imageAsset" && references(*[_type == "r2.tag" && name == "Featured"]._id)]
 ```
 
 ## TypeScript
 
-The plugin exports TypeScript types for your convenience:
+The plugin exports TypeScript types:
 
 ```ts
-import type { MediaImageValue, MediaFileValue } from "@tinloof/sanity-media";
-
-// Image field value
-type ImageField = MediaImageValue;
-
-// File field value
-type FileField = MediaFileValue;
+import type {
+  MediaImageValue,
+  MediaFileValue,
+  StorageAdapter,
+  StorageCredentials,
+} from "@tinloof/sanity-media";
 ```
 
-## Migrating from Custom Types
+## Storage Utilities
 
-If you previously used custom `tinloof.image` or `tinloof.video` types, you'll need to:
+For advanced use cases, you can use the storage client utilities directly:
 
-1. Update your schema to use native `image` or `file` types
-2. Migrate existing documents to reference `sanity.imageAsset` instead of `tinloof.image`
-3. Remove the old custom types from your schema
+```ts
+import {
+  createS3Client,
+  uploadFile,
+  getPublicUrl,
+  validateCredentials,
+} from "@tinloof/sanity-media";
+
+// Validate credentials
+const isValid = await validateCredentials(credentials);
+
+// Upload a file directly
+const result = await uploadFile(credentials, file, "path/to/file.jpg");
+
+// Get public URL
+const url = getPublicUrl(credentials, "path/to/file.jpg");
+```
 
 ## License
 
-MIT © Tinloof
+MIT

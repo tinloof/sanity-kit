@@ -355,7 +355,7 @@ export function MediaImageInput(props: ObjectInputProps) {
   const documentId = rawDocumentId?.replace(/^drafts\./, "");
   const documentType = document?._type || schemaType?.name || "unknown";
   // Build field path with bracket notation for array keys (required for intent URLs)
-  const fieldPath = path.reduce((result, segment) => {
+  const fieldPath = path.reduce<string>((result, segment) => {
     if (typeof segment === "object" && "_key" in segment) {
       return `${result}[_key=="${segment._key}"]`;
     }
