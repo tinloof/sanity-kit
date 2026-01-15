@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.16.2
+
+### Patch Changes
+
+- 51c2917: Highlight decorator
+
 ## 1.16.1
 
 ### Patch Changes
