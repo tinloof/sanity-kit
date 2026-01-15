@@ -1,3 +1,4 @@
+import {HighlightIcon} from "@sanity/icons";
 import type {
 	BlockDefinition,
 	BlockMarksDefinition,
@@ -33,6 +34,7 @@ export const defaultPTDecorators = {
 	underline: {title: "Underline", value: "underline"},
 	strikeThrough: {title: "Strike through", value: "strike-through"},
 	code: {title: "Code", value: "code"},
+	highlight: {icon: HighlightIcon, title: "Highlight", value: "highlight"},
 } as const;
 
 export type PortableTextRegistry = {
