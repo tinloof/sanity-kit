@@ -69,20 +69,21 @@ export interface AdvancedFilters {
   usage: UsageFilter;
   documentTypes: Set<string>;
   documents: SelectedDocument[];
-  hasAlt: boolean;
-  hasTitle: boolean;
-  hasCaption: boolean;
-  missingAlt: boolean;
+  /** null = no filter, true = has alt, false = missing alt */
+  alt: boolean | null;
+  /** null = no filter, true = has title, false = missing title */
+  title: boolean | null;
+  /** null = no filter, true = has caption, false = missing caption */
+  caption: boolean | null;
 }
 
 export const DEFAULT_ADVANCED_FILTERS: AdvancedFilters = {
   usage: "all",
   documentTypes: new Set(),
   documents: [],
-  hasAlt: false,
-  hasTitle: false,
-  hasCaption: false,
-  missingAlt: false,
+  alt: null,
+  title: null,
+  caption: null,
 };
 
 export interface Tag {

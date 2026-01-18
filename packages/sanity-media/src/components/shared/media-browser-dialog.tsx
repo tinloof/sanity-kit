@@ -311,10 +311,9 @@ export function MediaBrowserDialog({
     (advancedFilters.usage !== "all" ? 1 : 0) +
     (advancedFilters.documentTypes.size > 0 ? 1 : 0) +
     (advancedFilters.documents.length > 0 ? 1 : 0) +
-    (advancedFilters.hasAlt ? 1 : 0) +
-    (advancedFilters.hasTitle ? 1 : 0) +
-    (advancedFilters.hasCaption ? 1 : 0) +
-    (advancedFilters.missingAlt ? 1 : 0) +
+    (advancedFilters.alt !== null ? 1 : 0) +
+    (advancedFilters.title !== null ? 1 : 0) +
+    (advancedFilters.caption !== null ? 1 : 0) +
     selectedTagIds.size;
 
   const clearAllFilters = useCallback(() => {
@@ -717,31 +716,42 @@ export function MediaBrowserDialog({
                       <Flex gap={2} wrap="wrap">
                         {[
                           {
-                            key: "hasAlt" as const,
-                            label: "Has alt text",
+                            key: "alt" as const,
+                            label: "Alt text",
                           },
                           {
-                            key: "hasTitle" as const,
-                            label: "Has title",
+                            key: "title" as const,
+                            label: "Title",
                           },
                           {
-                            key: "hasCaption" as const,
-                            label: "Has caption",
-                          },
-                          {
-                            key: "missingAlt" as const,
-                            label: "Missing alt",
+                            key: "caption" as const,
+                            label: "Caption",
                           },
                         ].map(({ key, label }) => {
-                          const isActive = advancedFilters[key];
+                          const value = advancedFilters[key];
+                          const isActive = value !== null;
+                          const displayLabel =
+                            value === true
+                              ? `Has ${label.toLowerCase()}`
+                              : value === false
+                                ? `Missing ${label.toLowerCase()}`
+                                : label;
                           return (
                             <Box
                               key={key}
                               onClick={() =>
-                                setAdvancedFilters((prev) => ({
-                                  ...prev,
-                                  [key]: !prev[key],
-                                }))
+                                setAdvancedFilters((prev) => {
+                                  const current = prev[key];
+                                  let next: boolean | null;
+                                  if (current === null) {
+                                    next = true;
+                                  } else if (current === true) {
+                                    next = false;
+                                  } else {
+                                    next = null;
+                                  }
+                                  return { ...prev, [key]: next };
+                                })
                               }
                               style={{
                                 cursor: "pointer",
@@ -754,8 +764,12 @@ export function MediaBrowserDialog({
                               }}
                             >
                               <Flex align="center" gap={2}>
-                                <Checkbox checked={isActive} readOnly />
-                                <Text size={1}>{label}</Text>
+                                <Checkbox
+                                  checked={value === true}
+                                  indeterminate={value === false}
+                                  readOnly
+                                />
+                                <Text size={1}>{displayLabel}</Text>
                               </Flex>
                             </Box>
                           );

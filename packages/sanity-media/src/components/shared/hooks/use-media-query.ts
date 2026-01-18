@@ -95,12 +95,23 @@ export function useMediaQuery({
         ? ` && count(*[_id in [${selectedDocIds.map((id) => `"${id}"`).join(",")}] && references(^._id)]) > 0`
         : "";
 
-    // Metadata filters
+    // Metadata filters (tri-state: null = no filter, true = has, false = missing)
     const metadataConditions = [
-      advancedFilters?.hasAlt ? "(defined(alt) && alt != '')" : null,
-      advancedFilters?.hasTitle ? "(defined(title) && title != '')" : null,
-      advancedFilters?.hasCaption ? "(defined(caption) && caption != '')" : null,
-      advancedFilters?.missingAlt ? "(!defined(alt) || alt == '')" : null,
+      advancedFilters?.alt === true
+        ? "(defined(alt) && alt != '')"
+        : advancedFilters?.alt === false
+          ? "(!defined(alt) || alt == '')"
+          : null,
+      advancedFilters?.title === true
+        ? "(defined(title) && title != '')"
+        : advancedFilters?.title === false
+          ? "(!defined(title) || title == '')"
+          : null,
+      advancedFilters?.caption === true
+        ? "(defined(caption) && caption != '')"
+        : advancedFilters?.caption === false
+          ? "(!defined(caption) || caption == '')"
+          : null,
     ]
       .filter(Boolean)
       .map((c) => ` && ${c}`)
@@ -132,10 +143,9 @@ export function useMediaQuery({
           usage: advancedFilters.usage,
           documentTypes: Array.from(advancedFilters.documentTypes),
           documents: advancedFilters.documents.map((d) => d._id),
-          hasAlt: advancedFilters.hasAlt,
-          hasTitle: advancedFilters.hasTitle,
-          hasCaption: advancedFilters.hasCaption,
-          missingAlt: advancedFilters.missingAlt,
+          alt: advancedFilters.alt,
+          title: advancedFilters.title,
+          caption: advancedFilters.caption,
         })
       : "";
 
