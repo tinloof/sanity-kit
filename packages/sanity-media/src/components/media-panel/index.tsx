@@ -27,6 +27,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useClient } from "sanity";
 import useSWR from "swr";
+import { API_VERSION } from "../../constants";
 import { useCredentials } from "../../hooks/use-credentials";
 import {
   useAdvancedFilters,
@@ -37,6 +38,7 @@ import {
   useUploadQueue,
 } from "../shared/hooks";
 import {
+  DebouncedSearchInput,
   DeleteConfirmDialog,
   MediaDetailPanel,
   MediaGridView,
@@ -47,7 +49,6 @@ import {
   type Reference,
 } from "./components";
 import {
-  DebouncedSearchInput,
   PAGE_SIZE,
   SORT_OPTIONS,
   TAG_COLORS,
@@ -65,7 +66,7 @@ export function MediaPanel({
   onSelect,
   onCancelSelection,
 }: MediaPanelProps) {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const { credentials, loading: credentialsLoading } = useCredentials(adapter);
 
   // UI State

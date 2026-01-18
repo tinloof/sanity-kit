@@ -18,7 +18,8 @@ import {
   TextArea,
   TextInput,
 } from "@sanity/ui";
-import { formatFileSize, TAG_COLORS, type StagingItem, type Tag } from "../types";
+import { formatFileSize } from "../../../utils";
+import { TAG_COLORS, type StagingItem, type Tag } from "../types";
 
 export interface UploadStagingDialogProps {
   stagingItems: StagingItem[];

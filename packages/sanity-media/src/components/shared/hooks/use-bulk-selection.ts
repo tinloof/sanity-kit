@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { useClient } from "sanity";
 import { useToast } from "@sanity/ui";
+import { API_VERSION } from "../../../constants";
 import type { MediaAsset, Tag } from "../../media-panel/types";
 
 export interface UseBulkSelectionOptions {
@@ -40,7 +41,7 @@ export function useBulkSelection({
   onDelete,
   onMutate,
 }: UseBulkSelectionOptions): UseBulkSelectionResult {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const toast = useToast();
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -93,11 +94,15 @@ export function useBulkSelection({
       if (deleteTarget === "single" && singleAsset) {
         setIsDeleting(true);
         try {
+          const transaction = client.transaction();
+
           // Delete thumbnail if it's a video
           if (singleAsset.mediaType === "video" && singleAsset.thumbnail?._id) {
-            await client.delete(singleAsset.thumbnail._id);
+            transaction.delete(singleAsset.thumbnail._id);
           }
-          await client.delete(singleAsset._id);
+          transaction.delete(singleAsset._id);
+
+          await transaction.commit();
 
           toast.push({
             status: "success",
@@ -120,14 +125,17 @@ export function useBulkSelection({
         setIsDeleting(true);
         try {
           const assetsToDelete = media.filter((m) => selectedIds.has(m._id));
+          const transaction = client.transaction();
 
           for (const asset of assetsToDelete) {
             // Delete thumbnail if it's a video
             if (asset.mediaType === "video" && asset.thumbnail?._id) {
-              await client.delete(asset.thumbnail._id);
+              transaction.delete(asset.thumbnail._id);
             }
-            await client.delete(asset._id);
+            transaction.delete(asset._id);
           }
+
+          await transaction.commit();
 
           toast.push({
             status: "success",

@@ -16,16 +16,14 @@ export default defineType({
 	],
 	preview: {
 		select: {
-			title: "video.title",
+			title: "video.asset.title",
 			thumbnailUrl: "video.asset.thumbnail.url",
-			description: "video.description",
 		},
 		prepare(selection) {
-			const {title, thumbnailUrl, description} = selection;
+			const {title, thumbnailUrl} = selection;
 
 			return {
 				title: title || "Media Video",
-				subtitle: description || "External storage video",
 				imageUrl: thumbnailUrl,
 			};
 		},

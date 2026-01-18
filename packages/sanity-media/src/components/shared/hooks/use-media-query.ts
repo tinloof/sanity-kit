@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useClient } from "sanity";
 import useSWR from "swr";
 import type { StorageAdapter } from "../../../adapters";
+import { API_VERSION } from "../../../constants";
 import type {
   AdvancedFilters,
   MediaAsset,
@@ -43,7 +44,7 @@ export function useMediaQuery({
   pageSize = PAGE_SIZE,
   assetType = "all",
 }: UseMediaQueryOptions): UseMediaQueryResult {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
 
   // Determine effective type filter based on assetType constraint
   const effectiveTypeFilter: TypeFilter = assetType !== "all" ? assetType : typeFilter;

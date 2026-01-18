@@ -39,7 +39,9 @@ export type {
   MediaFileValue,
   MediaStoragePluginConfig,
 } from "./types";
-export { isImageContentType, isVideoContentType } from "./types";
+
+// Export utility functions
+export { isImageContentType, isVideoContentType } from "./utils";
 
 export interface MediaPluginOptions {
   adapter: StorageAdapter;

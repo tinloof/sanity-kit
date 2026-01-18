@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useClient } from "sanity";
 import type { StorageAdapter } from "../../../adapters";
+import { API_VERSION } from "../../../constants";
 import { useCredentials } from "../../../hooks/use-credentials";
 import { handleImageUpload, handleVideoUpload } from "../../../upload-handler";
 import {
@@ -40,13 +41,14 @@ export function useUploadQueue({
   adapter,
   onUploadComplete,
 }: UseUploadQueueOptions): UseUploadQueueResult {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const { credentials } = useCredentials(adapter);
 
   const [uploadQueue, setUploadQueue] = useState<UploadItem[]>([]);
   const [stagingItems, setStagingItems] = useState<StagingItem[]>([]);
   const [showStagingDialog, setShowStagingDialog] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const clearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Derived state
   const activeUploads = uploadQueue.filter(
@@ -230,10 +232,16 @@ export function useUploadQueue({
     if (allDone) {
       onUploadComplete?.();
       // Clear completed items after a short delay
-      setTimeout(() => {
+      clearTimeoutRef.current = setTimeout(() => {
         setUploadQueue((prev) => prev.filter((i) => i.status === "error"));
       }, 2000);
     }
+
+    return () => {
+      if (clearTimeoutRef.current) {
+        clearTimeout(clearTimeoutRef.current);
+      }
+    };
   }, [uploadQueue, uploadSingleItem, onUploadComplete]);
 
   return {

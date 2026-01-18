@@ -24,6 +24,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useClient } from "sanity";
 import type { StorageAdapter } from "../../adapters";
+import { API_VERSION } from "../../constants";
 import { useCredentials } from "../../hooks/use-credentials";
 import { handleImageUpload, handleVideoUpload } from "../../upload-handler";
 import type {
@@ -80,7 +81,7 @@ export function MediaBrowserDialog({
   initialTab = "browse",
   initialFiles,
 }: MediaBrowserDialogProps) {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const { credentials, loading: credentialsLoading } = useCredentials(adapter);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

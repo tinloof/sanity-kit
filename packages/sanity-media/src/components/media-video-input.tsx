@@ -38,7 +38,9 @@ import {
 } from "sanity";
 import { useRouter } from "sanity/router";
 import { styled } from "styled-components";
+import { API_VERSION } from "../constants";
 import { useAdapter } from "../context/adapter-context";
+import { formatDuration } from "../utils";
 import {
   getPendingSelection,
   clearPendingSelection,
@@ -334,24 +336,13 @@ function UploadProgress({
   );
 }
 
-function formatDuration(seconds: number): string {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  }
-  return `${minutes}:${secs.toString().padStart(2, "0")}`;
-}
-
 // ============================================================================
 // Main Component
 // ============================================================================
 
 export function MediaVideoInput(props: ObjectInputProps) {
   const { value, onChange, readOnly, path, schemaType } = props;
-  const client = useClient({ apiVersion: "2025-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const router = useRouter();
   const { adapter, credentials, loading: credentialsLoading } = useAdapter();
 
