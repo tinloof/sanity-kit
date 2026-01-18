@@ -6,7 +6,6 @@ import {
 } from "./metadata-extractor";
 import type { StorageCredentials } from "./storage-client";
 import { uploadFile } from "./storage-client";
-import { isImageContentType, isVideoContentType } from "./types";
 
 /**
  * Metadata that can be provided during image upload

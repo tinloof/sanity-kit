@@ -9,12 +9,14 @@ import {
 } from "@sanity/ui";
 import { useCallback, useRef, useState } from "react";
 import { set, unset, type ObjectInputProps, useClient } from "sanity";
+import { API_VERSION } from "../constants";
 import { useAdapter } from "../context/adapter-context";
 import { handleFileUpload } from "../upload-handler";
+import { formatFileSize } from "../utils";
 
 export function MediaFileInput(props: ObjectInputProps) {
   const { value, onChange } = props;
-  const client = useClient({ apiVersion: "2025-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const { adapter, credentials, loading: credentialsLoading } = useAdapter();
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -216,10 +218,3 @@ export function MediaFileInput(props: ObjectInputProps) {
   );
 }
 
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
-}

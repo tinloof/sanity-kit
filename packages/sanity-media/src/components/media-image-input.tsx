@@ -39,6 +39,7 @@ import {
 } from "sanity";
 import { useRouter } from "sanity/router";
 import { styled } from "styled-components";
+import { API_VERSION } from "../constants";
 import { useAdapter } from "../context/adapter-context";
 import {
   getPendingSelection,
@@ -344,7 +345,7 @@ function UploadProgress({
 
 export function MediaImageInput(props: ObjectInputProps) {
   const { value, onChange, readOnly, path, schemaType } = props;
-  const client = useClient({ apiVersion: "2025-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const router = useRouter();
   const { adapter, credentials, loading: credentialsLoading } = useAdapter();
 

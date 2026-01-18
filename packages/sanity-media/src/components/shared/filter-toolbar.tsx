@@ -14,8 +14,9 @@ import {
   MenuButton,
   MenuItem,
 } from "@sanity/ui";
+import { DebouncedSearchInput } from "../media-panel/components/debounced-search-input";
 import type { SortOption, TypeFilter, ViewMode } from "../media-panel/types";
-import { DebouncedSearchInput, SORT_OPTIONS } from "../media-panel/types";
+import { SORT_OPTIONS } from "../media-panel/types";
 
 export interface FilterToolbarProps {
   /** Current view mode */

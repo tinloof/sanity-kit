@@ -1,7 +1,8 @@
 import { CheckmarkCircleIcon, PlayIcon } from "@sanity/icons";
 import { Box, Flex, Text } from "@sanity/ui";
+import { formatDuration, formatFileSize } from "../../utils";
 import type { MediaAsset, Tag } from "../media-panel/types";
-import { formatDuration, formatFileSize, TAG_COLORS } from "../media-panel/types";
+import { TAG_COLORS } from "../media-panel/types";
 
 export interface AssetListProps {
   assets: MediaAsset[];

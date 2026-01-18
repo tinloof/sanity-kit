@@ -1,6 +1,7 @@
 import { DocumentIcon, ImageIcon, PlayIcon, TagIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 import type { StorageAdapter } from "./adapters";
+import { formatDuration, formatFileSize } from "./utils";
 
 /**
  * Generate tag document type (generic, not adapter-specific)
@@ -566,27 +567,3 @@ export function generateMediaVideoType(adapter: StorageAdapter) {
   });
 }
 
-/**
- * Helper: Format file size for display
- */
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
-}
-
-/**
- * Helper: Format duration for display
- */
-function formatDuration(seconds: number): string {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  }
-  return `${minutes}:${secs.toString().padStart(2, "0")}`;
-}
