@@ -18,6 +18,8 @@ export interface ReturnIntent {
   documentId: string;
   documentType: string;
   fieldPath: string;
+  /** The full URL path the user was on when they clicked browse */
+  sourceUrl: string;
 }
 
 export interface SelectionContextData {
@@ -192,18 +194,16 @@ export function MediaSelectionProvider({
     clearSelectionContext();
     setSelectionData(null);
 
-    if (data?.returnIntent) {
-      // Navigate back to document with path to focus the field
-      const basePath = window.location.pathname.split("/").filter(Boolean)[0] || "";
-      const intentUrl = `/${basePath}/intent/edit/id=${data.returnIntent.documentId};type=${data.returnIntent.documentType};path=${encodeURIComponent(data.returnIntent.fieldPath)}`;
-      window.location.href = intentUrl;
+    if (data?.returnIntent?.sourceUrl) {
+      // Navigate back to the original URL the user was on
+      window.location.href = data.returnIntent.sourceUrl;
     }
   }, [selectionData]);
 
   const selectAsset = useCallback(
     (asset: MediaAsset) => {
       const data = selectionData;
-      if (!data?.returnIntent) return;
+      if (!data?.returnIntent?.sourceUrl) return;
 
       // Store pending selection for the input component to pick up
       // Normalize document ID by removing drafts. prefix for consistent matching
@@ -218,10 +218,8 @@ export function MediaSelectionProvider({
       clearSelectionContext();
       setSelectionData(null);
 
-      // Navigate back to document with path to focus the field
-      const basePath = window.location.pathname.split("/").filter(Boolean)[0] || "";
-      const intentUrl = `/${basePath}/intent/edit/id=${data.returnIntent.documentId};type=${data.returnIntent.documentType};path=${encodeURIComponent(data.returnIntent.fieldPath)}`;
-      window.location.href = intentUrl;
+      // Navigate back to the original URL the user was on
+      window.location.href = data.returnIntent.sourceUrl;
     },
     [selectionData]
   );

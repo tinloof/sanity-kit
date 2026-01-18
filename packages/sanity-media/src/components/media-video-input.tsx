@@ -576,11 +576,13 @@ export function MediaVideoInput(props: ObjectInputProps) {
     }
 
     // Store selection context in session storage
+    // Include the full current URL so we can return to the exact same place
     const selectionContext = {
       returnIntent: {
         documentId,
         documentType,
         fieldPath,
+        sourceUrl: window.location.href,
       } as ReturnIntent,
       assetType: "video" as const,
       timestamp: Date.now(),
