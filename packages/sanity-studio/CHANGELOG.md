@@ -1,5 +1,11 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 1.16.3
+
+### Patch Changes
+
+- be34033: Add default preview config to page abstract with title/name/heading fallback and pathname subtitle
+
 ## 1.16.2
 
 ### Patch Changes
