@@ -1,5 +1,11 @@
 # @tinloof/sanity-document-options
 
+## 1.3.3
+
+### Patch Changes
+
+- e9b662f: Preserve natural order of structure items instead of pushing ungrouped items to the bottom
+
 ## 1.3.2
 
 ### Patch Changes
