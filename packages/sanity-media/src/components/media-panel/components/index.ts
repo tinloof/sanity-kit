@@ -1,3 +1,4 @@
+export { DebouncedSearchInput } from "./debounced-search-input";
 export { DeleteConfirmDialog, type DeleteConfirmDialogProps } from "./delete-confirm-dialog";
 export { MediaDetailPanel, type MediaDetailPanelProps, type Reference } from "./media-detail-panel";
 export { MediaGridView, type MediaGridViewProps } from "./media-grid-view";

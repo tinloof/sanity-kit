@@ -26,7 +26,7 @@ export interface UseAdvancedFiltersResult {
   clearAllFilters: () => void;
   updateUsageFilter: (usage: UsageFilter) => void;
   toggleDocumentType: (docType: string) => void;
-  toggleMetadataFilter: (key: "hasAlt" | "hasTitle" | "hasCaption" | "missingAlt") => void;
+  cycleMetadataFilter: (key: "alt" | "title" | "caption") => void;
   addDocument: (doc: SelectedDocument) => void;
   removeDocument: (docId: string) => void;
 }
@@ -43,10 +43,9 @@ export function useAdvancedFilters(): UseAdvancedFiltersResult {
     if (advancedFilters.usage !== "all") count++;
     if (advancedFilters.documentTypes.size > 0) count++;
     if (advancedFilters.documents.length > 0) count++;
-    if (advancedFilters.hasAlt) count++;
-    if (advancedFilters.hasTitle) count++;
-    if (advancedFilters.hasCaption) count++;
-    if (advancedFilters.missingAlt) count++;
+    if (advancedFilters.alt !== null) count++;
+    if (advancedFilters.title !== null) count++;
+    if (advancedFilters.caption !== null) count++;
     return count;
   }, [advancedFilters]);
 
@@ -80,10 +79,21 @@ export function useAdvancedFilters(): UseAdvancedFiltersResult {
     });
   }, []);
 
-  // Toggle metadata filter
-  const toggleMetadataFilter = useCallback(
-    (key: "hasAlt" | "hasTitle" | "hasCaption" | "missingAlt") => {
-      setAdvancedFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+  // Cycle metadata filter: null → true (has) → false (missing) → null
+  const cycleMetadataFilter = useCallback(
+    (key: "alt" | "title" | "caption") => {
+      setAdvancedFilters((prev) => {
+        const current = prev[key];
+        let next: boolean | null;
+        if (current === null) {
+          next = true; // No filter → Has
+        } else if (current === true) {
+          next = false; // Has → Missing
+        } else {
+          next = null; // Missing → No filter
+        }
+        return { ...prev, [key]: next };
+      });
     },
     []
   );
@@ -140,28 +150,22 @@ export function useAdvancedFilters(): UseAdvancedFiltersResult {
       });
     }
 
-    if (advancedFilters.hasAlt) {
+    if (advancedFilters.alt !== null) {
       chips.push({
-        label: "Has alt",
-        onRemove: () => toggleMetadataFilter("hasAlt"),
+        label: advancedFilters.alt ? "Has alt" : "Missing alt",
+        onRemove: () => setAdvancedFilters((prev) => ({ ...prev, alt: null })),
       });
     }
-    if (advancedFilters.hasTitle) {
+    if (advancedFilters.title !== null) {
       chips.push({
-        label: "Has title",
-        onRemove: () => toggleMetadataFilter("hasTitle"),
+        label: advancedFilters.title ? "Has title" : "Missing title",
+        onRemove: () => setAdvancedFilters((prev) => ({ ...prev, title: null })),
       });
     }
-    if (advancedFilters.hasCaption) {
+    if (advancedFilters.caption !== null) {
       chips.push({
-        label: "Has caption",
-        onRemove: () => toggleMetadataFilter("hasCaption"),
-      });
-    }
-    if (advancedFilters.missingAlt) {
-      chips.push({
-        label: "Missing alt",
-        onRemove: () => toggleMetadataFilter("missingAlt"),
+        label: advancedFilters.caption ? "Has caption" : "Missing caption",
+        onRemove: () => setAdvancedFilters((prev) => ({ ...prev, caption: null })),
       });
     }
 
@@ -171,7 +175,6 @@ export function useAdvancedFilters(): UseAdvancedFiltersResult {
     updateUsageFilter,
     toggleDocumentType,
     removeDocument,
-    toggleMetadataFilter,
   ]);
 
   return {
@@ -184,7 +187,7 @@ export function useAdvancedFilters(): UseAdvancedFiltersResult {
     clearAllFilters,
     updateUsageFilter,
     toggleDocumentType,
-    toggleMetadataFilter,
+    cycleMetadataFilter,
     addDocument,
     removeDocument,
   };

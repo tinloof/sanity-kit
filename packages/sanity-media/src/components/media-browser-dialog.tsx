@@ -13,7 +13,9 @@ import {
 } from "@sanity/ui";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useClient } from "sanity";
+import { API_VERSION } from "../constants";
 import { useAdapter } from "../context/adapter-context";
+import { formatDuration, formatFileSize } from "../utils";
 
 interface MediaBrowserDialogProps {
   onSelect: (asset: any) => void;
@@ -26,7 +28,7 @@ export function MediaBrowserDialog({
   onClose,
   assetType = "image",
 }: MediaBrowserDialogProps) {
-  const client = useClient({ apiVersion: "2025-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const { adapter } = useAdapter();
 
   const [assets, setAssets] = useState<any[]>([]);
@@ -294,21 +296,3 @@ export function MediaBrowserDialog({
   );
 }
 
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${Number.parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`;
-}
-
-function formatDuration(seconds: number): string {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  }
-  return `${minutes}:${secs.toString().padStart(2, "0")}`;
-}

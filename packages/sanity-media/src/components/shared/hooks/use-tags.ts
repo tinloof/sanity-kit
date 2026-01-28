@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useClient } from "sanity";
 import useSWR from "swr";
 import type { StorageAdapter } from "../../../adapters";
+import { API_VERSION } from "../../../constants";
 import type { Tag } from "../../media-panel/types";
 
 export interface UseTagsResult {
@@ -14,7 +15,7 @@ export interface UseTagsResult {
 }
 
 export function useTags(): UseTagsResult {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
 
   const {
     data: tags = [],
@@ -78,7 +79,7 @@ export function useReferencingDocTypes({
   docTypes: string[];
   isLoading: boolean;
 } {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
 
   const { data: docTypes = [], isLoading } = useSWR(
     ["referencingDocTypes", adapter.typePrefix],
@@ -116,7 +117,7 @@ export function useDocumentSearch({
   results: Array<{ _id: string; _type: string; title: string }>;
   isLoading: boolean;
 } {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
 
   const { data: results = [], isLoading } = useSWR(
     query.trim().length >= 2

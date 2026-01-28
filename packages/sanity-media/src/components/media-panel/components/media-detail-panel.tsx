@@ -26,11 +26,13 @@ import {
   TextInput,
   useToast,
 } from "@sanity/ui";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useClient } from "sanity";
 import { IntentLink } from "sanity/router";
+import { API_VERSION } from "../../../constants";
+import { formatDuration, formatFileSize } from "../../../utils";
 import type { MediaAsset, Tag } from "../types";
-import { TAG_COLORS, formatDuration, formatFileSize } from "../types";
+import { TAG_COLORS } from "../types";
 
 export interface Reference {
   _id: string;
@@ -69,9 +71,27 @@ export function MediaDetailPanel({
   onMutate,
   isDeleting,
 }: MediaDetailPanelProps) {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const toast = useToast();
   const [activeTab, setActiveTab] = useState<"details" | "references">("details");
+
+  // Track original values to detect actual changes on blur
+  const originalValuesRef = useRef<{
+    alt?: string;
+    caption?: string;
+    title?: string;
+    description?: string;
+  }>({});
+
+  // Update original values when media changes (e.g., navigating to different asset)
+  useEffect(() => {
+    originalValuesRef.current = {
+      alt: media.alt,
+      caption: media.caption,
+      title: media.title,
+      description: media.description,
+    };
+  }, [media._id]);
 
   const copyToClipboard = async (text: string, label: string) => {
     try {
@@ -88,9 +108,17 @@ export function MediaDetailPanel({
     }
   };
 
-  const updateMetadata = async (field: string, value: string) => {
+  const updateMetadata = async (field: "alt" | "caption" | "title" | "description", value: string) => {
+    // Only update if the value has actually changed from the original
+    const originalValue = originalValuesRef.current[field] || "";
+    if (value === originalValue) {
+      return;
+    }
+
     try {
       await client.patch(media._id).set({ [field]: value || "" }).commit();
+      // Update the original value ref after successful save
+      originalValuesRef.current[field] = value;
       onMutate();
     } catch (error) {
       toast.push({

@@ -16,16 +16,14 @@ export default defineType({
 	],
 	preview: {
 		select: {
-			alt: "image.alt",
+			alt: "image.asset.alt",
 			imageUrl: "image.asset.url",
-			caption: "image.caption",
 		},
 		prepare(selection) {
-			const {alt, imageUrl, caption} = selection;
+			const {alt, imageUrl} = selection;
 
 			return {
 				title: alt || "Media Image",
-				subtitle: caption || "External storage image",
 				imageUrl,
 			};
 		},

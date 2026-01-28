@@ -61,7 +61,7 @@ export interface MediaSidebarProps {
   onClearAllFilters: () => void;
   onUpdateUsageFilter: (usage: UsageFilter) => void;
   onToggleDocumentType: (docType: string) => void;
-  onToggleMetadataFilter: (key: "hasAlt" | "hasTitle" | "hasCaption" | "missingAlt") => void;
+  onCycleMetadataFilter: (key: "alt" | "title" | "caption") => void;
   onAddDocument: (doc: SelectedDocument) => void;
   onRemoveDocument: (docId: string) => void;
 }
@@ -95,7 +95,7 @@ export function MediaSidebar({
   onClearAllFilters,
   onUpdateUsageFilter,
   onToggleDocumentType,
-  onToggleMetadataFilter,
+  onCycleMetadataFilter,
   onAddDocument,
   onRemoveDocument,
 }: MediaSidebarProps) {
@@ -530,44 +530,52 @@ export function MediaSidebar({
                 <Stack space={1}>
                   {[
                     {
-                      key: "hasAlt" as const,
-                      label: "Has alt text",
-                      value: advancedFilters.hasAlt,
+                      key: "alt" as const,
+                      label: "Alt text",
+                      value: advancedFilters.alt,
                     },
                     {
-                      key: "hasTitle" as const,
-                      label: "Has title",
-                      value: advancedFilters.hasTitle,
+                      key: "title" as const,
+                      label: "Title",
+                      value: advancedFilters.title,
                     },
                     {
-                      key: "hasCaption" as const,
-                      label: "Has caption",
-                      value: advancedFilters.hasCaption,
+                      key: "caption" as const,
+                      label: "Caption",
+                      value: advancedFilters.caption,
                     },
-                    {
-                      key: "missingAlt" as const,
-                      label: "Missing alt text",
-                      value: advancedFilters.missingAlt,
-                    },
-                  ].map(({ key, label, value }) => (
-                    <Box
-                      key={key}
-                      padding={2}
-                      style={{
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        background: value
-                          ? "var(--card-muted-bg-color)"
-                          : "transparent",
-                      }}
-                      onClick={() => onToggleMetadataFilter(key)}
-                    >
-                      <Flex align="center" gap={2}>
-                        <Checkbox checked={value} readOnly />
-                        <Text size={1}>{label}</Text>
-                      </Flex>
-                    </Box>
-                  ))}
+                  ].map(({ key, label, value }) => {
+                    const displayLabel =
+                      value === true
+                        ? `Has ${label.toLowerCase()}`
+                        : value === false
+                          ? `Missing ${label.toLowerCase()}`
+                          : label;
+                    return (
+                      <Box
+                        key={key}
+                        padding={2}
+                        style={{
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          background:
+                            value !== null
+                              ? "var(--card-muted-bg-color)"
+                              : "transparent",
+                        }}
+                        onClick={() => onCycleMetadataFilter(key)}
+                      >
+                        <Flex align="center" gap={2}>
+                          <Checkbox
+                            checked={value === true}
+                            indeterminate={value === false}
+                            readOnly
+                          />
+                          <Text size={1}>{displayLabel}</Text>
+                        </Flex>
+                      </Box>
+                    );
+                  })}
                 </Stack>
               </Stack>
             </Stack>

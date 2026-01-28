@@ -27,6 +27,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useClient } from "sanity";
 import useSWR from "swr";
+import { API_VERSION } from "../../constants";
 import { useCredentials } from "../../hooks/use-credentials";
 import {
   useAdvancedFilters,
@@ -37,6 +38,7 @@ import {
   useUploadQueue,
 } from "../shared/hooks";
 import {
+  DebouncedSearchInput,
   DeleteConfirmDialog,
   MediaDetailPanel,
   MediaGridView,
@@ -47,7 +49,6 @@ import {
   type Reference,
 } from "./components";
 import {
-  DebouncedSearchInput,
   PAGE_SIZE,
   SORT_OPTIONS,
   TAG_COLORS,
@@ -65,7 +66,7 @@ export function MediaPanel({
   onSelect,
   onCancelSelection,
 }: MediaPanelProps) {
-  const client = useClient({ apiVersion: "2024-01-01" });
+  const client = useClient({ apiVersion: API_VERSION });
   const { credentials, loading: credentialsLoading } = useCredentials(adapter);
 
   // UI State
@@ -141,11 +142,23 @@ export function MediaPanel({
         ? ` && count(*[_id in [${selectedDocIds.map((id) => `"${id}"`).join(",")}] && references(^._id)]) > 0`
         : "";
 
+    // Metadata filters (tri-state: null = no filter, true = has, false = missing)
     const metadataConditions = [
-      advancedFilters.advancedFilters.hasAlt ? "(defined(alt) && alt != '')" : null,
-      advancedFilters.advancedFilters.hasTitle ? "(defined(title) && title != '')" : null,
-      advancedFilters.advancedFilters.hasCaption ? "(defined(caption) && caption != '')" : null,
-      advancedFilters.advancedFilters.missingAlt ? "(!defined(alt) || alt == '')" : null,
+      advancedFilters.advancedFilters.alt === true
+        ? "(defined(alt) && alt != '')"
+        : advancedFilters.advancedFilters.alt === false
+          ? "(!defined(alt) || alt == '')"
+          : null,
+      advancedFilters.advancedFilters.title === true
+        ? "(defined(title) && title != '')"
+        : advancedFilters.advancedFilters.title === false
+          ? "(!defined(title) || title == '')"
+          : null,
+      advancedFilters.advancedFilters.caption === true
+        ? "(defined(caption) && caption != '')"
+        : advancedFilters.advancedFilters.caption === false
+          ? "(!defined(caption) || caption == '')"
+          : null,
     ]
       .filter(Boolean)
       .map((c) => ` && ${c}`)
@@ -175,10 +188,9 @@ export function MediaPanel({
       usage: advancedFilters.advancedFilters.usage,
       documentTypes: Array.from(advancedFilters.advancedFilters.documentTypes),
       documents: advancedFilters.advancedFilters.documents.map((d) => d._id),
-      hasAlt: advancedFilters.advancedFilters.hasAlt,
-      hasTitle: advancedFilters.advancedFilters.hasTitle,
-      hasCaption: advancedFilters.advancedFilters.hasCaption,
-      missingAlt: advancedFilters.advancedFilters.missingAlt,
+      alt: advancedFilters.advancedFilters.alt,
+      title: advancedFilters.advancedFilters.title,
+      caption: advancedFilters.advancedFilters.caption,
     });
 
     return {
@@ -445,7 +457,7 @@ export function MediaPanel({
         onClearAllFilters={advancedFilters.clearAllFilters}
         onUpdateUsageFilter={advancedFilters.updateUsageFilter}
         onToggleDocumentType={advancedFilters.toggleDocumentType}
-        onToggleMetadataFilter={advancedFilters.toggleMetadataFilter}
+        onCycleMetadataFilter={advancedFilters.cycleMetadataFilter}
         onAddDocument={advancedFilters.addDocument}
         onRemoveDocument={advancedFilters.removeDocument}
       />

@@ -27,10 +27,12 @@ export function DeleteConfirmDialog({
       ? `Are you sure you want to delete "${singleAssetName || "this asset"}"?`
       : `Are you sure you want to delete ${bulkCount} selected item${bulkCount > 1 ? "s" : ""}?`;
 
+  const isBulk = target === "bulk" && bulkCount > 1;
+
   return (
     <Dialog
       id="delete-dialog"
-      header="Delete asset"
+      header={isBulk ? "Delete assets" : "Delete asset"}
       onClose={onCancel}
       zOffset={1000}
       width={1}

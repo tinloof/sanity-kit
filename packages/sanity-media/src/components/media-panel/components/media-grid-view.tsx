@@ -1,12 +1,7 @@
 import { CheckmarkCircleIcon, PlayIcon } from "@sanity/icons";
 import { Box, Card, Flex, Grid, Stack, Text } from "@sanity/ui";
-import {
-  formatDuration,
-  formatFileSize,
-  TAG_COLORS,
-  type MediaAsset,
-  type Tag,
-} from "../types";
+import { formatDuration, formatFileSize } from "../../../utils";
+import { TAG_COLORS, type MediaAsset, type Tag } from "../types";
 
 export interface MediaGridViewProps {
   media: MediaAsset[];

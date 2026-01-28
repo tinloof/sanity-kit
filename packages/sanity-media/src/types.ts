@@ -1,5 +1,4 @@
 export interface MediaStoragePluginConfig {
-  maxFileSize?: number;
   allowedTypes?: string[];
   uploadPrefix?: string;
 }
@@ -50,10 +49,3 @@ export interface MediaFileValue {
   description?: string;
 }
 
-export function isVideoContentType(contentType: string) {
-  return contentType.startsWith("video/");
-}
-
-export function isImageContentType(contentType: string) {
-  return contentType.startsWith("image/");
-}
