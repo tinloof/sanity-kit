@@ -17,21 +17,21 @@
 		"./types": "./sanity.types.ts"
 	},
 	"dependencies": {
-		"@sanity/client": "^7.13.2",
-		"@sanity/vision": "^5.1.0",
+		"@sanity/client": "^7.14.1",
+		"@sanity/vision": "^5.7.0",
 		"@tinloof/sanity-document-i18n": "workspace:*",
 		"@tinloof/sanity-document-options": "workspace:*",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
-		"groq": "^5.1.0",
-		"react": "^19.2.3",
-		"react-dom": "^19.2.3",
-		"sanity": "^5.1.0",
-		"styled-components": "^6.1.19"
+		"groq": "^5.7.0",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"sanity": "^5.7.0",
+		"styled-components": "^6.3.8"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.10",
-		"@types/react": "^19.2.7",
+		"@biomejs/biome": "2.3.13",
+		"@types/react": "^19.2.10",
 		"@types/react-dom": "^19.2.3",
 		"typescript": "^5.9.3",
 		"watch": "^1.0.2"
