@@ -1,0 +1,83 @@
+---
+title: Components
+description: React components for Sanity integration including SanityImage and ExitPreview
+---
+
+# Components
+
+## SanityImage
+
+An optimized image component that automatically generates responsive images with proper srcsets, LQIP support, and focal point positioning.
+
+```tsx
+import {SanityImage} from "./lib/sanity";
+
+export default function MyComponent({image}) {
+  return (
+    <SanityImage
+      data={image}
+      aspectRatio="16/9"
+      sizes="(min-width: 768px) 50vw, 100vw"
+      lqip={true}
+      fetchPriority="high"
+      className="rounded-lg"
+    />
+  );
+}
+```
+
+### Props
+
+| Prop            | Type                                   | Description                                                         |
+| --------------- | -------------------------------------- | ------------------------------------------------------------------- |
+| `data`          | `SanityImage \| null`                  | The Sanity image object from your CMS                               |
+| `aspectRatio`   | `string` (optional)                    | Aspect ratio in `width/height` format (e.g., "16/9", "4/3")         |
+| `sizes`         | `string` (optional)                    | Responsive sizes attribute for optimal image loading                |
+| `lqip`          | `boolean` (optional, default: `false`) | Enable Low Quality Image Placeholder for smoother loading           |
+| `fetchPriority` | `"high" \| "default"` (optional)       | Fetch priority for the image (use "high" for above-the-fold images) |
+| `className`     | `string` (optional)                    | CSS class name                                                      |
+
+### Features
+
+- **Automatic responsive images**: Generates optimal srcsets for all screen sizes
+- **LQIP support**: Shows blurred placeholder while high-quality image loads
+- **Focal point support**: Respects Sanity's hotspot and crop settings
+- **Format optimization**: Automatically serves modern formats (WebP, AVIF) when supported
+- **Performance optimized**: Lazy loading by default, with eager loading for high-priority images
+
+## ExitPreview
+
+A client component for exiting Sanity's draft mode with a clean, accessible interface. The component is already marked with `"use client"` so it can be used directly in server components.
+
+```tsx
+// app/layout.tsx
+import {ExitPreview} from "@tinloof/sanity-next/components/exit-preview";
+import {disableDraftMode} from "@tinloof/sanity-next/actions";
+
+export default function RootLayout({children}) {
+  return (
+    <html>
+      <body>
+        {children}
+        <ExitPreview disableDraftMode={disableDraftMode} />
+      </body>
+    </html>
+  );
+}
+```
+
+### Props
+
+| Prop               | Type                             | Description                                   |
+| ------------------ | -------------------------------- | --------------------------------------------- |
+| `disableDraftMode` | `() => Promise<void>`            | Server action to disable draft mode           |
+| `className`        | `string` (optional)              | Custom CSS class (disables default styling)   |
+| `styles`           | `React.CSSProperties` (optional) | Additional inline styles merged with defaults |
+
+### Features
+
+- **Smart visibility**: Only shows when not in Sanity's Presentation Tool
+- **Loading state**: Shows feedback while disabling draft mode
+- **Auto-refresh**: Refreshes the page after successful disable
+- **Accessible**: Proper disabled states and ARIA attributes
+

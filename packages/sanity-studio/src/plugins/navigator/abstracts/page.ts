@@ -36,5 +36,17 @@ export default defineAbstractResolver((_schema, options) => {
 				group: "settings",
 			},
 		],
+		preview: {
+			select: {
+				title: "title",
+				name: "name",
+				heading: "heading",
+				pathname: "pathname.current",
+			},
+			prepare: ({title, name, heading, pathname}) => ({
+				title: title || name || heading || "Untitled",
+				subtitle: pathname,
+			}),
+		},
 	});
 });

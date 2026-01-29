@@ -1,0 +1,68 @@
+---
+title: Type-Safe Extends
+description: TypeScript autocomplete and type checking for parameterized extends using ExtendsRegistry
+---
+
+# Type-Safe Extends with `ExtendsRegistry`
+
+For better TypeScript autocomplete when using parameterized extends, you can augment the `ExtendsRegistry` interface:
+
+```typescript
+// In a .d.ts file or at the top of your schema file
+declare module "@tinloof/sanity-extends" {
+  interface ExtendsRegistry {
+    // Required parameters: at least one required key makes `parameters` required
+    sluggable: {source: string; maxLength?: number};
+
+    // Optional parameters: all keys optional means `parameters` is optional
+    seo: {defaultTitle?: string};
+
+    // No parameters: use `undefined` to disallow parameters entirely
+    publishable: undefined;
+  }
+}
+```
+
+The type system automatically determines whether `parameters` is required:
+
+- **Required parameters** — If any key is required (e.g., `source: string`), you must provide `parameters`
+- **Optional parameters** — If all keys are optional (e.g., `defaultTitle?: string`), `parameters` is optional
+- **No parameters** — Use `undefined` to indicate the abstract takes no parameters
+
+Once declared, you'll get autocomplete and type checking for the `extends` option:
+
+```typescript
+// sluggable: parameters required (has required `source` key)
+const article = defineType({
+  type: "document",
+  name: "article",
+  extends: {type: "sluggable", parameters: {source: "title"}}, // ✓ OK
+  fields: [{name: "title", type: "string"}],
+});
+
+// seo: parameters optional (all keys are optional)
+const page = defineType({
+  type: "document",
+  name: "page",
+  extends: {type: "seo"}, // ✓ OK - parameters not required
+  fields: [{name: "title", type: "string"}],
+});
+
+// publishable: no parameters allowed
+const post = defineType({
+  type: "document",
+  name: "post",
+  extends: {type: "publishable"}, // ✓ OK
+  // extends: {type: "publishable", parameters: {}}, // ✗ Error
+  fields: [{name: "title", type: "string"}],
+});
+
+// String syntax also gets autocomplete for registered names
+const author = defineType({
+  type: "document",
+  name: "author",
+  extends: "publishable", // ✓ Autocomplete suggests: "sluggable", "seo", "publishable"
+  fields: [{name: "name", type: "string"}],
+});
+```
+

@@ -201,53 +201,54 @@ export default function defineStructure(
 		return icon ? documentItem.icon(icon) : documentItem;
 	}
 
-	// Group schemas by their structureGroup option
-	const groupedSchemas = documentSchemas.reduce(
+	// Collect schemas by group for later use
+	const schemasByGroup = documentSchemas.reduce(
 		(groups, schema) => {
-			const group = schema.options?.structureGroup || "Ungrouped";
-			if (!groups[group]) {
-				groups[group] = [];
+			const group = schema.options?.structureGroup;
+			if (group) {
+				if (!groups[group]) {
+					groups[group] = [];
+				}
+				groups[group].push(schema);
 			}
-			groups[group].push(schema);
 			return groups;
 		},
 		{} as Record<string, DocumentDefinition[]>,
 	);
 
-	const groupedItems: ReturnType<typeof createSchemaItem>[] = [];
-	const ungroupedItems: ReturnType<typeof createSchemaItem>[] = [];
+	// Build structure items preserving the natural order
+	const structureItems: NonNullable<ReturnType<typeof createSchemaItem>>[] = [];
+	const seenGroups = new Set<string>();
 
-	Object.entries(groupedSchemas).forEach(([groupName, schemas]) => {
-		// Filter out null items
-		const schemaItems = schemas
-			.map(createSchemaItem)
-			.filter((item): item is NonNullable<typeof item> => Boolean(item));
+	for (const schema of documentSchemas) {
+		const group = schema.options?.structureGroup;
 
-		if (schemaItems.length === 0) {
-			return; // Skip empty groups
+		if (!group) {
+			// Ungrouped item - add directly at its natural position
+			const item = createSchemaItem(schema);
+			if (item) {
+				structureItems.push(item);
+			}
+		} else if (!seenGroups.has(group)) {
+			// First occurrence of this group - create the group with all its items
+			seenGroups.add(group);
+
+			const groupSchemas = schemasByGroup[group];
+			const schemaItems = groupSchemas
+				.map(createSchemaItem)
+				.filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+			if (schemaItems.length > 0) {
+				const groupTitle = group.charAt(0).toUpperCase() + group.slice(1);
+				structureItems.push(
+					S.listItem()
+						.title(groupTitle)
+						.child(S.list().title(groupTitle).items(schemaItems)),
+				);
+			}
 		}
-
-		if (groupName === "Ungrouped") {
-			ungroupedItems.push(...schemaItems);
-		} else {
-			const groupTitle = groupName.charAt(0).toUpperCase() + groupName.slice(1);
-
-			groupedItems.push(
-				S.listItem()
-					.title(groupTitle)
-					.child(S.list().title(groupTitle).items(schemaItems)),
-			);
-		}
-	});
-
-	// Combine grouped items, divider, and ungrouped items
-	const structureItems = [
-		...groupedItems,
-		...(groupedItems.length > 0 && ungroupedItems.length > 0
-			? [S.divider()]
-			: []),
-		...ungroupedItems,
-	].filter((item): item is NonNullable<typeof item> => Boolean(item));
+		// If group already seen, skip (already added with the group)
+	}
 
 	return () => S.list().title(toolTitle).items(structureItems);
 }
