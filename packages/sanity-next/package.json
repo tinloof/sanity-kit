@@ -114,7 +114,7 @@
 		"@portabletext/react": "^6.0.0",
 		"@portabletext/types": "^4.0.0",
 		"@sanity/asset-utils": "^2.3.0",
-		"@sanity/client": "^7.13.2",
+		"@sanity/client": "^7.14.1",
 		"@sanity/image-url": "^2.0.2",
 		"sanity": "^5.1.0",
 		"sanity-plugin-utils": "^1.8.0",

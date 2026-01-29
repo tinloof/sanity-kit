@@ -80,7 +80,7 @@
 	"dependencies": {
 		"@portabletext/react": "^6.0.0",
 		"@sanity/asset-utils": "^2.3.0",
-		"@sanity/client": "^7.13.2",
+		"@sanity/client": "^7.14.1",
 		"@sanity/image-url": "^2.0.2",
 		"groq": "^5.1.0",
 		"speakingurl": "^14.0.1"
