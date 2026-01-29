@@ -59,7 +59,7 @@
 		"@sanity/incompatible-plugin": "^1.0.5",
 		"@sanity/orderable-document-list": "^1.4.2",
 		"@sanity/ui": "^3.1.11",
-		"@sanity/util": "^4.22.0",
+		"@sanity/util": "^5.1.0",
 		"@tanstack/react-virtual": "^3.13.13",
 		"@tinloof/sanity-web": "workspace:*",
 		"lodash": "^4.17.21",
@@ -81,15 +81,15 @@
 		"@types/react-dom": "^19.2.3",
 		"react-is": "^19.2.3",
 		"rimraf": "^6.1.2",
-		"sanity": "^4.22.0",
+		"sanity": "^5.1.0",
 		"styled-components": "^6.1.19",
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
 		"@tinloof/sanity-extends": "workspace:*",
-		"react": "^18.3.1 || ^19",
-		"react-dom": "^18.3.1 || ^19",
-		"sanity": "^3.80.1 || ^4"
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3",
+		"sanity": "^5.0.0"
 	},
 	"engines": {
 		"node": ">=14"
