@@ -87,9 +87,9 @@
 	},
 	"peerDependencies": {
 		"@tinloof/sanity-extends": "workspace:*",
-		"react": "^18.3.1 || ^19",
-		"react-dom": "^18.3.1 || ^19",
-		"sanity": "^3.80.1 || ^4 || ^5.0.0"
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3",
+		"sanity": "^5.0.0"
 	},
 	"engines": {
 		"node": ">=14"
