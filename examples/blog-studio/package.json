@@ -18,16 +18,16 @@
 	},
 	"dependencies": {
 		"@sanity/client": "^7.13.1",
-		"@sanity/code-input": "^6.0.3",
+		"@sanity/code-input": "^7.0.6",
 		"@sanity/table": "^2.0.0",
-		"@sanity/vision": "^4.20.3",
+		"@sanity/vision": "^5.7.0",
 		"@tinloof/sanity-document-options": "workspace:*",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
-		"groq": "^4.20.3",
+		"groq": "^5.7.0",
 		"react": "^19.2.1",
 		"react-dom": "^19.2.1",
-		"sanity": "^4.20.3",
+		"sanity": "^5.7.0",
 		"styled-components": "^6.1.19"
 	},
 	"devDependencies": {
