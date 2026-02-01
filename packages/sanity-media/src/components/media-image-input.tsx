@@ -323,6 +323,7 @@ function UploadProgress({
             tone="critical"
             onClick={onCancel}
             fontSize={1}
+            padding={3}
           />
         </Flex>
         <ProgressBar>
@@ -659,6 +660,8 @@ export function MediaImageInput(props: ObjectInputProps) {
                 mode="bleed"
                 onClick={handleBrowse}
                 disabled={readOnly}
+                fontSize={1}
+                padding={3}
               />
             </Flex>
           </Flex>

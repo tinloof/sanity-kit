@@ -61,7 +61,7 @@ export function SelectionModeFooter({
             {selectedAsset.originalFilename || "Untitled"}
           </Text>
         </Flex>
-        <Button text="Select" tone="primary" onClick={onSelect} fontSize={1} />
+        <Button text="Select" tone="primary" onClick={onSelect} fontSize={1} padding={3} />
       </Flex>
     </Card>
   );
