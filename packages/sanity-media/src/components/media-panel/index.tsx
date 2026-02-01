@@ -1058,6 +1058,7 @@ export function MediaPanel({
                   }
                 }}
                 onToggleSelection={bulkSelection.toggleSelection}
+                showTypeIndicator={typeFilter === "all"}
               />
             ) : (
               <MediaListView

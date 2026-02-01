@@ -779,6 +779,7 @@ export function MediaBrowserDialog({
                   tags={tags}
                   onSelect={handleAssetSelect}
                   showCheckboxes={false}
+                  showTypeIndicator={!assetType && typeFilter === "all"}
                 />
               ) : (
                 <AssetList
