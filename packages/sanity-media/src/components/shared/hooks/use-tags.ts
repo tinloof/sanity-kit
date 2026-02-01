@@ -71,10 +71,13 @@ export function useTags(): UseTagsResult {
 
 export interface UseReferencingDocTypesOptions {
   adapter: StorageAdapter;
+  /** Filter to only show doc types referencing specific asset type */
+  assetType?: "image" | "video";
 }
 
 export function useReferencingDocTypes({
   adapter,
+  assetType,
 }: UseReferencingDocTypesOptions): {
   docTypes: string[];
   isLoading: boolean;
@@ -82,11 +85,17 @@ export function useReferencingDocTypes({
   const client = useClient({ apiVersion: API_VERSION });
 
   const { data: docTypes = [], isLoading } = useSWR(
-    ["referencingDocTypes", adapter.typePrefix],
+    ["referencingDocTypes", adapter.typePrefix, assetType],
     async () => {
+      const typeCondition = assetType === "image"
+        ? `_type == $imageType`
+        : assetType === "video"
+          ? `_type == $videoType`
+          : `_type in [$imageType, $videoType]`;
+
       const result = await client.fetch<string[]>(
         `
-        array::unique(*[references(*[_type in [$imageType, $videoType]]._id)]._type)
+        array::unique(*[references(*[${typeCondition}]._id)]._type)
       `,
         {
           imageType: `${adapter.typePrefix}.imageAsset`,

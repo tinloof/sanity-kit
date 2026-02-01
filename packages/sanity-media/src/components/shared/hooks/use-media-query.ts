@@ -207,32 +207,55 @@ export function useMediaQuery({
     { keepPreviousData: true }
   );
 
-  // SWR for counts
+  // SWR for counts - filtered by assetType when specified, excludes drafts
   const { data: counts, mutate: mutateCounts } = useSWR(
-    ["counts", adapter.typePrefix],
-    () =>
-      client.fetch<{ total: number; images: number; videos: number }>(`{
-      "total": count(*[_type in ["${adapter.typePrefix}.imageAsset", "${adapter.typePrefix}.videoAsset"]]),
-      "images": count(*[_type == "${adapter.typePrefix}.imageAsset"]),
-      "videos": count(*[_type == "${adapter.typePrefix}.videoAsset"])
-    }`),
+    ["counts", adapter.typePrefix, assetType],
+    () => {
+      // When assetType is specified, only count that type (excluding drafts)
+      if (assetType === "image") {
+        return client.fetch<{ total: number; images: number; videos: number }>(`{
+          "total": count(*[_type == "${adapter.typePrefix}.imageAsset" && !(_id match "drafts.*")]),
+          "images": count(*[_type == "${adapter.typePrefix}.imageAsset" && !(_id match "drafts.*")]),
+          "videos": 0
+        }`);
+      } else if (assetType === "video") {
+        return client.fetch<{ total: number; images: number; videos: number }>(`{
+          "total": count(*[_type == "${adapter.typePrefix}.videoAsset" && !(_id match "drafts.*")]),
+          "images": 0,
+          "videos": count(*[_type == "${adapter.typePrefix}.videoAsset" && !(_id match "drafts.*")])
+        }`);
+      }
+      // Default: count all types (excluding drafts)
+      return client.fetch<{ total: number; images: number; videos: number }>(`{
+        "total": count(*[_type in ["${adapter.typePrefix}.imageAsset", "${adapter.typePrefix}.videoAsset"] && !(_id match "drafts.*")]),
+        "images": count(*[_type == "${adapter.typePrefix}.imageAsset" && !(_id match "drafts.*")]),
+        "videos": count(*[_type == "${adapter.typePrefix}.videoAsset" && !(_id match "drafts.*")])
+      }`);
+    },
     { fallbackData: { total: 0, images: 0, videos: 0 } }
   );
 
-  // SWR for usage counts
+  // SWR for usage counts - filtered by assetType when specified, excludes drafts
   const { data: usageCounts } = useSWR(
-    ["usageCounts", adapter.typePrefix],
-    () =>
-      client.fetch<{ inUse: number; unused: number }>(
+    ["usageCounts", adapter.typePrefix, assetType],
+    () => {
+      const typeCondition = assetType === "image"
+        ? `_type == $imageType && !(_id match "drafts.*")`
+        : assetType === "video"
+          ? `_type == $videoType && !(_id match "drafts.*")`
+          : `_type in [$imageType, $videoType] && !(_id match "drafts.*")`;
+
+      return client.fetch<{ inUse: number; unused: number }>(
         `{
-      "inUse": count(*[_type in [$imageType, $videoType] && count(*[references(^._id) && !(_type in [$imageType, $videoType])]) > 0]),
-      "unused": count(*[_type in [$imageType, $videoType] && count(*[references(^._id) && !(_type in [$imageType, $videoType])]) == 0])
-    }`,
+          "inUse": count(*[${typeCondition} && count(*[references(^._id) && !(_type in [$imageType, $videoType])]) > 0]),
+          "unused": count(*[${typeCondition} && count(*[references(^._id) && !(_type in [$imageType, $videoType])]) == 0])
+        }`,
         {
           imageType: `${adapter.typePrefix}.imageAsset`,
           videoType: `${adapter.typePrefix}.videoAsset`,
         }
-      ),
+      );
+    },
     { fallbackData: { inUse: 0, unused: 0 } }
   );
 

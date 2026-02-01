@@ -59,7 +59,7 @@ export function AssetGrid({
           }
         `}
       </style>
-      <Grid columns={[2, 3, 4, 5, 6]} gap={3}>
+      <Grid columns={[2, 2, 3, 4, 5]} gap={3}>
         {assets.map((item) => {
           const isSelected =
             selectedId === item._id || selectedIds?.has(item._id);

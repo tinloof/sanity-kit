@@ -36,7 +36,6 @@ import {
   useClient,
   useFormValue,
 } from "sanity";
-import { useRouter } from "sanity/router";
 import { styled } from "styled-components";
 import { API_VERSION } from "../constants";
 import { useAdapter } from "../context/adapter-context";
@@ -44,13 +43,9 @@ import { formatDuration } from "../utils";
 import {
   getPendingSelection,
   clearPendingSelection,
-  type ReturnIntent,
 } from "../context/selection-context";
 import { handleVideoUpload } from "../upload-handler";
 import { MediaBrowserDialog } from "./shared/media-browser-dialog";
-
-// Session storage key for selection context
-const SELECTION_CONTEXT_KEY = "media-tool-selection-context";
 
 // ============================================================================
 // Styled Components
@@ -343,16 +338,14 @@ function UploadProgress({
 export function MediaVideoInput(props: ObjectInputProps) {
   const { value, onChange, readOnly, path, schemaType } = props;
   const client = useClient({ apiVersion: API_VERSION });
-  const router = useRouter();
   const { adapter, credentials, loading: credentialsLoading } = useAdapter();
 
-  // Get document info for selection navigation
+  // Get document info for pending selection handling
   const document = useFormValue([]) as SanityDocument | undefined;
   // Normalize document ID by removing drafts. prefix for consistent matching
   const rawDocumentId = document?._id;
   const documentId = rawDocumentId?.replace(/^drafts\./, "");
-  const documentType = document?._type || schemaType?.name || "unknown";
-  // Build field path with bracket notation for array keys (required for intent URLs)
+  // Build field path with bracket notation for array keys
   const fieldPath = path.reduce<string>((result, segment) => {
     if (typeof segment === "object" && "_key" in segment) {
       return `${result}[_key=="${segment._key}"]`;
@@ -558,37 +551,10 @@ export function MediaVideoInput(props: ObjectInputProps) {
     fileInputRef.current?.click();
   }, []);
 
-  // Navigate to media tool for browsing
-  const handleBrowseNavigation = useCallback(() => {
-    if (!documentId) {
-      // Fallback to dialog if no document ID
-      setShowBrowser(true);
-      return;
-    }
-
-    // Store selection context in session storage
-    // Include the full current URL so we can return to the exact same place
-    const selectionContext = {
-      returnIntent: {
-        documentId,
-        documentType,
-        fieldPath,
-        sourceUrl: window.location.href,
-      } as ReturnIntent,
-      assetType: "video" as const,
-      timestamp: Date.now(),
-    };
-    sessionStorage.setItem(
-      SELECTION_CONTEXT_KEY,
-      JSON.stringify(selectionContext)
-    );
-
-    // Navigate to media tool
-    const currentPath = window.location.pathname;
-    const pathParts = currentPath.split("/").filter(Boolean);
-    const basePath = pathParts.length > 0 ? `/${pathParts[0]}` : "";
-    window.location.href = `${basePath}/media`;
-  }, [documentId, documentType, fieldPath]);
+  // Open media browser dialog
+  const handleBrowse = useCallback(() => {
+    setShowBrowser(true);
+  }, []);
 
   // Loading state
   if (credentialsLoading) {
@@ -641,7 +607,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
             />
             <ActionsMenu
               onUpload={triggerUpload}
-              onBrowse={handleBrowseNavigation}
+              onBrowse={handleBrowse}
               onClear={handleRemove}
               downloadUrl={assetPreview.url}
               copyUrl={assetPreview.url}
@@ -738,7 +704,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
                 icon={SearchIcon}
                 text="Browse"
                 mode="bleed"
-                onClick={handleBrowseNavigation}
+                onClick={handleBrowse}
                 disabled={readOnly}
               />
             </Flex>
