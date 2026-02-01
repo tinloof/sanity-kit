@@ -90,6 +90,8 @@ export interface UploadItem {
   status: "pending" | "uploading" | "completed" | "error";
   progress: number;
   error?: string;
+  /** The created asset document ID (set on successful upload) */
+  assetId?: string;
   // User-provided metadata
   alt?: string;
   caption?: string;
