@@ -239,8 +239,9 @@ export function MediaBrowserDialog({
           );
         };
 
+        let result: { _ref: string };
         if (item.type === "image") {
-          await handleImageUpload(
+          result = await handleImageUpload(
             item.file,
             adapter,
             credentials,
@@ -249,7 +250,7 @@ export function MediaBrowserDialog({
             { alt: item.alt, caption: item.caption, tags: item.tags }
           );
         } else {
-          await handleVideoUpload(
+          result = await handleVideoUpload(
             item.file,
             adapter,
             credentials,
@@ -261,7 +262,7 @@ export function MediaBrowserDialog({
 
         setUploadQueue((prev) =>
           prev.map((i) =>
-            i.id === item.id ? { ...i, status: "completed", progress: 100 } : i
+            i.id === item.id ? { ...i, status: "completed", progress: 100, assetId: result._ref } : i
           )
         );
       } catch (error) {
@@ -294,18 +295,24 @@ export function MediaBrowserDialog({
       toStart.forEach((item) => uploadSingleItem(item));
     }
 
-    // Refresh list when all uploads complete
+    // Handle upload completion
     const allDone =
       uploadQueue.length > 0 &&
       uploadQueue.every((i) => i.status === "completed" || i.status === "error");
     if (allDone) {
-      mutateMedia();
-      setTimeout(() => {
-        setUploadQueue((prev) => prev.filter((i) => i.status === "error"));
-        setActiveTab("browse");
-      }, 1500);
+      const completed = uploadQueue.filter((i) => i.status === "completed" && i.assetId);
+
+      // If we have a successful upload, auto-select it and close
+      if (completed.length > 0 && completed[0].assetId) {
+        const assetId = completed[0].assetId;
+        onSelect({ _id: assetId } as MediaAsset);
+        onClose();
+      } else {
+        // All failed - stay in upload tab to show errors
+        mutateMedia();
+      }
     }
-  }, [uploadQueue, uploadSingleItem, mutateMedia]);
+  }, [uploadQueue, uploadSingleItem, mutateMedia, onSelect, onClose]);
 
   // Advanced filter helpers
   const activeFilterCount =
