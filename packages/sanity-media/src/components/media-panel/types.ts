@@ -46,6 +46,8 @@ export interface MediaPanelProps {
   onSelect?: (asset: MediaAsset) => void;
   /** Callback to cancel selection mode */
   onCancelSelection?: () => void;
+  /** Callback to open settings panel */
+  onOpenSettings?: () => void;
 }
 
 export interface MediaAsset {

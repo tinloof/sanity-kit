@@ -1,3 +1,4 @@
+import { ArrowLeftIcon } from "@sanity/icons";
 import {
   Box,
   Button,
@@ -17,9 +18,11 @@ const SECRETS_NAMESPACE = "media-storage";
 
 interface SettingsPanelProps {
   adapter: StorageAdapter;
+  /** Callback to go back to media panel */
+  onBack?: () => void;
 }
 
-export function SettingsPanel({ adapter }: SettingsPanelProps) {
+export function SettingsPanel({ adapter, onBack }: SettingsPanelProps) {
   const { secrets, loading, storeSecrets } =
     useSecrets<Record<string, string>>(SECRETS_NAMESPACE);
   const [values, setValues] = useState<Record<string, string>>({});
@@ -104,14 +107,26 @@ export function SettingsPanel({ adapter }: SettingsPanelProps) {
     <Box paddingY={5}>
       <Stack space={5}>
         <Box paddingX={4}>
-          <Stack space={2}>
-            <Text size={3} weight="bold">
-              Storage Configuration
-            </Text>
-            <Text size={1} muted>
-              Configure your {adapter.name} credentials to enable media uploads
-            </Text>
-          </Stack>
+          <Flex justify="space-between" align="flex-start">
+            <Stack space={2}>
+              <Text size={3} weight="bold">
+                Storage Configuration
+              </Text>
+              <Text size={1} muted>
+                Configure your {adapter.name} credentials to enable media uploads
+              </Text>
+            </Stack>
+            {onBack && (
+              <Button
+                icon={ArrowLeftIcon}
+                text="Back to Media"
+                mode="ghost"
+                onClick={onBack}
+                fontSize={1}
+                padding={2}
+              />
+            )}
+          </Flex>
         </Box>
 
         <Box paddingX={4}>

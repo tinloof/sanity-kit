@@ -3,6 +3,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CloseIcon,
+  CogIcon,
   ControlsIcon,
   ImageIcon,
   PlayIcon,
@@ -65,6 +66,7 @@ export function MediaPanel({
   selectionAssetType,
   onSelect,
   onCancelSelection,
+  onOpenSettings,
 }: MediaPanelProps) {
   const client = useClient({ apiVersion: API_VERSION });
   const { credentials, loading: credentialsLoading } = useCredentials(adapter);
@@ -463,10 +465,21 @@ export function MediaPanel({
       />
 
       {/* Main Content */}
-      <Box style={{ flex: 1, minWidth: 0, minHeight: 0, overflow: "auto" }} paddingY={4}>
-        <Stack space={4}>
-          {/* Header */}
-          <Flex justify="space-between" align="center" paddingX={4} gap={2} wrap="wrap">
+      <Box style={{ flex: 1, minWidth: 0, minHeight: 0, display: "flex", flexDirection: "column" }}>
+        {/* Sticky Header */}
+        <Box
+          paddingY={4}
+          style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
+            background: "var(--card-bg-color)",
+            borderBottom: "1px solid var(--card-border-color)",
+          }}
+        >
+          <Stack space={4}>
+            {/* Header */}
+            <Flex justify="space-between" align="center" paddingX={4} gap={2} wrap="wrap">
             {bulkSelection.hasSelection && !selectionMode ? (
               <>
                 <Flex align="center" gap={2}>
@@ -606,15 +619,26 @@ export function MediaPanel({
                   </Flex>
                 )}
                 {!selectionMode && (
-                  <Button
-                    icon={AddIcon}
-                    text="Upload"
-                    mode="ghost"
-                    tone="primary"
-                    onClick={() => uploadQueue.fileInputRef.current?.click()}
-                    fontSize={1}
-                    padding={2}
-                  />
+                  <Flex gap={2} align="center">
+                    <Button
+                      icon={AddIcon}
+                      text="Upload"
+                      mode="ghost"
+                      tone="primary"
+                      onClick={() => uploadQueue.fileInputRef.current?.click()}
+                      fontSize={1}
+                      padding={2}
+                    />
+                    {onOpenSettings && (
+                      <Button
+                        icon={CogIcon}
+                        mode="ghost"
+                        onClick={onOpenSettings}
+                        padding={2}
+                        title="Settings"
+                      />
+                    )}
+                  </Flex>
                 )}
               </>
             )}
@@ -631,15 +655,15 @@ export function MediaPanel({
           {/* Controls */}
           <Box paddingX={4}>
             <Flex gap={2} wrap="wrap" align="center">
-              {/* Sidebar & View Toggle */}
-              <Flex
-                style={{
-                  borderRadius: "3px",
-                  overflow: "hidden",
-                  border: "1px solid var(--card-border-color)",
-                }}
-              >
-                <Box className="media-sidebar-toggle">
+              {/* Sidebar Toggle */}
+              <Box className="media-sidebar-toggle">
+                <Flex
+                  style={{
+                    borderRadius: "3px",
+                    overflow: "hidden",
+                    border: "1px solid var(--card-border-color)",
+                  }}
+                >
                   <Button
                     icon={ControlsIcon}
                     mode="bleed"
@@ -655,14 +679,17 @@ export function MediaPanel({
                         : "transparent",
                     }}
                   />
-                </Box>
-                <Box
-                  className="media-sidebar-toggle"
-                  style={{
-                    width: "1px",
-                    background: "var(--card-border-color)",
-                  }}
-                />
+                </Flex>
+              </Box>
+
+              {/* View Toggle */}
+              <Flex
+                style={{
+                  borderRadius: "3px",
+                  overflow: "hidden",
+                  border: "1px solid var(--card-border-color)",
+                }}
+              >
                 <Button
                   icon={ThLargeIcon}
                   mode="bleed"
@@ -844,7 +871,12 @@ export function MediaPanel({
               </Flex>
             </Box>
           )}
+          </Stack>
+        </Box>
 
+        {/* Scrollable Content */}
+        <Box style={{ flex: 1, overflow: "auto" }} paddingY={4}>
+          <Stack space={4}>
           {/* Results count and pagination */}
           <Flex paddingX={4} justify="space-between" align="center">
             <Text size={1} muted>
@@ -1045,7 +1077,8 @@ export function MediaPanel({
               />
             )}
           </Box>
-        </Stack>
+          </Stack>
+        </Box>
 
         {/* Media Detail Side Panel */}
         {selectedMedia && (
