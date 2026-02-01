@@ -152,6 +152,7 @@ export function StagingDialog({
                         }
                         placeholder="Alt text"
                         fontSize={1}
+                        padding={3}
                       />
                       <TextArea
                         value={item.caption || ""}
@@ -176,6 +177,7 @@ export function StagingDialog({
                         }
                         placeholder="Title"
                         fontSize={1}
+                        padding={3}
                       />
                       <TextArea
                         value={item.description || ""}
@@ -222,8 +224,8 @@ export function StagingDialog({
                                 <Button
                                   icon={CloseIcon}
                                   mode="bleed"
-                                  padding={1}
-                                  fontSize={0}
+                                  padding={2}
+                                  fontSize={1}
                                   onClick={() => {
                                     onUpdateItem(item.id, {
                                       tags: item.tags?.filter(
@@ -246,6 +248,7 @@ export function StagingDialog({
                             text="Add tag"
                             mode="ghost"
                             fontSize={1}
+                            padding={3}
                           />
                         }
                         id={`staging-tag-${item.id}`}
@@ -303,13 +306,14 @@ export function StagingDialog({
 
       {/* Actions */}
       <Flex gap={2} justify="flex-end">
-        <Button text="Cancel" mode="ghost" onClick={onClose} fontSize={1} />
+        <Button text="Cancel" mode="ghost" onClick={onClose} fontSize={1} padding={3} />
         <Button
           icon={UploadIcon}
           text="Upload"
           tone="primary"
           onClick={onUpload}
           fontSize={1}
+          padding={3}
         />
       </Flex>
     </Stack>

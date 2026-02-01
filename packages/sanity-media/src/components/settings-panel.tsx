@@ -123,7 +123,7 @@ export function SettingsPanel({ adapter, onBack }: SettingsPanelProps) {
                 mode="ghost"
                 onClick={onBack}
                 fontSize={1}
-                padding={2}
+                padding={3}
               />
             )}
           </Flex>

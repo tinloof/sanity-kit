@@ -4,7 +4,6 @@ import {
   ChevronRightIcon,
   CloseIcon,
   CogIcon,
-  ControlsIcon,
   ImageIcon,
   PlayIcon,
   SortIcon,
@@ -425,6 +424,7 @@ export function MediaPanel({
       {/* Tag Sidebar */}
       <MediaSidebar
         open={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
         tags={tagEditor.tags}
         selectedTagIds={selectedTagIds}
         onTagSelect={toggleTagSelection}
@@ -607,6 +607,7 @@ export function MediaPanel({
                       tone="primary"
                       onClick={() => uploadQueue.fileInputRef.current?.click()}
                       padding={2}
+                      fontSize={1}
                       title="Upload"
                     />
                     <Button
@@ -614,6 +615,7 @@ export function MediaPanel({
                       mode="bleed"
                       onClick={onCancelSelection}
                       padding={2}
+                      fontSize={1}
                       title="Cancel and go back"
                     />
                   </Flex>
@@ -627,14 +629,15 @@ export function MediaPanel({
                       tone="primary"
                       onClick={() => uploadQueue.fileInputRef.current?.click()}
                       fontSize={1}
-                      padding={2}
+                      padding={3}
                     />
                     {onOpenSettings && (
                       <Button
                         icon={CogIcon}
                         mode="ghost"
                         onClick={onOpenSettings}
-                        padding={2}
+                        padding={3}
+                        fontSize={1}
                         title="Settings"
                       />
                     )}
@@ -655,33 +658,6 @@ export function MediaPanel({
           {/* Controls */}
           <Box paddingX={4}>
             <Flex gap={2} wrap="wrap" align="center">
-              {/* Sidebar Toggle */}
-              <Box className="media-sidebar-toggle">
-                <Flex
-                  style={{
-                    borderRadius: "3px",
-                    overflow: "hidden",
-                    border: "1px solid var(--card-border-color)",
-                  }}
-                >
-                  <Button
-                    icon={ControlsIcon}
-                    mode="bleed"
-                    tone={sidebarOpen ? "primary" : "default"}
-                    onClick={() => setSidebarOpen(!sidebarOpen)}
-                    padding={3}
-                    fontSize={1}
-                    title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
-                    style={{
-                      borderRadius: 0,
-                      background: sidebarOpen
-                        ? "var(--card-badge-default-bg-color)"
-                        : "transparent",
-                    }}
-                  />
-                </Flex>
-              </Box>
-
               {/* View Toggle */}
               <Flex
                 style={{
@@ -834,43 +810,6 @@ export function MediaPanel({
             </Flex>
           </Box>
 
-          {/* Active Filter Chips */}
-          {advancedFilters.activeFilterChips.length > 0 && (
-            <Box paddingX={4}>
-              <Flex gap={2} wrap="wrap" align="center">
-                <Text size={0} muted>
-                  Filters:
-                </Text>
-                {advancedFilters.activeFilterChips.map((chip, index) => (
-                  <Box
-                    key={`${chip.label}-${index}`}
-                    padding={2}
-                    style={{
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                      background: "var(--card-badge-default-bg-color)",
-                      borderRadius: "4px",
-                      fontSize: "11px",
-                    }}
-                    onClick={chip.onRemove}
-                  >
-                    <Text size={0}>{chip.label}</Text>
-                    <CloseIcon style={{ fontSize: 10 }} />
-                  </Box>
-                ))}
-                <Button
-                  text="Clear all"
-                  mode="bleed"
-                  tone="critical"
-                  fontSize={0}
-                  padding={1}
-                  onClick={advancedFilters.clearAllFilters}
-                />
-              </Flex>
-            </Box>
-          )}
           </Stack>
         </Box>
 
@@ -921,7 +860,7 @@ export function MediaPanel({
                       <Button
                         text="Clear"
                         mode="ghost"
-                        fontSize={0}
+                        fontSize={1}
                         padding={2}
                         onClick={uploadQueue.clearCompletedUploads}
                       />
