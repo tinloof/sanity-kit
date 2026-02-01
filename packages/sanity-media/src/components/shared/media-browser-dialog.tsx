@@ -1,23 +1,20 @@
 import {
-  AddIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  CloseIcon,
+  FilterIcon,
   ImageIcon,
   SearchIcon,
-  TagIcon,
+  UploadIcon,
 } from "@sanity/icons";
 import {
   Box,
   Button,
   Card,
-  Checkbox,
   Dialog,
   Flex,
   Spinner,
   Stack,
-  Tab,
-  TabList,
-  TabPanel,
   Text,
   TextInput,
 } from "@sanity/ui";
@@ -31,15 +28,12 @@ import type {
   AdvancedFilters,
   MediaAsset,
   SortOption,
-  StagingItem,
   TypeFilter,
-  UploadItem,
   UsageFilter,
   ViewMode,
 } from "../media-panel/types";
 import {
   DEFAULT_ADVANCED_FILTERS,
-  MAX_CONCURRENT_UPLOADS,
   PAGE_SIZE,
   SORT_OPTIONS,
   TAG_COLORS,
@@ -49,11 +43,6 @@ import { AssetList } from "./asset-list";
 import { FilterToolbar } from "./filter-toolbar";
 import { useMediaQuery } from "./hooks/use-media-query";
 import { useDocumentSearch, useReferencingDocTypes, useTags } from "./hooks/use-tags";
-import {
-  cleanupStagingItems,
-  createStagingItems,
-  StagingDialog,
-} from "./staging-dialog";
 
 export interface MediaBrowserDialogProps {
   /** Callback when an asset is selected */
@@ -66,9 +55,7 @@ export interface MediaBrowserDialogProps {
   assetType?: "image" | "video";
   /** Allow uploading new files */
   allowUpload?: boolean;
-  /** Initial tab to show */
-  initialTab?: "browse" | "upload";
-  /** Initial files to stage for upload */
+  /** Initial files to stage for upload (will trigger immediate upload) */
   initialFiles?: File[];
 }
 
@@ -78,7 +65,6 @@ export function MediaBrowserDialog({
   adapter,
   assetType,
   allowUpload = true,
-  initialTab = "browse",
   initialFiles,
 }: MediaBrowserDialogProps) {
   const client = useClient({ apiVersion: API_VERSION });
@@ -86,10 +72,13 @@ export function MediaBrowserDialog({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // UI State
-  const [activeTab, setActiveTab] = useState<"browse" | "upload">(initialTab);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [selectedAsset, setSelectedAsset] = useState<MediaAsset | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+
+  // Upload State
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Filter State
   const [search, setSearch] = useState("");
@@ -104,13 +93,9 @@ export function MediaBrowserDialog({
   // Document search for advanced filters
   const [documentSearchQuery, setDocumentSearchQuery] = useState("");
 
-  // Upload State
-  const [stagingItems, setStagingItems] = useState<StagingItem[]>([]);
-  const [uploadQueue, setUploadQueue] = useState<UploadItem[]>([]);
-
   // Data hooks
   const { tags } = useTags();
-  const { docTypes: referencingDocTypes } = useReferencingDocTypes({ adapter });
+  const { docTypes: referencingDocTypes } = useReferencingDocTypes({ adapter, assetType });
   const { results: documentSearchResults, isLoading: documentSearchLoading } =
     useDocumentSearch({ adapter, query: documentSearchQuery });
   const {
@@ -133,186 +118,89 @@ export function MediaBrowserDialog({
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
-  // Initialize staging items from initialFiles
-  useEffect(() => {
-    if (initialFiles && initialFiles.length > 0) {
-      const items = createStagingItems(initialFiles);
-      setStagingItems(items);
-      if (items.length > 0) {
-        setActiveTab("upload");
-      }
-    }
-  }, [initialFiles]);
-
-  // Cleanup staging items on unmount
-  useEffect(() => {
-    return () => {
-      cleanupStagingItems(stagingItems);
-    };
-  }, [stagingItems]);
-
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [search, typeFilter, sortOption, selectedTagIds, advancedFilters]);
 
+  // Handle single file upload
+  const uploadFile = useCallback(
+    async (file: File) => {
+      if (!credentials) return;
+
+      setIsUploading(true);
+      setUploadProgress(0);
+      setUploadError(null);
+
+      try {
+        const onProgress = (progress: number) => {
+          setUploadProgress(progress);
+        };
+
+        let result: { _ref: string };
+        const isImage = file.type.startsWith("image/");
+
+        if (isImage) {
+          result = await handleImageUpload(
+            file,
+            adapter,
+            credentials,
+            client,
+            onProgress
+          );
+        } else {
+          result = await handleVideoUpload(
+            file,
+            adapter,
+            credentials,
+            client,
+            onProgress
+          );
+        }
+
+        // Auto-select the uploaded asset
+        onSelect({ _id: result._ref } as MediaAsset);
+        onClose();
+      } catch (error) {
+        console.error("Upload failed:", error);
+        setUploadError(error instanceof Error ? error.message : "Upload failed");
+        setIsUploading(false);
+      }
+    },
+    [credentials, adapter, client, onSelect, onClose]
+  );
+
+  // Handle initial files
+  useEffect(() => {
+    if (initialFiles && initialFiles.length > 0 && credentials) {
+      // Upload the first file immediately
+      uploadFile(initialFiles[0]);
+    }
+  }, [initialFiles, credentials, uploadFile]);
+
   // Handle file selection for upload
   const handleFileSelect = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
-      if (!files || files.length === 0) return;
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-      const newItems = createStagingItems(files);
-      if (newItems.length > 0) {
-        setStagingItems((prev) => [...prev, ...newItems]);
-        setActiveTab("upload");
-      }
+      uploadFile(file);
 
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
     },
-    []
+    [uploadFile]
   );
 
-  // Update staging item
-  const updateStagingItem = useCallback(
-    (id: string, updates: Partial<StagingItem>) => {
-      setStagingItems((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
-      );
+  // Handle asset selection - select and close immediately
+  const handleAssetSelect = useCallback(
+    (asset: MediaAsset) => {
+      onSelect(asset);
+      onClose();
     },
-    []
+    [onSelect, onClose]
   );
-
-  // Remove staging item
-  const removeStagingItem = useCallback((id: string) => {
-    setStagingItems((prev) => {
-      const item = prev.find((i) => i.id === id);
-      if (item) {
-        URL.revokeObjectURL(item.previewUrl);
-      }
-      return prev.filter((i) => i.id !== id);
-    });
-  }, []);
-
-  // Close staging dialog
-  const closeStagingDialog = useCallback(() => {
-    cleanupStagingItems(stagingItems);
-    setStagingItems([]);
-    setActiveTab("browse");
-  }, [stagingItems]);
-
-  // Start upload
-  const startUpload = useCallback(() => {
-    const newUploadItems: UploadItem[] = stagingItems.map((item) => ({
-      id: item.id,
-      file: item.file,
-      type: item.type,
-      status: "pending" as const,
-      progress: 0,
-      alt: item.alt,
-      caption: item.caption,
-      title: item.title,
-      description: item.description,
-      tags: item.tags,
-    }));
-
-    setUploadQueue((prev) => [...prev, ...newUploadItems]);
-    cleanupStagingItems(stagingItems);
-    setStagingItems([]);
-  }, [stagingItems]);
-
-  // Upload single item
-  const uploadSingleItem = useCallback(
-    async (item: UploadItem) => {
-      if (!credentials) return;
-
-      setUploadQueue((prev) =>
-        prev.map((i) => (i.id === item.id ? { ...i, status: "uploading" } : i))
-      );
-
-      try {
-        const onProgress = (progress: number) => {
-          setUploadQueue((prev) =>
-            prev.map((i) => (i.id === item.id ? { ...i, progress } : i))
-          );
-        };
-
-        let result: { _ref: string };
-        if (item.type === "image") {
-          result = await handleImageUpload(
-            item.file,
-            adapter,
-            credentials,
-            client,
-            onProgress,
-            { alt: item.alt, caption: item.caption, tags: item.tags }
-          );
-        } else {
-          result = await handleVideoUpload(
-            item.file,
-            adapter,
-            credentials,
-            client,
-            onProgress,
-            { title: item.title, description: item.description, tags: item.tags }
-          );
-        }
-
-        setUploadQueue((prev) =>
-          prev.map((i) =>
-            i.id === item.id ? { ...i, status: "completed", progress: 100, assetId: result._ref } : i
-          )
-        );
-      } catch (error) {
-        console.error("Upload failed:", error);
-        setUploadQueue((prev) =>
-          prev.map((i) =>
-            i.id === item.id
-              ? {
-                  ...i,
-                  status: "error",
-                  error:
-                    error instanceof Error ? error.message : "Upload failed",
-                }
-              : i
-          )
-        );
-      }
-    },
-    [credentials, adapter, client]
-  );
-
-  // Process upload queue
-  useEffect(() => {
-    const pending = uploadQueue.filter((i) => i.status === "pending");
-    const uploading = uploadQueue.filter((i) => i.status === "uploading");
-    const availableSlots = MAX_CONCURRENT_UPLOADS - uploading.length;
-
-    if (pending.length > 0 && availableSlots > 0) {
-      const toStart = pending.slice(0, availableSlots);
-      toStart.forEach((item) => uploadSingleItem(item));
-    }
-
-    // Handle upload completion
-    const allDone =
-      uploadQueue.length > 0 &&
-      uploadQueue.every((i) => i.status === "completed" || i.status === "error");
-    if (allDone) {
-      const completed = uploadQueue.filter((i) => i.status === "completed" && i.assetId);
-
-      // If we have a successful upload, auto-select it and close
-      if (completed.length > 0 && completed[0].assetId) {
-        const assetId = completed[0].assetId;
-        onSelect({ _id: assetId } as MediaAsset);
-        onClose();
-      } else {
-        // All failed - stay in upload tab to show errors
-        mutateMedia();
-      }
-    }
-  }, [uploadQueue, uploadSingleItem, mutateMedia, onSelect, onClose]);
 
   // Advanced filter helpers
   const activeFilterCount =
@@ -350,183 +238,312 @@ export function MediaBrowserDialog({
     );
   }
 
-  const activeUploads = uploadQueue.filter(
-    (i) => i.status === "pending" || i.status === "uploading"
-  );
-  const isUploading = activeUploads.length > 0;
+  // Uploading state
+  if (isUploading) {
+    return (
+      <Dialog
+        id="media-browser-dialog"
+        header="Uploading..."
+        onClose={onClose}
+        width={3}
+      >
+        <Box padding={5}>
+          <Stack space={4}>
+            <Flex justify="center" align="center" gap={3}>
+              <Spinner />
+              <Text size={1}>Uploading... {Math.round(uploadProgress)}%</Text>
+            </Flex>
+            <Box
+              style={{
+                height: "4px",
+                background: "var(--card-border-color)",
+                borderRadius: "2px",
+                overflow: "hidden",
+              }}
+            >
+              <Box
+                style={{
+                  height: "100%",
+                  width: `${uploadProgress}%`,
+                  background: "var(--card-focus-ring-color)",
+                  transition: "width 0.2s ease",
+                }}
+              />
+            </Box>
+          </Stack>
+        </Box>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog
       id="media-browser-dialog"
-      header={
-        <Flex align="center" gap={3}>
-          <Text size={2} weight="semibold">
-            {activeTab === "upload" ? "Upload Files" : "Select Media"}
-          </Text>
-        </Flex>
-      }
+      header="Select Media"
       onClose={onClose}
       width={3}
     >
-      <Box style={{ minHeight: "500px", display: "flex", flexDirection: "column" }}>
-        {/* Tabs */}
-        {allowUpload && (
-          <Box padding={2} paddingBottom={0}>
-            <TabList space={2}>
-              <Tab
-                aria-controls="browse-panel"
-                id="browse-tab"
-                label="Browse"
-                onClick={() => setActiveTab("browse")}
-                selected={activeTab === "browse"}
-              />
-              <Tab
-                aria-controls="upload-panel"
-                id="upload-tab"
-                label={
-                  stagingItems.length > 0
-                    ? `Upload (${stagingItems.length})`
-                    : "Upload"
-                }
-                onClick={() => setActiveTab("upload")}
-                selected={activeTab === "upload"}
-              />
-            </TabList>
-          </Box>
-        )}
-
-        {/* Browse Tab */}
-        <TabPanel
-          aria-labelledby="browse-tab"
-          id="browse-panel"
-          hidden={activeTab !== "browse"}
-          style={{ flex: 1, display: activeTab === "browse" ? "flex" : "none", flexDirection: "column" }}
-        >
-          <Box padding={4} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-            <Stack space={4} style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              {/* Toolbar */}
-              <Flex gap={2} align="center" wrap="wrap">
-                <Box style={{ flex: 1 }}>
-                  <FilterToolbar
-                    viewMode={viewMode}
-                    onViewModeChange={setViewMode}
-                    onSearch={setSearch}
-                    typeFilter={typeFilter}
-                    onTypeFilterChange={setTypeFilter}
-                    sortOption={sortOption}
-                    onSortChange={setSortOption}
-                    counts={counts}
-                    showViewToggle={true}
-                    restrictTypeFilter={assetType}
-                  />
-                </Box>
-                {allowUpload && (
-                  <Button
-                    icon={AddIcon}
-                    text="Upload"
-                    mode="ghost"
-                    tone="primary"
-                    onClick={() => fileInputRef.current?.click()}
-                    fontSize={1}
-                  />
-                )}
-              </Flex>
-
-              {/* Filter toggle and active filters */}
-              <Flex gap={2} align="center" wrap="wrap">
+      <Box style={{ height: "70vh", maxHeight: "700px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <Box padding={4} style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          <Stack space={4} style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            {/* Toolbar */}
+            <Flex gap={2} align="center" wrap="wrap">
+              <Box style={{ flex: 1 }}>
+                <FilterToolbar
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                  onSearch={setSearch}
+                  typeFilter={typeFilter}
+                  onTypeFilterChange={setTypeFilter}
+                  sortOption={sortOption}
+                  onSortChange={setSortOption}
+                  counts={counts}
+                  showViewToggle={true}
+                  restrictTypeFilter={assetType}
+                />
+              </Box>
+              {allowUpload && (
                 <Button
-                  icon={TagIcon}
-                  text={`Filters${activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}`}
-                  mode={showFilters ? "default" : "ghost"}
-                  tone={activeFilterCount > 0 ? "primary" : "default"}
-                  onClick={() => setShowFilters(!showFilters)}
+                  icon={UploadIcon}
+                  text="Upload"
+                  mode="ghost"
+                  tone="primary"
+                  onClick={() => fileInputRef.current?.click()}
                   fontSize={1}
+                />
+              )}
+            </Flex>
+
+            {/* Filter header bar */}
+            <Flex gap={2} align="center" wrap="wrap">
+              <Button
+                icon={FilterIcon}
+                text={`Filters${activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}`}
+                mode={showFilters ? "default" : "ghost"}
+                tone={activeFilterCount > 0 ? "primary" : "default"}
+                onClick={() => setShowFilters(!showFilters)}
+                fontSize={1}
+                padding={2}
+              />
+
+              {/* Active filter chips (when collapsed) */}
+              {!showFilters && activeFilterCount > 0 && (
+                <Flex gap={1} wrap="wrap" style={{ flex: 1 }}>
+                  {/* Tag chips */}
+                  {Array.from(selectedTagIds).map((tagId) => {
+                    const tag = tags.find((t) => t._id === tagId);
+                    if (!tag) return null;
+                    const colors = TAG_COLORS[tag.color] || TAG_COLORS.gray;
+                    return (
+                      <Flex
+                        key={tagId}
+                        align="center"
+                        gap={1}
+                        onClick={() => {
+                          setSelectedTagIds((prev) => {
+                            const next = new Set(prev);
+                            next.delete(tagId);
+                            return next;
+                          });
+                        }}
+                        style={{
+                          cursor: "pointer",
+                          padding: "2px 6px",
+                          borderRadius: "12px",
+                          background: colors.bg,
+                          border: `1px solid ${colors.text}`,
+                          fontSize: "11px",
+                        }}
+                      >
+                        <Text size={0} style={{ color: colors.text }}>{tag.name}</Text>
+                        <CloseIcon style={{ fontSize: 10, color: colors.text }} />
+                      </Flex>
+                    );
+                  })}
+                  {/* Usage chip */}
+                  {advancedFilters.usage !== "all" && (
+                    <Flex
+                      align="center"
+                      gap={1}
+                      onClick={() => setAdvancedFilters((prev) => ({ ...prev, usage: "all", documentTypes: new Set() }))}
+                      style={{
+                        cursor: "pointer",
+                        padding: "2px 8px",
+                        borderRadius: "12px",
+                        background: "var(--card-muted-bg-color)",
+                        fontSize: "11px",
+                      }}
+                    >
+                      <Text size={0}>{advancedFilters.usage === "inUse" ? "In Use" : "Unused"}</Text>
+                      <CloseIcon style={{ fontSize: 10 }} />
+                    </Flex>
+                  )}
+                  {/* Metadata chips */}
+                  {advancedFilters.alt !== null && (
+                    <Flex
+                      align="center"
+                      gap={1}
+                      onClick={() => setAdvancedFilters((prev) => ({ ...prev, alt: null }))}
+                      style={{
+                        cursor: "pointer",
+                        padding: "2px 8px",
+                        borderRadius: "12px",
+                        background: "var(--card-muted-bg-color)",
+                        fontSize: "11px",
+                      }}
+                    >
+                      <Text size={0}>{advancedFilters.alt ? "Has alt" : "Missing alt"}</Text>
+                      <CloseIcon style={{ fontSize: 10 }} />
+                    </Flex>
+                  )}
+                  {advancedFilters.title !== null && (
+                    <Flex
+                      align="center"
+                      gap={1}
+                      onClick={() => setAdvancedFilters((prev) => ({ ...prev, title: null }))}
+                      style={{
+                        cursor: "pointer",
+                        padding: "2px 8px",
+                        borderRadius: "12px",
+                        background: "var(--card-muted-bg-color)",
+                        fontSize: "11px",
+                      }}
+                    >
+                      <Text size={0}>{advancedFilters.title ? "Has title" : "Missing title"}</Text>
+                      <CloseIcon style={{ fontSize: 10 }} />
+                    </Flex>
+                  )}
+                  {advancedFilters.caption !== null && (
+                    <Flex
+                      align="center"
+                      gap={1}
+                      onClick={() => setAdvancedFilters((prev) => ({ ...prev, caption: null }))}
+                      style={{
+                        cursor: "pointer",
+                        padding: "2px 8px",
+                        borderRadius: "12px",
+                        background: "var(--card-muted-bg-color)",
+                        fontSize: "11px",
+                      }}
+                    >
+                      <Text size={0}>{advancedFilters.caption ? "Has caption" : "Missing caption"}</Text>
+                      <CloseIcon style={{ fontSize: 10 }} />
+                    </Flex>
+                  )}
+                  {/* Document chips */}
+                  {advancedFilters.documents.map((doc) => (
+                    <Flex
+                      key={doc._id}
+                      align="center"
+                      gap={1}
+                      onClick={() => setAdvancedFilters((prev) => ({
+                        ...prev,
+                        documents: prev.documents.filter((d) => d._id !== doc._id),
+                      }))}
+                      style={{
+                        cursor: "pointer",
+                        padding: "2px 8px",
+                        borderRadius: "12px",
+                        background: "var(--card-muted-bg-color)",
+                        fontSize: "11px",
+                      }}
+                    >
+                      <Text size={0}>{doc.title}</Text>
+                      <CloseIcon style={{ fontSize: 10 }} />
+                    </Flex>
+                  ))}
+                </Flex>
+              )}
+
+              {showFilters && <Box style={{ flex: 1 }} />}
+
+              {activeFilterCount > 0 && (
+                <Button
+                  text="Clear all"
+                  mode="bleed"
+                  tone="critical"
+                  onClick={clearAllFilters}
+                  fontSize={0}
                   padding={2}
                 />
-                {activeFilterCount > 0 && (
-                  <Button
-                    text="Clear all"
-                    mode="bleed"
-                    tone="critical"
-                    onClick={clearAllFilters}
-                    fontSize={0}
-                    padding={1}
-                  />
-                )}
-                <Box style={{ flex: 1 }} />
-                <Text size={1} muted>
-                  {totalCount} {totalCount === 1 ? "item" : "items"}
-                </Text>
-              </Flex>
+              )}
 
-              {/* Inline filters */}
-              {showFilters && (
-                <Card padding={3} radius={2} tone="transparent" border>
-                  <Stack space={4}>
-                    {/* Tags */}
+              {!showFilters && <Box style={{ flex: activeFilterCount > 0 ? 0 : 1 }} />}
+
+              <Text size={1} muted>
+                {totalCount} {totalCount === 1 ? "item" : "items"}
+              </Text>
+            </Flex>
+
+            {/* Upload error */}
+            {uploadError && (
+              <Card padding={3} tone="critical" radius={2}>
+                <Text size={1}>{uploadError}</Text>
+              </Card>
+            )}
+
+            {/* Expanded filter panel */}
+            {showFilters && (
+              <Card padding={3} radius={2} tone="transparent" border>
+                <Stack space={4}>
+                  {/* Row 1: Tags + Usage side by side */}
+                  <Flex gap={4} wrap="wrap">
+                    {/* Tags - multi-select pills */}
                     {tags.length > 0 && (
-                      <Stack space={2}>
-                        <Text size={0} muted weight="medium">
-                          Tags
-                        </Text>
-                        <Flex gap={2} wrap="wrap">
-                          {tags.map((tag) => {
-                            const isSelected = selectedTagIds.has(tag._id);
-                            const colors =
-                              TAG_COLORS[tag.color] || TAG_COLORS.gray;
-                            return (
-                              <Box
-                                key={tag._id}
-                                onClick={() => {
-                                  setSelectedTagIds((prev) => {
-                                    const next = new Set(prev);
-                                    if (next.has(tag._id)) {
-                                      next.delete(tag._id);
-                                    } else {
-                                      next.add(tag._id);
-                                    }
-                                    return next;
-                                  });
-                                }}
-                                style={{
-                                  cursor: "pointer",
-                                  padding: "4px 8px",
-                                  borderRadius: "4px",
-                                  background: isSelected
-                                    ? colors.bg
-                                    : "transparent",
-                                  border: `1px solid ${isSelected ? colors.text : "var(--card-border-color)"}`,
-                                }}
-                              >
-                                <Flex align="center" gap={2}>
-                                  <Box
-                                    style={{
-                                      width: "8px",
-                                      height: "8px",
-                                      borderRadius: "50%",
-                                      background: colors.text,
-                                    }}
-                                  />
+                      <Box style={{ flex: 1, minWidth: "200px" }}>
+                        <Stack space={2}>
+                          <Text size={0} muted weight="medium">Tags</Text>
+                          <Flex gap={2} wrap="wrap">
+                            {tags.map((tag) => {
+                              const isSelected = selectedTagIds.has(tag._id);
+                              const colors = TAG_COLORS[tag.color] || TAG_COLORS.gray;
+                              return (
+                                <Box
+                                  key={tag._id}
+                                  onClick={() => {
+                                    setSelectedTagIds((prev) => {
+                                      const next = new Set(prev);
+                                      if (next.has(tag._id)) {
+                                        next.delete(tag._id);
+                                      } else {
+                                        next.add(tag._id);
+                                      }
+                                      return next;
+                                    });
+                                  }}
+                                  style={{
+                                    cursor: "pointer",
+                                    padding: "4px 10px",
+                                    borderRadius: "16px",
+                                    background: isSelected ? colors.bg : "transparent",
+                                    border: `1px solid ${colors.text}`,
+                                    boxShadow: isSelected ? `0 0 0 2px ${colors.text}40` : undefined,
+                                  }}
+                                >
                                   <Text size={1}>{tag.name}</Text>
-                                </Flex>
-                              </Box>
-                            );
-                          })}
-                        </Flex>
-                      </Stack>
+                                </Box>
+                              );
+                            })}
+                          </Flex>
+                        </Stack>
+                      </Box>
                     )}
 
-                    {/* Usage filter */}
-                    <Stack space={2}>
-                      <Text size={0} muted weight="medium">
-                        Usage
-                      </Text>
-                      <Flex gap={2}>
-                        {(["all", "inUse", "unused"] as UsageFilter[]).map(
-                          (value) => {
+                    {/* Usage - segmented control */}
+                    <Box>
+                      <Stack space={2}>
+                        <Text size={0} muted weight="medium">Usage</Text>
+                        <Flex
+                          style={{
+                            border: "1px solid var(--card-border-color)",
+                            borderRadius: "4px",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {(["all", "inUse", "unused"] as UsageFilter[]).map((value, index) => {
                             const labels: Record<UsageFilter, string> = {
                               all: "All",
-                              inUse: `In Use (${usageCounts.inUse})`,
+                              inUse: `In use (${usageCounts.inUse})`,
                               unused: `Unused (${usageCounts.unused})`,
                             };
                             const isActive = advancedFilters.usage === value;
@@ -537,456 +554,200 @@ export function MediaBrowserDialog({
                                   setAdvancedFilters((prev) => ({
                                     ...prev,
                                     usage: value,
-                                    documentTypes:
-                                      value === "inUse"
-                                        ? prev.documentTypes
-                                        : new Set(),
+                                    documentTypes: value === "inUse" ? prev.documentTypes : new Set(),
+                                  }))
+                                }
+                                style={{
+                                  cursor: "pointer",
+                                  padding: "6px 12px",
+                                  background: isActive ? "var(--card-muted-bg-color)" : "transparent",
+                                  borderLeft: index > 0 ? "1px solid var(--card-border-color)" : undefined,
+                                }}
+                              >
+                                <Text size={1} weight={isActive ? "medium" : "regular"}>{labels[value]}</Text>
+                              </Box>
+                            );
+                          })}
+                        </Flex>
+                      </Stack>
+                    </Box>
+                  </Flex>
+
+                  {/* Row 2: Missing metadata + Document search */}
+                  <Flex gap={4} wrap="wrap">
+                    {/* Missing metadata - tri-state checkboxes */}
+                    <Box>
+                      <Stack space={2}>
+                        <Text size={0} muted weight="medium">Metadata</Text>
+                        <Flex gap={3}>
+                          {[
+                            { key: "alt" as const, label: "alt text" },
+                            { key: "title" as const, label: "title" },
+                            { key: "caption" as const, label: "caption" },
+                          ].map(({ key, label }) => {
+                            const value = advancedFilters[key];
+                            // Tri-state: null (no filter) → true (has) → false (missing) → null
+                            const nextValue = value === null ? true : value === true ? false : null;
+                            const displayLabel = value === true ? `Has ${label}` : value === false ? `Missing ${label}` : label.charAt(0).toUpperCase() + label.slice(1);
+                            return (
+                              <Flex
+                                key={key}
+                                align="center"
+                                gap={2}
+                                onClick={() =>
+                                  setAdvancedFilters((prev) => ({
+                                    ...prev,
+                                    [key]: nextValue,
+                                  }))
+                                }
+                                style={{ cursor: "pointer" }}
+                              >
+                                <Box
+                                  style={{
+                                    width: "14px",
+                                    height: "14px",
+                                    borderRadius: "3px",
+                                    border: value === null ? "1.5px solid var(--card-border-color)" : "none",
+                                    background: value !== null ? "var(--card-focus-ring-color)" : "transparent",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  {value === true && (
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                      <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                  )}
+                                  {value === false && (
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                      <path d="M2.5 5H7.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                                    </svg>
+                                  )}
+                                </Box>
+                                <Text size={1}>{displayLabel}</Text>
+                              </Flex>
+                            );
+                          })}
+                        </Flex>
+                      </Stack>
+                    </Box>
+
+                    {/* Document search */}
+                    <Box style={{ flex: 1, minWidth: "200px" }}>
+                      <Stack space={2}>
+                        <Text size={0} muted weight="medium">Referenced by document</Text>
+                        <Box style={{ position: "relative" }}>
+                          <TextInput
+                            icon={SearchIcon}
+                            placeholder="Search documents..."
+                            value={documentSearchQuery}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                              setDocumentSearchQuery(e.currentTarget.value)
+                            }
+                            fontSize={1}
+                            padding={2}
+                          />
+                          {documentSearchQuery.trim().length >= 2 && (
+                            <Card
+                              padding={1}
+                              radius={2}
+                              shadow={2}
+                              style={{
+                                position: "absolute",
+                                top: "100%",
+                                left: 0,
+                                right: 0,
+                                marginTop: "4px",
+                                maxHeight: "200px",
+                                overflowY: "auto",
+                                zIndex: 100,
+                              }}
+                            >
+                              {documentSearchLoading ? (
+                                <Flex justify="center" padding={3}>
+                                  <Spinner />
+                                </Flex>
+                              ) : documentSearchResults.length > 0 ? (
+                                <Stack space={0}>
+                                  {documentSearchResults
+                                    .filter(
+                                      (doc) =>
+                                        !advancedFilters.documents.some((d) => d._id === doc._id)
+                                    )
+                                    .map((doc) => (
+                                      <Box
+                                        key={doc._id}
+                                        padding={2}
+                                        style={{ cursor: "pointer", borderRadius: "4px" }}
+                                        onClick={() => {
+                                          setAdvancedFilters((prev) => ({
+                                            ...prev,
+                                            documents: [...prev.documents, doc],
+                                          }));
+                                          setDocumentSearchQuery("");
+                                        }}
+                                      >
+                                        <Stack space={1}>
+                                          <Text size={1} textOverflow="ellipsis">{doc.title}</Text>
+                                          <Text size={0} muted>{doc._type}</Text>
+                                        </Stack>
+                                      </Box>
+                                    ))}
+                                </Stack>
+                              ) : (
+                                <Box padding={3}>
+                                  <Text size={1} muted align="center">No documents found</Text>
+                                </Box>
+                              )}
+                            </Card>
+                          )}
+                        </Box>
+                        {advancedFilters.documents.length > 0 && (
+                          <Flex gap={2} wrap="wrap">
+                            {advancedFilters.documents.map((doc) => (
+                              <Flex
+                                key={doc._id}
+                                align="center"
+                                gap={1}
+                                onClick={() =>
+                                  setAdvancedFilters((prev) => ({
+                                    ...prev,
+                                    documents: prev.documents.filter((d) => d._id !== doc._id),
                                   }))
                                 }
                                 style={{
                                   cursor: "pointer",
                                   padding: "4px 8px",
-                                  borderRadius: "4px",
-                                  background: isActive
-                                    ? "var(--card-muted-bg-color)"
-                                    : "transparent",
-                                  border: `1px solid ${isActive ? "var(--card-focus-ring-color)" : "var(--card-border-color)"}`,
+                                  borderRadius: "12px",
+                                  background: "var(--card-muted-bg-color)",
                                 }}
                               >
-                                <Text size={1}>{labels[value]}</Text>
-                              </Box>
-                            );
-                          }
-                        )}
-                      </Flex>
-                    </Stack>
-
-                    {/* Document types (when In Use) */}
-                    {advancedFilters.usage === "inUse" &&
-                      referencingDocTypes.length > 0 && (
-                        <Stack space={2}>
-                          <Text size={0} muted weight="medium">
-                            Document Types
-                          </Text>
-                          <Flex gap={2} wrap="wrap">
-                            {referencingDocTypes.map((docType) => {
-                              const isSelected =
-                                advancedFilters.documentTypes.has(docType);
-                              return (
-                                <Box
-                                  key={docType}
-                                  onClick={() =>
-                                    setAdvancedFilters((prev) => {
-                                      const next = new Set(prev.documentTypes);
-                                      if (next.has(docType)) {
-                                        next.delete(docType);
-                                      } else {
-                                        next.add(docType);
-                                      }
-                                      return { ...prev, documentTypes: next };
-                                    })
-                                  }
-                                  style={{
-                                    cursor: "pointer",
-                                    padding: "4px 8px",
-                                    borderRadius: "4px",
-                                    background: isSelected
-                                      ? "var(--card-muted-bg-color)"
-                                      : "transparent",
-                                    border: `1px solid ${isSelected ? "var(--card-focus-ring-color)" : "var(--card-border-color)"}`,
-                                  }}
-                                >
-                                  <Flex align="center" gap={2}>
-                                    <Checkbox checked={isSelected} readOnly />
-                                    <Text size={1}>{docType}</Text>
-                                  </Flex>
-                                </Box>
-                              );
-                            })}
+                                <Text size={0}>{doc.title}</Text>
+                                <CloseIcon style={{ fontSize: 10 }} />
+                              </Flex>
+                            ))}
                           </Flex>
-                        </Stack>
-                      )}
-
-                    {/* Document search */}
-                    <Stack space={2}>
-                      <Text size={0} muted weight="medium">
-                        Used In Document
-                      </Text>
-                      <Box style={{ position: "relative" }}>
-                        <TextInput
-                          icon={SearchIcon}
-                          placeholder="Search documents..."
-                          value={documentSearchQuery}
-                          onChange={(
-                            e: React.ChangeEvent<HTMLInputElement>
-                          ) => setDocumentSearchQuery(e.currentTarget.value)}
-                          fontSize={1}
-                          padding={2}
-                        />
-                        {documentSearchQuery.trim().length >= 2 && (
-                          <Card
-                            padding={1}
-                            radius={2}
-                            shadow={2}
-                            style={{
-                              position: "absolute",
-                              top: "100%",
-                              left: 0,
-                              right: 0,
-                              marginTop: "4px",
-                              maxHeight: "200px",
-                              overflowY: "auto",
-                              zIndex: 100,
-                            }}
-                          >
-                            {documentSearchLoading ? (
-                              <Flex justify="center" padding={3}>
-                                <Spinner />
-                              </Flex>
-                            ) : documentSearchResults.length > 0 ? (
-                              <Stack space={0}>
-                                {documentSearchResults
-                                  .filter(
-                                    (doc) =>
-                                      !advancedFilters.documents.some(
-                                        (d) => d._id === doc._id
-                                      )
-                                  )
-                                  .map((doc) => (
-                                    <Box
-                                      key={doc._id}
-                                      padding={2}
-                                      style={{
-                                        cursor: "pointer",
-                                        borderRadius: "4px",
-                                      }}
-                                      onClick={() => {
-                                        setAdvancedFilters((prev) => ({
-                                          ...prev,
-                                          documents: [...prev.documents, doc],
-                                        }));
-                                        setDocumentSearchQuery("");
-                                      }}
-                                    >
-                                      <Stack space={1}>
-                                        <Text size={1} textOverflow="ellipsis">
-                                          {doc.title}
-                                        </Text>
-                                        <Text size={0} muted>
-                                          {doc._type}
-                                        </Text>
-                                      </Stack>
-                                    </Box>
-                                  ))}
-                              </Stack>
-                            ) : (
-                              <Box padding={3}>
-                                <Text size={1} muted align="center">
-                                  No documents found
-                                </Text>
-                              </Box>
-                            )}
-                          </Card>
-                        )}
-                      </Box>
-                      {advancedFilters.documents.length > 0 && (
-                        <Flex gap={2} wrap="wrap">
-                          {advancedFilters.documents.map((doc) => (
-                            <Box
-                              key={doc._id}
-                              padding={2}
-                              style={{
-                                background: "var(--card-muted-bg-color)",
-                                borderRadius: "4px",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                setAdvancedFilters((prev) => ({
-                                  ...prev,
-                                  documents: prev.documents.filter(
-                                    (d) => d._id !== doc._id
-                                  ),
-                                }))
-                              }
-                            >
-                              <Text size={0}>{doc.title} ×</Text>
-                            </Box>
-                          ))}
-                        </Flex>
-                      )}
-                    </Stack>
-
-                    {/* Metadata filters */}
-                    <Stack space={2}>
-                      <Text size={0} muted weight="medium">
-                        Metadata
-                      </Text>
-                      <Flex gap={2} wrap="wrap">
-                        {[
-                          {
-                            key: "alt" as const,
-                            label: "Alt text",
-                          },
-                          {
-                            key: "title" as const,
-                            label: "Title",
-                          },
-                          {
-                            key: "caption" as const,
-                            label: "Caption",
-                          },
-                        ].map(({ key, label }) => {
-                          const value = advancedFilters[key];
-                          const isActive = value !== null;
-                          const displayLabel =
-                            value === true
-                              ? `Has ${label.toLowerCase()}`
-                              : value === false
-                                ? `Missing ${label.toLowerCase()}`
-                                : label;
-                          return (
-                            <Box
-                              key={key}
-                              onClick={() =>
-                                setAdvancedFilters((prev) => {
-                                  const current = prev[key];
-                                  let next: boolean | null;
-                                  if (current === null) {
-                                    next = true;
-                                  } else if (current === true) {
-                                    next = false;
-                                  } else {
-                                    next = null;
-                                  }
-                                  return { ...prev, [key]: next };
-                                })
-                              }
-                              style={{
-                                cursor: "pointer",
-                                padding: "4px 8px",
-                                borderRadius: "4px",
-                                background: isActive
-                                  ? "var(--card-muted-bg-color)"
-                                  : "transparent",
-                                border: `1px solid ${isActive ? "var(--card-focus-ring-color)" : "var(--card-border-color)"}`,
-                              }}
-                            >
-                              <Flex align="center" gap={2}>
-                                <Checkbox
-                                  checked={value === true}
-                                  indeterminate={value === false}
-                                  readOnly
-                                />
-                                <Text size={1}>{displayLabel}</Text>
-                              </Flex>
-                            </Box>
-                          );
-                        })}
-                      </Flex>
-                    </Stack>
-                  </Stack>
-                </Card>
-              )}
-
-              {/* Asset Grid/List */}
-              <Box style={{ flex: 1, overflowY: "auto", minHeight: "300px" }}>
-                {isLoading ? (
-                  <Flex
-                    justify="center"
-                    align="center"
-                    style={{ minHeight: "200px" }}
-                  >
-                    <Spinner />
-                  </Flex>
-                ) : media.length === 0 ? (
-                  <Card padding={5} radius={2} tone="transparent" border>
-                    <Flex
-                      direction="column"
-                      align="center"
-                      justify="center"
-                      style={{ minHeight: "200px" }}
-                    >
-                      <Stack space={3} style={{ textAlign: "center" }}>
-                        <ImageIcon style={{ fontSize: 32, opacity: 0.3 }} />
-                        <Text size={1} muted>
-                          {search || activeFilterCount > 0
-                            ? "No results found. Try adjusting your filters."
-                            : "No media assets yet."}
-                        </Text>
-                        {allowUpload && !search && activeFilterCount === 0 && (
-                          <Button
-                            icon={AddIcon}
-                            text="Upload"
-                            tone="primary"
-                            onClick={() => fileInputRef.current?.click()}
-                            fontSize={1}
-                          />
                         )}
                       </Stack>
-                    </Flex>
-                  </Card>
-                ) : viewMode === "grid" ? (
-                  <AssetGrid
-                    assets={media}
-                    tags={tags}
-                    selectedId={selectedAsset?._id}
-                    onSelect={setSelectedAsset}
-                    showCheckboxes={false}
-                  />
-                ) : (
-                  <AssetList
-                    assets={media}
-                    tags={tags}
-                    selectedId={selectedAsset?._id}
-                    onSelect={setSelectedAsset}
-                    showCheckboxes={false}
-                  />
-                )}
-              </Box>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <Flex justify="center" align="center" gap={2}>
-                  <Button
-                    icon={ChevronLeftIcon}
-                    mode="ghost"
-                    padding={2}
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  />
-                  <Text size={1} muted>
-                    Page {currentPage} of {totalPages}
-                  </Text>
-                  <Button
-                    icon={ChevronRightIcon}
-                    mode="ghost"
-                    padding={2}
-                    disabled={currentPage === totalPages}
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
-                  />
-                </Flex>
-              )}
-            </Stack>
-          </Box>
-
-          {/* Footer */}
-          <Box
-            padding={4}
-            style={{ borderTop: "1px solid var(--card-border-color)" }}
-          >
-            <Flex gap={2} justify="flex-end">
-              <Button
-                text="Cancel"
-                mode="ghost"
-                onClick={onClose}
-                fontSize={1}
-              />
-              <Button
-                text="Select"
-                tone="primary"
-                disabled={!selectedAsset}
-                onClick={() => {
-                  if (selectedAsset) {
-                    onSelect(selectedAsset);
-                    onClose();
-                  }
-                }}
-                fontSize={1}
-              />
-            </Flex>
-          </Box>
-        </TabPanel>
-
-        {/* Upload Tab */}
-        {allowUpload && (
-          <TabPanel
-            aria-labelledby="upload-tab"
-            id="upload-panel"
-            hidden={activeTab !== "upload"}
-            style={{ flex: 1, display: activeTab === "upload" ? "flex" : "none", flexDirection: "column" }}
-          >
-            {stagingItems.length > 0 ? (
-              <StagingDialog
-                items={stagingItems}
-                tags={tags}
-                onUpdateItem={updateStagingItem}
-                onRemoveItem={removeStagingItem}
-                onUpload={startUpload}
-                onClose={closeStagingDialog}
-                embedded
-              />
-            ) : uploadQueue.length > 0 ? (
-              <Box padding={4}>
-                <Stack space={4}>
-                  <Text size={1} weight="semibold">
-                    {isUploading
-                      ? `Uploading ${activeUploads.length} file${activeUploads.length > 1 ? "s" : ""}...`
-                      : "Upload complete"}
-                  </Text>
-                  <Stack space={2}>
-                    {uploadQueue.map((item) => (
-                      <Card
-                        key={item.id}
-                        padding={2}
-                        radius={2}
-                        tone={
-                          item.status === "error"
-                            ? "critical"
-                            : item.status === "completed"
-                              ? "positive"
-                              : "default"
-                        }
-                      >
-                        <Flex gap={3} align="center">
-                          <Box style={{ flex: 1 }}>
-                            <Text size={0} textOverflow="ellipsis">
-                              {item.file.name}
-                            </Text>
-                            {item.status === "uploading" && (
-                              <Box
-                                style={{
-                                  marginTop: "4px",
-                                  height: "4px",
-                                  background: "var(--card-border-color)",
-                                  borderRadius: "2px",
-                                  overflow: "hidden",
-                                }}
-                              >
-                                <Box
-                                  style={{
-                                    height: "100%",
-                                    width: `${item.progress}%`,
-                                    background: "var(--card-focus-ring-color)",
-                                    transition: "width 0.2s ease",
-                                  }}
-                                />
-                              </Box>
-                            )}
-                          </Box>
-                          <Text size={0} muted>
-                            {item.status === "pending" && "Waiting..."}
-                            {item.status === "uploading" && `${item.progress}%`}
-                            {item.status === "completed" && "Done"}
-                            {item.status === "error" && "Failed"}
-                          </Text>
-                        </Flex>
-                      </Card>
-                    ))}
-                  </Stack>
+                    </Box>
+                  </Flex>
                 </Stack>
-              </Box>
-            ) : (
-              <Box padding={4}>
-                <Card
-                  padding={5}
-                  radius={2}
-                  tone="transparent"
-                  border
-                  style={{ cursor: "pointer" }}
-                  onClick={() => fileInputRef.current?.click()}
+              </Card>
+            )}
+
+            {/* Asset Grid/List */}
+            <Box style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+              {isLoading ? (
+                <Flex
+                  justify="center"
+                  align="center"
+                  style={{ minHeight: "200px" }}
                 >
+                  <Spinner />
+                </Flex>
+              ) : media.length === 0 ? (
+                <Card padding={5} radius={2} tone="transparent" border>
                   <Flex
                     direction="column"
                     align="center"
@@ -994,26 +755,69 @@ export function MediaBrowserDialog({
                     style={{ minHeight: "200px" }}
                   >
                     <Stack space={3} style={{ textAlign: "center" }}>
-                      <AddIcon style={{ fontSize: 32, opacity: 0.5 }} />
+                      <ImageIcon style={{ fontSize: 32, opacity: 0.3 }} />
                       <Text size={1} muted>
-                        Click to select files or drag and drop
+                        {search || activeFilterCount > 0
+                          ? "No results found. Try adjusting your filters."
+                          : "No media assets yet."}
                       </Text>
-                      <Text size={0} muted>
-                        {assetType === "image"
-                          ? "Supports images"
-                          : assetType === "video"
-                            ? "Supports videos"
-                            : "Supports images and videos"}
-                      </Text>
+                      {allowUpload && !search && activeFilterCount === 0 && (
+                        <Button
+                          icon={UploadIcon}
+                          text="Upload"
+                          tone="primary"
+                          onClick={() => fileInputRef.current?.click()}
+                          fontSize={1}
+                        />
+                      )}
                     </Stack>
                   </Flex>
                 </Card>
-              </Box>
-            )}
-          </TabPanel>
-        )}
+              ) : viewMode === "grid" ? (
+                <AssetGrid
+                  assets={media}
+                  tags={tags}
+                  onSelect={handleAssetSelect}
+                  showCheckboxes={false}
+                />
+              ) : (
+                <AssetList
+                  assets={media}
+                  tags={tags}
+                  onSelect={handleAssetSelect}
+                  showCheckboxes={false}
+                />
+              )}
+            </Box>
 
-        {/* Hidden file input */}
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <Flex justify="center" align="center" gap={2}>
+                <Button
+                  icon={ChevronLeftIcon}
+                  mode="ghost"
+                  padding={2}
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                />
+                <Text size={1} muted>
+                  Page {currentPage} of {totalPages}
+                </Text>
+                <Button
+                  icon={ChevronRightIcon}
+                  mode="ghost"
+                  padding={2}
+                  disabled={currentPage === totalPages}
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                />
+              </Flex>
+            )}
+          </Stack>
+        </Box>
+
+        {/* Hidden file input - single file only */}
         <input
           ref={fileInputRef}
           type="file"
@@ -1024,7 +828,6 @@ export function MediaBrowserDialog({
                 ? "video/*"
                 : "image/*,video/*"
           }
-          multiple
           onChange={handleFileSelect}
           style={{ display: "none" }}
         />
