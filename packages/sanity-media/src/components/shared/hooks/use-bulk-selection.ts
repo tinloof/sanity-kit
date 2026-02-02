@@ -2,10 +2,12 @@ import { useCallback, useState } from "react";
 import { useClient } from "sanity";
 import { useToast } from "@sanity/ui";
 import { API_VERSION } from "../../../constants";
+import { deleteFile, type StorageCredentials } from "../../../storage-client";
 import type { MediaAsset, Tag } from "../../media-panel/types";
 
 export interface UseBulkSelectionOptions {
   media: MediaAsset[];
+  credentials: StorageCredentials | null;
   onDelete?: () => void;
   onMutate?: () => void;
 }
@@ -38,6 +40,7 @@ export interface UseBulkSelectionResult {
 
 export function useBulkSelection({
   media,
+  credentials,
   onDelete,
   onMutate,
 }: UseBulkSelectionOptions): UseBulkSelectionResult {
@@ -88,15 +91,51 @@ export function useBulkSelection({
     setDeleteTarget(null);
   }, []);
 
+  // Helper to delete file from storage
+  const deleteFromStorage = useCallback(
+    async (asset: MediaAsset) => {
+      if (!credentials || !asset.path) {
+        console.warn("Cannot delete from storage: missing credentials or path", {
+          hasCredentials: !!credentials,
+          path: asset.path,
+        });
+        return;
+      }
+      try {
+        await deleteFile(credentials, asset.path);
+      } catch (error) {
+        console.error("Failed to delete from storage:", error);
+        // Don't throw - we'll still delete from Sanity even if storage delete fails
+        // The file will become orphaned but that's better than leaving a broken reference
+      }
+    },
+    [credentials]
+  );
+
   // Confirm and execute deletion
   const confirmDelete = useCallback(
     async (singleAsset?: MediaAsset | null) => {
       if (deleteTarget === "single" && singleAsset) {
         setIsDeleting(true);
         try {
+          // Delete from storage first
+          await deleteFromStorage(singleAsset);
+
+          // Delete thumbnail from storage if it's a video
+          if (singleAsset.mediaType === "video" && singleAsset.thumbnail) {
+            const thumbnailAsset = singleAsset.thumbnail as MediaAsset & { path?: string };
+            if (thumbnailAsset.path && credentials) {
+              try {
+                await deleteFile(credentials, thumbnailAsset.path);
+              } catch (error) {
+                console.error("Failed to delete thumbnail from storage:", error);
+              }
+            }
+          }
+
           const transaction = client.transaction();
 
-          // Delete thumbnail if it's a video
+          // Delete thumbnail document if it's a video
           if (singleAsset.mediaType === "video" && singleAsset.thumbnail?._id) {
             transaction.delete(singleAsset.thumbnail._id);
           }
@@ -125,10 +164,28 @@ export function useBulkSelection({
         setIsDeleting(true);
         try {
           const assetsToDelete = media.filter((m) => selectedIds.has(m._id));
+
+          // Delete all files from storage first
+          for (const asset of assetsToDelete) {
+            await deleteFromStorage(asset);
+
+            // Delete thumbnail from storage if it's a video
+            if (asset.mediaType === "video" && asset.thumbnail) {
+              const thumbnailAsset = asset.thumbnail as MediaAsset & { path?: string };
+              if (thumbnailAsset.path && credentials) {
+                try {
+                  await deleteFile(credentials, thumbnailAsset.path);
+                } catch (error) {
+                  console.error("Failed to delete thumbnail from storage:", error);
+                }
+              }
+            }
+          }
+
           const transaction = client.transaction();
 
           for (const asset of assetsToDelete) {
-            // Delete thumbnail if it's a video
+            // Delete thumbnail document if it's a video
             if (asset.mediaType === "video" && asset.thumbnail?._id) {
               transaction.delete(asset.thumbnail._id);
             }
@@ -157,7 +214,7 @@ export function useBulkSelection({
       }
       closeDeleteDialog();
     },
-    [deleteTarget, selectedIds, media, client, toast, onDelete, closeDeleteDialog]
+    [deleteTarget, selectedIds, media, client, toast, onDelete, closeDeleteDialog, deleteFromStorage, credentials]
   );
 
   // Add tag to all selected items

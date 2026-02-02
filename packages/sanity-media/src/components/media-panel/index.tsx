@@ -213,6 +213,7 @@ export function MediaPanel({
           _type,
           _createdAt,
           url,
+          path,
           originalFilename,
           size,
           mimeType,
@@ -223,7 +224,7 @@ export function MediaPanel({
           caption,
           title,
           description,
-          "thumbnail": thumbnail->{_id, url}
+          "thumbnail": thumbnail->{_id, url, path}
         }
       }`,
     };
@@ -336,6 +337,7 @@ export function MediaPanel({
   // Bulk selection hook
   const bulkSelection = useBulkSelection({
     media,
+    credentials,
     onDelete: () => {
       setSelectedMedia(null);
       revalidate();

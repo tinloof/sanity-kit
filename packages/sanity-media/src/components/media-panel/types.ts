@@ -55,6 +55,8 @@ export interface MediaAsset {
   _type: string;
   _createdAt: string;
   url: string;
+  /** Storage key/path for the file in the storage provider */
+  path?: string;
   originalFilename?: string;
   size?: number;
   mimeType?: string;
