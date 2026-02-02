@@ -25,7 +25,7 @@ import {
   Text,
 } from "@sanity/ui";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useClient } from "sanity";
+import { isDev, useClient } from "sanity";
 import useSWR from "swr";
 import { API_VERSION } from "../../constants";
 import { useCredentials } from "../../hooks/use-credentials";
@@ -633,7 +633,7 @@ export function MediaPanel({
                       fontSize={1}
                       padding={3}
                     />
-                    {onOpenSettings && (
+                    {onOpenSettings && isDev && (
                       <Button
                         icon={CogIcon}
                         mode="ghost"

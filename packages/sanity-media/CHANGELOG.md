@@ -1,5 +1,11 @@
 # @tinloof/sanity-media
 
+## 0.0.0-20260202002852
+
+### Patch Changes
+
+- isDev check for settings button
+
 ## 0.0.1
 
 ### Initial Release
