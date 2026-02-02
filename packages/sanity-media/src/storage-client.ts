@@ -1,4 +1,4 @@
-import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import {DeleteObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
 
 export interface StorageCredentials {
@@ -155,6 +155,18 @@ export async function validateCredentials(
 	} catch {
 		return false;
 	}
+}
+
+export async function deleteFile(
+	credentials: StorageCredentials,
+	key: string,
+): Promise<void> {
+	const s3Client = createS3Client(credentials);
+	const command = new DeleteObjectCommand({
+		Bucket: credentials.bucketName,
+		Key: key,
+	});
+	await s3Client.send(command);
 }
 
 export const StorageEndpoints = {
