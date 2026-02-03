@@ -11,9 +11,9 @@
 		"docs:generate-readme": "tsx scripts/generate-readme-from-docs.ts"
 	},
 	"dependencies": {
-		"fumadocs-core": "16.4.9",
+		"fumadocs-core": "16.5.0",
 		"fumadocs-mdx": "14.2.6",
-		"fumadocs-ui": "16.4.9",
+		"fumadocs-ui": "16.5.0",
 		"lucide-react": "^0.563.0",
 		"next": "16.1.6",
 		"react": "^19.2.4",
@@ -23,7 +23,7 @@
 	"devDependencies": {
 		"@tailwindcss/postcss": "^4.1.18",
 		"@types/mdx": "^2.0.13",
-		"@types/node": "^24.10.9",
+		"@types/node": "^24.10.10",
 		"@types/react": "^19.2.10",
 		"@types/react-dom": "^19.2.3",
 		"postcss": "^8.5.6",
