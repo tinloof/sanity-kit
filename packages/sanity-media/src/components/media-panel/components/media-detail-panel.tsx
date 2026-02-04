@@ -310,22 +310,30 @@ export function MediaDetailPanel({
         </Box>
 
         {/* Tabs */}
-        <TabList space={2} padding={2}>
-          <Tab
-            aria-controls="details-panel"
-            id="details-tab"
-            label="Details"
-            onClick={() => setActiveTab("details")}
-            selected={activeTab === "details"}
-          />
-          <Tab
-            aria-controls="references-panel"
-            id="references-tab"
-            label={`References${references ? ` (${references.length})` : ""}`}
-            onClick={() => setActiveTab("references")}
-            selected={activeTab === "references"}
-          />
-        </TabList>
+        <Box
+          padding={2}
+          style={{
+            borderBottom: "1px solid var(--card-border-color)",
+            flexShrink: 0,
+          }}
+        >
+          <TabList space={2}>
+            <Tab
+              aria-controls="details-panel"
+              id="details-tab"
+              label="Details"
+              onClick={() => setActiveTab("details")}
+              selected={activeTab === "details"}
+            />
+            <Tab
+              aria-controls="references-panel"
+              id="references-tab"
+              label={`References${references ? ` (${references.length})` : ""}`}
+              onClick={() => setActiveTab("references")}
+              selected={activeTab === "references"}
+            />
+          </TabList>
+        </Box>
 
         {/* Tab Content */}
         <Box style={{ flex: 1, overflowY: "auto" }}>
@@ -340,18 +348,18 @@ export function MediaDetailPanel({
                 {/* File Info */}
                 <Stack space={3}>
                   <Text size={1} weight="semibold">
-                    File Info
+                    File info
                   </Text>
                   <Card padding={3} radius={2} tone="transparent" border>
                     <Stack space={3}>
-                      <Stack space={1}>
+                      <Flex justify="space-between">
                         <Text size={1} muted>
                           Filename
                         </Text>
-                        <Text size={1} style={{ wordBreak: "break-word" }}>
+                        <Text size={1} style={{ wordBreak: "break-word", textAlign: "right" }}>
                           {media.originalFilename || "Untitled"}
                         </Text>
-                      </Stack>
+                      </Flex>
                       <Flex justify="space-between">
                         <Text size={1} muted>
                           Type
@@ -375,8 +383,7 @@ export function MediaDetailPanel({
                             Dimensions
                           </Text>
                           <Text size={1}>
-                            {media.metadata.dimensions.width} x{" "}
-                            {media.metadata.dimensions.height}
+                            {media.metadata.dimensions.width} × {media.metadata.dimensions.height}
                           </Text>
                         </Flex>
                       )}
@@ -393,7 +400,7 @@ export function MediaDetailPanel({
                       {media.mediaType === "video" && (
                         <Flex justify="space-between" align="center">
                           <Text size={1} muted>
-                            Has Audio
+                            Has audio
                           </Text>
                           <Switch
                             checked={media.metadata?.hasAudio ?? true}
@@ -434,7 +441,7 @@ export function MediaDetailPanel({
                       {media.mediaType === "image" ? (
                         <>
                           <Stack space={2}>
-                            <Label size={0}>Alt Text</Label>
+                            <Label size={0}>Alt text</Label>
                             <TextInput
                               value={media.alt || ""}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -794,7 +801,7 @@ export function MediaDetailPanel({
                     return (
                       <Stack space={3}>
                         <Text size={1} weight="semibold">
-                          Media Assets
+                          Media assets
                         </Text>
                         <Text size={0} muted>
                           {assetRefs.length} asset
