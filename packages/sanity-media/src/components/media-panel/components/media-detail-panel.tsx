@@ -18,6 +18,7 @@ import {
   MenuItem,
   Spinner,
   Stack,
+  Switch,
   Tab,
   TabList,
   TabPanel,
@@ -124,6 +125,32 @@ export function MediaDetailPanel({
       toast.push({
         status: "error",
         title: `Failed to update ${field}`,
+      });
+    }
+  };
+
+  const updateHasAudio = async (hasAudio: boolean) => {
+    try {
+      await client
+        .patch(media._id)
+        .set({ "metadata.hasAudio": hasAudio })
+        .commit();
+      onMediaChange({
+        ...media,
+        metadata: {
+          ...media.metadata,
+          hasAudio,
+        },
+      });
+      onMutate();
+      toast.push({
+        status: "success",
+        title: `Audio setting updated`,
+      });
+    } catch (error) {
+      toast.push({
+        status: "error",
+        title: "Failed to update audio setting",
       });
     }
   };
@@ -361,6 +388,19 @@ export function MediaDetailPanel({
                           <Text size={1}>
                             {formatDuration(media.metadata.duration)}
                           </Text>
+                        </Flex>
+                      )}
+                      {media.mediaType === "video" && (
+                        <Flex justify="space-between" align="center">
+                          <Text size={1} muted>
+                            Has Audio
+                          </Text>
+                          <Switch
+                            checked={media.metadata?.hasAudio ?? true}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                              updateHasAudio(event.currentTarget.checked);
+                            }}
+                          />
                         </Flex>
                       )}
                       <Flex justify="space-between">
