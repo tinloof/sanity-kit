@@ -131,6 +131,7 @@ function detectAudioTracks(video: HTMLVideoElement): boolean {
   }
 
   // Standard API - check if audioTracks exist
+  // @ts-expect-error - audioTracks may not be available in all browsers
   if (video.audioTracks && video.audioTracks.length > 0) {
     return true;
   }
