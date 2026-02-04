@@ -45,6 +45,7 @@ export async function extractVideoMetadata(file: File) {
     width: number;
     height: number;
     duration: number;
+    hasAudio: boolean;
     thumbnailBlob: Blob;
   }>((resolve, reject) => {
     const video = document.createElement("video");
@@ -75,6 +76,9 @@ export async function extractVideoMetadata(file: File) {
         canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+        // Detect if video has audio tracks
+        const hasAudio = detectAudioTracks(video);
+
         canvas.toBlob(
           (blob) => {
             URL.revokeObjectURL(objectUrl);
@@ -87,6 +91,7 @@ export async function extractVideoMetadata(file: File) {
               width: video.videoWidth,
               height: video.videoHeight,
               duration: video.duration,
+              hasAudio,
               thumbnailBlob: blob,
             });
           },
@@ -106,6 +111,33 @@ export async function extractVideoMetadata(file: File) {
 
     video.src = objectUrl;
   });
+}
+
+/**
+ * Detect if video has audio tracks
+ */
+function detectAudioTracks(video: HTMLVideoElement): boolean {
+  // Check if the video has any audio tracks using the HTMLMediaElement API
+  // @ts-expect-error - mozHasAudio is Firefox-specific
+  if (typeof video.mozHasAudio !== "undefined") {
+    // @ts-expect-error - mozHasAudio is Firefox-specific
+    return video.mozHasAudio;
+  }
+
+  // @ts-expect-error - webkitAudioDecodedByteCount is WebKit-specific
+  if (typeof video.webkitAudioDecodedByteCount !== "undefined") {
+    // @ts-expect-error - webkitAudioDecodedByteCount is WebKit-specific
+    return video.webkitAudioDecodedByteCount > 0;
+  }
+
+  // Standard API - check if audioTracks exist
+  if (video.audioTracks && video.audioTracks.length > 0) {
+    return true;
+  }
+
+  // Fallback: assume video has audio if we can't detect
+  // This is safer than assuming no audio
+  return true;
 }
 
 /**

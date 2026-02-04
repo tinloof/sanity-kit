@@ -165,6 +165,7 @@ export async function handleVideoUpload(
               aspectRatio: metadata.width / metadata.height,
             },
             duration: metadata.duration,
+            hasAudio: metadata.hasAudio,
           }
         : undefined,
     thumbnail: thumbnailRef,

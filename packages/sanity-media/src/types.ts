@@ -49,3 +49,19 @@ export interface MediaFileValue {
   description?: string;
 }
 
+/**
+ * media.video value structure
+ * title and description can be set here to override the defaults from the asset document
+ */
+export interface MediaVideoValue {
+  _type: "media.video";
+  asset: {
+    _type: "reference";
+    _ref: string;
+  };
+  /** Overrides asset.title if set */
+  title?: string;
+  /** Overrides asset.description if set */
+  description?: string;
+}
+

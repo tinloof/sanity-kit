@@ -37,6 +37,7 @@ export {
 export type {
   MediaImageValue,
   MediaFileValue,
+  MediaVideoValue,
   MediaStoragePluginConfig,
 } from "./types";
 

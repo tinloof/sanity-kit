@@ -435,6 +435,12 @@ export function generateVideoAssetType(adapter: StorageAdapter) {
             type: "number",
             title: "Duration (seconds)",
           },
+          {
+            name: "hasAudio",
+            type: "boolean",
+            title: "Has Audio",
+            description: "Indicates whether the video contains audio tracks",
+          },
         ],
       }),
 
