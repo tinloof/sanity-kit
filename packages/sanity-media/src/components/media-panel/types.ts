@@ -69,6 +69,7 @@ export interface MediaAsset {
       aspectRatio?: number;
     };
     duration?: number;
+    hasAudio?: boolean;
     hasAlpha?: boolean;
     isOpaque?: boolean;
     lqip?: string;
