@@ -1,6 +1,6 @@
 {
 	"name": "@tinloof/sanity-next",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Sanity & Next.js utilities and components package",
 	"license": "ISC",
 	"author": "Tinloof",
