@@ -24,15 +24,15 @@ export default defineAbstractResolver((_schema, options) => {
 		groups: [contentSchemaGroup, settingsSchemaGroup],
 		fields: [
 			{
-				...seoObjectField({...seo}),
-				group: "settings",
-			},
-			{
 				...pathnameSlugField({
 					localized: !!locales?.length,
 					defaultLocaleId,
 					...pathname,
 				}),
+				group: "settings",
+			},
+			{
+				...seoObjectField({...seo}),
 				group: "settings",
 			},
 		],
