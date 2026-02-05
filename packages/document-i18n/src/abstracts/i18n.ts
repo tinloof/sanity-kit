@@ -1,13 +1,10 @@
-import {defineType} from "sanity";
+import type {AbstractDefinition} from "@tinloof/sanity-extends";
 
-export default defineType(
-	{
-		name: "i18n",
-		type: "abstract",
-		fields: [{name: "locale", type: "string", hidden: true}],
-		options: {
-			localized: true,
-		},
+export default {
+	name: "i18n",
+	type: "abstract",
+	fields: [{name: "locale", type: "string", hidden: true}],
+	options: {
+		localized: true,
 	},
-	{strict: false},
-);
+} as AbstractDefinition;
