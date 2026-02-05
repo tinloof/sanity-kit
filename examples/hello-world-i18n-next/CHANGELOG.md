@@ -5,8 +5,8 @@
 ### Patch Changes
 
 - Updated dependencies [2d358f3]
-  - @tinloof/sanity-next@2.0.1
-  - @tinloof/sanity-web@2.0.1
+  - @tinloof/sanity-next@2.0.0
+  - @tinloof/sanity-web@2.0.0
   - @examples/hello-world-i18n-studio@0.0.12
 
 ## 0.1.12

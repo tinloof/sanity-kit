@@ -5,10 +5,10 @@
 ### Patch Changes
 
 - Updated dependencies [2d358f3]
-  - @tinloof/sanity-document-i18n@2.0.1
-  - @tinloof/sanity-extends@2.0.1
-  - @tinloof/sanity-document-options@2.0.1
-  - @tinloof/sanity-studio@2.0.1
+  - @tinloof/sanity-document-i18n@2.0.0
+  - @tinloof/sanity-extends@2.0.0
+  - @tinloof/sanity-document-options@2.0.0
+  - @tinloof/sanity-studio@2.0.0
 
 ## 1.2.12
 
