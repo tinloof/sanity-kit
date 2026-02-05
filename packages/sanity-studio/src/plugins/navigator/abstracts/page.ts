@@ -1,5 +1,4 @@
 import {defineAbstractResolver} from "@tinloof/sanity-extends";
-import {defineType} from "sanity";
 
 import {
 	contentSchemaGroup,
@@ -18,7 +17,7 @@ export default defineAbstractResolver((_schema, options) => {
 			seo?: SEOObjectProps;
 		} & PagesNavigatorPluginOptions["i18n"]) ?? {};
 
-	return defineType({
+	return {
 		name: "page",
 		type: "abstract",
 		groups: [contentSchemaGroup, settingsSchemaGroup],
@@ -48,5 +47,5 @@ export default defineAbstractResolver((_schema, options) => {
 				subtitle: pathname,
 			}),
 		},
-	});
+	};
 });
