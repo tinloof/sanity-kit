@@ -1,19 +1,28 @@
-import {defineType, isDev} from "sanity";
+import type {AbstractDefinition} from "@tinloof/sanity-extends";
+import {isDev} from "sanity";
+import type {
+	DocumentActionComponent,
+	NewDocumentOptionsContext,
+	InitialValueTemplateItem,
+} from "sanity";
 
-export default defineType({
+export default {
 	name: "sync",
 	type: "abstract",
 	options: {
 		document: {
-			actions: (prev) => {
+			actions: (prev: DocumentActionComponent[]) => {
 				return isDev
 					? prev
 					: prev.filter(
-							(action) =>
+							(action: DocumentActionComponent) =>
 								!["delete", "duplicate"].includes(action.action || ""),
 						);
 			},
-			newDocumentOptions: (prev, context) => {
+			newDocumentOptions: (
+				prev: InitialValueTemplateItem[],
+				context: NewDocumentOptionsContext,
+			) => {
 				const {creationContext} = context;
 
 				if (
@@ -21,7 +30,8 @@ export default defineType({
 					["structure", "global", "document"].includes(creationContext.type)
 				) {
 					return prev.filter(
-						(templateItem) => templateItem.templateId !== context.schemaType,
+						(templateItem: InitialValueTemplateItem) =>
+							templateItem.templateId !== context.schemaType,
 					);
 				}
 
@@ -29,4 +39,4 @@ export default defineType({
 			},
 		},
 	},
-});
+} as AbstractDefinition;

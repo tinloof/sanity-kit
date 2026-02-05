@@ -28,7 +28,7 @@ export const defaultPTLists: Record<string, BlockDefinitionType<"lists">> = {
 	number: {title: "Numbered list", value: "number"},
 } as const;
 
-export const defaultPTDecorators = {
+export const defaultPTDecorators: Record<string, BlockMarkType<"decorators">> = {
 	strong: {title: "Strong", value: "strong"},
 	em: {title: "Emphasis", value: "em"},
 	underline: {title: "Underline", value: "underline"},

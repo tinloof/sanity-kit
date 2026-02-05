@@ -6,7 +6,7 @@ import {localizePathname, pathToAbsUrl} from "./urls";
 type Seo = {
 	title?: string;
 	description?: string;
-	ogImage?: Omit<Image, "crop" | "hotspot">;
+	ogImage?: Omit<Image, "crop" | "hotspot"> | string;
 	indexable?: boolean;
 };
 
@@ -138,17 +138,26 @@ export async function resolveSanityRouteMetadata(
 	});
 
 	// Fallback logic for ogImages:
-	// 1. First try seo?.ogImage (if provided and has asset)
+	// 1. First try seo?.ogImage (if provided - supports both URL strings and Sanity image assets)
 	// 2. Fall back to parent.openGraph?.images (if available)
 	// 3. Default to empty array
 
 	let ogImages: any[];
 
-	if (seo?.ogImage?.asset) {
-		try {
-			ogImages = getOgImages({image: seo.ogImage, client});
-		} catch (error) {
-			console.warn("Failed to generate OG images from SEO image:", error);
+	if (seo?.ogImage) {
+		// Handle URL string
+		if (typeof seo.ogImage === "string") {
+			ogImages = [{url: seo.ogImage, width: 1200}];
+		}
+		// Handle Sanity image asset
+		else if (seo.ogImage.asset) {
+			try {
+				ogImages = getOgImages({image: seo.ogImage, client});
+			} catch (error) {
+				console.warn("Failed to generate OG images from SEO image:", error);
+				ogImages = parent?.openGraph?.images || [];
+			}
+		} else {
 			ogImages = parent?.openGraph?.images || [];
 		}
 	} else if (parent?.openGraph?.images) {
