@@ -58,31 +58,31 @@
 	"author": "Tinloof",
 	"license": "ISC",
 	"devDependencies": {
-		"@portabletext/types": "^4.0.0",
-		"@types/node": "^25.0.3",
-		"@types/react": "^19.2.7",
+		"@portabletext/types": "^4.0.1",
+		"@types/node": "^24.10.9",
+		"@types/react": "^19.2.10",
 		"@types/react-dom": "^19.2.3",
 		"@types/speakingurl": "^13.0.6",
-		"next-sanity": "^12.0.5",
-		"react": "^19.2.3",
-		"react-dom": "^19.2.3",
-		"sanity": "^5.1.0",
-		"styled-components": "^6.1.19",
+		"next-sanity": "^12.0.15",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"sanity": "^5.7.0",
+		"styled-components": "^6.3.8",
 		"tsup": "^8.5.1",
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
-		"next-sanity": "^12.0.0",
-		"react": "^19.2.3",
-		"react-dom": "^19.2.3",
-		"sanity": "^5.0.0"
+		"next-sanity": "^12.0.15",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"sanity": "^5.7.0"
 	},
 	"dependencies": {
-		"@portabletext/react": "^6.0.0",
+		"@portabletext/react": "^6.0.2",
 		"@sanity/asset-utils": "^2.3.0",
 		"@sanity/client": "^7.14.1",
-		"@sanity/image-url": "^2.0.2",
-		"groq": "^5.1.0",
+		"@sanity/image-url": "^2.0.3",
+		"groq": "^5.7.0",
 		"speakingurl": "^14.0.1"
 	},
 	"publishConfig": {

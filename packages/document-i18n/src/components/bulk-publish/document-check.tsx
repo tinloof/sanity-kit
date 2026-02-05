@@ -24,7 +24,7 @@ export default function DocumentCheck(props: DocumentCheckProps) {
 		removeDraftId,
 	} = props;
 	const editState = useEditState(id, ``);
-	const {isValidating, validation} = useValidationStatus(id, ``);
+	const {isValidating, validation} = useValidationStatus(id, ``, false);
 	const schema = useSchema();
 
 	const validationHasErrors = useMemo(() => {
