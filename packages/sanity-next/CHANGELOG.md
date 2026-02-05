@@ -1,5 +1,11 @@
 # @tinloof/sanity-next
 
+## 2.0.1
+
+### Patch Changes
+
+- 2d358f3:
+
 ## 2.0.0
 
 ### Major Changes
