@@ -59,7 +59,7 @@
 	"license": "ISC",
 	"devDependencies": {
 		"@portabletext/types": "^4.0.1",
-		"@types/node": "^25.1.0",
+		"@types/node": "^24.10.9",
 		"@types/react": "^19.2.10",
 		"@types/react-dom": "^19.2.3",
 		"@types/speakingurl": "^13.0.6",
