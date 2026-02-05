@@ -1,4 +1,8 @@
-import {defineAbstractResolver} from "@tinloof/sanity-extends";
+import {
+	defineAbstractResolver,
+	type AbstractDefinition,
+} from "@tinloof/sanity-extends";
+import {defineField} from "sanity";
 
 import {
 	contentSchemaGroup,
@@ -22,18 +26,18 @@ export default defineAbstractResolver((_schema, options) => {
 		type: "abstract",
 		groups: [contentSchemaGroup, settingsSchemaGroup],
 		fields: [
-			{
+			defineField({
 				...pathnameSlugField({
 					localized: !!locales?.length,
 					defaultLocaleId,
 					...pathname,
 				}),
 				group: "settings",
-			},
-			{
+			}),
+			defineField({
 				...seoObjectField({...seo}),
 				group: "settings",
-			},
+			}),
 		],
 		preview: {
 			select: {
@@ -47,5 +51,5 @@ export default defineAbstractResolver((_schema, options) => {
 				subtitle: pathname,
 			}),
 		},
-	};
+	} as AbstractDefinition;
 });
