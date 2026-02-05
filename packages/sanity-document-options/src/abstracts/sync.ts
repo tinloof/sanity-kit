@@ -3,7 +3,7 @@ import {isDev} from "sanity";
 import type {
 	DocumentActionComponent,
 	NewDocumentOptionsContext,
-	InitialValueTemplateItem,
+	TemplateItem,
 } from "sanity";
 
 export default {
@@ -20,7 +20,7 @@ export default {
 						);
 			},
 			newDocumentOptions: (
-				prev: InitialValueTemplateItem[],
+				prev: TemplateItem[],
 				context: NewDocumentOptionsContext,
 			) => {
 				const {creationContext} = context;
@@ -30,7 +30,7 @@ export default {
 					["structure", "global", "document"].includes(creationContext.type)
 				) {
 					return prev.filter(
-						(templateItem: InitialValueTemplateItem) =>
+						(templateItem: TemplateItem) =>
 							templateItem.templateId !== context.schemaType,
 					);
 				}

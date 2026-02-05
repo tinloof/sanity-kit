@@ -5,7 +5,7 @@ import {
 import type {
 	DocumentActionComponent,
 	NewDocumentOptionsContext,
-	InitialValueTemplateItem,
+	TemplateItem,
 } from "sanity";
 
 export default defineAbstractResolver(
@@ -23,7 +23,7 @@ export default defineAbstractResolver(
 								),
 						),
 					newDocumentOptions: (
-						prev: InitialValueTemplateItem[],
+						prev: TemplateItem[],
 						context: NewDocumentOptionsContext,
 					) => {
 						const {creationContext} = context;
@@ -32,7 +32,7 @@ export default defineAbstractResolver(
 							["structure", "global", "document"].includes(creationContext.type)
 						) {
 							return prev.filter(
-								(templateItem: InitialValueTemplateItem) =>
+								(templateItem: TemplateItem) =>
 									templateItem.templateId !== schema.name,
 							);
 						}
