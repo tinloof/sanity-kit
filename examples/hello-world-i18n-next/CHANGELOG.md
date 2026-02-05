@@ -1,5 +1,15 @@
 # @examples/hello-world-i18n-next
 
+## 0.1.12
+
+### Patch Changes
+
+- Updated dependencies [6a563a4]
+- Updated dependencies [abca273]
+  - @tinloof/sanity-next@2.0.0
+  - @tinloof/sanity-web@2.0.0
+  - @examples/hello-world-i18n-studio@0.0.11
+
 ## 0.1.11
 
 ### Patch Changes
