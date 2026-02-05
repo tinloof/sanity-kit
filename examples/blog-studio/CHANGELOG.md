@@ -1,5 +1,17 @@
 # @examples/hello-world-i18n-studio
 
+## 0.0.8
+
+### Patch Changes
+
+- Updated dependencies [6a563a4]
+- Updated dependencies [be34033]
+- Updated dependencies [e9b662f]
+- Updated dependencies [abca273]
+  - @tinloof/sanity-studio@2.0.0
+  - @tinloof/sanity-document-options@2.0.0
+  - @tinloof/sanity-extends@2.0.0
+
 ## 0.0.7
 
 ### Patch Changes
