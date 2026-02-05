@@ -6,7 +6,7 @@ import {localizePathname, pathToAbsUrl} from "./urls";
 type Seo = {
 	title?: string;
 	description?: string;
-	ogImage?: Omit<Image, "crop" | "hotspot"> | string;
+	ogImage?: Omit<Image, "crop" | "hotspot"> | string | null;
 	indexable?: boolean;
 };
 
