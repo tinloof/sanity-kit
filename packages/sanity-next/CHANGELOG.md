@@ -1,5 +1,11 @@
 # @tinloof/sanity-next
 
+## 2.0.2
+
+### Patch Changes
+
+- 9270e6e: Allow null for ogImage in resolveSanityMetadata to support GROQ results
+
 ## 2.0.1
 
 ### Patch Changes

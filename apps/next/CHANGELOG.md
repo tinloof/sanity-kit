@@ -1,5 +1,12 @@
 # next-non-embedded-studio
 
+## 1.3.16
+
+### Patch Changes
+
+- Updated dependencies [9270e6e]
+  - @tinloof/sanity-next@2.0.2
+
 ## 1.3.15
 
 ### Patch Changes
