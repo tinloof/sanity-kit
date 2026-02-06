@@ -1,6 +1,6 @@
 {
 	"name": "@tinloof/sanity-media",
-	"version": "0.0.0-20260202002852",
+	"version": "0.0.0-20260206162329",
 	"description": "Media management plugin for Sanity with S3-compatible storage support",
 	"license": "MIT",
 	"author": "Tinloof",
