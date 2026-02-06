@@ -75,7 +75,7 @@ declare module "sanity" {
 		schema?: {
 			templates?: SchemaPluginOptions["templates"];
 		};
-		structureGroup?: string;
+		structureGroup?: string | string[];
 		structureOptions?:
 			| StructureBuiltinOptions
 			| ((
