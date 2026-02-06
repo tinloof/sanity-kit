@@ -4,6 +4,7 @@ import {documentOptions} from "@tinloof/sanity-document-options";
 import {withExtends} from "@tinloof/sanity-extends";
 import {pages} from "@tinloof/sanity-studio";
 import {defineConfig, isDev} from "sanity";
+import {createPublishWithTranslateAction} from "./src/actions";
 import schemas from "./src/schemas";
 
 import "./globals.css";
@@ -11,6 +12,8 @@ import "./globals.css";
 const locales = [
 	{id: "en", title: "English"},
 	{id: "fr", title: "French"},
+	{id: "es", title: "Spanish"},
+	{id: "de", title: "German"},
 ];
 
 export default defineConfig({
@@ -43,5 +46,13 @@ export default defineConfig({
 	],
 	schema: {
 		types: withExtends(schemas),
+	},
+	document: {
+		actions: (prev, context) =>
+			prev.map((originalAction) =>
+				originalAction.action === "publish"
+					? createPublishWithTranslateAction(originalAction, context)
+					: originalAction,
+			),
 	},
 });
