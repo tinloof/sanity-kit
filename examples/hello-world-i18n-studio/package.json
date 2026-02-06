@@ -1,7 +1,7 @@
 {
 	"name": "@examples/hello-world-i18n-studio",
 	"private": true,
-	"version": "0.0.13",
+	"version": "0.0.14",
 	"main": "package.json",
 	"scripts": {
 		"dev": "sanity dev",

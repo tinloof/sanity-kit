@@ -1,5 +1,12 @@
 # vite-studio
 
+## 1.2.15
+
+### Patch Changes
+
+- Updated dependencies [8fbc81b]
+  - @tinloof/sanity-document-options@2.0.2
+
 ## 1.2.14
 
 ### Patch Changes

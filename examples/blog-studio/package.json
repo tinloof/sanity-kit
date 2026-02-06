@@ -1,7 +1,7 @@
 {
 	"name": "@examples/blog-studio",
 	"private": true,
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"main": "package.json",
 	"scripts": {
 		"dev": "sanity dev",

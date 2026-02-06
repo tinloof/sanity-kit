@@ -1,5 +1,11 @@
 # @examples/hello-world-i18n-next
 
+## 0.1.16
+
+### Patch Changes
+
+- @examples/hello-world-i18n-studio@0.0.14
+
 ## 0.1.15
 
 ### Patch Changes
