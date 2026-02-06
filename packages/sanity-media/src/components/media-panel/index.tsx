@@ -93,7 +93,7 @@ export function MediaPanel({
 
   // Custom hooks
   const advancedFilters = useAdvancedFilters();
-  const tagEditor = useTagEditor();
+  const tagEditor = useTagEditor({ adapter });
   const { docTypes: referencingDocTypes } = useReferencingDocTypes({ adapter });
   const { results: documentSearchResults, isLoading: documentSearchLoading } =
     useDocumentSearch({

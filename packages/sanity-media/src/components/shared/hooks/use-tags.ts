@@ -5,6 +5,10 @@ import type { StorageAdapter } from "../../../adapters";
 import { API_VERSION } from "../../../constants";
 import type { Tag } from "../../media-panel/types";
 
+export interface UseTagsOptions {
+  adapter: StorageAdapter;
+}
+
 export interface UseTagsResult {
   tags: Tag[];
   isLoading: boolean;
@@ -14,18 +18,20 @@ export interface UseTagsResult {
   deleteTag: (id: string) => Promise<void>;
 }
 
-export function useTags(): UseTagsResult {
+export function useTags({ adapter }: UseTagsOptions): UseTagsResult {
   const client = useClient({ apiVersion: API_VERSION });
+  const tagTypeName = `${adapter.typePrefix}.tag`;
 
   const {
     data: tags = [],
     isLoading,
     mutate,
   } = useSWR(
-    ["tags"],
+    ["tags", adapter.typePrefix],
     () =>
       client.fetch<Tag[]>(
-        `*[_type == "media.tag"] | order(name asc) { _id, name, color }`
+        `*[_type == $tagType] | order(name asc) { _id, name, color }`,
+        { tagType: tagTypeName }
       ),
     { fallbackData: [] }
   );
@@ -33,14 +39,14 @@ export function useTags(): UseTagsResult {
   const createTag = useCallback(
     async (name: string, color: string): Promise<Tag> => {
       const newTag = await client.create({
-        _type: "media.tag",
+        _type: tagTypeName,
         name: name.trim(),
         color,
       });
       mutate();
       return newTag as Tag;
     },
-    [client, mutate]
+    [client, mutate, tagTypeName]
   );
 
   const updateTag = useCallback(

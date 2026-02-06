@@ -4,13 +4,15 @@ import type { StorageAdapter } from "./adapters";
 import { formatDuration, formatFileSize } from "./utils";
 
 /**
- * Generate tag document type (generic, not adapter-specific)
- * Used to organize and filter media assets across all adapters
+ * Generate tag document type for an adapter
+ * Used to organize and filter media assets
  */
-export function generateTagType() {
+export function generateTagType(adapter: StorageAdapter) {
+  const typeName = `${adapter.typePrefix}.tag`;
+
   return defineType({
-    name: "media.tag",
-    title: "Media Tag",
+    name: typeName,
+    title: `${adapter.name} Tag`,
     type: "document",
     icon: TagIcon,
     __experimental_omnisearch_visibility: false,
@@ -173,7 +175,7 @@ export function generateImageAssetType(adapter: StorageAdapter) {
         name: "tags",
         title: "Tags",
         type: "array",
-        of: [{ type: "reference", weak: true, to: [{ type: "media.tag" }] }],
+        of: [{ type: "reference", weak: true, to: [{ type: `${adapter.typePrefix}.tag` }] }],
       }),
 
       // Default user-facing metadata (can be overridden in media.image)
@@ -285,7 +287,7 @@ export function generateFileAssetType(adapter: StorageAdapter) {
         name: "tags",
         title: "Tags",
         type: "array",
-        of: [{ type: "reference", weak: true, to: [{ type: "media.tag" }] }],
+        of: [{ type: "reference", weak: true, to: [{ type: `${adapter.typePrefix}.tag` }] }],
       }),
 
       // Default user-facing metadata (can be overridden in media.file)
@@ -468,7 +470,7 @@ export function generateVideoAssetType(adapter: StorageAdapter) {
         name: "tags",
         title: "Tags",
         type: "array",
-        of: [{ type: "reference", weak: true, to: [{ type: "media.tag" }] }],
+        of: [{ type: "reference", weak: true, to: [{ type: `${adapter.typePrefix}.tag` }] }],
       }),
 
       // Default user-facing metadata (can be overridden in media.video)

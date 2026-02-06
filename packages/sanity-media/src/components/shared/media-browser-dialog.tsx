@@ -94,7 +94,7 @@ export function MediaBrowserDialog({
   const [documentSearchQuery, setDocumentSearchQuery] = useState("");
 
   // Data hooks
-  const { tags } = useTags();
+  const { tags } = useTags({ adapter });
   const { docTypes: referencingDocTypes } = useReferencingDocTypes({ adapter, assetType });
   const { results: documentSearchResults, isLoading: documentSearchLoading } =
     useDocumentSearch({ adapter, query: documentSearchQuery });
