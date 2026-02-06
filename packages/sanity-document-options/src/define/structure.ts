@@ -201,54 +201,102 @@ export default function defineStructure(
 		return icon ? documentItem.icon(icon) : documentItem;
 	}
 
-	// Collect schemas by group for later use
-	const schemasByGroup = documentSchemas.reduce(
-		(groups, schema) => {
-			const group = schema.options?.structureGroup;
-			if (group) {
-				if (!groups[group]) {
-					groups[group] = [];
-				}
-				groups[group].push(schema);
-			}
-			return groups;
-		},
-		{} as Record<string, DocumentDefinition[]>,
-	);
+	// Entry type for tracking order at each level
+	type NodeEntry =
+		| {type: "schema"; schema: DocumentDefinition}
+		| {type: "group"; name: string};
 
-	// Build structure items preserving the natural order
-	const structureItems: NonNullable<ReturnType<typeof createSchemaItem>>[] = [];
-	const seenGroups = new Set<string>();
+	// Tree node type for building nested folder structure
+	type GroupTreeNode = {
+		entries: NodeEntry[]; // Ordered list of schemas and child groups
+		children: Map<string, GroupTreeNode>;
+		seenChildGroups: Set<string>; // Track which child groups have been added to entries
+	};
+
+	// Create a new tree node
+	function createTreeNode(): GroupTreeNode {
+		return {entries: [], children: new Map(), seenChildGroups: new Set()};
+	}
+
+	// Build a tree structure from schema paths
+	const groupTree = createTreeNode();
 
 	for (const schema of documentSchemas) {
-		const group = schema.options?.structureGroup;
+		const structureGroup = schema.options?.structureGroup;
 
-		if (!group) {
-			// Ungrouped item - add directly at its natural position
-			const item = createSchemaItem(schema);
-			if (item) {
-				structureItems.push(item);
-			}
-		} else if (!seenGroups.has(group)) {
-			// First occurrence of this group - create the group with all its items
-			seenGroups.add(group);
+		// Normalize to array and filter out empty segments
+		const path = structureGroup
+			? (Array.isArray(structureGroup) ? structureGroup : [structureGroup]).filter(
+					(segment) => segment.length > 0,
+				)
+			: [];
 
-			const groupSchemas = schemasByGroup[group];
-			const schemaItems = groupSchemas
-				.map(createSchemaItem)
-				.filter((item): item is NonNullable<typeof item> => Boolean(item));
+		if (path.length === 0) {
+			// Ungrouped (or empty array) - add to root entries directly
+			groupTree.entries.push({type: "schema", schema});
+		} else {
+			// Navigate/create the path in the tree, tracking order at each level
+			let currentNode = groupTree;
+			for (let i = 0; i < path.length; i++) {
+				const segment = path[i];
+				const isLastSegment = i === path.length - 1;
 
-			if (schemaItems.length > 0) {
-				const groupTitle = group.charAt(0).toUpperCase() + group.slice(1);
-				structureItems.push(
-					S.listItem()
-						.title(groupTitle)
-						.child(S.list().title(groupTitle).items(schemaItems)),
-				);
+				// Track first occurrence of this child group at current level
+				if (!currentNode.seenChildGroups.has(segment)) {
+					currentNode.seenChildGroups.add(segment);
+					currentNode.entries.push({type: "group", name: segment});
+				}
+
+				// Create child node if it doesn't exist
+				if (!currentNode.children.has(segment)) {
+					currentNode.children.set(segment, createTreeNode());
+				}
+
+				currentNode = currentNode.children.get(segment)!;
+
+				// Add schema to the final node
+				if (isLastSegment) {
+					currentNode.entries.push({type: "schema", schema});
+				}
 			}
 		}
-		// If group already seen, skip (already added with the group)
 	}
+
+	// Recursively build structure from tree node, preserving entry order
+	function buildStructureFromNode(
+		node: GroupTreeNode,
+	): NonNullable<ReturnType<typeof createSchemaItem>>[] {
+		const items: NonNullable<ReturnType<typeof createSchemaItem>>[] = [];
+
+		for (const entry of node.entries) {
+			if (entry.type === "schema") {
+				const item = createSchemaItem(entry.schema);
+				if (item) {
+					items.push(item);
+				}
+			} else {
+				// Child group
+				const childNode = node.children.get(entry.name);
+				if (childNode) {
+					const childItems = buildStructureFromNode(childNode);
+					if (childItems.length > 0) {
+						const groupTitle =
+							entry.name.charAt(0).toUpperCase() + entry.name.slice(1);
+						items.push(
+							S.listItem()
+								.title(groupTitle)
+								.child(S.list().title(groupTitle).items(childItems)),
+						);
+					}
+				}
+			}
+		}
+
+		return items;
+	}
+
+	// Build structure items from root node
+	const structureItems = buildStructureFromNode(groupTree);
 
 	return () => S.list().title(toolTitle).items(structureItems);
 }
