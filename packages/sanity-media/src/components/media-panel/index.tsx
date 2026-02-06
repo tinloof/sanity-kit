@@ -394,9 +394,21 @@ export function MediaPanel({
     return (
       <Box padding={4}>
         <Card padding={4} radius={2} shadow={1} tone="caution">
-          <Text align="center">
-            Please configure your storage credentials in the Settings tab first.
-          </Text>
+          <Stack space={4}>
+            <Text align="center">
+              Please configure your storage credentials in the Settings tab first.
+            </Text>
+            {isDev && onOpenSettings && (
+              <Flex justify="center">
+                <Button
+                  text="Open Settings"
+                  tone="primary"
+                  icon={CogIcon}
+                  onClick={onOpenSettings}
+                />
+              </Flex>
+            )}
+          </Stack>
         </Card>
       </Box>
     );

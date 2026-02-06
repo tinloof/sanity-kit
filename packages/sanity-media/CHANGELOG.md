@@ -1,5 +1,11 @@
 # @tinloof/sanity-media
 
+## 0.0.0-20260206162329
+
+### Patch Changes
+
+- Rename name and title, open settings button when creds are not configured
+
 ## 0.0.0-20260202002852
 
 ### Patch Changes

@@ -46,6 +46,10 @@ export { isImageContentType, isVideoContentType } from "./utils";
 
 export interface MediaPluginOptions {
   adapter: StorageAdapter;
+  /** Custom name for the media tool (default: "media") */
+  toolName?: string;
+  /** Custom title for the media tool (default: "Media") */
+  toolTitle?: string;
 }
 
 /**
@@ -53,7 +57,7 @@ export interface MediaPluginOptions {
  * Creates adapter-specific asset types and provides upload UI.
  */
 export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
-  const { adapter } = options;
+  const { adapter, toolName = "media", toolTitle = "Media" } = options;
 
   // Generate schema types
   const tagType = generateTagType(adapter);
@@ -130,8 +134,8 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
     },
     tools: [
       {
-        name: "media",
-        title: "Media",
+        name: toolName,
+        title: toolTitle,
         component: () => (
           <MediaSelectionProvider>
             <MediaTool adapter={adapter} />
