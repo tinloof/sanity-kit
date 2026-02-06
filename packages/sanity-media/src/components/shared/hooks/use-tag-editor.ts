@@ -1,7 +1,12 @@
 import { useCallback, useState } from "react";
 import { useToast } from "@sanity/ui";
+import type { StorageAdapter } from "../../../adapters";
 import type { Tag } from "../../media-panel/types";
 import { useTags } from "./use-tags";
+
+export interface UseTagEditorOptions {
+  adapter: StorageAdapter;
+}
 
 export interface UseTagEditorResult {
   // Tag data from useTags
@@ -28,7 +33,7 @@ export interface UseTagEditorResult {
   deleteTag: (tag: Tag) => Promise<void>;
 }
 
-export function useTagEditor(): UseTagEditorResult {
+export function useTagEditor({ adapter }: UseTagEditorOptions): UseTagEditorResult {
   const toast = useToast();
   const {
     tags,
@@ -37,7 +42,7 @@ export function useTagEditor(): UseTagEditorResult {
     createTag,
     updateTag,
     deleteTag: deleteTagApi,
-  } = useTags();
+  } = useTags({ adapter });
 
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
   const [isCreatingTag, setIsCreatingTag] = useState(false);

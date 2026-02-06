@@ -56,7 +56,7 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
   const { adapter } = options;
 
   // Generate schema types
-  const tagType = generateTagType();
+  const tagType = generateTagType(adapter);
   const imageAssetType = generateImageAssetType(adapter);
   const fileAssetType = generateFileAssetType(adapter);
   const videoAssetType = generateVideoAssetType(adapter);
