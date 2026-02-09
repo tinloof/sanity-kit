@@ -59,7 +59,7 @@
 		"@sanity/incompatible-plugin": "^1.0.5",
 		"@sanity/orderable-document-list": "^1.5.0",
 		"@sanity/ui": "^3.1.11",
-		"@sanity/util": "^5.7.0",
+		"@sanity/util": "^5.8.1",
 		"@tanstack/react-virtual": "^3.13.18",
 		"@tinloof/sanity-web": "workspace:*",
 		"lodash": "^4.17.21",
@@ -68,7 +68,7 @@
 		"use-debounce": "^10.1.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.13",
+		"@biomejs/biome": "2.3.14",
 		"@sanity/pkg-utils": "^10.1.1",
 		"@sanity/plugin-kit": "^4.0.20",
 		"@tinloof/sanity-extends": "workspace:*",
@@ -77,19 +77,19 @@
 		"npm-run-all2": "^8.0.4",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"@types/react": "^19.2.10",
+		"@types/react": "^19.2.13",
 		"@types/react-dom": "^19.2.3",
 		"react-is": "^19.2.4",
 		"rimraf": "^6.1.2",
-		"sanity": "^5.7.0",
-		"styled-components": "^6.3.8",
+		"sanity": "^5.8.1",
+		"styled-components": "^6.3.9",
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
 		"@tinloof/sanity-extends": "workspace:*",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"sanity": "^5.7.0"
+		"sanity": "^5.8.1"
 	},
 	"engines": {
 		"node": ">=14"
