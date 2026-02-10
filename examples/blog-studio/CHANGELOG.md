@@ -1,5 +1,12 @@
 # @examples/hello-world-i18n-studio
 
+## 0.0.0-20260210151319
+
+### Patch Changes
+
+- Updated dependencies
+  - @tinloof/sanity-media@0.0.0-20260210151319
+
 ## 0.0.0-20260206162329
 
 ### Patch Changes

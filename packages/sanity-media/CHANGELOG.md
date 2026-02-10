@@ -1,5 +1,11 @@
 # @tinloof/sanity-media
 
+## 0.0.0-20260210151319
+
+### Patch Changes
+
+- Inline metadata, add metadata before uploading in the input fields
+
 ## 0.0.0-20260206162329
 
 ### Patch Changes
