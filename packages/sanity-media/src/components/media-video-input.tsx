@@ -45,7 +45,24 @@ import {
   clearPendingSelection,
 } from "../context/selection-context";
 import { handleVideoUpload } from "../upload-handler";
+import { UploadStagingDialog } from "./media-panel/components";
+import type { MediaAsset, StagingItem } from "./media-panel/types";
 import { MediaBrowserDialog } from "./shared/media-browser-dialog";
+import { useTags } from "./shared/hooks";
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+function createStagingItem(file: File, type: "image" | "video"): StagingItem {
+  return {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    file,
+    type,
+    previewUrl: URL.createObjectURL(file),
+    expanded: true,
+  };
+}
 
 // ============================================================================
 // Styled Components
@@ -340,6 +357,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
   const { value, onChange, readOnly, path, schemaType } = props;
   const client = useClient({ apiVersion: API_VERSION });
   const { adapter, credentials, loading: credentialsLoading } = useAdapter();
+  const { tags } = useTags({ adapter });
 
   // Get document info for pending selection handling
   const document = useFormValue([]) as SanityDocument | undefined;
@@ -357,11 +375,14 @@ export function MediaVideoInput(props: ObjectInputProps) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [assetPreview, setAssetPreview] = useState<any>(null);
+  const [assetPreview, setAssetPreview] = useState<MediaAsset | null>(null);
   const [assetLoading, setAssetLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [showBrowser, setShowBrowser] = useState(false);
-  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+
+  // Staging state for upload with metadata
+  const [stagingItems, setStagingItems] = useState<StagingItem[]>([]);
+  const [showStagingDialog, setShowStagingDialog] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadAbortRef = useRef<AbortController | null>(null);
@@ -427,50 +448,19 @@ export function MediaVideoInput(props: ObjectInputProps) {
     } as CSSProperties;
   }, [assetPreview]);
 
-  const handleFileSelect = useCallback(
-    async (file: File) => {
-      if (!file || !credentials) return;
-
-      setUploading(true);
-      setError(null);
-      setProgress(0);
-      uploadAbortRef.current = new AbortController();
-
-      try {
-        const assetRef = await handleVideoUpload(
-          file,
-          adapter,
-          credentials,
-          client,
-          (pct) => setProgress(pct),
-        );
-
-        onChange(set({ ...value, asset: assetRef }));
-        await loadAsset();
-      } catch (err) {
-        if (err instanceof Error && err.name !== "AbortError") {
-          setError(err.message);
-        }
-      } finally {
-        setUploading(false);
-        uploadAbortRef.current = null;
-      }
-    },
-    [credentials, adapter, client, onChange, value, loadAsset],
-  );
-
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!credentials || readOnly) return;
+
       const file = e.target.files?.[0];
-      if (file) {
-        // Open browser dialog with staging instead of direct upload
-        setPendingFiles([file]);
-        setShowBrowser(true);
+      if (file && file.type.startsWith("video/")) {
+        setStagingItems([createStagingItem(file, "video")]);
+        setShowStagingDialog(true);
         // Reset input for re-selection
         e.target.value = "";
       }
     },
-    [],
+    [credentials, readOnly],
   );
 
   const handleCancelUpload = useCallback(() => {
@@ -502,9 +492,8 @@ export function MediaVideoInput(props: ObjectInputProps) {
 
       const file = e.dataTransfer.files[0];
       if (file && file.type.startsWith("video/")) {
-        // Open browser dialog with staging instead of direct upload
-        setPendingFiles([file]);
-        setShowBrowser(true);
+        setStagingItems([createStagingItem(file, "video")]);
+        setShowStagingDialog(true);
       }
     },
     [credentials, readOnly],
@@ -521,9 +510,8 @@ export function MediaVideoInput(props: ObjectInputProps) {
         if (item.type.startsWith("video/")) {
           const file = item.getAsFile();
           if (file) {
-            // Open browser dialog with staging instead of direct upload
-            setPendingFiles([file]);
-            setShowBrowser(true);
+            setStagingItems([createStagingItem(file, "video")]);
+            setShowStagingDialog(true);
             break;
           }
         }
@@ -533,7 +521,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
   );
 
   const handleBrowseSelect = useCallback(
-    (asset: any) => {
+    (asset: MediaAsset) => {
       onChange(
         set({
           ...value,
@@ -556,6 +544,77 @@ export function MediaVideoInput(props: ObjectInputProps) {
   const handleBrowse = useCallback(() => {
     setShowBrowser(true);
   }, []);
+
+  // Staging dialog handlers
+  const closeStagingDialog = useCallback(() => {
+    stagingItems.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+    setStagingItems([]);
+    setShowStagingDialog(false);
+  }, [stagingItems]);
+
+  const updateStagingItem = useCallback(
+    (id: string, updates: Partial<StagingItem>) => {
+      setStagingItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
+      );
+    },
+    []
+  );
+
+  const removeStagingItem = useCallback((id: string) => {
+    setStagingItems((prev) => {
+      const item = prev.find((i) => i.id === id);
+      if (item) {
+        URL.revokeObjectURL(item.previewUrl);
+      }
+      const remaining = prev.filter((i) => i.id !== id);
+      if (remaining.length === 0) {
+        setShowStagingDialog(false);
+      }
+      return remaining;
+    });
+  }, []);
+
+  const startUpload = useCallback(async () => {
+    if (!credentials || stagingItems.length === 0) return;
+
+    const item = stagingItems[0];
+    setShowStagingDialog(false);
+    setUploading(true);
+    setProgress(0);
+    setError(null);
+
+    try {
+      const assetRef = await handleVideoUpload(
+        item.file,
+        adapter,
+        credentials,
+        client,
+        (pct) => setProgress(pct),
+        { title: item.title, description: item.description, tags: item.tags }
+      );
+
+      onChange(
+        set({
+          _type: schemaType?.name || "mediaVideo",
+          asset: {
+            _type: "reference",
+            _ref: assetRef._ref,
+          },
+        })
+      );
+
+      // Cleanup
+      URL.revokeObjectURL(item.previewUrl);
+      setStagingItems([]);
+    } catch (err) {
+      if (err instanceof Error && err.name !== "AbortError") {
+        setError(err.message);
+      }
+    } finally {
+      setUploading(false);
+    }
+  }, [credentials, stagingItems, adapter, client, onChange, schemaType?.name]);
 
   // Loading state
   if (credentialsLoading) {
@@ -644,14 +703,21 @@ export function MediaVideoInput(props: ObjectInputProps) {
         {showBrowser && (
           <MediaBrowserDialog
             onSelect={handleBrowseSelect}
-            onClose={() => {
-              setShowBrowser(false);
-              setPendingFiles([]);
-            }}
+            onClose={() => setShowBrowser(false)}
             adapter={adapter}
             assetType="video"
             allowUpload={!readOnly}
-            initialFiles={pendingFiles}
+          />
+        )}
+
+        {showStagingDialog && stagingItems.length > 0 && (
+          <UploadStagingDialog
+            stagingItems={stagingItems}
+            tags={tags}
+            onClose={closeStagingDialog}
+            onStartUpload={startUpload}
+            onUpdateItem={updateStagingItem}
+            onRemoveItem={removeStagingItem}
           />
         )}
 
@@ -718,14 +784,21 @@ export function MediaVideoInput(props: ObjectInputProps) {
       {showBrowser && (
         <MediaBrowserDialog
           onSelect={handleBrowseSelect}
-          onClose={() => {
-            setShowBrowser(false);
-            setPendingFiles([]);
-          }}
+          onClose={() => setShowBrowser(false)}
           adapter={adapter}
           assetType="video"
           allowUpload={!readOnly}
-          initialFiles={pendingFiles}
+        />
+      )}
+
+      {showStagingDialog && stagingItems.length > 0 && (
+        <UploadStagingDialog
+          stagingItems={stagingItems}
+          tags={tags}
+          onClose={closeStagingDialog}
+          onStartUpload={startUpload}
+          onUpdateItem={updateStagingItem}
+          onRemoveItem={removeStagingItem}
         />
       )}
 

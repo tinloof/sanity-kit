@@ -8,7 +8,6 @@ import {
   UploadIcon,
 } from "@sanity/icons";
 import {
-  Box,
   Button,
   Card,
   Flex,
@@ -44,7 +43,25 @@ import {
   getPendingSelection,
   clearPendingSelection,
 } from "../context/selection-context";
+import { handleImageUpload } from "../upload-handler";
+import { UploadStagingDialog } from "./media-panel/components";
+import type { MediaAsset, StagingItem } from "./media-panel/types";
 import { MediaBrowserDialog } from "./shared/media-browser-dialog";
+import { useTags } from "./shared/hooks";
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+function createStagingItem(file: File, type: "image" | "video"): StagingItem {
+  return {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    file,
+    type,
+    previewUrl: URL.createObjectURL(file),
+    expanded: true,
+  };
+}
 
 // ============================================================================
 // Styled Components (matching Sanity's native ImageInput)
@@ -342,6 +359,7 @@ export function MediaImageInput(props: ObjectInputProps) {
   const { value, onChange, readOnly, path, schemaType } = props;
   const client = useClient({ apiVersion: API_VERSION });
   const { adapter, credentials, loading: credentialsLoading } = useAdapter();
+  const { tags } = useTags({ adapter });
 
   // Get document info for pending selection handling
   const document = useFormValue([]) as SanityDocument | undefined;
@@ -359,11 +377,14 @@ export function MediaImageInput(props: ObjectInputProps) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [assetPreview, setAssetPreview] = useState<any>(null);
+  const [assetPreview, setAssetPreview] = useState<MediaAsset | null>(null);
   const [assetLoading, setAssetLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [showBrowser, setShowBrowser] = useState(false);
-  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+
+  // Staging state for upload with metadata
+  const [stagingItems, setStagingItems] = useState<StagingItem[]>([]);
+  const [showStagingDialog, setShowStagingDialog] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadAbortRef = useRef<AbortController | null>(null);
@@ -431,16 +452,17 @@ export function MediaImageInput(props: ObjectInputProps) {
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!credentials || readOnly) return;
+
       const file = e.target.files?.[0];
-      if (file) {
-        // Open browser dialog with staging instead of direct upload
-        setPendingFiles([file]);
-        setShowBrowser(true);
+      if (file && file.type.startsWith("image/")) {
+        setStagingItems([createStagingItem(file, "image")]);
+        setShowStagingDialog(true);
         // Reset input for re-selection
         e.target.value = "";
       }
     },
-    [],
+    [credentials, readOnly],
   );
 
   const handleCancelUpload = useCallback(() => {
@@ -472,9 +494,8 @@ export function MediaImageInput(props: ObjectInputProps) {
 
       const file = e.dataTransfer.files[0];
       if (file && file.type.startsWith("image/")) {
-        // Open browser dialog with staging instead of direct upload
-        setPendingFiles([file]);
-        setShowBrowser(true);
+        setStagingItems([createStagingItem(file, "image")]);
+        setShowStagingDialog(true);
       }
     },
     [credentials, readOnly],
@@ -491,9 +512,8 @@ export function MediaImageInput(props: ObjectInputProps) {
         if (item.type.startsWith("image/")) {
           const file = item.getAsFile();
           if (file) {
-            // Open browser dialog with staging instead of direct upload
-            setPendingFiles([file]);
-            setShowBrowser(true);
+            setStagingItems([createStagingItem(file, "image")]);
+            setShowStagingDialog(true);
             break;
           }
         }
@@ -503,7 +523,7 @@ export function MediaImageInput(props: ObjectInputProps) {
   );
 
   const handleBrowseSelect = useCallback(
-    (asset: any) => {
+    (asset: MediaAsset) => {
       onChange(
         set({
           ...value,
@@ -526,6 +546,77 @@ export function MediaImageInput(props: ObjectInputProps) {
   const handleBrowse = useCallback(() => {
     setShowBrowser(true);
   }, []);
+
+  // Staging dialog handlers
+  const closeStagingDialog = useCallback(() => {
+    stagingItems.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+    setStagingItems([]);
+    setShowStagingDialog(false);
+  }, [stagingItems]);
+
+  const updateStagingItem = useCallback(
+    (id: string, updates: Partial<StagingItem>) => {
+      setStagingItems((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
+      );
+    },
+    []
+  );
+
+  const removeStagingItem = useCallback((id: string) => {
+    setStagingItems((prev) => {
+      const item = prev.find((i) => i.id === id);
+      if (item) {
+        URL.revokeObjectURL(item.previewUrl);
+      }
+      const remaining = prev.filter((i) => i.id !== id);
+      if (remaining.length === 0) {
+        setShowStagingDialog(false);
+      }
+      return remaining;
+    });
+  }, []);
+
+  const startUpload = useCallback(async () => {
+    if (!credentials || stagingItems.length === 0) return;
+
+    const item = stagingItems[0];
+    setShowStagingDialog(false);
+    setUploading(true);
+    setProgress(0);
+    setError(null);
+
+    try {
+      const assetRef = await handleImageUpload(
+        item.file,
+        adapter,
+        credentials,
+        client,
+        (pct) => setProgress(pct),
+        { alt: item.alt, caption: item.caption, tags: item.tags }
+      );
+
+      onChange(
+        set({
+          _type: schemaType?.name || "mediaImage",
+          asset: {
+            _type: "reference",
+            _ref: assetRef._ref,
+          },
+        })
+      );
+
+      // Cleanup
+      URL.revokeObjectURL(item.previewUrl);
+      setStagingItems([]);
+    } catch (err) {
+      if (err instanceof Error && err.name !== "AbortError") {
+        setError(err.message);
+      }
+    } finally {
+      setUploading(false);
+    }
+  }, [credentials, stagingItems, adapter, client, onChange, schemaType?.name]);
 
   // Loading state
   if (credentialsLoading) {
@@ -597,14 +688,21 @@ export function MediaImageInput(props: ObjectInputProps) {
         {showBrowser && (
           <MediaBrowserDialog
             onSelect={handleBrowseSelect}
-            onClose={() => {
-              setShowBrowser(false);
-              setPendingFiles([]);
-            }}
+            onClose={() => setShowBrowser(false)}
             adapter={adapter}
             assetType="image"
             allowUpload={!readOnly}
-            initialFiles={pendingFiles}
+          />
+        )}
+
+        {showStagingDialog && stagingItems.length > 0 && (
+          <UploadStagingDialog
+            stagingItems={stagingItems}
+            tags={tags}
+            onClose={closeStagingDialog}
+            onStartUpload={startUpload}
+            onUpdateItem={updateStagingItem}
+            onRemoveItem={removeStagingItem}
           />
         )}
 
@@ -671,14 +769,21 @@ export function MediaImageInput(props: ObjectInputProps) {
       {showBrowser && (
         <MediaBrowserDialog
           onSelect={handleBrowseSelect}
-          onClose={() => {
-            setShowBrowser(false);
-            setPendingFiles([]);
-          }}
+          onClose={() => setShowBrowser(false)}
           adapter={adapter}
           assetType="image"
           allowUpload={!readOnly}
-          initialFiles={pendingFiles}
+        />
+      )}
+
+      {showStagingDialog && stagingItems.length > 0 && (
+        <UploadStagingDialog
+          stagingItems={stagingItems}
+          tags={tags}
+          onClose={closeStagingDialog}
+          onStartUpload={startUpload}
+          onUpdateItem={updateStagingItem}
+          onRemoveItem={removeStagingItem}
         />
       )}
 
