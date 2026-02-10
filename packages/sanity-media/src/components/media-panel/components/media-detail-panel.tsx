@@ -12,7 +12,6 @@ import {
   Button,
   Card,
   Flex,
-  Label,
   Menu,
   MenuButton,
   MenuItem,
@@ -397,19 +396,6 @@ export function MediaDetailPanel({
                           </Text>
                         </Flex>
                       )}
-                      {media.mediaType === "video" && (
-                        <Flex justify="space-between" align="center">
-                          <Text size={1} muted>
-                            Has audio
-                          </Text>
-                          <Switch
-                            checked={media.metadata?.hasAudio ?? true}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                              updateHasAudio(event.currentTarget.checked);
-                            }}
-                          />
-                        </Flex>
-                      )}
                       <Flex justify="space-between">
                         <Text size={1} muted>
                           Uploaded
@@ -441,7 +427,7 @@ export function MediaDetailPanel({
                       {media.mediaType === "image" ? (
                         <>
                           <Stack space={2}>
-                            <Label size={0}>Alt text</Label>
+                            <Text size={1} weight="medium">Alt text</Text>
                             <TextInput
                               value={media.alt || ""}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -454,11 +440,10 @@ export function MediaDetailPanel({
                                 updateMetadata("alt", e.currentTarget.value);
                               }}
                               placeholder="Describe the image for accessibility"
-                              fontSize={1}
                             />
                           </Stack>
                           <Stack space={2}>
-                            <Label size={0}>Caption</Label>
+                            <Text size={1} weight="medium">Caption</Text>
                             <TextArea
                               value={media.caption || ""}
                               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -471,7 +456,6 @@ export function MediaDetailPanel({
                                 updateMetadata("caption", e.currentTarget.value);
                               }}
                               placeholder="Add a caption for this image"
-                              fontSize={1}
                               rows={2}
                             />
                           </Stack>
@@ -479,7 +463,7 @@ export function MediaDetailPanel({
                       ) : (
                         <>
                           <Stack space={2}>
-                            <Label size={0}>Title</Label>
+                            <Text size={1} weight="medium">Title</Text>
                             <TextInput
                               value={media.title || ""}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -492,11 +476,10 @@ export function MediaDetailPanel({
                                 updateMetadata("title", e.currentTarget.value);
                               }}
                               placeholder="Add a title for this video"
-                              fontSize={1}
                             />
                           </Stack>
                           <Stack space={2}>
-                            <Label size={0}>Description</Label>
+                            <Text size={1} weight="medium">Description</Text>
                             <TextArea
                               value={media.description || ""}
                               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -509,10 +492,25 @@ export function MediaDetailPanel({
                                 updateMetadata("description", e.currentTarget.value);
                               }}
                               placeholder="Add a description for this video"
-                              fontSize={1}
                               rows={3}
                             />
                           </Stack>
+                          <Card border padding={3} radius={2}>
+                            <Flex gap={3} align="flex-start">
+                              <Switch
+                                checked={media.metadata?.hasAudio ?? true}
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                  updateHasAudio(event.currentTarget.checked);
+                                }}
+                              />
+                              <Stack space={2}>
+                                <Text size={1} weight="medium">Has audio</Text>
+                                <Text size={1} muted>
+                                  Indicates whether the video contains an audio track
+                                </Text>
+                              </Stack>
+                            </Flex>
+                          </Card>
                         </>
                       )}
                     </Stack>

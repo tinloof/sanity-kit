@@ -17,7 +17,10 @@ import {
   Popover,
   Spinner,
   Stack,
+  Switch,
   Text,
+  TextArea,
+  TextInput,
   useToast,
 } from "@sanity/ui";
 import {
@@ -390,6 +393,19 @@ export function MediaVideoInput(props: ObjectInputProps) {
 
   const appliedRef = useRef(false);
 
+  // Track original values to detect actual changes on blur
+  const originalValuesRef = useRef<{ title?: string; description?: string }>({});
+
+  // Update original values when asset changes
+  useEffect(() => {
+    if (assetPreview) {
+      originalValuesRef.current = {
+        title: assetPreview.title,
+        description: assetPreview.description,
+      };
+    }
+  }, [assetPreview?._id]);
+
   // Check for pending selection from media tool navigation (on mount only)
   // Use a small delay to ensure document is ready for editing
   useEffect(() => {
@@ -423,7 +439,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
       setAssetLoading(true);
       try {
         const asset = await client.getDocument(value.asset._ref);
-        setAssetPreview(asset);
+        setAssetPreview(asset ? (asset as unknown as MediaAsset) : null);
       } catch (err) {
         console.error("Failed to load asset:", err);
       } finally {
@@ -616,6 +632,46 @@ export function MediaVideoInput(props: ObjectInputProps) {
     }
   }, [credentials, stagingItems, adapter, client, onChange, schemaType?.name]);
 
+  // Update asset metadata on blur
+  const updateAssetMetadata = useCallback(
+    async (field: "title" | "description", value: string) => {
+      if (!assetPreview?._id) return;
+
+      const originalValue = originalValuesRef.current[field] || "";
+      if (value === originalValue) return;
+
+      try {
+        await client.patch(assetPreview._id).set({ [field]: value || "" }).commit();
+        originalValuesRef.current[field] = value;
+      } catch (err) {
+        console.error(`Failed to update ${field}:`, err);
+      }
+    },
+    [assetPreview?._id, client]
+  );
+
+  // Update hasAudio metadata
+  const updateHasAudio = useCallback(
+    async (hasAudio: boolean) => {
+      if (!assetPreview?._id) return;
+
+      try {
+        await client.patch(assetPreview._id).set({ "metadata.hasAudio": hasAudio }).commit();
+        setAssetPreview((prev) =>
+          prev
+            ? {
+                ...prev,
+                metadata: { ...prev.metadata, hasAudio },
+              }
+            : prev
+        );
+      } catch (err) {
+        console.error("Failed to update hasAudio:", err);
+      }
+    },
+    [assetPreview?._id, client]
+  );
+
   // Loading state
   if (credentialsLoading) {
     return (
@@ -692,6 +748,60 @@ export function MediaVideoInput(props: ObjectInputProps) {
             )}
           </Flex>
         )}
+
+        {/* Metadata Fields */}
+        <Stack space={2}>
+          <Text size={1} weight="medium">Title</Text>
+          <TextInput
+            value={assetPreview.title || ""}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.currentTarget.value;
+              setAssetPreview((prev) =>
+                prev ? { ...prev, title: value } : prev
+              );
+            }}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+              updateAssetMetadata("title", e.currentTarget.value);
+            }}
+            placeholder="Add a title"
+            disabled={readOnly}
+          />
+        </Stack>
+        <Stack space={2}>
+          <Text size={1} weight="medium">Description</Text>
+          <TextArea
+            value={assetPreview.description || ""}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              const value = e.currentTarget.value;
+              setAssetPreview((prev) =>
+                prev ? { ...prev, description: value } : prev
+              );
+            }}
+            onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => {
+              updateAssetMetadata("description", e.currentTarget.value);
+            }}
+            placeholder="Add a description"
+            rows={2}
+            disabled={readOnly}
+          />
+        </Stack>
+        <Card border padding={3} radius={2}>
+          <Flex gap={3} align="flex-start">
+            <Switch
+              checked={assetPreview.metadata?.hasAudio ?? true}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                updateHasAudio(e.currentTarget.checked);
+              }}
+              disabled={readOnly}
+            />
+            <Stack space={2}>
+              <Text size={1} weight="medium">Has audio</Text>
+              <Text size={1} muted>
+                Indicates whether the video contains an audio track
+              </Text>
+            </Stack>
+          </Flex>
+        </Card>
 
         <HiddenInput
           ref={fileInputRef}

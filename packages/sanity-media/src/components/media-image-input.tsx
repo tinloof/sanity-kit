@@ -18,6 +18,8 @@ import {
   Spinner,
   Stack,
   Text,
+  TextArea,
+  TextInput,
   useToast,
 } from "@sanity/ui";
 import {
@@ -392,6 +394,19 @@ export function MediaImageInput(props: ObjectInputProps) {
 
   const appliedRef = useRef(false);
 
+  // Track original values to detect actual changes on blur
+  const originalValuesRef = useRef<{ alt?: string; caption?: string }>({});
+
+  // Update original values when asset changes
+  useEffect(() => {
+    if (assetPreview) {
+      originalValuesRef.current = {
+        alt: assetPreview.alt,
+        caption: assetPreview.caption,
+      };
+    }
+  }, [assetPreview?._id]);
+
   // Check for pending selection from media tool navigation (on mount only)
   // Use a small delay to ensure document is ready for editing
   useEffect(() => {
@@ -425,7 +440,7 @@ export function MediaImageInput(props: ObjectInputProps) {
       setAssetLoading(true);
       try {
         const asset = await client.getDocument(value.asset._ref);
-        setAssetPreview(asset);
+        setAssetPreview(asset ? (asset as unknown as MediaAsset) : null);
       } catch (err) {
         console.error("Failed to load asset:", err);
       } finally {
@@ -618,6 +633,24 @@ export function MediaImageInput(props: ObjectInputProps) {
     }
   }, [credentials, stagingItems, adapter, client, onChange, schemaType?.name]);
 
+  // Update asset metadata on blur
+  const updateAssetMetadata = useCallback(
+    async (field: "alt" | "caption", value: string) => {
+      if (!assetPreview?._id) return;
+
+      const originalValue = originalValuesRef.current[field] || "";
+      if (value === originalValue) return;
+
+      try {
+        await client.patch(assetPreview._id).set({ [field]: value || "" }).commit();
+        originalValuesRef.current[field] = value;
+      } catch (err) {
+        console.error(`Failed to update ${field}:`, err);
+      }
+    },
+    [assetPreview?._id, client]
+  );
+
   // Loading state
   if (credentialsLoading) {
     return (
@@ -677,6 +710,43 @@ export function MediaImageInput(props: ObjectInputProps) {
             />
           </Card>
         </div>
+
+        {/* Metadata Fields */}
+        <Stack space={2}>
+          <Text size={1} weight="medium">Alt text</Text>
+          <TextInput
+            value={assetPreview.alt || ""}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.currentTarget.value;
+              setAssetPreview((prev) =>
+                prev ? { ...prev, alt: value } : prev
+              );
+            }}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+              updateAssetMetadata("alt", e.currentTarget.value);
+            }}
+            placeholder="Describe the image for accessibility"
+            disabled={readOnly}
+          />
+        </Stack>
+        <Stack space={2}>
+          <Text size={1} weight="medium">Caption</Text>
+          <TextArea
+            value={assetPreview.caption || ""}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              const value = e.currentTarget.value;
+              setAssetPreview((prev) =>
+                prev ? { ...prev, caption: value } : prev
+              );
+            }}
+            onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => {
+              updateAssetMetadata("caption", e.currentTarget.value);
+            }}
+            placeholder="Add a caption"
+            rows={2}
+            disabled={readOnly}
+          />
+        </Stack>
 
         <HiddenInput
           ref={fileInputRef}
