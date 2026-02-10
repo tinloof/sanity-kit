@@ -68,6 +68,14 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
   const mediaFileType = generateMediaFileType(adapter);
   const mediaVideoType = generateMediaVideoType(adapter);
 
+  // Internal document types that should not appear in "Create new document" menu
+  const internalDocumentTypes = new Set([
+    tagType.name,
+    imageAssetType.name,
+    fileAssetType.name,
+    videoAssetType.name,
+  ]);
+
   // Wrap input components with adapter context
   function WrappedMediaImageInput(props: any) {
     const { credentials, loading } = useCredentials(adapter);
@@ -131,6 +139,14 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
         mediaFileType,
         mediaVideoType,
       ],
+    },
+    document: {
+      newDocumentOptions: (prev) => {
+        // Filter out internal media plugin document types from "Create new document" menu
+        return prev.filter(
+          (templateItem) => !internalDocumentTypes.has(templateItem.templateId)
+        );
+      },
     },
     tools: [
       {
