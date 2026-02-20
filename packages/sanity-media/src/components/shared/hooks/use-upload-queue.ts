@@ -30,6 +30,7 @@ export interface UseUploadQueueResult {
 
   // Actions
   handleFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  addFiles: (files: FileList | File[]) => void;
   closeStagingDialog: () => void;
   startUpload: () => void;
   updateStagingItem: (id: string, updates: Partial<StagingItem>) => void;
@@ -56,13 +57,15 @@ export function useUploadQueue({
   );
   const isUploading = activeUploads.length > 0;
 
-  // Handle file selection
-  const handleFileSelect = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
-      if (!files || files.length === 0 || !credentials) return;
+  // Process files into staging items (shared by file input and drag-drop)
+  const processFiles = useCallback(
+    (files: FileList | File[]) => {
+      if (!credentials) return;
 
-      const newItems: StagingItem[] = Array.from(files)
+      const fileArray = Array.from(files);
+      if (fileArray.length === 0) return;
+
+      const newItems: StagingItem[] = fileArray
         .filter((file) => {
           const isImage = file.type.startsWith("image/");
           const isVideo = file.type.startsWith("video/");
@@ -80,18 +83,35 @@ export function useUploadQueue({
 
       if (newItems.length > 0) {
         // Expand first item by default
-        if (newItems.length > 0) {
-          newItems[0].expanded = true;
-        }
+        newItems[0].expanded = true;
         setStagingItems(newItems);
         setShowStagingDialog(true);
       }
+    },
+    [credentials]
+  );
+
+  // Handle file selection from input
+  const handleFileSelect = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      processFiles(files);
 
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
     },
-    [credentials]
+    [processFiles]
+  );
+
+  // Add files directly (for drag-and-drop)
+  const addFiles = useCallback(
+    (files: FileList | File[]) => {
+      processFiles(files);
+    },
+    [processFiles]
   );
 
   // Clean up preview URLs when staging dialog closes
@@ -252,6 +272,7 @@ export function useUploadQueue({
     showStagingDialog,
     fileInputRef,
     handleFileSelect,
+    addFiles,
     closeStagingDialog,
     startUpload,
     updateStagingItem,

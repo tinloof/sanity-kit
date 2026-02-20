@@ -11,6 +11,7 @@ import {
   TrashIcon,
   ThLargeIcon,
   ThListIcon,
+  UploadIcon,
 } from "@sanity/icons";
 import {
   Box,
@@ -24,7 +25,7 @@ import {
   Stack,
   Text,
 } from "@sanity/ui";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { isDev, useClient } from "sanity";
 import useSWR from "swr";
 import { API_VERSION } from "../../constants";
@@ -84,6 +85,8 @@ export function MediaPanel({
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedTagIds, setSelectedTagIds] = useState<Set<string>>(new Set());
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounterRef = useRef(0);
 
   // Selection mode state
   const [selectionTarget, setSelectionTarget] = useState<MediaAsset | null>(null);
@@ -380,6 +383,47 @@ export function MediaPanel({
     });
   }, []);
 
+  // Drag and drop handlers
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current++;
+    if (e.dataTransfer.types.includes("Files")) {
+      setIsDragging(true);
+    }
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current--;
+    if (dragCounterRef.current === 0) {
+      setIsDragging(false);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dragCounterRef.current = 0;
+      setIsDragging(false);
+
+      if (!credentials) return;
+
+      const files = e.dataTransfer.files;
+      if (files && files.length > 0) {
+        uploadQueue.addFiles(files);
+      }
+    },
+    [credentials, uploadQueue]
+  );
+
   if (loading || credentialsLoading) {
     return (
       <Box padding={4}>
@@ -415,7 +459,44 @@ export function MediaPanel({
   }
 
   return (
-    <Flex style={{ flex: 1, minHeight: 0 }}>
+    <Flex
+      style={{ flex: 1, minHeight: 0, position: "relative" }}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      {/* Drop Zone Overlay */}
+      {isDragging && (
+        <Box
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 100,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "color-mix(in srgb, var(--card-bg-color) 90%, transparent)",
+            backdropFilter: "blur(4px)",
+            border: "3px dashed var(--card-focus-ring-color)",
+            borderRadius: "4px",
+            margin: "8px",
+            pointerEvents: "none",
+          }}
+        >
+          <Stack space={3} style={{ textAlign: "center" }}>
+            <Text size={4}>
+              <UploadIcon />
+            </Text>
+            <Text size={2} weight="semibold">
+              Drop files to upload
+            </Text>
+            <Text size={1} muted>
+              Images and videos
+            </Text>
+          </Stack>
+        </Box>
+      )}
       <style>
         {`
           .media-sidebar {
