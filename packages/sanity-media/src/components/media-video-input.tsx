@@ -714,6 +714,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
             border
             radius={2}
             onPaste={handlePaste}
+            tabIndex={0}
             style={{ position: "relative", overflow: "hidden" }}
           >
             <VideoPreview

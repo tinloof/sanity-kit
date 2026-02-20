@@ -693,6 +693,7 @@ export function MediaImageInput(props: ObjectInputProps) {
             border
             radius={2}
             onPaste={handlePaste}
+            tabIndex={0}
             style={{ position: "relative" }}
           >
             <ImagePreview
