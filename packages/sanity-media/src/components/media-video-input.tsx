@@ -88,18 +88,6 @@ const RatioBox = styled(Card)`
   }
 `;
 
-const LoadingOverlay = styled(Card)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  backdrop-filter: blur(10px);
-  background-color: color-mix(in srgb, transparent, var(--card-bg-color) 80%);
-`;
 
 const MenuActionsWrapper = styled(Flex)`
   position: absolute;
@@ -190,9 +178,13 @@ function VideoPreview({
   return (
     <RatioBox tone="transparent">
       {(isLoading || !loaded) && src && (
-        <LoadingOverlay>
+        <Flex
+          align="center"
+          justify="center"
+          style={{ position: 'absolute', inset: 0 }}
+        >
           <Spinner />
-        </LoadingOverlay>
+        </Flex>
       )}
       {src && (
         <video
@@ -200,6 +192,7 @@ function VideoPreview({
           poster={poster}
           controls
           onLoadedData={() => setLoaded(true)}
+          style={(isLoading || !loaded) ? { opacity: 0 } : undefined}
         />
       )}
     </RatioBox>
@@ -683,6 +676,17 @@ export function MediaVideoInput(props: ObjectInputProps) {
   // Uploading state
   if (uploading) {
     return <UploadProgress progress={progress} onCancel={handleCancelUpload} />;
+  }
+
+  // Asset loading (after upload, before preview loads)
+  if (value?.asset?._ref && !assetPreview) {
+    return (
+      <Card padding={4} radius={2} border>
+        <Flex justify="center" align="center" style={{ minHeight: 100 }}>
+          <Spinner />
+        </Flex>
+      </Card>
+    );
   }
 
   // Has asset
