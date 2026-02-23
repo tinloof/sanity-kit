@@ -125,25 +125,6 @@ const HiddenInput = styled.input`
   border: 0;
 `;
 
-const UploadButton = styled.label<{ $disabled?: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  padding: 0.5em 0.75em;
-  border-radius: 0.1875rem;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  cursor: ${(props) => (props.$disabled ? "not-allowed" : "pointer")};
-  opacity: ${(props) => (props.$disabled ? 0.5 : 1)};
-  background: transparent;
-  color: var(--card-fg-color);
-
-  &:hover {
-    background: ${(props) =>
-      props.$disabled ? "transparent" : "var(--card-bg2-color)"};
-  }
-`;
-
 const ProgressBar = styled.div`
   height: 4px;
   background-color: var(--card-border-color);
@@ -865,12 +846,16 @@ export function MediaVideoInput(props: ObjectInputProps) {
             </Flex>
 
             <Flex align="center" gap={1}>
-              <UploadButton htmlFor="media-video-upload" $disabled={readOnly}>
-                <UploadIcon />
-                <span>Upload</span>
-              </UploadButton>
+              <Button
+                icon={UploadIcon}
+                text="Upload"
+                mode="bleed"
+                onClick={triggerUpload}
+                disabled={readOnly}
+                fontSize={1}
+                padding={3}
+              />
               <HiddenInput
-                id="media-video-upload"
                 ref={fileInputRef}
                 type="file"
                 accept="video/*"
