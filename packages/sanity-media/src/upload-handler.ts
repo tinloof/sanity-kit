@@ -3,9 +3,46 @@ import type { StorageAdapter } from "./adapters";
 import {
   extractImageMetadata,
   extractVideoMetadata,
+  generatePreviewBlob,
 } from "./metadata-extractor";
 import type { StorageCredentials } from "./storage-client";
-import { uploadFile } from "./storage-client";
+import { getPreviewKey, uploadBlob, uploadFile } from "./storage-client";
+
+/**
+ * Load an image from URL for processing.
+ * Attempts CORS-enabled loading first, falls back to same-origin if CORS fails.
+ */
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    const cleanup = () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+
+    img.onload = () => {
+      cleanup();
+      resolve(img);
+    };
+
+    img.onerror = (error) => {
+      cleanup();
+      // If CORS failed, try without crossOrigin (won't work for canvas but avoids complete failure)
+      if (img.crossOrigin === "anonymous") {
+        const fallbackImg = new Image();
+        fallbackImg.onload = () => resolve(fallbackImg);
+        fallbackImg.onerror = () => reject(new Error("Failed to load image"));
+        fallbackImg.src = src;
+      } else {
+        reject(error);
+      }
+    };
+
+    img.crossOrigin = "anonymous";
+    img.src = src;
+  });
+}
 
 /**
  * Metadata that can be provided during image upload
@@ -48,6 +85,27 @@ export async function handleImageUpload(
   const uploadResult = await uploadFile(credentials, file, onProgress);
   const metadata = await extractImageMetadata(file);
 
+  // Try to generate and upload preview (non-blocking)
+  let previewUrl: string | undefined;
+  try {
+    const img = await loadImage(uploadResult.publicUrl);
+    const previewBlob = await generatePreviewBlob(img);
+
+    if (previewBlob) {
+      const previewKey = getPreviewKey(uploadResult.key);
+      const previewResult = await uploadBlob(
+        credentials,
+        previewBlob,
+        previewKey,
+        "image/webp"
+      );
+      previewUrl = previewResult.publicUrl;
+    }
+  } catch (error) {
+    // Non-critical: preview generation failed but main upload succeeded
+    console.warn("Failed to generate preview (continuing without):", error);
+  }
+
   const assetTypeName = `${adapter.typePrefix}.imageAsset`;
   const assetDoc = {
     _type: assetTypeName,
@@ -72,6 +130,8 @@ export async function handleImageUpload(
           }
         : undefined,
     adapter: adapter.id,
+    // Preview thumbnail URL
+    ...(previewUrl && { preview: previewUrl }),
     // User-provided metadata
     ...(userMetadata?.alt && { alt: userMetadata.alt }),
     ...(userMetadata?.caption && { caption: userMetadata.caption }),

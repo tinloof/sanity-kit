@@ -1,8 +1,9 @@
-import { CheckmarkCircleIcon, PlayIcon } from "@sanity/icons";
+import { CheckmarkCircleIcon } from "@sanity/icons";
 import { Box, Flex, Text } from "@sanity/ui";
 import { formatDuration, formatFileSize } from "../../utils";
 import type { MediaAsset, Tag } from "../media-panel/types";
 import { TAG_COLORS } from "../media-panel/types";
+import { ThumbnailCell } from "./thumbnail-cell";
 
 export interface AssetListProps {
   assets: MediaAsset[];
@@ -70,50 +71,7 @@ export function AssetList({
               onClick={() => onSelect?.(item)}
             >
               <Flex align="center" gap={3} paddingX={2}>
-                {/* Thumbnail */}
-                <Box
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    borderRadius: "3px",
-                    overflow: "hidden",
-                    flexShrink: 0,
-                    background:
-                      item.mediaType === "video"
-                        ? "#000"
-                        : "var(--card-border-color)",
-                  }}
-                >
-                  {item.mediaType === "image" ? (
-                    <img
-                      src={item.url}
-                      alt={item.originalFilename || "Image"}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : item.thumbnail?.url ? (
-                    <img
-                      src={item.thumbnail.url}
-                      alt={item.originalFilename || "Video thumbnail"}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <Flex
-                      align="center"
-                      justify="center"
-                      style={{ width: "100%", height: "100%" }}
-                    >
-                      <PlayIcon style={{ fontSize: 14 }} />
-                    </Flex>
-                  )}
-                </Box>
+                <ThumbnailCell asset={item} />
 
                 {/* Filename */}
                 <Text

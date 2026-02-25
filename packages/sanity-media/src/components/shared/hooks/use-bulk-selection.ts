@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useClient } from "sanity";
 import { useToast } from "@sanity/ui";
 import { API_VERSION } from "../../../constants";
-import { deleteFile, type StorageCredentials } from "../../../storage-client";
+import { deleteFile, getPreviewKey, type StorageCredentials } from "../../../storage-client";
 import type { MediaAsset, Tag } from "../../media-panel/types";
 
 export interface UseBulkSelectionOptions {
@@ -107,6 +107,23 @@ export function useBulkSelection({
         console.error("Failed to delete from storage:", error);
         // Don't throw - we'll still delete from Sanity even if storage delete fails
         // The file will become orphaned but that's better than leaving a broken reference
+      }
+
+      // Also delete preview if it exists (non-blocking)
+      try {
+        const previewKey = getPreviewKey(asset.path);
+        await deleteFile(credentials, previewKey);
+      } catch (error) {
+        // Only ignore 404 errors (preview doesn't exist for old assets or small images)
+        // Log other errors as they may indicate real issues
+        const is404 =
+          error instanceof Error &&
+          (error.message.includes("404") ||
+            error.message.includes("NoSuchKey") ||
+            error.message.includes("Not Found"));
+        if (!is404) {
+          console.warn("Failed to delete preview file:", error);
+        }
       }
     },
     [credentials]

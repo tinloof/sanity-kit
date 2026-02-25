@@ -1,3 +1,5 @@
+import { PREVIEW_MAX_HEIGHT, PREVIEW_QUALITY } from "./constants";
+
 /**
  * Extract metadata from image files
  */
@@ -211,6 +213,42 @@ async function generateLQIP(img: HTMLImageElement): Promise<string> {
 
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   return canvas.toDataURL("image/jpeg", 0.3);
+}
+
+/**
+ * Generate an optimized preview thumbnail for browsing
+ * Returns null if the image is already small enough
+ */
+export async function generatePreviewBlob(
+  img: HTMLImageElement,
+  maxHeight: number = PREVIEW_MAX_HEIGHT
+): Promise<Blob | null> {
+  // Skip if image is already small enough
+  if (img.naturalHeight <= maxHeight) {
+    return null;
+  }
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  // Calculate dimensions maintaining aspect ratio
+  const scale = maxHeight / img.naturalHeight;
+  canvas.width = Math.round(img.naturalWidth * scale);
+  canvas.height = Math.round(img.naturalHeight * scale);
+
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  return new Promise((resolve) => {
+    canvas.toBlob(
+      (blob) => {
+        // blob is null if encoding fails (e.g., unsupported format, canvas too large)
+        resolve(blob);
+      },
+      "image/webp",
+      PREVIEW_QUALITY
+    );
+  });
 }
 
 /**

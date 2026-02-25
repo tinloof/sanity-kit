@@ -55,6 +55,8 @@ export interface MediaAsset {
   _type: string;
   _createdAt: string;
   url: string;
+  /** Optimized preview thumbnail URL for browsing */
+  preview?: string;
   /** Storage key/path for the file in the storage provider */
   path?: string;
   originalFilename?: string;

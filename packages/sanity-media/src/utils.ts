@@ -28,3 +28,15 @@ export function isVideoContentType(contentType: string): boolean {
 export function isImageContentType(contentType: string): boolean {
   return contentType.startsWith("image/");
 }
+
+/**
+ * Get the best available preview URL for a media asset.
+ * Priority: preview thumbnail > video thumbnail > original URL
+ */
+export function getAssetPreviewUrl(asset: {
+  preview?: string;
+  thumbnail?: { url?: string };
+  url?: string;
+}): string | undefined {
+  return asset.preview ?? asset.thumbnail?.url ?? asset.url;
+}

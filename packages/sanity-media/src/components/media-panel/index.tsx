@@ -216,6 +216,7 @@ export function MediaPanel({
           _type,
           _createdAt,
           url,
+          preview,
           path,
           originalFilename,
           size,

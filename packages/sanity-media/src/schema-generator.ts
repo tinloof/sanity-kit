@@ -191,6 +191,14 @@ export function generateImageAssetType(adapter: StorageAdapter) {
         type: "text",
         description: "Default caption for this image",
       }),
+      defineField({
+        name: "preview",
+        title: "Preview URL",
+        type: "url",
+        description: "Optimized thumbnail for browsing (auto-generated)",
+        readOnly: true,
+        hidden: true,
+      }),
     ],
 
     preview: {
@@ -485,6 +493,14 @@ export function generateVideoAssetType(adapter: StorageAdapter) {
         title: "Description",
         type: "text",
         description: "Default description for this video",
+      }),
+      defineField({
+        name: "preview",
+        title: "Preview URL",
+        type: "url",
+        description: "Optimized thumbnail for browsing (auto-generated)",
+        readOnly: true,
+        hidden: true,
       }),
     ],
 

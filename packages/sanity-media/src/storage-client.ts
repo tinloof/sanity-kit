@@ -1,5 +1,6 @@
 import {DeleteObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
+import {PREVIEW_SUFFIX} from "./constants";
 
 export interface StorageCredentials {
 	endpoint: string;
@@ -167,6 +168,43 @@ export async function deleteFile(
 		Key: key,
 	});
 	await s3Client.send(command);
+}
+
+/**
+ * Derive preview key from original key - just append suffix
+ */
+export function getPreviewKey(originalKey: string): string {
+	return `${originalKey}${PREVIEW_SUFFIX}`;
+}
+
+/**
+ * Upload a Blob (not File) to storage
+ */
+export async function uploadBlob(
+	credentials: StorageCredentials,
+	blob: Blob,
+	key: string,
+	contentType: string,
+): Promise<{ publicUrl: string }> {
+	const s3Client = createS3Client(credentials);
+	const presignedUrl = await getPresignedUploadUrl(
+		s3Client,
+		credentials.bucketName,
+		key,
+		contentType,
+	);
+
+	const response = await fetch(presignedUrl, {
+		method: "PUT",
+		body: blob,
+		headers: {"Content-Type": contentType},
+	});
+
+	if (!response.ok) {
+		throw new Error(`Upload failed with status ${response.status}`);
+	}
+
+	return {publicUrl: getPublicUrl(credentials, key)};
 }
 
 export const StorageEndpoints = {

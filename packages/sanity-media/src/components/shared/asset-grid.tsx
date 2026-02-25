@@ -1,6 +1,6 @@
 import {CheckmarkCircleIcon, ImageIcon, PlayIcon} from "@sanity/icons";
 import {Box, Card, Flex, Grid, Stack, Text} from "@sanity/ui";
-import {formatDuration, formatFileSize} from "../../utils";
+import {formatDuration, formatFileSize, getAssetPreviewUrl} from "../../utils";
 import type {MediaAsset, Tag} from "../media-panel/types";
 import {TagList} from "./tag-list";
 
@@ -63,8 +63,7 @@ export function AssetGrid({
 				{assets.map((item) => {
 					const isSelected =
 						selectedId === item._id || selectedIds?.has(item._id);
-					const imageSrc =
-						item.mediaType === "image" ? item.url : item.thumbnail?.url;
+					const imageSrc = getAssetPreviewUrl(item);
 					return (
 						<Card
 							key={item._id}

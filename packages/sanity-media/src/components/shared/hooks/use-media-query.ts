@@ -169,6 +169,7 @@ export function useMediaQuery({
           _type,
           _createdAt,
           url,
+          preview,
           originalFilename,
           size,
           mimeType,

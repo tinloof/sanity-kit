@@ -6,6 +6,15 @@ import type {
 /** API version used for Sanity client queries */
 export const API_VERSION = "2025-01-01";
 
+/** Maximum height for preview thumbnails (in pixels) */
+export const PREVIEW_MAX_HEIGHT = 600;
+
+/** WebP quality for preview thumbnails (0-1) */
+export const PREVIEW_QUALITY = 0.85;
+
+/** File suffix for preview thumbnails */
+export const PREVIEW_SUFFIX = "_thumb.webp";
+
 /** Maximum number of concurrent uploads */
 export const MAX_CONCURRENT_UPLOADS = 3;
 
