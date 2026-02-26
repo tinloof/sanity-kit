@@ -1,6 +1,7 @@
 import {CheckmarkCircleIcon, ImageIcon, PlayIcon} from "@sanity/icons";
-import {Box, Card, Flex, Grid, Stack, Text} from "@sanity/ui";
+import {Box, Card, Flex, Stack, Text} from "@sanity/ui";
 import {formatDuration, formatFileSize, getAssetPreviewUrl} from "../../../utils";
+import {ResponsiveGrid} from "../../shared/responsive-grid";
 import {TagList} from "../../shared/tag-list";
 import {type MediaAsset, type Tag} from "../types";
 
@@ -54,7 +55,7 @@ export function MediaGridView({
           }
         `}
 			</style>
-			<Grid columns={[1, 2, 3, 4, 5]} gap={3}>
+			<ResponsiveGrid gap={3}>
 				{media.map((item) => {
 					const isSelected = selectionMode
 						? selectionTarget?._id === item._id
@@ -213,7 +214,7 @@ export function MediaGridView({
 						</Card>
 					);
 				})}
-			</Grid>
+			</ResponsiveGrid>
 		</>
 	);
 }

@@ -1,7 +1,8 @@
 import {CheckmarkCircleIcon, ImageIcon, PlayIcon} from "@sanity/icons";
-import {Box, Card, Flex, Grid, Stack, Text} from "@sanity/ui";
+import {Box, Card, Flex, Stack, Text} from "@sanity/ui";
 import {formatDuration, formatFileSize, getAssetPreviewUrl} from "../../utils";
 import type {MediaAsset, Tag} from "../media-panel/types";
+import {ResponsiveGrid} from "./responsive-grid";
 import {TagList} from "./tag-list";
 
 export interface AssetGridProps {
@@ -59,7 +60,7 @@ export function AssetGrid({
           }
         `}
 			</style>
-			<Grid columns={[2, 2, 3, 4, 5]} gap={3}>
+			<ResponsiveGrid gap={3}>
 				{assets.map((item) => {
 					const isSelected =
 						selectedId === item._id || selectedIds?.has(item._id);
@@ -217,7 +218,7 @@ export function AssetGrid({
 						</Card>
 					);
 				})}
-			</Grid>
+			</ResponsiveGrid>
 		</>
 	);
 }
