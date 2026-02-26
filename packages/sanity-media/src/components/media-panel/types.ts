@@ -120,6 +120,10 @@ export interface StagingItem {
   tags?: string[]; // Array of tag IDs
   // UI state
   expanded?: boolean;
+  // Upload state
+  uploadStatus?: "pending" | "uploading" | "complete" | "error";
+  uploadProgress?: number;
+  uploadError?: string;
 }
 
 // Re-export constants for backwards compatibility

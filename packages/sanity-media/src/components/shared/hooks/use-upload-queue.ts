@@ -4,11 +4,7 @@ import type { StorageAdapter } from "../../../adapters";
 import { API_VERSION } from "../../../constants";
 import { useCredentials } from "../../../hooks/use-credentials";
 import { handleImageUpload, handleVideoUpload } from "../../../upload-handler";
-import {
-  MAX_CONCURRENT_UPLOADS,
-  type StagingItem,
-  type UploadItem,
-} from "../../media-panel/types";
+import { type StagingItem } from "../../media-panel/types";
 
 export interface UseUploadQueueOptions {
   adapter: StorageAdapter;
@@ -16,10 +12,8 @@ export interface UseUploadQueueOptions {
 }
 
 export interface UseUploadQueueResult {
-  // Upload queue state
-  uploadQueue: UploadItem[];
+  // Upload state
   isUploading: boolean;
-  activeUploads: UploadItem[];
 
   // Staging state
   stagingItems: StagingItem[];
@@ -35,7 +29,6 @@ export interface UseUploadQueueResult {
   startUpload: () => void;
   updateStagingItem: (id: string, updates: Partial<StagingItem>) => void;
   removeStagingItem: (id: string) => void;
-  clearCompletedUploads: () => void;
 }
 
 export function useUploadQueue({
@@ -45,17 +38,10 @@ export function useUploadQueue({
   const client = useClient({ apiVersion: API_VERSION });
   const { credentials } = useCredentials(adapter);
 
-  const [uploadQueue, setUploadQueue] = useState<UploadItem[]>([]);
   const [stagingItems, setStagingItems] = useState<StagingItem[]>([]);
   const [showStagingDialog, setShowStagingDialog] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const clearTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Derived state
-  const activeUploads = uploadQueue.filter(
-    (i) => i.status === "pending" || i.status === "uploading"
-  );
-  const isUploading = activeUploads.length > 0;
 
   // Process files into staging items (shared by file input and drag-drop)
   const processFiles = useCallback(
@@ -121,24 +107,86 @@ export function useUploadQueue({
     setShowStagingDialog(false);
   }, [stagingItems]);
 
-  // Start uploading staged items
-  const startUpload = useCallback(() => {
-    const newUploadItems: UploadItem[] = stagingItems.map((item) => ({
-      id: item.id,
-      file: item.file,
-      type: item.type,
-      status: "pending" as const,
-      progress: 0,
-      alt: item.alt,
-      caption: item.caption,
-      title: item.title,
-      description: item.description,
-      tags: item.tags,
-    }));
+  // Start uploading staged items (keeps dialog open, shows progress in dialog)
+  const startUpload = useCallback(async () => {
+    if (!credentials || stagingItems.length === 0) return;
 
-    setUploadQueue((prev) => [...prev, ...newUploadItems]);
-    closeStagingDialog();
-  }, [stagingItems, closeStagingDialog]);
+    setUploading(true);
+
+    // Upload items one by one, updating progress in staging items
+    for (const item of stagingItems) {
+      // Mark item as uploading
+      setStagingItems((prev) =>
+        prev.map((i) =>
+          i.id === item.id
+            ? { ...i, uploadStatus: "uploading" as const, uploadProgress: 0 }
+            : i
+        )
+      );
+
+      try {
+        const progressCallback = (progress: number) => {
+          setStagingItems((prev) =>
+            prev.map((i) =>
+              i.id === item.id ? { ...i, uploadProgress: progress } : i
+            )
+          );
+        };
+
+        if (item.type === "video") {
+          await handleVideoUpload(
+            item.file,
+            adapter,
+            credentials,
+            client,
+            progressCallback,
+            {
+              title: item.title,
+              description: item.description,
+              tags: item.tags,
+            }
+          );
+        } else {
+          await handleImageUpload(
+            item.file,
+            adapter,
+            credentials,
+            client,
+            progressCallback,
+            { alt: item.alt, caption: item.caption, tags: item.tags }
+          );
+        }
+
+        // Mark item as complete
+        setStagingItems((prev) =>
+          prev.map((i) =>
+            i.id === item.id
+              ? { ...i, uploadStatus: "complete" as const, uploadProgress: 100 }
+              : i
+          )
+        );
+      } catch (err) {
+        // Mark item as failed
+        setStagingItems((prev) =>
+          prev.map((i) =>
+            i.id === item.id
+              ? {
+                  ...i,
+                  uploadStatus: "error" as const,
+                  uploadError:
+                    err instanceof Error ? err.message : "Upload failed",
+                }
+              : i
+          )
+        );
+        console.error("Upload failed for item:", item.file.name, err);
+      }
+    }
+
+    // Notify when all uploads complete
+    onUploadComplete?.();
+    setUploading(false);
+  }, [credentials, stagingItems, adapter, client, onUploadComplete]);
 
   // Update staging item metadata
   const updateStagingItem = useCallback(
@@ -166,108 +214,26 @@ export function useUploadQueue({
     });
   }, []);
 
-  // Clear completed uploads
-  const clearCompletedUploads = useCallback(() => {
-    setUploadQueue((prev) => prev.filter((i) => i.status === "error"));
-  }, []);
-
-  // Upload single item
-  const uploadSingleItem = useCallback(
-    async (item: UploadItem) => {
-      if (!credentials) return;
-
-      setUploadQueue((prev) =>
-        prev.map((i) =>
-          i.id === item.id ? { ...i, status: "uploading" as const } : i
-        )
-      );
-
-      try {
-        const onProgress = (progress: number) => {
-          setUploadQueue((prev) =>
-            prev.map((i) => (i.id === item.id ? { ...i, progress } : i))
-          );
-        };
-
-        if (item.type === "image") {
-          await handleImageUpload(
-            item.file,
-            adapter,
-            credentials,
-            client,
-            onProgress,
-            { alt: item.alt, caption: item.caption, tags: item.tags }
-          );
-        } else {
-          await handleVideoUpload(
-            item.file,
-            adapter,
-            credentials,
-            client,
-            onProgress,
-            { title: item.title, description: item.description, tags: item.tags }
-          );
-        }
-
-        setUploadQueue((prev) =>
-          prev.map((i) =>
-            i.id === item.id
-              ? { ...i, status: "completed" as const, progress: 100 }
-              : i
-          )
-        );
-      } catch (error) {
-        console.error("Upload failed:", error);
-        setUploadQueue((prev) =>
-          prev.map((i) =>
-            i.id === item.id
-              ? {
-                  ...i,
-                  status: "error" as const,
-                  error: error instanceof Error ? error.message : "Upload failed",
-                }
-              : i
-          )
-        );
-      }
-    },
-    [credentials, adapter, client]
-  );
-
-  // Upload orchestration effect
+  // Auto-close dialog 3 seconds after all uploads complete
   useEffect(() => {
-    const pending = uploadQueue.filter((i) => i.status === "pending");
-    const uploading = uploadQueue.filter((i) => i.status === "uploading");
-    const availableSlots = MAX_CONCURRENT_UPLOADS - uploading.length;
+    if (stagingItems.length === 0) return;
 
-    if (pending.length > 0 && availableSlots > 0) {
-      const toStart = pending.slice(0, availableSlots);
-      toStart.forEach((item) => uploadSingleItem(item));
-    }
+    const allDone = stagingItems.every(
+      (item) =>
+        item.uploadStatus === "complete" || item.uploadStatus === "error"
+    );
 
-    // Refresh lists when all uploads complete
-    const allDone =
-      uploadQueue.length > 0 &&
-      uploadQueue.every((i) => i.status === "completed" || i.status === "error");
     if (allDone) {
-      onUploadComplete?.();
-      // Clear completed items after a short delay
-      clearTimeoutRef.current = setTimeout(() => {
-        setUploadQueue((prev) => prev.filter((i) => i.status === "error"));
-      }, 2000);
-    }
+      const timeout = setTimeout(() => {
+        closeStagingDialog();
+      }, 3000);
 
-    return () => {
-      if (clearTimeoutRef.current) {
-        clearTimeout(clearTimeoutRef.current);
-      }
-    };
-  }, [uploadQueue, uploadSingleItem, onUploadComplete]);
+      return () => clearTimeout(timeout);
+    }
+  }, [stagingItems, closeStagingDialog]);
 
   return {
-    uploadQueue,
-    isUploading,
-    activeUploads,
+    isUploading: uploading,
     stagingItems,
     showStagingDialog,
     fileInputRef,
@@ -277,6 +243,5 @@ export function useUploadQueue({
     startUpload,
     updateStagingItem,
     removeStagingItem,
-    clearCompletedUploads,
   };
 }
