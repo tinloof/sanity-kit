@@ -1,14 +1,19 @@
 import {
   AddIcon,
+  CalendarIcon,
+  CheckmarkIcon,
   CloseIcon,
   CogIcon,
+  DatabaseIcon,
+  DocumentTextIcon,
   ImageIcon,
+  ImagesIcon,
   PlayIcon,
   SortIcon,
   TagIcon,
-  TrashIcon,
   ThLargeIcon,
   ThListIcon,
+  TrashIcon,
   UploadIcon,
 } from "@sanity/icons";
 import {
@@ -22,6 +27,7 @@ import {
   Spinner,
   Stack,
   Text,
+  Tooltip,
 } from "@sanity/ui";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { isDev, useClient } from "sanity";
@@ -44,17 +50,17 @@ import {
   MediaGridView,
   MediaListView,
   MediaSidebar,
+  type Reference,
   SelectionModeFooter,
   UploadStagingDialog,
-  type Reference,
 } from "./components";
 import {
-  PAGE_SIZE,
-  SORT_OPTIONS,
-  TAG_COLORS,
   type MediaAsset,
   type MediaPanelProps,
+  PAGE_SIZE,
+  SORT_OPTIONS,
   type SortOption,
+  TAG_COLORS,
   type TypeFilter,
   type ViewMode,
 } from "./types";
@@ -527,6 +533,26 @@ export function MediaPanel({
               display: flex !important;
             }
           }
+          /* Hide button text on mobile, show only icons */
+          #type-filter-menu [data-ui="Flex"] > div[data-ui="Box"],
+          #sort-menu [data-ui="Flex"] > div[data-ui="Box"] {
+            display: none;
+          }
+          @media (min-width: 640px) {
+            #type-filter-menu [data-ui="Flex"] > div[data-ui="Box"],
+            #sort-menu [data-ui="Flex"] > div[data-ui="Box"] {
+              display: block;
+            }
+          }
+          /* Hide title on mobile */
+          .media-toolbar-title {
+            display: none;
+          }
+          @media (min-width: 640px) {
+            .media-toolbar-title {
+              display: flex;
+            }
+          }
         `}
       </style>
 
@@ -594,39 +620,157 @@ export function MediaPanel({
             borderBottom: "1px solid var(--card-border-color)",
           }}
         >
-          <Stack space={4}>
-            {/* Header */}
-            <Flex
-              justify="space-between"
-              align="center"
-              paddingX={4}
-              gap={2}
-              wrap="wrap"
-            >
-              {bulkSelection.hasSelection && !selectionMode ? (
-                <>
-                  <Flex align="center" gap={2}>
+          <Stack space={3}>
+            {/* Row 1: Search + Upload + Settings */}
+            <Flex paddingX={4} gap={2} align="center">
+              <Box style={{ flex: 1 }}>
+                <DebouncedSearchInput onSearch={handleSearch} />
+              </Box>
+              {selectionMode && onCancelSelection ? (
+                <Flex gap={2} align="center">
+                  <Button
+                    icon={AddIcon}
+                    mode="ghost"
+                    tone="primary"
+                    onClick={() => uploadQueue.fileInputRef.current?.click()}
+                    padding={3}
+                    fontSize={1}
+                    title="Upload"
+                  />
+                  <Button
+                    icon={CloseIcon}
+                    mode="bleed"
+                    onClick={onCancelSelection}
+                    padding={3}
+                    fontSize={1}
+                    title="Cancel and go back"
+                  />
+                </Flex>
+              ) : (
+                <Flex gap={2} align="center">
+                  <Button
+                    icon={AddIcon}
+                    text="Upload"
+                    mode="ghost"
+                    tone="primary"
+                    onClick={() => uploadQueue.fileInputRef.current?.click()}
+                    fontSize={1}
+                    padding={3}
+                  />
+                  {onOpenSettings && isDev && (
                     <Button
-                      icon={CloseIcon}
+                      icon={CogIcon}
                       mode="ghost"
-                      onClick={bulkSelection.exitSelectionMode}
+                      onClick={onOpenSettings}
+                      padding={3}
                       fontSize={1}
-                      padding={2}
-                      title="Cancel selection"
+                      title="Settings"
                     />
-                    <Text size={1} weight="medium">
-                      {bulkSelection.selectionCount} selected
+                  )}
+                </Flex>
+              )}
+              <input
+                ref={uploadQueue.fileInputRef}
+                type="file"
+                accept="image/*,video/*"
+                multiple
+                onChange={uploadQueue.handleFileSelect}
+                style={{ display: "none" }}
+              />
+            </Flex>
+
+            {/* Row 2: Select All + Title | Filters + View Toggle */}
+            <Flex paddingX={4} gap={2} align="center" justify="space-between">
+              {/* Left side */}
+              <Flex align="center" gap={3}>
+                {/* Select All Checkbox */}
+                {!selectionMode && (
+                  <>
+                    <Box
+                      role="checkbox"
+                      tabIndex={0}
+                      aria-checked={
+                        bulkSelection.selectionCount === media.length
+                          ? true
+                          : bulkSelection.selectionCount > 0
+                          ? "mixed"
+                          : false
+                      }
+                      aria-label="Select all media items"
+                      onClick={() => {
+                        if (bulkSelection.selectionCount === media.length) {
+                          bulkSelection.exitSelectionMode();
+                        } else {
+                          bulkSelection.selectAll();
+                        }
+                      }}
+                      onKeyDown={(e: React.KeyboardEvent) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          if (bulkSelection.selectionCount === media.length) {
+                            bulkSelection.exitSelectionMode();
+                          } else {
+                            bulkSelection.selectAll();
+                          }
+                        }
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <Box
+                        style={{
+                          width: "18px",
+                          height: "18px",
+                          borderRadius: "4px",
+                          border:
+                            bulkSelection.selectionCount > 0
+                              ? "none"
+                              : "2px solid var(--card-border-color)",
+                          background:
+                            bulkSelection.selectionCount > 0
+                              ? "var(--card-focus-ring-color)"
+                              : "transparent",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {bulkSelection.selectionCount > 0 && (
+                          <CheckmarkIcon
+                            style={{ color: "white", fontSize: 12 }}
+                          />
+                        )}
+                      </Box>
+                    </Box>
+                    <Box
+                      style={{
+                        width: "1px",
+                        height: "20px",
+                        background: "var(--card-border-color)",
+                      }}
+                    />
+                  </>
+                )}
+
+                {/* Title and count */}
+                <Flex align="baseline" gap={2}>
+                  <span className="media-toolbar-title">
+                    <Text size={2} weight="bold">
+                      {selectionMode ? "Select Media" : "Media Library"}
                     </Text>
-                  </Flex>
-                  <Flex gap={2}>
-                    <Button
-                      text="Select All"
-                      mode="ghost"
-                      onClick={bulkSelection.selectAll}
-                      fontSize={1}
-                      padding={2}
-                      disabled={bulkSelection.selectionCount === media.length}
-                    />
+                  </span>
+                  <Text size={1} muted>
+                    {bulkSelection.hasSelection && !selectionMode
+                      ? `${bulkSelection.selectionCount} of ${totalCount} selected`
+                      : `${totalCount} ${totalCount === 1 ? "item" : "items"}`}
+                  </Text>
+                </Flex>
+              </Flex>
+
+              {/* Right side */}
+              <Flex gap={2} align="center">
+                {/* Bulk actions when items selected */}
+                {bulkSelection.hasSelection && !selectionMode && (
+                  <>
                     {tagEditor.tags.length > 0 && (
                       <MenuButton
                         button={
@@ -715,143 +859,8 @@ export function MediaPanel({
                         popover={{ portal: true }}
                       />
                     )}
-                    <Button
-                      icon={TrashIcon}
-                      text="Delete"
-                      mode="ghost"
-                      tone="critical"
-                      onClick={() => bulkSelection.openDeleteDialog("bulk")}
-                      disabled={bulkSelection.isDeleting}
-                      fontSize={1}
-                      padding={2}
-                    />
-                  </Flex>
-                </>
-              ) : (
-                <>
-                  <Flex align="baseline" gap={2}>
-                    <Text size={2} weight="bold">
-                      {selectionMode ? "Select Media" : "Media Library"}
-                    </Text>
-                    <Text size={1} muted>
-                      ({totalCount} {totalCount === 1 ? "item" : "items"})
-                    </Text>
-                  </Flex>
-                  {selectionMode && onCancelSelection && (
-                    <Flex gap={2} align="center">
-                      <Button
-                        icon={AddIcon}
-                        mode="ghost"
-                        tone="primary"
-                        onClick={() =>
-                          uploadQueue.fileInputRef.current?.click()
-                        }
-                        padding={2}
-                        fontSize={1}
-                        title="Upload"
-                      />
-                      <Button
-                        icon={CloseIcon}
-                        mode="bleed"
-                        onClick={onCancelSelection}
-                        padding={2}
-                        fontSize={1}
-                        title="Cancel and go back"
-                      />
-                    </Flex>
-                  )}
-                  {!selectionMode && (
-                    <Flex gap={2} align="center">
-                      <Button
-                        icon={AddIcon}
-                        text="Upload"
-                        mode="ghost"
-                        tone="primary"
-                        onClick={() =>
-                          uploadQueue.fileInputRef.current?.click()
-                        }
-                        fontSize={1}
-                        padding={3}
-                      />
-                      {onOpenSettings && isDev && (
-                        <Button
-                          icon={CogIcon}
-                          mode="ghost"
-                          onClick={onOpenSettings}
-                          padding={3}
-                          fontSize={1}
-                          title="Settings"
-                        />
-                      )}
-                    </Flex>
-                  )}
-                </>
-              )}
-              <input
-                ref={uploadQueue.fileInputRef}
-                type="file"
-                accept="image/*,video/*"
-                multiple
-                onChange={uploadQueue.handleFileSelect}
-                style={{ display: "none" }}
-              />
-            </Flex>
-
-            {/* Controls */}
-            <Box paddingX={4}>
-              <Flex gap={2} wrap="wrap" align="center">
-                {/* View Toggle */}
-                <Flex
-                  style={{
-                    borderRadius: "3px",
-                    overflow: "hidden",
-                    border: "1px solid var(--card-border-color)",
-                  }}
-                >
-                  <Button
-                    icon={ThLargeIcon}
-                    mode="bleed"
-                    tone={viewMode === "grid" ? "primary" : "default"}
-                    onClick={() => setViewMode("grid")}
-                    padding={3}
-                    fontSize={1}
-                    title="Grid view"
-                    style={{
-                      borderRadius: 0,
-                      background:
-                        viewMode === "grid"
-                          ? "var(--card-badge-default-bg-color)"
-                          : "transparent",
-                    }}
-                  />
-                  <Box
-                    style={{
-                      width: "1px",
-                      background: "var(--card-border-color)",
-                    }}
-                  />
-                  <Button
-                    icon={ThListIcon}
-                    mode="bleed"
-                    tone={viewMode === "list" ? "primary" : "default"}
-                    onClick={() => setViewMode("list")}
-                    padding={3}
-                    fontSize={1}
-                    title="List view"
-                    style={{
-                      borderRadius: 0,
-                      background:
-                        viewMode === "list"
-                          ? "var(--card-badge-default-bg-color)"
-                          : "transparent",
-                    }}
-                  />
-                </Flex>
-
-                {/* Search */}
-                <Box style={{ flex: 1, minWidth: "120px" }}>
-                  <DebouncedSearchInput onSearch={handleSearch} />
-                </Box>
+                  </>
+                )}
 
                 {/* Type Filter */}
                 {selectionMode &&
@@ -878,7 +887,7 @@ export function MediaPanel({
                             ? ImageIcon
                             : typeFilter === "video"
                             ? PlayIcon
-                            : undefined
+                            : ImagesIcon
                         }
                         text={
                           typeFilter === "all"
@@ -896,6 +905,7 @@ export function MediaPanel({
                     menu={
                       <Menu>
                         <MenuItem
+                          icon={ImagesIcon}
                           text={`All types (${counts?.total ?? 0})`}
                           pressed={typeFilter === "all"}
                           onClick={() => setTypeFilter("all")}
@@ -935,24 +945,58 @@ export function MediaPanel({
                   id="sort-menu"
                   menu={
                     <Menu>
-                      {SORT_OPTIONS.map((option) => (
-                        <MenuItem
-                          key={`${option.field}-${option.direction}`}
-                          text={option.label}
-                          pressed={
-                            sortOption.field === option.field &&
-                            sortOption.direction === option.direction
-                          }
-                          onClick={() => setSortOption(option)}
-                          fontSize={1}
-                        />
-                      ))}
+                      {SORT_OPTIONS.map((option) => {
+                        const getSortIcon = () => {
+                          if (option.field === "date") return CalendarIcon;
+                          if (option.field === "filename")
+                            return DocumentTextIcon;
+                          return DatabaseIcon; // size
+                        };
+                        return (
+                          <MenuItem
+                            key={`${option.field}-${option.direction}`}
+                            icon={getSortIcon()}
+                            text={option.label}
+                            pressed={
+                              sortOption.field === option.field &&
+                              sortOption.direction === option.direction
+                            }
+                            onClick={() => setSortOption(option)}
+                            fontSize={1}
+                          />
+                        );
+                      })}
                     </Menu>
                   }
                   popover={{ portal: true }}
                 />
+
+                {/* View Toggle */}
+                <Tooltip
+                  content={
+                    <Box padding={2}>
+                      <Text size={1}>
+                        {viewMode === "grid"
+                          ? "Switch to list view"
+                          : "Switch to grid view"}
+                      </Text>
+                    </Box>
+                  }
+                  placement="bottom"
+                  portal
+                >
+                  <Button
+                    icon={viewMode === "grid" ? ThLargeIcon : ThListIcon}
+                    mode="ghost"
+                    onClick={() =>
+                      setViewMode(viewMode === "grid" ? "list" : "grid")
+                    }
+                    padding={3}
+                    fontSize={1}
+                  />
+                </Tooltip>
               </Flex>
-            </Box>
+            </Flex>
           </Stack>
         </Box>
 
