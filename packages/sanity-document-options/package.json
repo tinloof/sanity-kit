@@ -49,27 +49,27 @@
 	"dependencies": {
 		"@sanity/icons": "^3.7.4",
 		"@sanity/incompatible-plugin": "^1.0.5",
-		"@sanity/orderable-document-list": "^1.5.0",
+		"@sanity/orderable-document-list": "^1.5.1",
 		"pluralize": "^8.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.13",
+		"@biomejs/biome": "2.4.4",
 		"@sanity/pkg-utils": "^10.1.1",
 		"@sanity/plugin-kit": "^4.0.20",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@types/pluralize": "^0.0.33",
-		"@types/react": "^19.2.10",
+		"@types/react": "^19.2.14",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"sanity": "^5.7.0",
-		"styled-components": "^6.3.8",
+		"sanity": "^5.12.0",
+		"styled-components": "^6.3.11",
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
 		"@tinloof/sanity-extends": "workspace:*",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"sanity": "^5.7.0"
+		"sanity": "^5.12.0"
 	},
 	"engines": {
 		"node": ">=18"
