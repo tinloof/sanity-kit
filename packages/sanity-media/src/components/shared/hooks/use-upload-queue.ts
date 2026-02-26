@@ -31,6 +31,9 @@ export interface UseUploadQueueResult {
   removeStagingItem: (id: string) => void;
 }
 
+// Counter for unique IDs to avoid collisions when multiple files are added at once
+let idCounter = 0;
+
 export function useUploadQueue({
   adapter,
   onUploadComplete,
@@ -42,6 +45,16 @@ export function useUploadQueue({
   const [showStagingDialog, setShowStagingDialog] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      setStagingItems((prev) => {
+        prev.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+        return prev;
+      });
+    };
+  }, []);
 
   // Process files into staging items (shared by file input and drag-drop)
   const processFiles = useCallback(
@@ -58,7 +71,9 @@ export function useUploadQueue({
           return isImage || isVideo;
         })
         .map((file) => ({
-          id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          id: `${Date.now()}-${idCounter++}-${Math.random()
+            .toString(36)
+            .slice(2)}`,
           file,
           type: file.type.startsWith("image/")
             ? ("image" as const)
@@ -102,10 +117,12 @@ export function useUploadQueue({
 
   // Clean up preview URLs when staging dialog closes
   const closeStagingDialog = useCallback(() => {
-    stagingItems.forEach((item) => URL.revokeObjectURL(item.previewUrl));
-    setStagingItems([]);
+    setStagingItems((prev) => {
+      prev.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+      return [];
+    });
     setShowStagingDialog(false);
-  }, [stagingItems]);
+  }, []);
 
   // Start uploading staged items (keeps dialog open, shows progress in dialog)
   const startUpload = useCallback(async () => {

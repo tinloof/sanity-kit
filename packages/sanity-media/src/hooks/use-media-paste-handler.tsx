@@ -9,15 +9,22 @@ import { handleImageUpload, handleVideoUpload } from "../upload-handler";
 import { UploadStagingDialog } from "../components/media-panel/components";
 import { useTags } from "../components/shared/hooks";
 
+// Counter for unique IDs to avoid collisions when multiple files are pasted at once
+let idCounter = 0;
+
 // Helper to create staging item from file
-function createStagingItem(file: File): StagingItem {
+function createStagingItem(
+  file: File,
+  index: number,
+  total: number
+): StagingItem {
   const type = file.type.startsWith("video/") ? "video" : "image";
   return {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    id: `${Date.now()}-${idCounter++}-${Math.random().toString(36).slice(2)}`,
     file,
     type,
     previewUrl: URL.createObjectURL(file),
-    expanded: true,
+    expanded: index === 0, // Only expand first item
   };
 }
 
@@ -118,6 +125,16 @@ export function useMediaPasteHandler(
   const [showStagingDialog, setShowStagingDialog] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      setStagingItems((prev) => {
+        prev.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+        return prev;
+      });
+    };
+  }, []);
+
   // Custom paste handler that intercepts image and video pastes
   const onPaste: PortableTextInputProps["onPaste"] = useCallback(
     (data: { event: React.ClipboardEvent }) => {
@@ -145,7 +162,11 @@ export function useMediaPasteHandler(
         event.preventDefault();
 
         // Stage all files for upload
-        setStagingItems(mediaFiles.map(createStagingItem));
+        setStagingItems(
+          mediaFiles.map((file, index) =>
+            createStagingItem(file, index, mediaFiles.length)
+          )
+        );
         setShowStagingDialog(true);
 
         // Return undefined to signal we handled it
@@ -160,10 +181,12 @@ export function useMediaPasteHandler(
 
   // Staging dialog handlers
   const closeStagingDialog = useCallback(() => {
-    stagingItems.forEach((item) => URL.revokeObjectURL(item.previewUrl));
-    setStagingItems([]);
+    setStagingItems((prev) => {
+      prev.forEach((item) => URL.revokeObjectURL(item.previewUrl));
+      return [];
+    });
     setShowStagingDialog(false);
-  }, [stagingItems]);
+  }, []);
 
   const updateStagingItem = useCallback(
     (id: string, updates: Partial<StagingItem>) => {
@@ -321,6 +344,7 @@ export function useMediaPasteHandler(
     startUpload,
     updateStagingItem,
     removeStagingItem,
+    uploading,
   ]);
 
   return {
