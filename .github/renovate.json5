@@ -18,6 +18,9 @@
     "@sanity/pkg-utils",
     "@sanity/plugin-kit",
 
+    // deprecated plugin dependency - will be removed when we remove the deprecated documentI18n plugin
+    "@sanity/document-internationalization",
+
     // manually bumping workflow actions
     "actions/labeler",
 
