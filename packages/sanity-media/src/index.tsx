@@ -41,6 +41,14 @@ export type {
   MediaStoragePluginConfig,
 } from "./types";
 
+// Export hooks for advanced usage
+export {
+  useMediaPasteHandler,
+  type UseMediaPasteHandlerOptions,
+  type UseMediaPasteHandlerResult,
+} from "./hooks/use-media-paste-handler";
+export { useCredentials } from "./hooks/use-credentials";
+
 // Export utility functions
 export { isImageContentType, isVideoContentType } from "./utils";
 
