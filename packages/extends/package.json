@@ -1,6 +1,6 @@
 {
 	"name": "@tinloof/sanity-extends",
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"description": "Schema extension utilities for Sanity",
 	"license": "ISC",
 	"author": "Tinloof",

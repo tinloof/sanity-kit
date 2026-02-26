@@ -1,5 +1,14 @@
 # @tinloof/sanity-document-options
 
+## 2.0.3
+
+### Patch Changes
+
+- dd30b32:
+- Updated dependencies [fa232b4]
+- Updated dependencies [dd30b32]
+  - @tinloof/sanity-extends@2.0.2
+
 ## 2.0.2
 
 ### Patch Changes
