@@ -1,6 +1,4 @@
 import {
-	ChevronLeftIcon,
-	ChevronRightIcon,
 	CloseIcon,
 	FilterIcon,
 	ImageIcon,
@@ -47,6 +45,7 @@ import {
 import {DebouncedSearchInput} from "../media-panel/components/debounced-search-input";
 import {AssetGrid} from "./asset-grid";
 import {AssetList} from "./asset-list";
+import {Pagination} from "./pagination";
 import {useMediaQuery} from "./hooks/use-media-query";
 import {
 	useDocumentSearch,
@@ -970,7 +969,10 @@ export function MediaBrowserDialog({
 						)}
 
 						{/* Asset Grid/List */}
-						<Box paddingY={4} style={{flex: 1, overflowY: "auto", minHeight: 0}}>
+						<Box
+							paddingY={4}
+							style={{flex: 1, overflowY: "auto", minHeight: 0}}
+						>
 							{isLoading ? (
 								<Flex
 									justify="center"
@@ -1033,27 +1035,11 @@ export function MediaBrowserDialog({
 						paddingY={3}
 						style={{borderTop: "1px solid var(--card-border-color)"}}
 					>
-						<Flex justify="center" align="center" gap={2}>
-							<Button
-								icon={ChevronLeftIcon}
-								mode="ghost"
-								padding={2}
-								disabled={currentPage === 1}
-								onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-							/>
-							<Text size={1} muted>
-								Page {currentPage} of {totalPages}
-							</Text>
-							<Button
-								icon={ChevronRightIcon}
-								mode="ghost"
-								padding={2}
-								disabled={currentPage === totalPages}
-								onClick={() =>
-									setCurrentPage((p) => Math.min(totalPages, p + 1))
-								}
-							/>
-						</Flex>
+						<Pagination
+							currentPage={currentPage}
+							totalPages={totalPages}
+							onPageChange={setCurrentPage}
+						/>
 					</Box>
 				)}
 

@@ -25,3 +25,4 @@ export {
   MediaBrowserDialog,
   type MediaBrowserDialogProps,
 } from "./media-browser-dialog";
+export { Pagination, type PaginationProps } from "./pagination";

@@ -1,7 +1,5 @@
 import {
 	AddIcon,
-	ChevronLeftIcon,
-	ChevronRightIcon,
 	CloseIcon,
 	CogIcon,
 	ImageIcon,
@@ -38,6 +36,7 @@ import {
 	useTagEditor,
 	useUploadQueue,
 } from "../shared/hooks";
+import {Pagination} from "../shared/pagination";
 import {
 	DebouncedSearchInput,
 	DeleteConfirmDialog,
@@ -1147,27 +1146,11 @@ export function MediaPanel({
 						paddingY={3}
 						style={{borderTop: "1px solid var(--card-border-color)"}}
 					>
-						<Flex justify="center" align="center" gap={2}>
-							<Button
-								icon={ChevronLeftIcon}
-								mode="ghost"
-								padding={2}
-								disabled={currentPage === 1}
-								onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-							/>
-							<Text size={1} muted>
-								Page {currentPage} of {totalPages}
-							</Text>
-							<Button
-								icon={ChevronRightIcon}
-								mode="ghost"
-								padding={2}
-								disabled={currentPage === totalPages}
-								onClick={() =>
-									setCurrentPage((p) => Math.min(totalPages, p + 1))
-								}
-							/>
-						</Flex>
+						<Pagination
+							currentPage={currentPage}
+							totalPages={totalPages}
+							onPageChange={setCurrentPage}
+						/>
 					</Box>
 				)}
 
