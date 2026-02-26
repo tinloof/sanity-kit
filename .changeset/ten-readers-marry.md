@@ -2,4 +2,10 @@
 "@tinloof/sanity-next": patch
 ---
 
-Add `@sanity/client` to peerDependencies to fix type conflicts when consumers have a different version installed. This follows the same pattern as `next-sanity` and ensures `SanityClient` types are compatible when passed to components like `InfiniteScroll`.
+Fix type conflicts when consumers have a different version of `@sanity/client` installed:
+
+- Add `@sanity/client` to peerDependencies (following `next-sanity` pattern)
+- Update `@sanity/client` from `^7.14.1` to `^7.16.0`
+- Update `sanity` from `^5.7.0` to `^5.12.0`
+
+This ensures `SanityClient` types are compatible when passed to components like `InfiniteScroll`.
