@@ -95,17 +95,17 @@
 	"peerDependencies": {
 		"@sanity/client": "^7.16.0",
 		"next": "^16.1.6",
-		"next-sanity": "^12.0.15",
+		"next-sanity": "^12.1.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4"
 	},
 	"devDependencies": {
-		"@types/node": "^24.10.9",
-		"@types/react": "^19.2.10",
+		"@types/node": "^24.10.15",
+		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"@types/speakingurl": "^13.0.6",
 		"next": "^16.1.6",
-		"next-sanity": "^12.0.15",
+		"next-sanity": "^12.1.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
 		"tsup": "^8.5.1",
@@ -120,7 +120,7 @@
 		"sanity": "^5.12.0",
 		"sanity-plugin-utils": "^1.8.0",
 		"speakingurl": "^14.0.1",
-		"swr": "^2.3.8"
+		"swr": "^2.4.0"
 	},
 	"publishConfig": {
 		"access": "public"
