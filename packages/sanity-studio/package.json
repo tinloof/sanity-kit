@@ -62,7 +62,7 @@
 		"@sanity/util": "^5.12.0",
 		"@tanstack/react-virtual": "^3.13.19",
 		"@tinloof/sanity-web": "workspace:*",
-		"lodash": "^4.17.21",
+		"lodash": "^4.17.23",
 		"nanoid": "^5.1.6",
 		"react-rx": "^4.2.2",
 		"use-debounce": "^10.1.0"
