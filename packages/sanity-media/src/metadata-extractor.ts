@@ -1,4 +1,8 @@
-import { PREVIEW_MAX_HEIGHT, PREVIEW_QUALITY } from "./constants";
+import {
+  LQIP_MAX_DIMENSION,
+  PREVIEW_MAX_HEIGHT,
+  PREVIEW_QUALITY,
+} from "./constants";
 
 /**
  * Extract metadata from image files
@@ -15,19 +19,28 @@ export async function extractImageMetadata(file: File) {
     const objectUrl = URL.createObjectURL(file);
 
     img.onload = async () => {
-      const width = img.naturalWidth;
-      const height = img.naturalHeight;
-      const lqip = await generateLQIP(img);
-      const hasAlpha = await detectAlphaChannel(img);
+      try {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+        const lqip = await generateLQIP(img);
+        const hasAlpha = await detectAlphaChannel(img);
 
-      URL.revokeObjectURL(objectUrl);
-      resolve({
-        width,
-        height,
-        hasAlpha,
-        isOpaque: !hasAlpha,
-        lqip,
-      });
+        resolve({
+          width,
+          height,
+          hasAlpha,
+          isOpaque: !hasAlpha,
+          lqip,
+        });
+      } catch {
+        // If metadata extraction fails, return basic dimensions
+        resolve({
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+        });
+      } finally {
+        URL.revokeObjectURL(objectUrl);
+      }
     };
 
     img.onerror = () => {
@@ -75,7 +88,7 @@ export async function extractVideoMetadata(file: File) {
 
         // Wait for a few animation frames to ensure the frame is painted
         await new Promise((r) =>
-          requestAnimationFrame(() => requestAnimationFrame(r)),
+          requestAnimationFrame(() => requestAnimationFrame(r))
         );
 
         const canvas = document.createElement("canvas");
@@ -105,7 +118,7 @@ export async function extractVideoMetadata(file: File) {
           }
           video.pause();
           await new Promise((r) =>
-            requestAnimationFrame(() => requestAnimationFrame(r)),
+            requestAnimationFrame(() => requestAnimationFrame(r))
           );
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         }
@@ -130,7 +143,7 @@ export async function extractVideoMetadata(file: File) {
             });
           },
           "image/jpeg",
-          0.85,
+          0.85
         );
       } catch (error) {
         URL.revokeObjectURL(objectUrl);
@@ -153,7 +166,7 @@ export async function extractVideoMetadata(file: File) {
 function isCanvasBlank(
   ctx: CanvasRenderingContext2D,
   width: number,
-  height: number,
+  height: number
 ): boolean {
   // Sample a few pixels to check if the frame is blank
   const samplePoints = [
@@ -206,8 +219,7 @@ async function generateLQIP(img: HTMLImageElement): Promise<string> {
   const ctx = canvas.getContext("2d");
   if (!ctx) return "";
 
-  const maxDim = 20;
-  const scale = maxDim / Math.max(img.width, img.height);
+  const scale = LQIP_MAX_DIMENSION / Math.max(img.width, img.height);
   canvas.width = img.width * scale;
   canvas.height = img.height * scale;
 

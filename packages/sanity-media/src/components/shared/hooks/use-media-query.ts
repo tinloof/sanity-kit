@@ -11,6 +11,17 @@ import type {
 } from "../../media-panel/types";
 import { PAGE_SIZE, SORT_OPTIONS } from "../../media-panel/types";
 
+/**
+ * Escape special characters in search strings for GROQ match operator.
+ * Also limits length to prevent excessively long queries.
+ */
+function escapeGroqSearch(search: string, maxLength = 100): string {
+  // Limit length to prevent abuse
+  const trimmed = search.trim().slice(0, maxLength);
+  // Escape special GROQ match characters: * ? [ ] \ "
+  return trimmed.replace(/[*?[\]\\"/]/g, "\\$&");
+}
+
 export interface UseMediaQueryOptions {
   adapter: StorageAdapter;
   typeFilter?: TypeFilter;
@@ -47,7 +58,8 @@ export function useMediaQuery({
   const client = useClient({ apiVersion: API_VERSION });
 
   // Determine effective type filter based on assetType constraint
-  const effectiveTypeFilter: TypeFilter = assetType !== "all" ? assetType : typeFilter;
+  const effectiveTypeFilter: TypeFilter =
+    assetType !== "all" ? assetType : typeFilter;
 
   // Build query key for SWR (memoized to prevent unnecessary re-renders)
   const mediaQueryKey = useMemo(() => {
@@ -60,15 +72,18 @@ export function useMediaQuery({
       typeCondition = `_type in ["${adapter.typePrefix}.imageAsset", "${adapter.typePrefix}.videoAsset"]`;
     }
 
-    const searchCondition = search.trim()
-      ? ` && originalFilename match "*${search.trim()}*"`
+    const escapedSearch = escapeGroqSearch(search);
+    const searchCondition = escapedSearch
+      ? ` && originalFilename match "*${escapedSearch}*"`
       : "";
 
     // Tag filter condition
     const tagIds = Array.from(selectedTagIds);
     const tagCondition =
       tagIds.length > 0
-        ? ` && count((tags[]._ref)[@ in [${tagIds.map((id) => `"${id}"`).join(",")}]]) == ${tagIds.length}`
+        ? ` && count((tags[]._ref)[@ in [${tagIds
+            .map((id) => `"${id}"`)
+            .join(",")}]]) == ${tagIds.length}`
         : "";
 
     // Advanced filter conditions
@@ -86,14 +101,18 @@ export function useMediaQuery({
       : [];
     const docTypeCondition =
       docTypes.length > 0 && advancedFilters?.usage === "inUse"
-        ? ` && count(*[_type in [${docTypes.map((t) => `"${t}"`).join(",")}] && references(^._id)]) > 0`
+        ? ` && count(*[_type in [${docTypes
+            .map((t) => `"${t}"`)
+            .join(",")}] && references(^._id)]) > 0`
         : "";
 
     // Specific document filter
     const selectedDocIds = advancedFilters?.documents?.map((d) => d._id) || [];
     const documentCondition =
       selectedDocIds.length > 0
-        ? ` && count(*[_id in [${selectedDocIds.map((id) => `"${id}"`).join(",")}] && references(^._id)]) > 0`
+        ? ` && count(*[_id in [${selectedDocIds
+            .map((id) => `"${id}"`)
+            .join(",")}] && references(^._id)]) > 0`
         : "";
 
     // Metadata filters (tri-state: null = no filter, true = has, false = missing)
@@ -101,18 +120,18 @@ export function useMediaQuery({
       advancedFilters?.alt === true
         ? "(defined(alt) && alt != '')"
         : advancedFilters?.alt === false
-          ? "(!defined(alt) || alt == '')"
-          : null,
+        ? "(!defined(alt) || alt == '')"
+        : null,
       advancedFilters?.title === true
         ? "(defined(title) && title != '')"
         : advancedFilters?.title === false
-          ? "(!defined(title) || title == '')"
-          : null,
+        ? "(!defined(title) || title == '')"
+        : null,
       advancedFilters?.caption === true
         ? "(defined(caption) && caption != '')"
         : advancedFilters?.caption === false
-          ? "(!defined(caption) || caption == '')"
-          : null,
+        ? "(!defined(caption) || caption == '')"
+        : null,
     ]
       .filter(Boolean)
       .map((c) => ` && ${c}`)
@@ -201,10 +220,12 @@ export function useMediaQuery({
     data: mediaData,
     isLoading,
     mutate: mutateMedia,
-  } = useSWR(mediaQueryKey.key, () =>
-    client.fetch<{ total: number; items: Omit<MediaAsset, "mediaType">[] }>(
-      mediaQueryKey.query
-    ),
+  } = useSWR(
+    mediaQueryKey.key,
+    () =>
+      client.fetch<{ total: number; items: Omit<MediaAsset, "mediaType">[] }>(
+        mediaQueryKey.query
+      ),
     { keepPreviousData: true }
   );
 
@@ -214,13 +235,21 @@ export function useMediaQuery({
     () => {
       // When assetType is specified, only count that type (excluding drafts)
       if (assetType === "image") {
-        return client.fetch<{ total: number; images: number; videos: number }>(`{
+        return client.fetch<{
+          total: number;
+          images: number;
+          videos: number;
+        }>(`{
           "total": count(*[_type == "${adapter.typePrefix}.imageAsset" && !(_id match "drafts.*")]),
           "images": count(*[_type == "${adapter.typePrefix}.imageAsset" && !(_id match "drafts.*")]),
           "videos": 0
         }`);
       } else if (assetType === "video") {
-        return client.fetch<{ total: number; images: number; videos: number }>(`{
+        return client.fetch<{
+          total: number;
+          images: number;
+          videos: number;
+        }>(`{
           "total": count(*[_type == "${adapter.typePrefix}.videoAsset" && !(_id match "drafts.*")]),
           "images": 0,
           "videos": count(*[_type == "${adapter.typePrefix}.videoAsset" && !(_id match "drafts.*")])
@@ -240,9 +269,10 @@ export function useMediaQuery({
   const { data: usageCounts } = useSWR(
     ["usageCounts", adapter.typePrefix, assetType],
     () => {
-      const typeCondition = assetType === "image"
-        ? `_type == $imageType && !(_id match "drafts.*")`
-        : assetType === "video"
+      const typeCondition =
+        assetType === "image"
+          ? `_type == $imageType && !(_id match "drafts.*")`
+          : assetType === "video"
           ? `_type == $videoType && !(_id match "drafts.*")`
           : `_type in [$imageType, $videoType] && !(_id match "drafts.*")`;
 

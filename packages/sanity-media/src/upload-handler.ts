@@ -80,7 +80,7 @@ export async function handleImageUpload(
   credentials: StorageCredentials,
   client: SanityClient,
   onProgress?: (progress: number) => void,
-  userMetadata?: ImageUploadMetadata,
+  userMetadata?: ImageUploadMetadata
 ): Promise<{ _ref: string }> {
   const uploadResult = await uploadFile(credentials, file, onProgress);
   const metadata = await extractImageMetadata(file);
@@ -102,8 +102,13 @@ export async function handleImageUpload(
       previewUrl = previewResult.publicUrl;
     }
   } catch (error) {
-    // Non-critical: preview generation failed but main upload succeeded
-    console.warn("Failed to generate preview (continuing without):", error);
+    // Preview generation is non-critical - the main upload succeeded and the
+    // full-size image URL is still available. Common failure causes include:
+    // - CORS restrictions on the storage endpoint
+    // - Very large images that exceed canvas limits
+    // - Unsupported image formats for canvas operations
+    // The asset will still work, just without an optimized preview thumbnail.
+    console.warn("Preview generation failed (asset still usable):", error);
   }
 
   const assetTypeName = `${adapter.typePrefix}.imageAsset`;
@@ -157,7 +162,7 @@ export async function handleFileUpload(
   adapter: StorageAdapter,
   credentials: StorageCredentials,
   client: SanityClient,
-  onProgress?: (progress: number) => void,
+  onProgress?: (progress: number) => void
 ): Promise<{ _ref: string }> {
   const uploadResult = await uploadFile(credentials, file, onProgress);
 
@@ -188,7 +193,7 @@ export async function handleVideoUpload(
   credentials: StorageCredentials,
   client: SanityClient,
   onProgress?: (progress: number) => void,
-  userMetadata?: VideoUploadMetadata,
+  userMetadata?: VideoUploadMetadata
 ): Promise<{ _ref: string }> {
   const metadata = await extractVideoMetadata(file);
   const uploadResult = await uploadFile(credentials, file, onProgress);
@@ -196,14 +201,14 @@ export async function handleVideoUpload(
   const thumbnailFile = new File(
     [metadata.thumbnailBlob],
     `${uploadResult.filename}-thumbnail.jpg`,
-    { type: "image/jpeg" },
+    { type: "image/jpeg" }
   );
 
   const thumbnailRef = await handleImageUpload(
     thumbnailFile,
     adapter,
     credentials,
-    client,
+    client
   );
 
   const assetTypeName = `${adapter.typePrefix}.videoAsset`;

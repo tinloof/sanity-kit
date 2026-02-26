@@ -15,6 +15,21 @@ export const PREVIEW_QUALITY = 0.85;
 /** File suffix for preview thumbnails */
 export const PREVIEW_SUFFIX = "_thumb.webp";
 
+/**
+ * Maximum dimension for LQIP (Low Quality Image Placeholder) generation.
+ * Smaller values = smaller base64 strings but lower quality placeholders.
+ * 20px provides a good balance (~200-500 byte data URLs) while still
+ * capturing the essential color/shape information for blur-up effect.
+ */
+export const LQIP_MAX_DIMENSION = 20;
+
+/**
+ * Maximum length for sanitized filenames in storage keys.
+ * S3-compatible storage has a 1024 byte key limit. With prefix, timestamp,
+ * UUID, and separators (~60 chars), we limit filenames to 200 chars for safety.
+ */
+export const MAX_FILENAME_LENGTH = 200;
+
 /** Maximum number of concurrent uploads */
 export const MAX_CONCURRENT_UPLOADS = 3;
 
