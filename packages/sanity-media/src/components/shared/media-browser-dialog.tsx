@@ -79,6 +79,7 @@ export function MediaBrowserDialog({
 	const client = useClient({apiVersion: API_VERSION});
 	const {credentials, loading: credentialsLoading} = useCredentials(adapter);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 	// UI State
 	const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -134,6 +135,11 @@ export function MediaBrowserDialog({
 	useEffect(() => {
 		setCurrentPage(1);
 	}, [search, typeFilter, sortOption, selectedTagIds, advancedFilters]);
+
+	// Scroll to top when page changes
+	useEffect(() => {
+		scrollContainerRef.current?.scrollTo({top: 0});
+	}, [currentPage]);
 
 	// Handle single file upload
 	const uploadFile = useCallback(
@@ -970,6 +976,7 @@ export function MediaBrowserDialog({
 
 						{/* Asset Grid/List */}
 						<Box
+							ref={scrollContainerRef}
 							paddingY={4}
 							style={{flex: 1, overflowY: "auto", minHeight: 0}}
 						>
