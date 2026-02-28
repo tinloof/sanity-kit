@@ -705,7 +705,9 @@ export function MediaImageInput(props: ObjectInputProps) {
 						>
 							<ImagePreview
 								src={
-									imageTransformer && assetPreview.url
+									imageTransformer &&
+									assetPreview.url &&
+									!assetPreview._type.endsWith("videoAsset")
 										? imageTransformer(assetPreview.url, {
 												width: 600,
 												fit: "cover",

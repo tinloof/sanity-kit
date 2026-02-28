@@ -1,7 +1,7 @@
 import {CheckmarkIcon} from "@sanity/icons";
 import {Box, Flex, Text} from "@sanity/ui";
 import {formatDuration, formatFileSize} from "../../../utils";
-import {type ImageTransformer} from "../../../context/adapter-context";
+import {type ImageTransformer} from "../../../types";
 import {ThumbnailCell} from "../../shared/thumbnail-cell";
 import {TAG_COLORS, type MediaAsset, type Tag} from "../types";
 

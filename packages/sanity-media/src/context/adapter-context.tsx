@@ -1,12 +1,7 @@
 import {createContext, useContext, type ReactNode} from "react";
 import type {StorageAdapter} from "../adapters";
 import type {StorageCredentials} from "../storage-client";
-import type {ImageTransformerOptions} from "../types";
-
-export type ImageTransformer = (
-	url: string,
-	options: ImageTransformerOptions,
-) => string;
+import type {ImageTransformer} from "../types";
 
 export interface AdapterContextValue {
 	adapter: StorageAdapter;

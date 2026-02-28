@@ -1,7 +1,7 @@
 import {Box, Card, Container} from "@sanity/ui";
 import {useState} from "react";
 import type {StorageAdapter} from "../adapters";
-import type {ImageTransformer} from "../context/adapter-context";
+import type {ImageTransformer} from "../types";
 import {useMediaSelection} from "../context/selection-context";
 import {MediaPanel} from "./media-panel";
 import type {MediaAsset} from "./media-panel/types";

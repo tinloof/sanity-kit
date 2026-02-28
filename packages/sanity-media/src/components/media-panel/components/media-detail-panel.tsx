@@ -7,7 +7,7 @@ import {
 	PlayIcon,
 	TrashIcon,
 } from "@sanity/icons";
-import type {ImageTransformer} from "../../../context/adapter-context";
+import type {ImageTransformer} from "../../../types";
 import {
 	Box,
 	Button,

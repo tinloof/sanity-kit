@@ -1,7 +1,7 @@
 import {CheckmarkCircleIcon} from "@sanity/icons";
 import {Box, Flex, Text} from "@sanity/ui";
 import {formatDuration, formatFileSize} from "../../utils";
-import type {ImageTransformer} from "../../context/adapter-context";
+import type {ImageTransformer} from "../../types";
 import type {MediaAsset, Tag} from "../media-panel/types";
 import {TAG_COLORS} from "../media-panel/types";
 import {ThumbnailCell} from "./thumbnail-cell";

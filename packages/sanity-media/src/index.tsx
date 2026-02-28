@@ -5,10 +5,8 @@ import {MediaFileInput} from "./components/media-file-input";
 import {MediaImageInput} from "./components/media-image-input";
 import {MediaTool} from "./components/media-tool";
 import {MediaVideoInput} from "./components/media-video-input";
-import {
-	AdapterProvider,
-	type ImageTransformer,
-} from "./context/adapter-context";
+import {AdapterProvider} from "./context/adapter-context";
+import type {ImageTransformer} from "./types";
 import {MediaSelectionProvider} from "./context/selection-context";
 import {useCredentials} from "./hooks/use-credentials";
 import {
@@ -48,8 +46,7 @@ export type {
 	MediaStoragePluginConfig,
 	MediaVideoValue,
 } from "./types";
-export type {ImageTransformer} from "./context/adapter-context";
-export type {ImageTransformerOptions} from "./types";
+export type {ImageTransformer, ImageTransformerOptions} from "./types";
 
 // Export utility functions
 export {isImageContentType, isVideoContentType} from "./utils";

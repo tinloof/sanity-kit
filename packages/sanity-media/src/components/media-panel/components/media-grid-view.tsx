@@ -7,7 +7,7 @@ import {
 } from "../../../utils";
 import {ResponsiveGrid} from "../../shared/responsive-grid";
 import {TagList} from "../../shared/tag-list";
-import {type ImageTransformer} from "../../../context/adapter-context";
+import {type ImageTransformer} from "../../../types";
 import {type MediaAsset, type Tag} from "../types";
 
 export interface MediaGridViewProps {
@@ -89,7 +89,8 @@ export function MediaGridView({
 						: selectedIds.has(item._id);
 					const rawSrc = getAssetPreviewUrl(item);
 					const imageSrc =
-						item.mediaType === "image" && rawSrc && imageTransformer
+						// rawSrc is always an image URL (the asset itself for images, the thumbnail image for videos)
+						rawSrc && imageTransformer
 							? imageTransformer(rawSrc, {
 									width: 450,
 									height: 450,

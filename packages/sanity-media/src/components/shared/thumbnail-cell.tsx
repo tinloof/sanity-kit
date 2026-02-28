@@ -1,6 +1,6 @@
 import {PlayIcon} from "@sanity/icons";
 import {Box, Flex} from "@sanity/ui";
-import type {ImageTransformer} from "../../context/adapter-context";
+import type {ImageTransformer} from "../../types";
 import {getAssetPreviewUrl} from "../../utils";
 import type {MediaAsset} from "../media-panel/types";
 
@@ -28,8 +28,9 @@ export function ThumbnailCell({
 	imageTransformer,
 }: ThumbnailCellProps) {
 	const rawSrc = getAssetPreviewUrl(asset);
+	// rawSrc is always an image URL (the asset itself for images, the thumbnail image for videos)
 	const imageSrc =
-		asset.mediaType === "image" && rawSrc && imageTransformer
+		rawSrc && imageTransformer
 			? imageTransformer(rawSrc, {width: 200, height: 200, fit: "cover"})
 			: rawSrc;
 

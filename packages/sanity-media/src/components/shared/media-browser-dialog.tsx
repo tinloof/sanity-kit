@@ -25,7 +25,7 @@ import {
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useClient} from "sanity";
 import type {StorageAdapter} from "../../adapters";
-import type {ImageTransformer} from "../../context/adapter-context";
+import type {ImageTransformer} from "../../types";
 import {API_VERSION} from "../../constants";
 import {useCredentials} from "../../hooks/use-credentials";
 import {handleImageUpload, handleVideoUpload} from "../../upload-handler";

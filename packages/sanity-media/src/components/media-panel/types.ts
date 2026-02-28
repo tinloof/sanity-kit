@@ -1,4 +1,4 @@
-import type {ImageTransformer} from "../../context/adapter-context";
+import type {ImageTransformer} from "../../types";
 import type {StorageAdapter} from "../../adapters";
 
 export type SortField = "date" | "filename" | "size";

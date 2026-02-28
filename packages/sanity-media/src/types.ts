@@ -2,8 +2,12 @@ export type ImageTransformerOptions = {
 	width: number;
 	height?: number;
 	fit?: "cover" | "contain" | "scale-down";
-	quality?: number;
 };
+
+export type ImageTransformer = (
+	url: string,
+	options: ImageTransformerOptions,
+) => string;
 
 export interface MediaStoragePluginConfig {
 	allowedTypes?: string[];
