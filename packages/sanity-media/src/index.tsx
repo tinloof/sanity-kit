@@ -5,7 +5,10 @@ import {MediaFileInput} from "./components/media-file-input";
 import {MediaImageInput} from "./components/media-image-input";
 import {MediaTool} from "./components/media-tool";
 import {MediaVideoInput} from "./components/media-video-input";
-import {AdapterProvider} from "./context/adapter-context";
+import {
+	AdapterProvider,
+	type ImageTransformer,
+} from "./context/adapter-context";
 import {MediaSelectionProvider} from "./context/selection-context";
 import {useCredentials} from "./hooks/use-credentials";
 import {
@@ -45,6 +48,8 @@ export type {
 	MediaStoragePluginConfig,
 	MediaVideoValue,
 } from "./types";
+export type {ImageTransformer} from "./context/adapter-context";
+export type {ImageTransformerOptions} from "./types";
 
 // Export utility functions
 export {isImageContentType, isVideoContentType} from "./utils";
@@ -55,6 +60,8 @@ export interface MediaPluginOptions {
 	toolName?: string;
 	/** Custom title for the media tool (default: "Media") */
 	toolTitle?: string;
+	/** Optional function to transform image URLs (e.g. for CDN resizing) */
+	imageTransformer?: ImageTransformer;
 }
 
 /**
@@ -62,7 +69,12 @@ export interface MediaPluginOptions {
  * Creates adapter-specific asset types and provides upload UI.
  */
 export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
-	const {adapter, toolName = "media", toolTitle = "Media"} = options;
+	const {
+		adapter,
+		toolName = "media",
+		toolTitle = "Media",
+		imageTransformer,
+	} = options;
 
 	// Generate schema types
 	const tagType = generateTagType(adapter);
@@ -89,6 +101,7 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 				adapter={adapter}
 				credentials={credentials}
 				loading={loading}
+				imageTransformer={imageTransformer}
 			>
 				<MediaImageInput {...props} />
 			</AdapterProvider>
@@ -102,6 +115,7 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 				adapter={adapter}
 				credentials={credentials}
 				loading={loading}
+				imageTransformer={imageTransformer}
 			>
 				<MediaFileInput {...props} />
 			</AdapterProvider>
@@ -115,6 +129,7 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 				adapter={adapter}
 				credentials={credentials}
 				loading={loading}
+				imageTransformer={imageTransformer}
 			>
 				<MediaVideoInput {...props} />
 			</AdapterProvider>
@@ -159,7 +174,7 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 				title: toolTitle,
 				component: () => (
 					<MediaSelectionProvider>
-						<MediaTool adapter={adapter} />
+						<MediaTool adapter={adapter} imageTransformer={imageTransformer} />
 					</MediaSelectionProvider>
 				),
 			},

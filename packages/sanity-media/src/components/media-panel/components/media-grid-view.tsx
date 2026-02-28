@@ -7,11 +7,13 @@ import {
 } from "../../../utils";
 import {ResponsiveGrid} from "../../shared/responsive-grid";
 import {TagList} from "../../shared/tag-list";
+import {type ImageTransformer} from "../../../context/adapter-context";
 import {type MediaAsset, type Tag} from "../types";
 
 export interface MediaGridViewProps {
 	media: MediaAsset[];
 	tags: Tag[];
+	imageTransformer?: ImageTransformer;
 	selectionMode: boolean;
 	selectionTarget: MediaAsset | null;
 	selectedIds: Set<string>;
@@ -24,6 +26,7 @@ export interface MediaGridViewProps {
 export function MediaGridView({
 	media,
 	tags,
+	imageTransformer,
 	selectionMode,
 	selectionTarget,
 	selectedIds,
@@ -84,7 +87,15 @@ export function MediaGridView({
 					const isSelected = selectionMode
 						? selectionTarget?._id === item._id
 						: selectedIds.has(item._id);
-					const imageSrc = getAssetPreviewUrl(item);
+					const rawSrc = getAssetPreviewUrl(item);
+					const imageSrc =
+						item.mediaType === "image" && rawSrc && imageTransformer
+							? imageTransformer(rawSrc, {
+									width: 450,
+									height: 450,
+									fit: "cover",
+								})
+							: rawSrc;
 					return (
 						<Card
 							key={item._id}

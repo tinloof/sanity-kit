@@ -1,12 +1,14 @@
 import {CheckmarkIcon} from "@sanity/icons";
 import {Box, Flex, Text} from "@sanity/ui";
 import {formatDuration, formatFileSize} from "../../../utils";
+import {type ImageTransformer} from "../../../context/adapter-context";
 import {ThumbnailCell} from "../../shared/thumbnail-cell";
 import {TAG_COLORS, type MediaAsset, type Tag} from "../types";
 
 export interface MediaListViewProps {
 	media: MediaAsset[];
 	tags: Tag[];
+	imageTransformer?: ImageTransformer;
 	selectionMode: boolean;
 	selectionTarget: MediaAsset | null;
 	selectedIds: Set<string>;
@@ -17,6 +19,7 @@ export interface MediaListViewProps {
 export function MediaListView({
 	media,
 	tags,
+	imageTransformer,
 	selectionMode,
 	selectionTarget,
 	selectedIds,
@@ -66,7 +69,10 @@ export function MediaListView({
 							onClick={() => onItemClick(item)}
 						>
 							<Flex align="center" gap={3} paddingX={2}>
-								<ThumbnailCell asset={item} />
+								<ThumbnailCell
+									asset={item}
+									imageTransformer={imageTransformer}
+								/>
 
 								{/* Filename */}
 								<Text

@@ -25,6 +25,7 @@ import {
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useClient} from "sanity";
 import type {StorageAdapter} from "../../adapters";
+import type {ImageTransformer} from "../../context/adapter-context";
 import {API_VERSION} from "../../constants";
 import {useCredentials} from "../../hooks/use-credentials";
 import {handleImageUpload, handleVideoUpload} from "../../upload-handler";
@@ -66,6 +67,8 @@ export interface MediaBrowserDialogProps {
 	allowUpload?: boolean;
 	/** Initial files to stage for upload (will trigger immediate upload) */
 	initialFiles?: File[];
+	/** Optional image transformer for CDN optimization */
+	imageTransformer?: ImageTransformer;
 }
 
 export function MediaBrowserDialog({
@@ -75,6 +78,7 @@ export function MediaBrowserDialog({
 	assetType,
 	allowUpload = true,
 	initialFiles,
+	imageTransformer,
 }: MediaBrowserDialogProps) {
 	const client = useClient({apiVersion: API_VERSION});
 	const {credentials, loading: credentialsLoading} = useCredentials(adapter);
@@ -1022,6 +1026,7 @@ export function MediaBrowserDialog({
 									onSelect={handleAssetSelect}
 									showCheckboxes={false}
 									showTypeIndicator={!assetType && typeFilter === "all"}
+									imageTransformer={imageTransformer}
 								/>
 							) : (
 								<AssetList
@@ -1029,6 +1034,7 @@ export function MediaBrowserDialog({
 									tags={tags}
 									onSelect={handleAssetSelect}
 									showCheckboxes={false}
+									imageTransformer={imageTransformer}
 								/>
 							)}
 						</Box>

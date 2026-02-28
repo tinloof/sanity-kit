@@ -1,45 +1,44 @@
-import { CheckmarkCircleIcon, ImageIcon, PlayIcon } from "@sanity/icons";
-import { Box, Card, Flex, Stack, Text } from "@sanity/ui";
-import {
-  formatDuration,
-  formatFileSize,
-  getAssetPreviewUrl,
-} from "../../utils";
-import type { MediaAsset, Tag } from "../media-panel/types";
-import { ResponsiveGrid } from "./responsive-grid";
-import { TagList } from "./tag-list";
+import {CheckmarkCircleIcon, ImageIcon, PlayIcon} from "@sanity/icons";
+import {Box, Card, Flex, Stack, Text} from "@sanity/ui";
+import {formatDuration, formatFileSize, getAssetPreviewUrl} from "../../utils";
+import type {ImageTransformer} from "../../context/adapter-context";
+import type {MediaAsset, Tag} from "../media-panel/types";
+import {ResponsiveGrid} from "./responsive-grid";
+import {TagList} from "./tag-list";
 
 export interface AssetGridProps {
-  assets: MediaAsset[];
-  tags: Tag[];
-  /** ID of single selected asset (for browse dialog) */
-  selectedId?: string;
-  /** Set of selected asset IDs (for multi-select in media panel) */
-  selectedIds?: Set<string>;
-  /** Called when an asset is clicked */
-  onSelect?: (asset: MediaAsset) => void;
-  /** Called when checkbox is clicked to toggle selection */
-  onToggleSelection?: (id: string) => void;
-  /** Whether selection checkboxes are visible */
-  showCheckboxes?: boolean;
-  /** Whether to show type indicators (image/video icons) - show when "all types" is selected */
-  showTypeIndicator?: boolean;
+	assets: MediaAsset[];
+	tags: Tag[];
+	imageTransformer?: ImageTransformer;
+	/** ID of single selected asset (for browse dialog) */
+	selectedId?: string;
+	/** Set of selected asset IDs (for multi-select in media panel) */
+	selectedIds?: Set<string>;
+	/** Called when an asset is clicked */
+	onSelect?: (asset: MediaAsset) => void;
+	/** Called when checkbox is clicked to toggle selection */
+	onToggleSelection?: (id: string) => void;
+	/** Whether selection checkboxes are visible */
+	showCheckboxes?: boolean;
+	/** Whether to show type indicators (image/video icons) - show when "all types" is selected */
+	showTypeIndicator?: boolean;
 }
 
 export function AssetGrid({
-  assets,
-  tags,
-  selectedId,
-  selectedIds,
-  onSelect,
-  onToggleSelection,
-  showCheckboxes = true,
-  showTypeIndicator = false,
+	assets,
+	tags,
+	imageTransformer,
+	selectedId,
+	selectedIds,
+	onSelect,
+	onToggleSelection,
+	showCheckboxes = true,
+	showTypeIndicator = false,
 }: AssetGridProps) {
-  return (
-    <>
-      <style>
-        {`
+	return (
+		<>
+			<style>
+				{`
           .media-grid-card {
             position: relative;
             clip-path: inset(0 -1px -1px -1px);
@@ -83,169 +82,177 @@ export function AssetGrid({
             }
           }
         `}
-      </style>
-      <ResponsiveGrid gap={3}>
-        {assets.map((item) => {
-          const isSelected =
-            selectedId === item._id || selectedIds?.has(item._id);
-          const imageSrc = getAssetPreviewUrl(item);
-          return (
-            <Card
-              key={item._id}
-              radius={2}
-              border
-              className="media-grid-card"
-              style={{
-                cursor: "pointer",
-                outline: isSelected
-                  ? "2px solid var(--card-focus-ring-color)"
-                  : undefined,
-                outlineOffset: "-2px",
-                overflow: "hidden",
-              }}
-              tone="default"
-              onClick={() => onSelect?.(item)}
-            >
-              <Box
-                style={{
-                  aspectRatio: "1",
-                  overflow: "hidden",
-                  background:
-                    item.mediaType === "video"
-                      ? "#000"
-                      : "var(--card-bg-color)",
-                  position: "relative",
-                }}
-              >
-                {imageSrc ? (
-                  <img
-                    src={imageSrc}
-                    alt={item.originalFilename || "Media"}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-                ) : (
-                  <Flex
-                    align="center"
-                    justify="center"
-                    style={{ width: "100%", height: "100%" }}
-                  >
-                    <PlayIcon style={{ fontSize: 24 }} />
-                  </Flex>
-                )}
-                {/* Checkbox */}
-                {showCheckboxes && onToggleSelection && (
-                  <Box
-                    className={`media-card-checkbox${
-                      isSelected ? " is-selected" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onToggleSelection(item._id);
-                    }}
-                    style={{
-                      position: "absolute",
-                      top: "8px",
-                      left: "8px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Box
-                      style={{
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "4px",
-                        border: isSelected
-                          ? "none"
-                          : "2px solid rgba(255,255,255,0.6)",
-                        background: isSelected
-                          ? "var(--card-focus-ring-color)"
-                          : "rgba(0,0,0,0.4)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
-                      }}
-                    >
-                      {isSelected && (
-                        <CheckmarkCircleIcon
-                          style={{ color: "white", fontSize: 12 }}
-                        />
-                      )}
-                    </Box>
-                  </Box>
-                )}
-                {/* Type indicator - only shown when viewing all types */}
-                {showTypeIndicator && (
-                  <Box
-                    style={{
-                      position: "absolute",
-                      top: "8px",
-                      right: "8px",
-                      width: "20px",
-                      height: "20px",
-                      background: "rgba(0, 0, 0, 0.7)",
-                      borderRadius: "4px",
-                      color: "white",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
-                    }}
-                  >
-                    {item.mediaType === "video" ? (
-                      <PlayIcon style={{ fontSize: 12 }} />
-                    ) : (
-                      <ImageIcon style={{ fontSize: 12 }} />
-                    )}
-                  </Box>
-                )}
-              </Box>
-              {/* Footer */}
-              <Box padding={3} className="media-card-footer">
-                <Stack space={2}>
-                  <Text
-                    size={1}
-                    weight="medium"
-                    title={item.originalFilename || "Untitled"}
-                    textOverflow="ellipsis"
-                  >
-                    {item.originalFilename || "Untitled"}
-                  </Text>
-                  <Flex gap={2} align="center">
-                    <Text size={0} muted>
-                      {item.mediaType === "image"
-                        ? item.metadata?.dimensions
-                          ? `${item.metadata.dimensions.width}×${item.metadata.dimensions.height}`
-                          : "Image"
-                        : item.metadata?.duration
-                        ? formatDuration(item.metadata.duration)
-                        : "Video"}
-                    </Text>
-                    {item.size && (
-                      <>
-                        <Text size={0} muted>
-                          •
-                        </Text>
-                        <Text size={0} muted>
-                          {formatFileSize(item.size)}
-                        </Text>
-                      </>
-                    )}
-                  </Flex>
-                  {item.tags && item.tags.length > 0 && (
-                    <TagList tagRefs={item.tags} tags={tags} />
-                  )}
-                </Stack>
-              </Box>
-            </Card>
-          );
-        })}
-      </ResponsiveGrid>
-    </>
-  );
+			</style>
+			<ResponsiveGrid gap={3}>
+				{assets.map((item) => {
+					const isSelected =
+						selectedId === item._id || selectedIds?.has(item._id);
+					const rawSrc = getAssetPreviewUrl(item);
+					const imageSrc =
+						item.mediaType === "image" && rawSrc && imageTransformer
+							? imageTransformer(rawSrc, {
+									width: 450,
+									height: 450,
+									fit: "cover",
+								})
+							: rawSrc;
+					return (
+						<Card
+							key={item._id}
+							radius={2}
+							border
+							className="media-grid-card"
+							style={{
+								cursor: "pointer",
+								outline: isSelected
+									? "2px solid var(--card-focus-ring-color)"
+									: undefined,
+								outlineOffset: "-2px",
+								overflow: "hidden",
+							}}
+							tone="default"
+							onClick={() => onSelect?.(item)}
+						>
+							<Box
+								style={{
+									aspectRatio: "1",
+									overflow: "hidden",
+									background:
+										item.mediaType === "video"
+											? "#000"
+											: "var(--card-bg-color)",
+									position: "relative",
+								}}
+							>
+								{imageSrc ? (
+									<img
+										src={imageSrc}
+										alt={item.originalFilename || "Media"}
+										style={{
+											width: "100%",
+											height: "100%",
+											objectFit: "cover",
+											display: "block",
+										}}
+									/>
+								) : (
+									<Flex
+										align="center"
+										justify="center"
+										style={{width: "100%", height: "100%"}}
+									>
+										<PlayIcon style={{fontSize: 24}} />
+									</Flex>
+								)}
+								{/* Checkbox */}
+								{showCheckboxes && onToggleSelection && (
+									<Box
+										className={`media-card-checkbox${
+											isSelected ? " is-selected" : ""
+										}`}
+										onClick={(e) => {
+											e.stopPropagation();
+											onToggleSelection(item._id);
+										}}
+										style={{
+											position: "absolute",
+											top: "8px",
+											left: "8px",
+											cursor: "pointer",
+										}}
+									>
+										<Box
+											style={{
+												width: "20px",
+												height: "20px",
+												borderRadius: "4px",
+												border: isSelected
+													? "none"
+													: "2px solid rgba(255,255,255,0.6)",
+												background: isSelected
+													? "var(--card-focus-ring-color)"
+													: "rgba(0,0,0,0.4)",
+												display: "flex",
+												alignItems: "center",
+												justifyContent: "center",
+												boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+											}}
+										>
+											{isSelected && (
+												<CheckmarkCircleIcon
+													style={{color: "white", fontSize: 12}}
+												/>
+											)}
+										</Box>
+									</Box>
+								)}
+								{/* Type indicator - only shown when viewing all types */}
+								{showTypeIndicator && (
+									<Box
+										style={{
+											position: "absolute",
+											top: "8px",
+											right: "8px",
+											width: "20px",
+											height: "20px",
+											background: "rgba(0, 0, 0, 0.7)",
+											borderRadius: "4px",
+											color: "white",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+										}}
+									>
+										{item.mediaType === "video" ? (
+											<PlayIcon style={{fontSize: 12}} />
+										) : (
+											<ImageIcon style={{fontSize: 12}} />
+										)}
+									</Box>
+								)}
+							</Box>
+							{/* Footer */}
+							<Box padding={3} className="media-card-footer">
+								<Stack space={2}>
+									<Text
+										size={1}
+										weight="medium"
+										title={item.originalFilename || "Untitled"}
+										textOverflow="ellipsis"
+									>
+										{item.originalFilename || "Untitled"}
+									</Text>
+									<Flex gap={2} align="center">
+										<Text size={0} muted>
+											{item.mediaType === "image"
+												? item.metadata?.dimensions
+													? `${item.metadata.dimensions.width}×${item.metadata.dimensions.height}`
+													: "Image"
+												: item.metadata?.duration
+													? formatDuration(item.metadata.duration)
+													: "Video"}
+										</Text>
+										{item.size && (
+											<>
+												<Text size={0} muted>
+													•
+												</Text>
+												<Text size={0} muted>
+													{formatFileSize(item.size)}
+												</Text>
+											</>
+										)}
+									</Flex>
+									{item.tags && item.tags.length > 0 && (
+										<TagList tagRefs={item.tags} tags={tags} />
+									)}
+								</Stack>
+							</Box>
+						</Card>
+					);
+				})}
+			</ResponsiveGrid>
+		</>
+	);
 }

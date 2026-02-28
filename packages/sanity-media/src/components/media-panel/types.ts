@@ -1,3 +1,4 @@
+import type {ImageTransformer} from "../../context/adapter-context";
 import type {StorageAdapter} from "../../adapters";
 
 export type SortField = "date" | "filename" | "size";
@@ -38,6 +39,7 @@ export interface SortOption {
 
 export interface MediaPanelProps {
 	adapter: StorageAdapter;
+	imageTransformer?: ImageTransformer;
 	/** Whether the panel is in selection mode (for reference input navigation) */
 	selectionMode?: boolean;
 	/** Asset type filter when in selection mode */

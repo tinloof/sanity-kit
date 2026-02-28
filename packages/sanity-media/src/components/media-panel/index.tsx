@@ -68,6 +68,7 @@ import {
 
 export function MediaPanel({
 	adapter,
+	imageTransformer,
 	selectionMode = false,
 	selectionAssetType,
 	onSelect,
@@ -1078,6 +1079,7 @@ export function MediaPanel({
 								<MediaGridView
 									media={media}
 									tags={tagEditor.tags}
+									imageTransformer={imageTransformer}
 									selectionMode={selectionMode}
 									selectionTarget={selectionTarget}
 									selectedIds={bulkSelection.selectedIds}
@@ -1095,6 +1097,7 @@ export function MediaPanel({
 								<MediaListView
 									media={media}
 									tags={tagEditor.tags}
+									imageTransformer={imageTransformer}
 									selectionMode={selectionMode}
 									selectionTarget={selectionTarget}
 									selectedIds={bulkSelection.selectedIds}
@@ -1141,6 +1144,7 @@ export function MediaPanel({
 						onDelete={() => bulkSelection.openDeleteDialog("single")}
 						onMutate={() => mutateMedia()}
 						isDeleting={bulkSelection.isDeleting}
+						imageTransformer={imageTransformer}
 					/>
 				)}
 
