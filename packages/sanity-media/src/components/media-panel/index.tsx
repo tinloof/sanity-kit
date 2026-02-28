@@ -274,7 +274,11 @@ export function MediaPanel({
 	);
 
 	// SWR for counts
-	const {data: counts, mutate: mutateCounts} = useSWR(
+	const {
+		data: counts,
+		mutate: mutateCounts,
+		isLoading: countsLoading,
+	} = useSWR(
 		["counts", adapter.typePrefix],
 		() =>
 			client.fetch<{total: number; images: number; videos: number}>(`{
@@ -443,7 +447,21 @@ export function MediaPanel({
 		[credentials, uploadQueue],
 	);
 
-	if (loading || credentialsLoading) {
+	console.log("[MediaPanel] Render state:", {
+		loading,
+		credentialsLoading,
+		hasCredentials: !!credentials,
+		countsLoading,
+		countsTotal: counts?.total,
+	});
+
+	// Show spinner if loading credentials, media, or in intermediate state
+	// Intermediate state: credentials just finished loading but not set yet (but we have media)
+	const isIntermediateState =
+		!credentialsLoading && !credentials && (counts?.total ?? 0) > 0;
+
+	if (loading || credentialsLoading || isIntermediateState) {
+		console.log("[MediaPanel] Showing spinner", {isIntermediateState});
 		return (
 			<Box padding={4}>
 				<Flex justify="center" align="center" style={{minHeight: "200px"}}>
@@ -454,6 +472,7 @@ export function MediaPanel({
 	}
 
 	if (!credentials) {
+		console.log("[MediaPanel] Showing config message");
 		return (
 			<Box padding={4}>
 				<Card padding={4} radius={2} shadow={1} tone="caution">
@@ -477,6 +496,8 @@ export function MediaPanel({
 			</Box>
 		);
 	}
+
+	console.log("[MediaPanel] Showing main UI");
 
 	return (
 		<Flex
@@ -1007,7 +1028,7 @@ export function MediaPanel({
 					<Stack space={4}>
 						{/* Media Content */}
 						<Box paddingX={4}>
-							{counts?.total === 0 ? (
+							{counts?.total === 0 && !countsLoading ? (
 								<Card padding={5} radius={2} tone="transparent" border>
 									<Flex
 										direction="column"
