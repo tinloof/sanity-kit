@@ -81,7 +81,11 @@ export function MediaBrowserDialog({
 	imageTransformer,
 }: MediaBrowserDialogProps) {
 	const client = useClient({apiVersion: API_VERSION});
-	const {credentials, loading: credentialsLoading} = useCredentials(adapter);
+	const {
+		credentials,
+		loading: credentialsLoading,
+		ready,
+	} = useCredentials(adapter);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -148,7 +152,7 @@ export function MediaBrowserDialog({
 	// Handle single file upload
 	const uploadFile = useCallback(
 		async (file: File) => {
-			if (!credentials) return;
+			if (!ready) return;
 
 			setIsUploading(true);
 			setUploadProgress(0);
@@ -191,16 +195,16 @@ export function MediaBrowserDialog({
 				setIsUploading(false);
 			}
 		},
-		[credentials, adapter, client, onSelect, onClose],
+		[ready, credentials, adapter, client, onSelect, onClose],
 	);
 
 	// Handle initial files
 	useEffect(() => {
-		if (initialFiles && initialFiles.length > 0 && credentials) {
+		if (initialFiles && initialFiles.length > 0 && ready) {
 			// Upload the first file immediately
 			uploadFile(initialFiles[0]);
 		}
-	}, [initialFiles, credentials, uploadFile]);
+	}, [initialFiles, ready, uploadFile]);
 
 	// Handle file selection for upload
 	const handleFileSelect = useCallback(

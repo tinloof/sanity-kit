@@ -1,12 +1,14 @@
 import {useCallback, useState} from "react";
 import {useClient} from "sanity";
 import {useToast} from "@sanity/ui";
+import type {StorageAdapter} from "../../../adapters";
 import {API_VERSION} from "../../../constants";
 import {deleteFile, type StorageCredentials} from "../../../storage-client";
 import type {MediaAsset, Tag} from "../../media-panel/types";
 
 export interface UseBulkSelectionOptions {
 	media: MediaAsset[];
+	adapter: StorageAdapter;
 	credentials: StorageCredentials | null;
 	onDelete?: () => void;
 	onMutate?: () => void;
@@ -40,6 +42,7 @@ export interface UseBulkSelectionResult {
 
 export function useBulkSelection({
 	media,
+	adapter,
 	credentials,
 	onDelete,
 	onMutate,
@@ -96,25 +99,32 @@ export function useBulkSelection({
 	// Helper to delete file from storage
 	const deleteFromStorage = useCallback(
 		async (asset: MediaAsset) => {
-			if (!credentials || !asset.path) {
-				console.warn(
-					"Cannot delete from storage: missing credentials or path",
-					{
-						hasCredentials: !!credentials,
-						path: asset.path,
-					},
-				);
+			if (!asset.path) {
+				console.warn("Cannot delete from storage: missing path");
 				return;
 			}
+
 			try {
-				await deleteFile(credentials, asset.path);
+				if (adapter.presignDelete) {
+					const {deleteUrl} = await adapter.presignDelete(asset.path);
+					await fetch(deleteUrl, {method: "DELETE"});
+				} else if (credentials) {
+					await deleteFile(credentials, asset.path);
+				} else if (adapter.presign) {
+					// Adapter uses presigned URLs but has no presignDelete
+					console.warn(
+						"StorageAdapter does not support presigned delete — file will remain in storage",
+					);
+				} else {
+					console.warn("Cannot delete from storage: missing credentials");
+				}
 			} catch (error) {
 				console.error("Failed to delete from storage:", error);
 				// Don't throw - we'll still delete from Sanity even if storage delete fails
 				// The file will become orphaned but that's better than leaving a broken reference
 			}
 		},
-		[credentials],
+		[adapter, credentials],
 	);
 
 	// Confirm and execute deletion
@@ -131,15 +141,8 @@ export function useBulkSelection({
 						const thumbnailAsset = singleAsset.thumbnail as MediaAsset & {
 							path?: string;
 						};
-						if (thumbnailAsset.path && credentials) {
-							try {
-								await deleteFile(credentials, thumbnailAsset.path);
-							} catch (error) {
-								console.error(
-									"Failed to delete thumbnail from storage:",
-									error,
-								);
-							}
+						if (thumbnailAsset.path) {
+							await deleteFromStorage(thumbnailAsset as MediaAsset);
 						}
 					}
 
@@ -185,15 +188,8 @@ export function useBulkSelection({
 							const thumbnailAsset = asset.thumbnail as MediaAsset & {
 								path?: string;
 							};
-							if (thumbnailAsset.path && credentials) {
-								try {
-									await deleteFile(credentials, thumbnailAsset.path);
-								} catch (error) {
-									console.error(
-										"Failed to delete thumbnail from storage:",
-										error,
-									);
-								}
+							if (thumbnailAsset.path) {
+								await deleteFromStorage(thumbnailAsset as MediaAsset);
 							}
 						}
 					}

@@ -76,7 +76,11 @@ export function MediaPanel({
 	onOpenSettings,
 }: MediaPanelProps) {
 	const client = useClient({apiVersion: API_VERSION});
-	const {credentials, loading: credentialsLoading} = useCredentials(adapter);
+	const {
+		credentials,
+		loading: credentialsLoading,
+		ready,
+	} = useCredentials(adapter);
 
 	// UI State
 	const [search, setSearch] = useState("");
@@ -364,6 +368,7 @@ export function MediaPanel({
 	// Bulk selection hook
 	const bulkSelection = useBulkSelection({
 		media,
+		adapter,
 		credentials,
 		onDelete: () => {
 			setSelectedMedia(null);
@@ -438,14 +443,14 @@ export function MediaPanel({
 			dragCounterRef.current = 0;
 			setIsDragging(false);
 
-			if (!credentials) return;
+			if (!ready) return;
 
 			const files = e.dataTransfer.files;
 			if (files && files.length > 0) {
 				uploadQueue.addFiles(files);
 			}
 		},
-		[credentials, uploadQueue],
+		[ready, uploadQueue],
 	);
 
 	if (loading || credentialsLoading) {
@@ -458,7 +463,7 @@ export function MediaPanel({
 		);
 	}
 
-	if (!credentials) {
+	if (!ready) {
 		return (
 			<Box padding={4}>
 				<Card padding={4} radius={2} shadow={1} tone="caution">

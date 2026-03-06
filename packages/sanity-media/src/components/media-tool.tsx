@@ -37,6 +37,11 @@ export function MediaTool({adapter, imageTransformer}: MediaToolProps) {
 		);
 	}
 
+	// Only show settings when adapter uses credential-based mode
+	const hasCredentialSettings = !!(
+		adapter.fields?.length && adapter.fields.length > 0
+	);
+
 	// Show media panel
 	return (
 		<Card height="fill" display="flex" style={{flexDirection: "column"}}>
@@ -55,7 +60,9 @@ export function MediaTool({adapter, imageTransformer}: MediaToolProps) {
 					selectionAssetType={assetType}
 					onSelect={isSelectionMode ? handleSelect : undefined}
 					onCancelSelection={isSelectionMode ? cancelSelection : undefined}
-					onOpenSettings={() => setShowSettings(true)}
+					onOpenSettings={
+						hasCredentialSettings ? () => setShowSettings(true) : undefined
+					}
 				/>
 			</Box>
 		</Card>

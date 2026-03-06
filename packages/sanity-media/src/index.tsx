@@ -20,7 +20,12 @@ import {
 } from "./schema-generator";
 
 // Export adapters
-export {type AdapterField, R2Adapter, type StorageAdapter} from "./adapters";
+export {
+	type AdapterField,
+	type PresignedUrlResponse,
+	R2Adapter,
+	type StorageAdapter,
+} from "./adapters";
 export {useCredentials} from "./hooks/use-credentials";
 // Export hooks for advanced usage
 export {
@@ -32,11 +37,13 @@ export {
 export type {StorageCredentials} from "./storage-client";
 export {
 	createS3Client,
+	deleteFilePresigned,
 	generateKey,
 	getPresignedUploadUrl,
 	getPublicUrl,
 	StorageEndpoints,
 	uploadFile,
+	uploadFilePresigned,
 	validateCredentials,
 } from "./storage-client";
 // Export types
@@ -73,6 +80,20 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 		imageTransformer,
 	} = options;
 
+	// Validate adapter configuration at init time
+	if (!adapter.presign && (!adapter.fields?.length || !adapter.toCredentials)) {
+		throw new Error(
+			`StorageAdapter "${adapter.id}" must provide either a presign function or fields + toCredentials`,
+		);
+	}
+
+	if (adapter.presign && !adapter.presignDelete) {
+		console.warn(
+			`[sanity-media] StorageAdapter "${adapter.id}" provides presign() but not presignDelete(). ` +
+				`Deleting assets will remove Sanity documents but leave files in storage.`,
+		);
+	}
+
 	// Generate schema types
 	const tagType = generateTagType(adapter);
 	const imageAssetType = generateImageAssetType(adapter);
@@ -92,12 +113,13 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 
 	// Wrap input components with adapter context
 	function WrappedMediaImageInput(props: any) {
-		const {credentials, loading} = useCredentials(adapter);
+		const {credentials, loading, ready} = useCredentials(adapter);
 		return (
 			<AdapterProvider
 				adapter={adapter}
 				credentials={credentials}
 				loading={loading}
+				ready={ready}
 				imageTransformer={imageTransformer}
 			>
 				<MediaImageInput {...props} />
@@ -106,12 +128,13 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 	}
 
 	function WrappedMediaFileInput(props: any) {
-		const {credentials, loading} = useCredentials(adapter);
+		const {credentials, loading, ready} = useCredentials(adapter);
 		return (
 			<AdapterProvider
 				adapter={adapter}
 				credentials={credentials}
 				loading={loading}
+				ready={ready}
 				imageTransformer={imageTransformer}
 			>
 				<MediaFileInput {...props} />
@@ -120,12 +143,13 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 	}
 
 	function WrappedMediaVideoInput(props: any) {
-		const {credentials, loading} = useCredentials(adapter);
+		const {credentials, loading, ready} = useCredentials(adapter);
 		return (
 			<AdapterProvider
 				adapter={adapter}
 				credentials={credentials}
 				loading={loading}
+				ready={ready}
 				imageTransformer={imageTransformer}
 			>
 				<MediaVideoInput {...props} />

@@ -341,6 +341,7 @@ export function MediaImageInput(props: ObjectInputProps) {
 		adapter,
 		credentials,
 		loading: credentialsLoading,
+		ready,
 		imageTransformer,
 	} = useAdapter();
 	const {tags} = useTags({adapter});
@@ -450,7 +451,7 @@ export function MediaImageInput(props: ObjectInputProps) {
 
 	const handleInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			if (!credentials || readOnly) return;
+			if (!ready || readOnly) return;
 
 			const file = e.target.files?.[0];
 			if (file && file.type.startsWith("image/")) {
@@ -460,7 +461,7 @@ export function MediaImageInput(props: ObjectInputProps) {
 				e.target.value = "";
 			}
 		},
-		[credentials, readOnly],
+		[ready, readOnly],
 	);
 
 	const handleCancelUpload = useCallback(() => {
@@ -488,7 +489,7 @@ export function MediaImageInput(props: ObjectInputProps) {
 		(e: React.DragEvent) => {
 			e.preventDefault();
 			setIsDragging(false);
-			if (!credentials || readOnly) return;
+			if (!ready || readOnly) return;
 
 			const file = e.dataTransfer.files[0];
 			if (file && file.type.startsWith("image/")) {
@@ -496,12 +497,12 @@ export function MediaImageInput(props: ObjectInputProps) {
 				setShowStagingDialog(true);
 			}
 		},
-		[credentials, readOnly],
+		[ready, readOnly],
 	);
 
 	const handlePaste = useCallback(
 		(e: React.ClipboardEvent) => {
-			if (!credentials || readOnly) return;
+			if (!ready || readOnly) return;
 
 			const items = e.clipboardData?.items;
 			if (!items) return;
@@ -517,7 +518,7 @@ export function MediaImageInput(props: ObjectInputProps) {
 				}
 			}
 		},
-		[credentials, readOnly],
+		[ready, readOnly],
 	);
 
 	const handleBrowseSelect = useCallback(
@@ -576,7 +577,7 @@ export function MediaImageInput(props: ObjectInputProps) {
 	}, []);
 
 	const startUpload = useCallback(async () => {
-		if (!credentials || stagingItems.length === 0) return;
+		if (!ready || stagingItems.length === 0) return;
 
 		const item = stagingItems[0];
 		setShowStagingDialog(false);
@@ -614,7 +615,15 @@ export function MediaImageInput(props: ObjectInputProps) {
 		} finally {
 			setUploading(false);
 		}
-	}, [credentials, stagingItems, adapter, client, onChange, schemaType?.name]);
+	}, [
+		ready,
+		credentials,
+		stagingItems,
+		adapter,
+		client,
+		onChange,
+		schemaType?.name,
+	]);
 
 	// Update asset metadata on blur
 	const updateAssetMetadata = useCallback(
@@ -658,8 +667,8 @@ export function MediaImageInput(props: ObjectInputProps) {
 		);
 	}
 
-	// No credentials
-	if (!credentials) {
+	// Not ready (no credentials and not presigned mode)
+	if (!ready) {
 		return (
 			<Card padding={4} radius={2} shadow={1} tone="caution">
 				<Stack space={2}>

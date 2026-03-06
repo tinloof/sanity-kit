@@ -7,6 +7,7 @@ export interface AdapterContextValue {
 	adapter: StorageAdapter;
 	credentials: StorageCredentials | null;
 	loading: boolean;
+	ready: boolean;
 	imageTransformer?: ImageTransformer;
 }
 
@@ -16,6 +17,7 @@ export interface AdapterProviderProps {
 	adapter: StorageAdapter;
 	credentials: StorageCredentials | null;
 	loading: boolean;
+	ready: boolean;
 	imageTransformer?: ImageTransformer;
 	children: ReactNode;
 }
@@ -24,12 +26,13 @@ export function AdapterProvider({
 	adapter,
 	credentials,
 	loading,
+	ready,
 	imageTransformer,
 	children,
 }: AdapterProviderProps) {
 	return (
 		<AdapterContext.Provider
-			value={{adapter, credentials, loading, imageTransformer}}
+			value={{adapter, credentials, loading, ready, imageTransformer}}
 		>
 			{children}
 		</AdapterContext.Provider>

@@ -2,7 +2,7 @@ import type {SanityClient} from "sanity";
 import type {StorageAdapter} from "./adapters";
 import {extractImageMetadata, extractVideoMetadata} from "./metadata-extractor";
 import type {StorageCredentials} from "./storage-client";
-import {uploadFile} from "./storage-client";
+import {uploadFile, uploadFilePresigned} from "./storage-client";
 
 /**
  * Metadata that can be provided during image upload
@@ -37,12 +37,14 @@ export interface FileUploadMetadata {
 export async function handleImageUpload(
 	file: File,
 	adapter: StorageAdapter,
-	credentials: StorageCredentials,
+	credentials: StorageCredentials | null,
 	client: SanityClient,
 	onProgress?: (progress: number) => void,
 	userMetadata?: ImageUploadMetadata,
 ): Promise<{_ref: string}> {
-	const uploadResult = await uploadFile(credentials, file, onProgress);
+	const uploadResult = adapter.presign
+		? await uploadFilePresigned(adapter, file, onProgress)
+		: await uploadFile(credentials!, file, onProgress);
 	const metadata = await extractImageMetadata(file);
 
 	const assetTypeName = `${adapter.typePrefix}.imageAsset`;
@@ -92,11 +94,13 @@ export async function handleImageUpload(
 export async function handleFileUpload(
 	file: File,
 	adapter: StorageAdapter,
-	credentials: StorageCredentials,
+	credentials: StorageCredentials | null,
 	client: SanityClient,
 	onProgress?: (progress: number) => void,
 ): Promise<{_ref: string}> {
-	const uploadResult = await uploadFile(credentials, file, onProgress);
+	const uploadResult = adapter.presign
+		? await uploadFilePresigned(adapter, file, onProgress)
+		: await uploadFile(credentials!, file, onProgress);
 
 	const assetTypeName = `${adapter.typePrefix}.fileAsset`;
 	const assetDoc = {
@@ -122,13 +126,15 @@ export async function handleFileUpload(
 export async function handleVideoUpload(
 	file: File,
 	adapter: StorageAdapter,
-	credentials: StorageCredentials,
+	credentials: StorageCredentials | null,
 	client: SanityClient,
 	onProgress?: (progress: number) => void,
 	userMetadata?: VideoUploadMetadata,
 ): Promise<{_ref: string}> {
 	const metadata = await extractVideoMetadata(file);
-	const uploadResult = await uploadFile(credentials, file, onProgress);
+	const uploadResult = adapter.presign
+		? await uploadFilePresigned(adapter, file, onProgress)
+		: await uploadFile(credentials!, file, onProgress);
 
 	const thumbnailFile = new File(
 		[metadata.thumbnailBlob],

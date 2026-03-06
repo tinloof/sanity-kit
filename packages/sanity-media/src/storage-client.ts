@@ -176,6 +176,61 @@ export async function deleteFile(
 	await s3Client.send(command);
 }
 
+/**
+ * Upload a file using an adapter's presign function.
+ * Calls presign() just-in-time to get a fresh URL, then uploads via XHR for progress tracking.
+ */
+export async function uploadFilePresigned(
+	adapter: import("./adapters").StorageAdapter,
+	file: File,
+	onProgress?: (progress: number) => void,
+): Promise<StorageUploadResult> {
+	if (!adapter.presign) {
+		throw new Error("Adapter does not support presigned uploads");
+	}
+
+	let response: import("./adapters").PresignedUrlResponse;
+	try {
+		response = await adapter.presign({
+			filename: file.name,
+			contentType: file.type,
+			contentLength: file.size,
+		});
+	} catch (error) {
+		throw new Error(
+			`Failed to get upload URL: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	}
+
+	await uploadWithPresignedUrl(response.uploadUrl, file, file.type, onProgress);
+
+	return {
+		key: response.key ?? response.publicUrl,
+		publicUrl: response.publicUrl,
+		filename: file.name,
+		contentType: file.type,
+		size: file.size,
+	};
+}
+
+/**
+ * Delete a file from storage using an adapter's presignDelete function.
+ */
+export async function deleteFilePresigned(
+	adapter: import("./adapters").StorageAdapter,
+	key: string,
+): Promise<void> {
+	if (!adapter.presignDelete) {
+		throw new Error("Adapter does not support presigned deletes");
+	}
+
+	const {deleteUrl} = await adapter.presignDelete(key);
+	const response = await fetch(deleteUrl, {method: "DELETE"});
+	if (!response.ok) {
+		throw new Error(`Delete failed with status ${response.status}`);
+	}
+}
+
 export const StorageEndpoints = {
 	awsS3: (region: string) => `https://s3.${region}.amazonaws.com`,
 	cloudflareR2: (accountId: string) =>
