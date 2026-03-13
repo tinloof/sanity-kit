@@ -247,8 +247,8 @@ export function MediaPanel({
           tags,
           alt,
           caption,
-          title,
-          description,
+          "title": coalesce(title.text, title),
+          "description": coalesce(description.text, description),
           "thumbnail": thumbnail->{_id, url, path}
         }
       }`,
@@ -303,7 +303,7 @@ export function MediaPanel({
       *[references($assetId)] {
         _id,
         _type,
-        "title": coalesce(title, name, originalFilename, _id),
+        "title": coalesce(title.text, title, name, originalFilename, _id),
         "url": url,
         "thumbnailUrl": thumbnail->url,
         "isAsset": _type == $imageAssetType || _type == $videoAssetType,
