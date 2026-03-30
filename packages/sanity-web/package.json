@@ -69,7 +69,7 @@
 		"sanity": "^5.12.0",
 		"styled-components": "^6.3.11",
 		"tsup": "^8.5.1",
-		"typescript": "^5.9.3"
+		"typescript": "^6.0.2"
 	},
 	"peerDependencies": {
 		"next-sanity": "^12.1.0",
