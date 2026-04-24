@@ -17,7 +17,7 @@
 		"@tinloof/sanity-document-i18n": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
 		"classnames": "2.5.1",
-		"lucide-react": "^0.575.0",
+		"lucide-react": "^1.11.0",
 		"next": "16.1.6",
 		"next-sanity": "^12.1.0",
 		"react": "^19.2.4",
@@ -32,6 +32,6 @@
 		"autoprefixer": "10.4.27",
 		"postcss": "8.5.6",
 		"tailwindcss": "4.2.1",
-		"typescript": "^5.9.3"
+		"typescript": "^6.0.3"
 	}
 }
