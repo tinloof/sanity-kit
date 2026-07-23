@@ -1,5 +1,16 @@
 # @tinloof/sanity-plugin-pages-navigator
 
+## 2.0.2
+
+### Patch Changes
+
+- fa232b4: Update lodash to ^4.17.23 to address security vulnerability
+- dd30b32:
+- Updated dependencies [fa232b4]
+- Updated dependencies [dd30b32]
+  - @tinloof/sanity-extends@2.0.2
+  - @tinloof/sanity-web@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 2.0.2
+
+### Patch Changes
+
+- dd30b32:
+
 ## 2.0.1
 
 ### Patch Changes

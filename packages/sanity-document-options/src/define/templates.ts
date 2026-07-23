@@ -73,7 +73,9 @@ export default function defineTemplates(
 	// Combine filtered previous templates with new templates and deduplicate by id
 	return [...filteredPrev, ...templatesFromSchemas].reduce(
 		(acc, template) => {
-			const existingIndex = acc.findIndex((t) => t.id === template.id);
+			const existingIndex = acc.findIndex(
+				(t: Template<any, any>) => t.id === template.id,
+			);
 			if (existingIndex === -1) {
 				acc.push(template);
 			} else {

@@ -1,5 +1,12 @@
 # @tinloof/sanity-extends
 
+## 2.0.2
+
+### Patch Changes
+
+- fa232b4: Update lodash to ^4.17.23 to address security vulnerability
+- dd30b32:
+
 ## 2.0.1
 
 ### Patch Changes
