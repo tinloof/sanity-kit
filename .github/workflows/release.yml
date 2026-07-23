@@ -34,7 +34,10 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Upgrade npm for trusted publishing
-        run: npm install -g npm@latest
+        # Pinned to 11: npm 12 errors on the pnpm-specific --no-git-checks
+        # flag that changesets passes through (EUNKNOWNCONFIG).
+        # Trusted publishing requires npm >= 11.5.
+        run: npm install -g npm@11
 
       - name: Install dependencies
         run: pnpm run build-install
