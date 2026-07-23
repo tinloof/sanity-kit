@@ -781,7 +781,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
 					</Stack>
 					<Stack space={2}>
 						<Text size={1} weight="medium">
-							Description
+							Caption
 						</Text>
 						<TextArea
 							value={assetPreview.description || ""}
@@ -794,7 +794,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
 							onBlur={(e: React.FocusEvent<HTMLTextAreaElement>) => {
 								updateAssetMetadata("description", e.currentTarget.value);
 							}}
-							placeholder="Add a description"
+							placeholder="Add a caption"
 							rows={2}
 							disabled={readOnly}
 						/>

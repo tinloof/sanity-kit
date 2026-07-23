@@ -188,7 +188,7 @@ export function StagingDialog({
                             description: e.currentTarget.value,
                           })
                         }
-                        placeholder="Description"
+                        placeholder="Caption"
                         fontSize={1}
                         rows={2}
                       />

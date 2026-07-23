@@ -500,9 +500,9 @@ export function generateVideoAssetType(adapter: StorageAdapter) {
 			}),
 			defineField({
 				name: "description",
-				title: "Description",
+				title: "Caption",
 				type: "text",
-				description: "Default description for this video",
+				description: "Default caption for this video",
 			}),
 		],
 
@@ -586,7 +586,7 @@ export function generateMediaVideoType(adapter: StorageAdapter) {
 			}),
 			defineField({
 				name: "description",
-				title: "Description",
+				title: "Caption",
 				type: "text",
 			}),
 		],

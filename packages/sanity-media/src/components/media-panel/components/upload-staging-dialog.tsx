@@ -500,7 +500,7 @@ export function UploadStagingDialog({
                           </Stack>
                           <Stack space={2}>
                             <Text size={1} weight="medium">
-                              Description
+                              Caption
                             </Text>
                             <TextArea
                               value={item.description || ""}
@@ -511,7 +511,7 @@ export function UploadStagingDialog({
                                   description: e.currentTarget.value,
                                 })
                               }
-                              placeholder="Optional description"
+                              placeholder="Optional caption"
                               rows={2}
                             />
                           </Stack>

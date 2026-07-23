@@ -532,7 +532,7 @@ export function MediaDetailPanel({
 													</Stack>
 													<Stack space={2}>
 														<Text size={1} weight="medium">
-															Description
+															Caption
 														</Text>
 														<TextArea
 															value={media.description || ""}
@@ -552,7 +552,7 @@ export function MediaDetailPanel({
 																	e.currentTarget.value,
 																);
 															}}
-															placeholder="Add a description for this video"
+															placeholder="Add a caption for this video"
 															rows={3}
 														/>
 													</Stack>
