@@ -41,7 +41,7 @@ const Header = ({pages, domRef, children}: HeaderProps): ReactElement => {
 		>
 			<Flex paddingX={1} paddingBottom={3} flex={1} justify="space-between">
 				<Card>
-					<Flex align="center" gap={2} width="100%">
+					<Flex align="center" gap={2}>
 						<Button
 							mode="bleed"
 							icon={

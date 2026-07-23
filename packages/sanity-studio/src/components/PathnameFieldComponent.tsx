@@ -450,7 +450,6 @@ function PreviewButton({
 			<Button
 				text="Preview"
 				fontSize={1}
-				height={"100%"}
 				mode="default"
 				tone="default"
 				icon={EyeOpenIcon}
@@ -533,7 +532,6 @@ function GenerateButton({
 	return (
 		<Button
 			fontSize={1}
-			height="100%"
 			mode="ghost"
 			tone="default"
 			icon={isUpdating ? Spinner : RefreshIcon}

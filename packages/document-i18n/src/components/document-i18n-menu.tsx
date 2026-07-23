@@ -215,7 +215,6 @@ export function DocumentI18nMenu(props: DocumentI18nMenuProps) {
 			<Button
 				text="Translations"
 				mode="bleed"
-				label="Translations"
 				disabled={!source}
 				tone={
 					!source || loading || !issueWithTranslations ? undefined : `caution`

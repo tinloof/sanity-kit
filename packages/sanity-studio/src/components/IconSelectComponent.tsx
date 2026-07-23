@@ -196,7 +196,6 @@ export function IconSelectComponent(props: IconInputProps): ReactElement {
 										key={icon.value}
 										// eslint-disable-next-line react/jsx-no-bind
 										onClick={() => onIconChange(icon.value)}
-										value={icon.value}
 									>
 										<BlockVariantCard
 											icon={icon.value}
