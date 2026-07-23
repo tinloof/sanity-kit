@@ -1,0 +1,76 @@
+{
+	"name": "@tinloof/sanity-media",
+	"version": "0.0.0-20260210151319",
+	"description": "Media management plugin for Sanity with S3-compatible storage support",
+	"license": "MIT",
+	"author": "Tinloof",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./package.json": "./package.json"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"typecheck": "tsc --noEmit",
+		"prepublishOnly": "npm run typecheck && npm run build"
+	},
+	"sideEffects": false,
+	"keywords": [
+		"sanity",
+		"sanity-plugin",
+		"media",
+		"s3",
+		"r2",
+		"storage"
+	],
+	"devDependencies": {
+		"@sanity/icons": "^3.7.4",
+		"@sanity/ui": "^3.1.11",
+		"@types/react": "^19.2.10",
+		"@types/react-dom": "^19.2.3",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"sanity": "^5.7.0",
+		"styled-components": "^6.3.8",
+		"tsup": "^8.5.1",
+		"typescript": "^5.9.3"
+	},
+	"peerDependencies": {
+		"@sanity/icons": "^3.7.4",
+		"@sanity/ui": "^3.1.11",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"sanity": "^5.7.0",
+		"styled-components": "^6.3.8"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.800.0",
+		"@aws-sdk/s3-request-presigner": "^3.800.0",
+		"@sanity/studio-secrets": "^3.0.3",
+		"swr": "^2.3.3"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tinloof/sanity-kit.git",
+		"directory": "packages/sanity-media"
+	},
+	"bugs": {
+		"url": "https://github.com/tinloof/sanity-kit/issues"
+	},
+	"homepage": "https://github.com/tinloof/sanity-kit/packages/sanity-media#readme"
+}

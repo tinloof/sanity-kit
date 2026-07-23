@@ -1,10 +1,11 @@
+import {codeInput} from "@sanity/code-input";
+import {table} from "@sanity/table";
 import {visionTool} from "@sanity/vision";
 import {documentOptions} from "@tinloof/sanity-document-options";
 import {withExtends} from "@tinloof/sanity-extends";
+import {mediaPlugin, R2Adapter} from "@tinloof/sanity-media";
 import {pages} from "@tinloof/sanity-studio";
 import {defineConfig, isDev} from "sanity";
-import {table} from "@sanity/table";
-import {codeInput} from "@sanity/code-input";
 import schemas from "./src/schemas";
 
 import "./globals.css";
@@ -18,6 +19,9 @@ export default defineConfig({
 		table(),
 		codeInput(),
 		documentOptions({}),
+		mediaPlugin({
+			adapter: R2Adapter(),
+		}),
 		pages({
 			creatablePages: ["blog.post", "modular.page"],
 			previewUrl: {
