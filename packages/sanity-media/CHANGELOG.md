@@ -1,5 +1,11 @@
 # @tinloof/sanity-media
 
+## 0.1.0
+
+### Minor Changes
+
+- e96f174: First stable release of the Sanity media plugin: media library tool with S3-compatible storage adapters (AWS S3, Cloudflare R2), image/video/file inputs, drag & drop uploads, tagging, metadata editing, video thumbnails, and video caption support.
+
 ## 0.0.0-20260210151319
 
 ### Patch Changes
