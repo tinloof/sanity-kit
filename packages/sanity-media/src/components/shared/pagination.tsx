@@ -1,10 +1,8 @@
-import {
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	DoubleChevronLeftIcon,
-	DoubleChevronRightIcon,
-	EllipsisHorizontalIcon,
-} from "@sanity/icons";
+import {ChevronLeftIcon} from "@sanity/icons/ChevronLeft";
+import {ChevronRightIcon} from "@sanity/icons/ChevronRight";
+import {DoubleChevronLeftIcon} from "@sanity/icons/DoubleChevronLeft";
+import {DoubleChevronRightIcon} from "@sanity/icons/DoubleChevronRight";
+import {EllipsisHorizontalIcon} from "@sanity/icons/EllipsisHorizontal";
 import {Button, Flex, Text} from "@sanity/ui";
 
 export interface PaginationProps {

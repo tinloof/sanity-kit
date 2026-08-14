@@ -11,17 +11,17 @@
 	},
 	"dependencies": {
 		"@examples/hello-world-i18n-studio": "workspace:*",
-		"@sanity/client": "^7.16.0",
-		"@sanity/vision": "^5.12.0",
+		"@sanity/client": "^7.26.2",
+		"@sanity/vision": "^6.9.2",
 		"@tailwindcss/typography": "0.5.19",
 		"@tinloof/sanity-next": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
 		"@tinloof/sanity-web": "workspace:*",
 		"next": "16.1.6",
-		"next-sanity": "^12.1.0",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"sanity": "^5.12.0",
+		"next-sanity": "^13.3.3",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
+		"sanity": "^6.9.2",
 		"server-only": "0.0.1"
 	},
 	"devDependencies": {

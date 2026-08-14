@@ -1,15 +1,15 @@
 import type {MetadataRoute} from "next/dist/types";
 import {defineQuery} from "next-sanity";
-import type {DefinedSanityFetchType} from "next-sanity/live";
+import type {DefinedFetchType} from "./next-sanity-types";
 import {formatPath, localizePathname} from "./urls";
 
 interface GenerateSanitySitemapProps {
-	sanityFetch: DefinedSanityFetchType;
+	sanityFetch: DefinedFetchType;
 	websiteBaseURL: string;
 }
 
 interface GenerateSanityI18nSitemapProps {
-	sanityFetch: DefinedSanityFetchType;
+	sanityFetch: DefinedFetchType;
 	websiteBaseURL: string;
 	i18n: {
 		locales: Array<{id: string; title: string}>;
@@ -51,14 +51,17 @@ export async function generateSanitySitemap({
 	sanityFetch,
 	websiteBaseURL,
 }: GenerateSanitySitemapProps) {
-	const {data: routes}: {data: SITEMAP_QUERYResult[]} = await sanityFetch({
+	// next-sanity 13 resolves `data` through `ClientReturn<Query, unknown>`, which
+	// falls back to `unknown` for queries absent from the consumer's generated
+	// `SanityQueries`. SITEMAP_QUERY is defined here, so its shape is known.
+	const {data: routes} = (await sanityFetch({
 		query: SITEMAP_QUERY,
 		params: {
 			homeType: HOME_TYPE,
 		},
 		perspective: "published",
 		stega: false,
-	});
+	})) as {data: SITEMAP_QUERYResult[]};
 
 	return (
 		routes?.map((route) => {
@@ -112,16 +115,15 @@ export async function generateSanityI18nSitemap({
 	// Fetch all routes for all locales
 	await Promise.all(
 		i18n.locales.map(async (locale) => {
-			const {data: routes}: {data: I18N_SITEMAP_QUERYResult[]} =
-				await sanityFetch({
-					query: I18N_SITEMAP_QUERY,
-					perspective: "published",
-					stega: false,
-					params: {
-						locale: locale.id,
-						homeType: HOME_TYPE,
-					},
-				});
+			const {data: routes} = (await sanityFetch({
+				query: I18N_SITEMAP_QUERY,
+				perspective: "published",
+				stega: false,
+				params: {
+					locale: locale.id,
+					homeType: HOME_TYPE,
+				},
+			})) as {data: I18N_SITEMAP_QUERYResult[]};
 			if (routes) allRoutes.push(...routes);
 		}),
 	);

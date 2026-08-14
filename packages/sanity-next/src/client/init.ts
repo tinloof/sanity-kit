@@ -1,13 +1,19 @@
 import {type ClientConfig, createClient} from "@sanity/client";
-import {type DefineSanityLiveOptions, defineLive} from "next-sanity/live";
+import {defineLive} from "next-sanity/live";
 import {createErrorDraftRoute, defineDraftRoute} from "../utils/draft-mode";
+import type {DefineLiveOptions} from "../utils/next-sanity-types";
 import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
 import {initSanityI18nUtils, initSanityUtils} from "../utils/sanity";
 import {getVercelBaseUrl} from "../utils/vercel-base-url";
 
 type InitSanityConfig = {
 	client?: ClientConfig;
-	live?: Omit<DefineSanityLiveOptions, "client">;
+	/**
+	 * `strict` is omitted on purpose: next-sanity 13 overloads `defineLive` on it,
+	 * and the strict flavour returns a `sanityFetch` this package's utils do not
+	 * accept. next-sanity 12 has no `strict`, so the omission is a no-op there.
+	 */
+	live?: Omit<DefineLiveOptions, "client" | "strict">;
 	baseUrl?: string;
 	i18n?: Parameters<typeof initSanityI18nUtils>[0]["i18n"];
 	viewerToken?: string;

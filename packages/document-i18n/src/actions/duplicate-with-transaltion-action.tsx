@@ -1,5 +1,5 @@
-import {CopyIcon} from "@sanity/icons";
-import {useToast} from "@sanity/ui";
+import {CopyIcon} from "@sanity/icons/Copy";
+import {useToast} from "@sanity/ui/toast";
 import {uuid} from "@sanity/uuid";
 import {useCallback, useMemo, useState} from "react";
 import {filter, firstValueFrom} from "rxjs";
@@ -28,6 +28,8 @@ const DISABLED_REASON_KEY = {
 	MULTIPLE_METADATA: "action.duplicate.disabled.multiple-metadata",
 	NOTHING_TO_DUPLICATE: "action.duplicate.disabled.nothing-to-duplicate",
 	NOT_READY: "action.duplicate.disabled.not-ready",
+	// sanity 6 added TARGET_NOT_FOUND to the duplicate operation's disabled union.
+	TARGET_NOT_FOUND: "action.duplicate.disabled.target-not-found",
 };
 
 export const DuplicateWithTranslationsAction: DocumentActionComponent = ({

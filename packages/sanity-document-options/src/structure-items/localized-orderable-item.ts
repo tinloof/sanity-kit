@@ -1,4 +1,4 @@
-import {FolderIcon} from "@sanity/icons";
+import {FolderIcon} from "@sanity/icons/Folder";
 import {orderableDocumentListDeskItem} from "@sanity/orderable-document-list";
 import pluralize from "pluralize";
 import type * as React from "react";

@@ -1,4 +1,4 @@
-import {SearchIcon} from "@sanity/icons";
+import {SearchIcon} from "@sanity/icons/Search";
 import {TextInput} from "@sanity/ui";
 import React from "react";
 import {

@@ -63,26 +63,26 @@
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"@types/speakingurl": "^13.0.6",
-		"next-sanity": "^12.1.0",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"sanity": "^5.12.0",
-		"styled-components": "^6.3.11",
+		"next-sanity": "^13.3.3",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
+		"sanity": "^6.9.2",
+		"styled-components": "^6.5.2",
 		"tsup": "^8.5.1",
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
-		"next-sanity": "^12.1.0",
+		"next-sanity": "^12.1.0 || ^13.0.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"sanity": "^5.12.0"
+		"sanity": "^5.12.0 || ^6.0.0"
 	},
 	"dependencies": {
 		"@portabletext/react": "^6.0.2",
 		"@sanity/asset-utils": "^2.3.0",
-		"@sanity/client": "^7.16.0",
+		"@sanity/client": "^7.26.2",
 		"@sanity/image-url": "^2.0.3",
-		"groq": "^5.12.0",
+		"groq": "^5.12.0 || ^6.0.0",
 		"speakingurl": "^14.0.1"
 	},
 	"publishConfig": {

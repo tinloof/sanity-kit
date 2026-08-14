@@ -1,4 +1,4 @@
-import {ComposeIcon} from "@sanity/icons";
+import {ComposeIcon} from "@sanity/icons/Compose";
 import type {FieldGroupDefinition} from "sanity";
 
 /**

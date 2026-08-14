@@ -1,4 +1,6 @@
-import {AddCircleIcon, SearchIcon, TrashIcon} from "@sanity/icons";
+import {AddCircleIcon} from "@sanity/icons/AddCircle";
+import {SearchIcon} from "@sanity/icons/Search";
+import {TrashIcon} from "@sanity/icons/Trash";
 import {
 	Box,
 	Button,

@@ -1,34 +1,31 @@
-import {
-	CloseIcon,
-	FilterIcon,
-	ImageIcon,
-	SearchIcon,
-	SortIcon,
-	ThLargeIcon,
-	ThListIcon,
-	UploadIcon,
-} from "@sanity/icons";
+import {CloseIcon} from "@sanity/icons/Close";
+import {FilterIcon} from "@sanity/icons/Filter";
+import {ImageIcon} from "@sanity/icons/Image";
+import {SearchIcon} from "@sanity/icons/Search";
+import {SortIcon} from "@sanity/icons/Sort";
+import {ThLargeIcon} from "@sanity/icons/ThLarge";
+import {ThListIcon} from "@sanity/icons/ThList";
+import {UploadIcon} from "@sanity/icons/Upload";
 import {
 	Box,
 	Button,
 	Card,
 	Dialog,
 	Flex,
-	Menu,
-	MenuButton,
-	MenuItem,
 	Spinner,
 	Stack,
 	Text,
 	TextInput,
 } from "@sanity/ui";
+import {Menu, MenuButton, MenuItem} from "@sanity/ui/menu";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useClient} from "sanity";
 import type {StorageAdapter} from "../../adapters";
-import type {ImageTransformer} from "../../types";
 import {API_VERSION} from "../../constants";
 import {useCredentials} from "../../hooks/use-credentials";
+import type {ImageTransformer} from "../../types";
 import {handleImageUpload, handleVideoUpload} from "../../upload-handler";
+import {DebouncedSearchInput} from "../media-panel/components/debounced-search-input";
 import type {
 	AdvancedFilters,
 	MediaAsset,
@@ -43,16 +40,15 @@ import {
 	SORT_OPTIONS,
 	TAG_COLORS,
 } from "../media-panel/types";
-import {DebouncedSearchInput} from "../media-panel/components/debounced-search-input";
 import {AssetGrid} from "./asset-grid";
 import {AssetList} from "./asset-list";
-import {Pagination} from "./pagination";
 import {useMediaQuery} from "./hooks/use-media-query";
 import {
 	useDocumentSearch,
 	useReferencingDocTypes,
 	useTags,
 } from "./hooks/use-tags";
+import {Pagination} from "./pagination";
 
 export interface MediaBrowserDialogProps {
 	/** Callback when an asset is selected */
@@ -276,7 +272,7 @@ export function MediaBrowserDialog({
 				width={3}
 			>
 				<Box padding={5}>
-					<Stack space={4}>
+					<Stack gap={4}>
 						<Flex justify="center" align="center" gap={3}>
 							<Spinner />
 							<Text size={1}>Uploading... {Math.round(uploadProgress)}%</Text>
@@ -327,7 +323,7 @@ export function MediaBrowserDialog({
 					paddingBottom={3}
 					style={{borderBottom: "1px solid var(--card-border-color)"}}
 				>
-					<Stack space={3}>
+					<Stack gap={3}>
 						{/* Toolbar row 1: View toggle + Search */}
 						<Flex gap={2} align="center">
 							<Flex
@@ -631,7 +627,7 @@ export function MediaBrowserDialog({
 					}}
 				>
 					<Stack
-						space={4}
+						gap={4}
 						style={{
 							flex: 1,
 							display: "flex",
@@ -649,13 +645,13 @@ export function MediaBrowserDialog({
 						{/* Expanded filter panel */}
 						{showFilters && (
 							<Card padding={3} radius={2} tone="transparent" border>
-								<Stack space={4}>
+								<Stack gap={4}>
 									{/* Row 1: Tags + Usage side by side */}
 									<Flex gap={4} wrap="wrap">
 										{/* Tags - multi-select pills */}
 										{tags.length > 0 && (
 											<Box style={{flex: 1, minWidth: "200px"}}>
-												<Stack space={2}>
+												<Stack gap={2}>
 													<Text size={0} muted weight="medium">
 														Tags
 													</Text>
@@ -702,7 +698,7 @@ export function MediaBrowserDialog({
 
 										{/* Usage - segmented control */}
 										<Box>
-											<Stack space={2}>
+											<Stack gap={2}>
 												<Text size={0} muted weight="medium">
 													Usage
 												</Text>
@@ -765,7 +761,7 @@ export function MediaBrowserDialog({
 									<Flex gap={4} wrap="wrap">
 										{/* Missing metadata - tri-state checkboxes */}
 										<Box>
-											<Stack space={2}>
+											<Stack gap={2}>
 												<Text size={0} muted weight="medium">
 													Metadata
 												</Text>
@@ -863,7 +859,7 @@ export function MediaBrowserDialog({
 
 										{/* Document search */}
 										<Box style={{flex: 1, minWidth: "200px"}}>
-											<Stack space={2}>
+											<Stack gap={2}>
 												<Text size={0} muted weight="medium">
 													Referenced by document
 												</Text>
@@ -899,7 +895,7 @@ export function MediaBrowserDialog({
 																	<Spinner />
 																</Flex>
 															) : documentSearchResults.length > 0 ? (
-																<Stack space={0}>
+																<Stack gap={0}>
 																	{documentSearchResults
 																		.filter(
 																			(doc) =>
@@ -923,7 +919,7 @@ export function MediaBrowserDialog({
 																					setDocumentSearchQuery("");
 																				}}
 																			>
-																				<Stack space={1}>
+																				<Stack gap={1}>
 																					<Text
 																						size={1}
 																						textOverflow="ellipsis"
@@ -1004,7 +1000,7 @@ export function MediaBrowserDialog({
 										justify="center"
 										style={{minHeight: "200px"}}
 									>
-										<Stack space={3} style={{textAlign: "center"}}>
+										<Stack gap={3} style={{textAlign: "center"}}>
 											<ImageIcon style={{fontSize: 32, opacity: 0.3}} />
 											<Text size={1} muted>
 												{search || activeFilterCount > 0

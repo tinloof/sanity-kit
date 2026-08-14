@@ -1,4 +1,4 @@
-import {FolderIcon} from "@sanity/icons";
+import {FolderIcon} from "@sanity/icons/Folder";
 import {orderableDocumentListDeskItem} from "@sanity/orderable-document-list";
 import pluralize from "pluralize";
 import type * as React from "react";
@@ -226,9 +226,10 @@ export default function defineStructure(
 
 		// Normalize to array and filter out empty segments
 		const path = structureGroup
-			? (Array.isArray(structureGroup) ? structureGroup : [structureGroup]).filter(
-					(segment) => segment.length > 0,
-				)
+			? (Array.isArray(structureGroup)
+					? structureGroup
+					: [structureGroup]
+				).filter((segment) => segment.length > 0)
 			: [];
 
 		if (path.length === 0) {

@@ -1,12 +1,11 @@
 import React from "react";
-import {definePlugin} from "sanity";
+import {definePlugin, type ObjectDefinition} from "sanity";
 import type {StorageAdapter} from "./adapters";
 import {MediaFileInput} from "./components/media-file-input";
 import {MediaImageInput} from "./components/media-image-input";
 import {MediaTool} from "./components/media-tool";
 import {MediaVideoInput} from "./components/media-video-input";
 import {AdapterProvider} from "./context/adapter-context";
-import type {ImageTransformer} from "./types";
 import {MediaSelectionProvider} from "./context/selection-context";
 import {useCredentials} from "./hooks/use-credentials";
 import {
@@ -18,6 +17,7 @@ import {
 	generateTagType,
 	generateVideoAssetType,
 } from "./schema-generator";
+import type {ImageTransformer} from "./types";
 
 // Export adapters
 export {
@@ -48,12 +48,13 @@ export {
 } from "./storage-client";
 // Export types
 export type {
+	ImageTransformer,
+	ImageTransformerOptions,
 	MediaFileValue,
 	MediaImageValue,
 	MediaStoragePluginConfig,
 	MediaVideoValue,
 } from "./types";
-export type {ImageTransformer, ImageTransformerOptions} from "./types";
 
 // Export utility functions
 export {isImageContentType, isVideoContentType} from "./utils";
@@ -99,9 +100,12 @@ export const mediaPlugin = definePlugin<MediaPluginOptions>((options) => {
 	const imageAssetType = generateImageAssetType(adapter);
 	const fileAssetType = generateFileAssetType(adapter);
 	const videoAssetType = generateVideoAssetType(adapter);
-	const mediaImageType = generateMediaImageType(adapter);
-	const mediaFileType = generateMediaFileType(adapter);
-	const mediaVideoType = generateMediaVideoType(adapter);
+	// sanity 6's `defineType` returns the exact literal it was given rather than
+	// the widened definition type (@sanity/types 6 index.d.ts, `TSchemaDefinition`),
+	// so the input components are attached below through the definition type.
+	const mediaImageType: ObjectDefinition = generateMediaImageType(adapter);
+	const mediaFileType: ObjectDefinition = generateMediaFileType(adapter);
+	const mediaVideoType: ObjectDefinition = generateMediaVideoType(adapter);
 
 	// Internal document types that should not appear in "Create new document" menu
 	const internalDocumentTypes = new Set([

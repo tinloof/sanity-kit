@@ -1,12 +1,11 @@
-import {
-	ChevronRightIcon,
-	DocumentIcon,
-	EditIcon,
-	FolderIcon,
-	PublishIcon,
-	SearchIcon,
-} from "@sanity/icons";
-import {Badge, Box, Card, Flex, Stack, Text, Tooltip} from "@sanity/ui";
+import {ChevronRightIcon} from "@sanity/icons/ChevronRight";
+import {DocumentIcon} from "@sanity/icons/Document";
+import {EditIcon} from "@sanity/icons/Edit";
+import {FolderIcon} from "@sanity/icons/Folder";
+import {PublishIcon} from "@sanity/icons/Publish";
+import {SearchIcon} from "@sanity/icons/Search";
+import {Badge, Box, Card, Flex, Stack, Text} from "@sanity/ui";
+import {Tooltip} from "@sanity/ui/tooltip";
 import {useVirtualizer} from "@tanstack/react-virtual";
 import React, {createElement, useRef} from "react";
 import {useColorSchemeValue, useSchema} from "sanity";

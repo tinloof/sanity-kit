@@ -50,7 +50,7 @@ export default async function RootLayout({
 						<ExitPreviewClient disableDraftMode={disableDraftMode} />
 					</>
 				)}
-				<SanityLive refreshOnFocus={false} />
+				<SanityLive />
 			</body>
 		</html>
 	);

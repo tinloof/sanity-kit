@@ -1,14 +1,9 @@
-import {AddIcon, CheckmarkIcon, SplitVerticalIcon} from "@sanity/icons";
-import {
-	Badge,
-	Box,
-	Button,
-	Flex,
-	Spinner,
-	Text,
-	Tooltip,
-	useToast,
-} from "@sanity/ui";
+import {AddIcon} from "@sanity/icons/Add";
+import {CheckmarkIcon} from "@sanity/icons/Checkmark";
+import {SplitVerticalIcon} from "@sanity/icons/SplitVertical";
+import {Badge, Box, Button, Flex, Spinner, Text} from "@sanity/ui";
+import {useToast} from "@sanity/ui/toast";
+import {Tooltip} from "@sanity/ui/tooltip";
 import {uuid} from "@sanity/uuid";
 import {useCallback, useEffect, useState} from "react";
 import {type ObjectSchemaType, type SanityDocument, useClient} from "sanity";

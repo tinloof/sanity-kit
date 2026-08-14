@@ -1,14 +1,14 @@
-import {TranslateIcon} from "@sanity/icons";
+import {TranslateIcon} from "@sanity/icons/Translate";
 import {
 	Box,
 	Button,
 	Card,
-	Popover,
 	Stack,
 	Text,
 	TextInput,
-	useClickOutside,
+	useClickOutsideEvent,
 } from "@sanity/ui";
+import {Popover} from "@sanity/ui/popover";
 import {uuid} from "@sanity/uuid";
 import {type FormEvent, useCallback, useMemo, useState} from "react";
 import {useEditState} from "sanity";
@@ -42,7 +42,7 @@ export function DocumentI18nMenu(props: DocumentI18nMenuProps) {
 	const [button, setButton] = useState<HTMLElement | null>(null);
 	const [popover, setPopover] = useState<HTMLElement | null>(null);
 	const handleClickOutside = useCallback(() => setOpen(false), []);
-	useClickOutside(handleClickOutside, [button, popover]);
+	useClickOutsideEvent(handleClickOutside, () => [button, popover]);
 
 	// Get metadata from content lake
 	const {data, loading, error} = useTranslationMetadata(documentId);
@@ -89,7 +89,7 @@ export function DocumentI18nMenu(props: DocumentI18nMenuProps) {
 					<Text>There was an error returning translations metadata</Text>
 				</Card>
 			) : (
-				<Stack space={1}>
+				<Stack gap={1}>
 					<LocaleManage
 						id={metadata?._id}
 						documentId={documentId}

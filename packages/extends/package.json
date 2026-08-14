@@ -28,13 +28,14 @@
 		"lodash": "^4.17.23"
 	},
 	"peerDependencies": {
-		"sanity": "^5.12.0"
+		"sanity": "^5.12.0 || ^6.0.0"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.17.24",
 		"tsup": "^8.5.1",
 		"typescript": "^5.9.3",
-		"vitest": "^4.0.18"
+		"vitest": "^4.0.18",
+		"sanity": "^6.9.2"
 	},
 	"publishConfig": {
 		"access": "public"

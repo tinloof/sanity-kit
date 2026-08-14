@@ -50,7 +50,7 @@ export default async function RootLayout({
 						<VisualEditing />
 					</>
 				)}
-				<SanityLive refreshOnFocus={false} />
+				<SanityLive />
 			</body>
 		</html>
 	);

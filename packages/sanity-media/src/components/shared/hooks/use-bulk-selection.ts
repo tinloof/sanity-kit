@@ -1,6 +1,6 @@
+import {useToast} from "@sanity/ui/toast";
 import {useCallback, useState} from "react";
 import {useClient} from "sanity";
-import {useToast} from "@sanity/ui";
 import type {StorageAdapter} from "../../../adapters";
 import {API_VERSION} from "../../../constants";
 import {deleteFile, type StorageCredentials} from "../../../storage-client";
