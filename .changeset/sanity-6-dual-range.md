@@ -30,3 +30,14 @@ next-sanity 12 exports them as `DefinedSanityFetchType` / `DefineSanityLiveOptio
 and 13 as `DefinedFetchType` / `DefineLiveOptions`, with neither major exporting
 the other's spelling. They are now derived from `defineLive`, the one export both
 majors share, so one build covers the whole peer range.
+
+Fixes two long-standing broken export maps, unrelated to Sanity 6 but found while
+verifying this branch:
+
+- `@tinloof/sanity-next` declared `./utils`, `./utils/sanity`, `./utils/urls` and
+  `./utils/sitemap`, but its tsup config built no `utils` entries, so no
+  `dist/utils/` existed and all four failed to resolve. `generateSanitySitemap`,
+  `getRedirect`, `redirectIfNeeded`, `initSanityUtils` and the URL helpers were
+  unreachable for consumers. They now ship.
+- `@tinloof/sanity-web` declared a `./hooks` subpath pointing at `dist/hooks/`,
+  which has never existed in any released version. The dead entry is removed.
