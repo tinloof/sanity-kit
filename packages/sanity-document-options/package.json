@@ -47,9 +47,9 @@
 		}
 	},
 	"dependencies": {
-		"@sanity/icons": "^3.7.4",
+		"@sanity/icons": "^5.2.1",
 		"@sanity/incompatible-plugin": "^1.0.5",
-		"@sanity/orderable-document-list": "^1.5.1",
+		"@sanity/orderable-document-list": "^2.0.20",
 		"pluralize": "^8.0.0"
 	},
 	"devDependencies": {
@@ -59,17 +59,17 @@
 		"@tinloof/sanity-extends": "workspace:*",
 		"@types/pluralize": "^0.0.33",
 		"@types/react": "^19.2.14",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"sanity": "^5.12.0",
-		"styled-components": "^6.3.11",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
+		"sanity": "^6.9.2",
+		"styled-components": "^6.5.2",
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
 		"@tinloof/sanity-extends": "workspace:*",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"sanity": "^5.12.0"
+		"sanity": "^5.12.0 || ^6.0.0"
 	},
 	"engines": {
 		"node": ">=18"

@@ -1,5 +1,13 @@
 export {createDraftModeRoute, defineDraftRoute} from "./draft-mode";
 export {getRedirect, redirectIfNeeded} from "./redirect";
+// Moved here from @tinloof/sanity-web when the Next.js code was split out, but
+// never given an export path in either package — unreachable until now.
+export {
+	createSanityMetadataResolver,
+	getOgImages,
+	type ResolveSanityRouteMetadataProps,
+	resolveSanityRouteMetadata,
+} from "./resolve-sanity-metadata";
 export {
 	type InitSanityI18nUtilsConfig,
 	type InitSanityUtilsConfig,

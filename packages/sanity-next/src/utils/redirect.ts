@@ -1,6 +1,6 @@
 import {type NextRequest, NextResponse} from "next/server";
 import {defineQuery} from "next-sanity";
-import type {DefinedSanityFetchType} from "next-sanity/live";
+import type {DefinedFetchType} from "./next-sanity-types";
 import {getPathVariations} from "./urls";
 
 /**
@@ -10,7 +10,7 @@ export type GetRedirectParams = {
 	/** The source path to look up redirects for (e.g., "/old-page") */
 	source: string;
 	/** Sanity fetch function from next-sanity */
-	sanityFetch: DefinedSanityFetchType;
+	sanityFetch: DefinedFetchType;
 	/** Optional custom GROQ query (defaults to REDIRECT_QUERY) */
 	query?: string;
 };
@@ -55,18 +55,21 @@ export async function getRedirect({
 }: GetRedirectParams): Promise<RedirectData> {
 	const paths = getPathVariations(source);
 
-	const {data} = await sanityFetch({
+	// next-sanity 13 resolves `data` through `ClientReturn<Query, unknown>`, which
+	// falls back to `unknown` for queries absent from the consumer's generated
+	// `SanityQueries`. This query is defined here, so its shape is known.
+	const {data} = (await sanityFetch({
 		params: {paths},
 		query,
 		perspective: "published",
 		stega: false,
-	});
+	})) as {data: RedirectData};
 
 	return data;
 }
 
 export type RedirectIfNeededParams = {
-	sanityFetch: DefinedSanityFetchType;
+	sanityFetch: DefinedFetchType;
 	request: NextRequest;
 };
 

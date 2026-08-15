@@ -12,8 +12,18 @@ type Seo = {
 
 type Translation = null | {locale: null | string; pathname: null | string};
 
+/**
+ * Whatever the URL builder itself accepts. `sanity`'s `Image` requires every
+ * `crop`/`hotspot` number, while `sanity typegen generate` emits them all
+ * optional — so typing this as `Image` made the helper unusable with the very
+ * types typegen produces.
+ */
+type SanityImageSource = Parameters<
+	ReturnType<typeof createImageUrlBuilder>["image"]
+>[0];
+
 type GetOgImagesProps = {
-	image: Image;
+	image: SanityImageSource;
 	client: SanityClient;
 };
 

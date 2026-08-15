@@ -1,4 +1,4 @@
-import {FolderIcon} from "@sanity/icons";
+import {FolderIcon} from "@sanity/icons/Folder";
 import type {BaseSchemaDefinition} from "sanity";
 import type {ListItemBuilder, StructureBuilder} from "sanity/structure";
 

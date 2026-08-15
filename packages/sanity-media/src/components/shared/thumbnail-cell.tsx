@@ -1,4 +1,4 @@
-import {PlayIcon} from "@sanity/icons";
+import {PlayIcon} from "@sanity/icons/Play";
 import {Box, Flex} from "@sanity/ui";
 import type {ImageTransformer} from "../../types";
 import {getAssetPreviewUrl} from "../../utils";

@@ -12,7 +12,7 @@ export default function DeleteTranslationFooter(
 	const {translations, onClose, onProceed} = props;
 
 	return (
-		<Grid columns={2} gap={2}>
+		<Grid gridTemplateColumns={2} gap={2}>
 			<Button text="Cancel" onClick={onClose} mode="ghost" />
 			<Button
 				text={

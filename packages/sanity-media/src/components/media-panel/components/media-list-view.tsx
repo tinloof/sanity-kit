@@ -1,9 +1,9 @@
-import {CheckmarkIcon} from "@sanity/icons";
+import {CheckmarkIcon} from "@sanity/icons/Checkmark";
 import {Box, Flex, Text} from "@sanity/ui";
+import type {ImageTransformer} from "../../../types";
 import {formatDuration, formatFileSize} from "../../../utils";
-import {type ImageTransformer} from "../../../types";
 import {ThumbnailCell} from "../../shared/thumbnail-cell";
-import {TAG_COLORS, type MediaAsset, type Tag} from "../types";
+import {type MediaAsset, TAG_COLORS, type Tag} from "../types";
 
 export interface MediaListViewProps {
 	media: MediaAsset[];

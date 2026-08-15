@@ -40,7 +40,7 @@ export default function DeleteTranslationDialog(
 	}
 
 	return (
-		<Stack space={4}>
+		<Stack gap={4}>
 			{translations && translations.length > 0 ? (
 				<Text>
 					This document is a locale-specific version which other translations
@@ -50,7 +50,7 @@ export default function DeleteTranslationDialog(
 				<Text>This document does not have connected translations.</Text>
 			)}
 			<Card border padding={3}>
-				<Stack space={4}>
+				<Stack gap={4}>
 					<Text size={1} weight="semibold">
 						{translations && translations.length > 0 ? (
 							<>Before this document can be deleted</>

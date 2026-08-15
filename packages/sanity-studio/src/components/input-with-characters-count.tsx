@@ -58,7 +58,7 @@ export function InputWithCharacterCount(props: TextInputProps): ReactElement {
 	props.elementProps.placeholder = defaultTitle;
 
 	return (
-		<Stack space={2}>
+		<Stack gap={2}>
 			{props.renderDefault(props)}
 			<Flex justify="flex-end">
 				<CharacterCount

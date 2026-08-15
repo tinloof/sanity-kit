@@ -1,10 +1,8 @@
-import {
-	EditIcon,
-	EyeOpenIcon,
-	FolderIcon,
-	LockIcon,
-	RefreshIcon,
-} from "@sanity/icons";
+import {EditIcon} from "@sanity/icons/Edit";
+import {EyeOpenIcon} from "@sanity/icons/EyeOpen";
+import {FolderIcon} from "@sanity/icons/Folder";
+import {LockIcon} from "@sanity/icons/Lock";
+import {RefreshIcon} from "@sanity/icons/Refresh";
 import {
 	Box,
 	Button,
@@ -340,8 +338,8 @@ export function PathnameFieldComponent(
 	]);
 
 	return (
-		<Stack space={3}>
-			<Stack space={2} flex={1}>
+		<Stack gap={3}>
+			<Stack gap={2} flex={1}>
 				<Flex align="center" paddingY={1}>
 					<Text size={1} weight="semibold">
 						{title}

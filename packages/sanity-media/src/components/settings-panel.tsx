@@ -1,4 +1,6 @@
-import {ArrowLeftIcon, CheckmarkCircleIcon} from "@sanity/icons";
+import {ArrowLeftIcon} from "@sanity/icons/ArrowLeft";
+import {CheckmarkCircleIcon} from "@sanity/icons/CheckmarkCircle";
+import {useSecrets} from "@sanity/studio-secrets";
 import {
 	Box,
 	Button,
@@ -9,7 +11,6 @@ import {
 	Text,
 	TextInput,
 } from "@sanity/ui";
-import {useSecrets} from "@sanity/studio-secrets";
 import {useCallback, useEffect, useState} from "react";
 import type {StorageAdapter} from "../adapters";
 import {validateCredentials} from "../storage-client";
@@ -27,10 +28,10 @@ export function SettingsPanel({adapter, onBack}: SettingsPanelProps) {
 	if (adapter.presign && !adapter.fields?.length) {
 		return (
 			<Box paddingY={5}>
-				<Stack space={5}>
+				<Stack gap={5}>
 					<Box paddingX={4}>
 						<Flex justify="space-between" align="flex-start">
-							<Stack space={2}>
+							<Stack gap={2}>
 								<Text size={3} weight="bold">
 									Storage Configuration
 								</Text>
@@ -57,7 +58,7 @@ export function SettingsPanel({adapter, onBack}: SettingsPanelProps) {
 								<Text size={2}>
 									<CheckmarkCircleIcon />
 								</Text>
-								<Stack space={2}>
+								<Stack gap={2}>
 									<Text size={2} weight="semibold">
 										Storage is configured via presigned URLs
 									</Text>
@@ -78,10 +79,7 @@ export function SettingsPanel({adapter, onBack}: SettingsPanelProps) {
 	return <CredentialSettingsPanel adapter={adapter} onBack={onBack} />;
 }
 
-function CredentialSettingsPanel({
-	adapter,
-	onBack,
-}: SettingsPanelProps) {
+function CredentialSettingsPanel({adapter, onBack}: SettingsPanelProps) {
 	const {secrets, loading, storeSecrets} =
 		useSecrets<Record<string, string>>(SECRETS_NAMESPACE);
 	const [values, setValues] = useState<Record<string, string>>({});
@@ -164,10 +162,10 @@ function CredentialSettingsPanel({
 
 	return (
 		<Box paddingY={5}>
-			<Stack space={5}>
+			<Stack gap={5}>
 				<Box paddingX={4}>
 					<Flex justify="space-between" align="flex-start">
-						<Stack space={2}>
+						<Stack gap={2}>
 							<Text size={3} weight="bold">
 								Storage Configuration
 							</Text>
@@ -191,8 +189,8 @@ function CredentialSettingsPanel({
 
 				<Box paddingX={4}>
 					<Card padding={5} radius={2} border>
-						<Stack space={5}>
-							<Stack space={3}>
+						<Stack gap={5}>
+							<Stack gap={3}>
 								<Text size={2} weight="semibold">
 									{adapter.name}
 								</Text>
@@ -203,10 +201,10 @@ function CredentialSettingsPanel({
 								)}
 							</Stack>
 
-							<Stack space={4}>
+							<Stack gap={4}>
 								{(adapter.fields ?? []).map((field) => (
-									<Stack key={field.key} space={3}>
-										<Stack space={2}>
+									<Stack key={field.key} gap={3}>
+										<Stack gap={2}>
 											<Text size={1} weight="semibold">
 												{field.label}
 												{field.required && (

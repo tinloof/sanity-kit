@@ -1,4 +1,5 @@
-import {Box, type ButtonTone, Text, Tooltip} from "@sanity/ui";
+import {Box, type ButtonTone, Text} from "@sanity/ui";
+import {Tooltip} from "@sanity/ui/tooltip";
 import type {ComponentType, PropsWithChildren} from "react";
 import {TextWithTone} from "sanity";
 

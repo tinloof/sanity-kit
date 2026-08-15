@@ -36,29 +36,29 @@
 		"storage"
 	],
 	"devDependencies": {
-		"@sanity/icons": "^3.7.4",
-		"@sanity/ui": "^3.1.11",
+		"@sanity/icons": "^5.2.1",
+		"@sanity/ui": "^4.0.1",
 		"@types/react": "^19.2.10",
 		"@types/react-dom": "^19.2.3",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"sanity": "^5.7.0",
-		"styled-components": "^6.3.8",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
+		"sanity": "^6.9.2",
+		"styled-components": "^6.5.2",
 		"tsup": "^8.5.1",
 		"typescript": "^5.9.3"
 	},
 	"peerDependencies": {
-		"@sanity/icons": "^3.7.4",
-		"@sanity/ui": "^3.1.11",
+		"@sanity/icons": "^5.0.0",
+		"@sanity/ui": "^4.0.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"sanity": "^5.7.0",
+		"sanity": "^6.0.0",
 		"styled-components": "^6.3.8"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.800.0",
 		"@aws-sdk/s3-request-presigner": "^3.800.0",
-		"@sanity/studio-secrets": "^3.0.3",
+		"@sanity/studio-secrets": "^4.0.17",
 		"swr": "^2.3.3"
 	},
 	"publishConfig": {

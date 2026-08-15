@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "sanity dev",
 		"build": "sanity build ../hello-world-i18n-next/public/cms -y",
-		"extract-types": "sanity schema extract",
+		"extract-types": "sanity schema extract --force",
 		"typegen:watch": "watch \"npm run typegen\" ./src",
 		"typegen": "pnpm run extract-types && sanity typegen generate",
 		"lint": "biome lint .",
@@ -17,17 +17,17 @@
 		"./types": "./sanity.types.ts"
 	},
 	"dependencies": {
-		"@sanity/client": "^7.16.0",
-		"@sanity/vision": "^5.12.0",
+		"@sanity/client": "^7.26.2",
+		"@sanity/vision": "^6.9.2",
 		"@tinloof/sanity-document-i18n": "workspace:*",
 		"@tinloof/sanity-document-options": "workspace:*",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
-		"groq": "^5.12.0",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"sanity": "^5.12.0",
-		"styled-components": "^6.3.11"
+		"groq": "^6.9.2",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
+		"sanity": "^6.9.2",
+		"styled-components": "^6.5.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.4",

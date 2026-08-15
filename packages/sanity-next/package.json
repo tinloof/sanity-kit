@@ -93,11 +93,12 @@
 	},
 	"sideEffects": false,
 	"peerDependencies": {
-		"@sanity/client": "^7.16.0",
+		"@sanity/client": "^7.26.2",
 		"next": "^16.1.6",
-		"next-sanity": "^12.1.0",
+		"next-sanity": "^12.1.0 || ^13.0.0",
 		"react": "^19.2.4",
-		"react-dom": "^19.2.4"
+		"react-dom": "^19.2.4",
+		"sanity": "^5.12.0 || ^6.0.0"
 	},
 	"devDependencies": {
 		"@types/node": "^24.10.15",
@@ -105,20 +106,20 @@
 		"@types/react-dom": "^19.2.3",
 		"@types/speakingurl": "^13.0.6",
 		"next": "^16.1.6",
-		"next-sanity": "^12.1.0",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
+		"next-sanity": "^13.3.3",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
 		"tsup": "^8.5.1",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"sanity": "^6.9.2",
+		"@sanity/client": "^7.26.2"
 	},
 	"dependencies": {
 		"@portabletext/react": "^6.0.2",
 		"@portabletext/types": "^4.0.1",
 		"@sanity/asset-utils": "^2.3.0",
-		"@sanity/client": "^7.16.0",
 		"@sanity/image-url": "^2.0.3",
-		"sanity": "^5.12.0",
-		"sanity-plugin-utils": "^1.8.0",
+		"sanity-plugin-utils": "^2.0.15",
 		"speakingurl": "^14.0.1",
 		"swr": "^2.4.0"
 	},
@@ -133,5 +134,10 @@
 	"bugs": {
 		"url": "https://github.com/tinloof/sanity-kit/issues"
 	},
-	"homepage": "https://github.com/tinloof/sanity-kit/packages/sanity-next#readme"
+	"homepage": "https://github.com/tinloof/sanity-kit/packages/sanity-next#readme",
+	"peerDependenciesMeta": {
+		"sanity": {
+			"optional": true
+		}
+	}
 }

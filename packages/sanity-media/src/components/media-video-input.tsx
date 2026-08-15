@@ -1,57 +1,53 @@
-import {
-	CopyIcon,
-	DownloadIcon,
-	EllipsisVerticalIcon,
-	PlayIcon,
-	ResetIcon,
-	SearchIcon,
-	UploadIcon,
-} from "@sanity/icons";
+import {CopyIcon} from "@sanity/icons/Copy";
+import {DownloadIcon} from "@sanity/icons/Download";
+import {EllipsisVerticalIcon} from "@sanity/icons/EllipsisVertical";
+import {PlayIcon} from "@sanity/icons/Play";
+import {ResetIcon} from "@sanity/icons/Reset";
+import {SearchIcon} from "@sanity/icons/Search";
+import {UploadIcon} from "@sanity/icons/Upload";
 import {
 	Button,
 	Card,
 	Flex,
-	Menu,
-	MenuDivider,
-	MenuItem,
-	Popover,
 	Spinner,
 	Stack,
 	Switch,
 	Text,
 	TextArea,
 	TextInput,
-	useToast,
 } from "@sanity/ui";
+import {Menu, MenuDivider, MenuItem} from "@sanity/ui/menu";
+import {Popover} from "@sanity/ui/popover";
+import {useToast} from "@sanity/ui/toast";
 import {
+	type CSSProperties,
 	useCallback,
 	useEffect,
 	useMemo,
 	useRef,
 	useState,
-	type CSSProperties,
 } from "react";
 import {
-	set,
-	unset,
 	type ObjectInputProps,
 	type SanityDocument,
+	set,
+	unset,
 	useClient,
 	useFormValue,
 } from "sanity";
 import {styled} from "styled-components";
 import {API_VERSION} from "../constants";
 import {useAdapter} from "../context/adapter-context";
-import {formatDuration} from "../utils";
 import {
-	getPendingSelection,
 	clearPendingSelection,
+	getPendingSelection,
 } from "../context/selection-context";
 import {handleVideoUpload} from "../upload-handler";
+import {formatDuration} from "../utils";
 import {UploadStagingDialog} from "./media-panel/components";
 import type {MediaAsset, StagingItem} from "./media-panel/types";
-import {MediaBrowserDialog} from "./shared/media-browser-dialog";
 import {useTags} from "./shared/hooks";
+import {MediaBrowserDialog} from "./shared/media-browser-dialog";
 
 // ============================================================================
 // Helpers
@@ -306,7 +302,7 @@ function UploadProgress({
 }) {
 	return (
 		<Card padding={4} radius={2} border>
-			<Stack space={3}>
+			<Stack gap={3}>
 				<Flex align="center" justify="space-between">
 					<Flex align="center" gap={2}>
 						<Spinner />
@@ -682,7 +678,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
 	if (!ready) {
 		return (
 			<Card padding={4} radius={2} shadow={1} tone="caution">
-				<Stack space={2}>
+				<Stack gap={2}>
 					<Text size={2} weight="semibold">
 						Storage Not Configured
 					</Text>
@@ -714,7 +710,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
 	if (value?.asset?._ref && assetPreview) {
 		return (
 			<div ref={containerRef}>
-				<Stack space={4}>
+				<Stack gap={4}>
 					<div style={{padding: 1, ...customProperties}}>
 						<Card
 							border
@@ -760,7 +756,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
 					)}
 
 					{/* Metadata Fields */}
-					<Stack space={2}>
+					<Stack gap={2}>
 						<Text size={1} weight="medium">
 							Title
 						</Text>
@@ -779,7 +775,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
 							disabled={readOnly}
 						/>
 					</Stack>
-					<Stack space={2}>
+					<Stack gap={2}>
 						<Text size={1} weight="medium">
 							Caption
 						</Text>
@@ -808,7 +804,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
 								}}
 								disabled={readOnly}
 							/>
-							<Stack space={2}>
+							<Stack gap={2}>
 								<Text size={1} weight="medium">
 									Has audio
 								</Text>
@@ -860,7 +856,7 @@ export function MediaVideoInput(props: ObjectInputProps) {
 	// Empty state - upload placeholder
 	return (
 		<div ref={containerRef}>
-			<Stack space={3}>
+			<Stack gap={3}>
 				<div style={{padding: 1}}>
 					<Card
 						border

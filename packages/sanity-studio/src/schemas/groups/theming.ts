@@ -1,4 +1,4 @@
-import {ColorWheelIcon} from "@sanity/icons";
+import {ColorWheelIcon} from "@sanity/icons/ColorWheel";
 import type {FieldGroupDefinition} from "sanity";
 
 /**
