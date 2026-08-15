@@ -55,6 +55,23 @@
 			"dependsOn": ["@examples/hello-world-i18n-studio#build"],
 			"cache": true
 		},
+		"next-basic-website#typegen": {
+			"dependsOn": ["@examples/hello-world-i18n-studio#typegen"],
+			"outputs": ["sanity.types.ts"],
+			"cache": true,
+			"env": [
+				"NEXT_PUBLIC_SANITY_PROJECT_ID",
+				"NEXT_PUBLIC_SANITY_DATASET"
+			]
+		},
+		"next-basic-website#build": {
+			"dependsOn": ["next-basic-website#typegen"],
+			"cache": true
+		},
+		"next-basic-website#typecheck": {
+			"dependsOn": ["next-basic-website#typegen"],
+			"cache": true
+		},
 		"@examples/blog-studio#typegen": {
 			"outputs": ["schema.json", "../blog-next/types/sanity.generated.d.ts"],
 			"cache": true,

@@ -1,5 +1,5 @@
 import {disableDraftMode} from "@tinloof/sanity-next/actions/disable-draft-mode";
-import {getOgImages} from "@tinloof/sanity-web";
+import {getOgImages} from "@tinloof/sanity-next/utils";
 import type {Metadata} from "next";
 import {Inter} from "next/font/google";
 import {draftMode} from "next/headers";

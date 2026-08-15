@@ -41,3 +41,14 @@ verifying this branch:
   unreachable for consumers. They now ship.
 - `@tinloof/sanity-web` declared a `./hooks` subpath pointing at `dist/hooks/`,
   which has never existed in any released version. The dead entry is removed.
+- `getOgImages` was moved out of `@tinloof/sanity-web` when the Next.js code was
+  split into `@tinloof/sanity-next`, but was never given an export path in
+  either package — it appeared in no `.d.ts` in any published build. It is now
+  exported from `@tinloof/sanity-next/utils`, alongside
+  `resolveSanityRouteMetadata` and `createSanityMetadataResolver`.
+
+`getOgImages` also takes a wider `image` type. It was annotated as `sanity`'s
+`Image`, which requires every `crop`/`hotspot` number, while
+`sanity typegen generate` emits them all optional — so the helper rejected the
+very types typegen produces. It now accepts whatever the underlying image URL
+builder accepts, which is a strict widening.

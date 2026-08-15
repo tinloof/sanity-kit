@@ -7,7 +7,8 @@
 		"lint": "biome lint .",
 		"check": "biome check --write .",
 		"start": "next start",
-		"type-check": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"typegen": "sanity typegen generate"
 	},
 	"dependencies": {
 		"@examples/hello-world-i18n-studio": "workspace:*",

@@ -1,0 +1,5 @@
+{
+	"path": "./{app,components,data}/**/*.{ts,tsx}",
+	"schema": "../../examples/hello-world-i18n-studio/schema.json",
+	"generates": "./sanity.types.ts"
+}
