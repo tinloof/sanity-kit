@@ -1,21 +1,15 @@
-import {
-	AddIcon,
-	CloseIcon,
-	CopyIcon,
-	DocumentIcon,
-	ImageIcon,
-	PlayIcon,
-	TrashIcon,
-} from "@sanity/icons";
-import type {ImageTransformer} from "../../../types";
+import {AddIcon} from "@sanity/icons/Add";
+import {CloseIcon} from "@sanity/icons/Close";
+import {CopyIcon} from "@sanity/icons/Copy";
+import {DocumentIcon} from "@sanity/icons/Document";
+import {ImageIcon} from "@sanity/icons/Image";
+import {PlayIcon} from "@sanity/icons/Play";
+import {TrashIcon} from "@sanity/icons/Trash";
 import {
 	Box,
 	Button,
 	Card,
 	Flex,
-	Menu,
-	MenuButton,
-	MenuItem,
 	Spinner,
 	Stack,
 	Switch,
@@ -25,12 +19,14 @@ import {
 	Text,
 	TextArea,
 	TextInput,
-	useToast,
 } from "@sanity/ui";
+import {Menu, MenuButton, MenuItem} from "@sanity/ui/menu";
+import {useToast} from "@sanity/ui/toast";
 import {useEffect, useRef, useState} from "react";
 import {useClient} from "sanity";
 import {IntentLink} from "sanity/router";
 import {API_VERSION} from "../../../constants";
+import type {ImageTransformer} from "../../../types";
 import {formatDuration, formatFileSize} from "../../../utils";
 import type {MediaAsset, Tag} from "../types";
 import {TAG_COLORS} from "../types";
@@ -342,7 +338,7 @@ export function MediaDetailPanel({
 						flexShrink: 0,
 					}}
 				>
-					<TabList space={2}>
+					<TabList gap={2}>
 						<Tab
 							aria-controls="details-panel"
 							id="details-tab"
@@ -369,14 +365,14 @@ export function MediaDetailPanel({
 						hidden={activeTab !== "details"}
 					>
 						<Box padding={4}>
-							<Stack space={5}>
+							<Stack gap={5}>
 								{/* File Info */}
-								<Stack space={3}>
+								<Stack gap={3}>
 									<Text size={1} weight="semibold">
 										File info
 									</Text>
 									<Card padding={3} radius={2} tone="transparent" border>
-										<Stack space={3}>
+										<Stack gap={3}>
 											<Flex justify="space-between">
 												<Text size={1} muted>
 													Filename
@@ -449,15 +445,15 @@ export function MediaDetailPanel({
 								</Stack>
 
 								{/* Editable Metadata */}
-								<Stack space={3}>
+								<Stack gap={3}>
 									<Text size={1} weight="semibold">
 										Metadata
 									</Text>
 									<Card padding={3} radius={2} tone="transparent" border>
-										<Stack space={4}>
+										<Stack gap={4}>
 											{media.mediaType === "image" ? (
 												<>
-													<Stack space={2}>
+													<Stack gap={2}>
 														<Text size={1} weight="medium">
 															Alt text
 														</Text>
@@ -479,7 +475,7 @@ export function MediaDetailPanel({
 															placeholder="Describe the image for accessibility"
 														/>
 													</Stack>
-													<Stack space={2}>
+													<Stack gap={2}>
 														<Text size={1} weight="medium">
 															Caption
 														</Text>
@@ -508,7 +504,7 @@ export function MediaDetailPanel({
 												</>
 											) : (
 												<>
-													<Stack space={2}>
+													<Stack gap={2}>
 														<Text size={1} weight="medium">
 															Title
 														</Text>
@@ -530,7 +526,7 @@ export function MediaDetailPanel({
 															placeholder="Add a title for this video"
 														/>
 													</Stack>
-													<Stack space={2}>
+													<Stack gap={2}>
 														<Text size={1} weight="medium">
 															Caption
 														</Text>
@@ -566,7 +562,7 @@ export function MediaDetailPanel({
 																	updateHasAudio(event.currentTarget.checked);
 																}}
 															/>
-															<Stack space={2}>
+															<Stack gap={2}>
 																<Text size={1} weight="medium">
 																	Has audio
 																</Text>
@@ -585,7 +581,7 @@ export function MediaDetailPanel({
 
 								{/* Thumbnail (for videos) */}
 								{media.mediaType === "video" && media.thumbnail?.url && (
-									<Stack space={3}>
+									<Stack gap={3}>
 										<Text size={1} weight="semibold">
 											Thumbnail
 										</Text>
@@ -623,7 +619,7 @@ export function MediaDetailPanel({
 															}}
 														/>
 													</Box>
-													<Stack space={2} style={{flex: 1, minWidth: 0}}>
+													<Stack gap={2} style={{flex: 1, minWidth: 0}}>
 														<Text
 															size={1}
 															weight="medium"
@@ -644,7 +640,7 @@ export function MediaDetailPanel({
 
 								{/* Thumbnail of (for images that are video thumbnails) */}
 								{parentVideo && (
-									<Stack space={3}>
+									<Stack gap={3}>
 										<Text size={1} weight="semibold">
 											Thumbnail of
 										</Text>
@@ -692,7 +688,7 @@ export function MediaDetailPanel({
 															</Flex>
 														)}
 													</Box>
-													<Stack space={2} style={{flex: 1, minWidth: 0}}>
+													<Stack gap={2} style={{flex: 1, minWidth: 0}}>
 														<Text
 															size={1}
 															weight="medium"
@@ -711,7 +707,7 @@ export function MediaDetailPanel({
 								)}
 
 								{/* Tags */}
-								<Stack space={3}>
+								<Stack gap={3}>
 									<Flex align="center" justify="space-between">
 										<Text size={1} weight="semibold">
 											Tags
@@ -829,7 +825,7 @@ export function MediaDetailPanel({
 								</Stack>
 
 								{/* Actions */}
-								<Stack space={3}>
+								<Stack gap={3}>
 									<Text size={1} weight="semibold">
 										Actions
 									</Text>
@@ -870,13 +866,13 @@ export function MediaDetailPanel({
 									<Spinner />
 								</Flex>
 							) : references && references.length > 0 ? (
-								<Stack space={4}>
+								<Stack gap={4}>
 									{/* Asset References */}
 									{(() => {
 										const assetRefs = references.filter((r) => r.isAsset);
 										if (assetRefs.length === 0) return null;
 										return (
-											<Stack space={3}>
+											<Stack gap={3}>
 												<Text size={1} weight="semibold">
 													Media assets
 												</Text>
@@ -885,7 +881,7 @@ export function MediaDetailPanel({
 													{assetRefs.length !== 1 ? "s" : ""} using this as
 													thumbnail
 												</Text>
-												<Stack space={2}>
+												<Stack gap={2}>
 													{assetRefs.map((ref) => {
 														const previewUrl =
 															ref.assetType === "video"
@@ -935,10 +931,7 @@ export function MediaDetailPanel({
 																			<ImageIcon style={{color: "white"}} />
 																		)}
 																	</Box>
-																	<Stack
-																		space={1}
-																		style={{flex: 1, minWidth: 0}}
-																	>
+																	<Stack gap={1} style={{flex: 1, minWidth: 0}}>
 																		<Flex align="center" gap={2}>
 																			{ref.assetType === "video" && (
 																				<PlayIcon
@@ -973,7 +966,7 @@ export function MediaDetailPanel({
 										const docRefs = references.filter((r) => !r.isAsset);
 										if (docRefs.length === 0) return null;
 										return (
-											<Stack space={3}>
+											<Stack gap={3}>
 												<Text size={1} weight="semibold">
 													Documents
 												</Text>
@@ -981,7 +974,7 @@ export function MediaDetailPanel({
 													{docRefs.length} document
 													{docRefs.length !== 1 ? "s" : ""} using this asset
 												</Text>
-												<Stack space={2}>
+												<Stack gap={2}>
 													{docRefs.map((ref) => (
 														<IntentLink
 															key={ref._id}
@@ -1010,10 +1003,7 @@ export function MediaDetailPanel({
 																	>
 																		<DocumentIcon />
 																	</Box>
-																	<Stack
-																		space={1}
-																		style={{flex: 1, minWidth: 0}}
-																	>
+																	<Stack gap={1} style={{flex: 1, minWidth: 0}}>
 																		<Text
 																			size={1}
 																			weight="medium"
@@ -1036,7 +1026,7 @@ export function MediaDetailPanel({
 								</Stack>
 							) : (
 								<Card padding={4} radius={2} tone="transparent" border>
-									<Stack space={3} style={{textAlign: "center"}}>
+									<Stack gap={3} style={{textAlign: "center"}}>
 										<Text size={1} muted>
 											No documents are using this asset
 										</Text>

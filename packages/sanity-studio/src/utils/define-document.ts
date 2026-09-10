@@ -2,7 +2,7 @@ import {
 	orderRankField,
 	orderRankOrdering,
 } from "@sanity/orderable-document-list";
-import {uniqBy} from "lodash";
+import uniqBy from "lodash/uniqBy.js";
 import type {DocumentDefinition, SortOrdering} from "sanity";
 
 import {contentSchemaGroup, settingsSchemaGroup} from "../schemas/groups";

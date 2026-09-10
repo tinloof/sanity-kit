@@ -10,16 +10,17 @@ type DeleteTranslationDialogProps = {
 	doc: SanityDocument;
 	documentId: string;
 	setTranslations: (translations: SanityDocument[]) => void;
+	setReady: (ready: boolean) => void;
 };
 
 export default function DeleteTranslationDialog(
 	props: DeleteTranslationDialogProps,
 ) {
-	const {doc, documentId, setTranslations} = props;
+	const {doc, documentId, setTranslations, setReady} = props;
 
 	// Get all references and check if any of them are translations metadata
-	const {data, loading} = useListeningQuery<SanityDocument[]>(
-		`*[references($id)]{_id, _type}`,
+	const {data, loading, error} = useListeningQuery<SanityDocument[]>(
+		`*[references($id)]{_id, _rev, _type, translations[]{_key, value{_ref}}}`,
 		{params: {id: documentId}, initialValue: []},
 	);
 	const {translations, otherReferences} = useMemo(
@@ -29,7 +30,13 @@ export default function DeleteTranslationDialog(
 
 	useEffect(() => {
 		setTranslations(translations);
-	}, [setTranslations, translations]);
+		setReady(!loading && !error);
+	}, [setTranslations, translations, setReady, loading, error]);
+
+	if (error)
+		return (
+			<Text>Could not check references. Close this dialog and try again.</Text>
+		);
 
 	if (loading) {
 		return (
@@ -40,7 +47,7 @@ export default function DeleteTranslationDialog(
 	}
 
 	return (
-		<Stack space={4}>
+		<Stack gap={4}>
 			{translations && translations.length > 0 ? (
 				<Text>
 					This document is a locale-specific version which other translations
@@ -50,7 +57,7 @@ export default function DeleteTranslationDialog(
 				<Text>This document does not have connected translations.</Text>
 			)}
 			<Card border padding={3}>
-				<Stack space={4}>
+				<Stack gap={4}>
 					<Text size={1} weight="semibold">
 						{translations && translations.length > 0 ? (
 							<>Before this document can be deleted</>

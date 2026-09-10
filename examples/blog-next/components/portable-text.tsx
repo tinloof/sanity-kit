@@ -1,4 +1,4 @@
-import type {BLOG_POST_QUERYResult} from "@examples/blog-studio/types";
+import type {BLOG_POST_QUERY_RESULT} from "@examples/blog-studio/types";
 import {PortableText} from "@tinloof/sanity-web/components/portable-text";
 import type {
 	ExtractPtBlock,
@@ -10,7 +10,7 @@ import Code from "./pt-blocks/code";
 import ImageBlock from "./pt-blocks/image";
 import Table from "./pt-blocks/table";
 
-type PTBody = NonNullable<NonNullable<BLOG_POST_QUERYResult>["ptBody"]>;
+type PTBody = NonNullable<NonNullable<BLOG_POST_QUERY_RESULT>["ptBody"]>;
 
 export type BlogPtBlock<TType extends ExtractPtBlockType<PTBody>> =
 	ExtractPtBlock<PTBody, TType>;

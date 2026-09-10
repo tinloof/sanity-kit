@@ -1,8 +1,10 @@
 import {disableDraftMode} from "@tinloof/sanity-next/actions/disable-draft-mode";
-import {getOgImages} from "@tinloof/sanity-web";
+import {getOgImages} from "@tinloof/sanity-next/utils";
 import type {Metadata} from "next";
+import {revalidateTag, updateTag} from "next/cache";
 import {Inter} from "next/font/google";
 import {draftMode} from "next/headers";
+import {parseTags} from "next-sanity/live";
 import {VisualEditing} from "next-sanity/visual-editing";
 import ExitPreviewClient from "@/components/exit-preview";
 import config from "@/config";
@@ -50,7 +52,19 @@ export default async function RootLayout({
 						<ExitPreviewClient disableDraftMode={disableDraftMode} />
 					</>
 				)}
-				<SanityLive refreshOnFocus={false} />
+				<SanityLive
+					action={async (unsafeTags) => {
+						"use server";
+						// Preserve next-sanity 12 cache invalidation behavior.
+						const {isEnabled} = await draftMode();
+						const {tags} = parseTags(unsafeTags);
+						for (const tag of tags) {
+							if (isEnabled) revalidateTag(tag, "max");
+							else updateTag(tag);
+						}
+						if (isEnabled) return "refresh";
+					}}
+				/>
 			</body>
 		</html>
 	);

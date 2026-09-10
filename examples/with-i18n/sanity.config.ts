@@ -26,10 +26,10 @@ export default defineConfig({
 			creatablePages: ["page"],
 			i18n: config.i18n,
 		}),
+		structureTool(),
 		documentI18n({
 			locales: config.i18n.locales,
 		}),
-		structureTool(),
 		visionTool({defaultApiVersion: config.sanity.apiVersion}),
 	],
 });

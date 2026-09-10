@@ -1,16 +1,16 @@
 import type {NextRequest} from "next/server";
-import type {DefinedSanityFetchType} from "next-sanity/live";
+import type {DefinedFetchType} from "./next-sanity-types";
 import {redirectIfNeeded} from "./redirect";
 import {generateSanityI18nSitemap, generateSanitySitemap} from "./sitemap";
 import {getPathVariations, localizePathname} from "./urls";
 
 export type InitSanityUtilsConfig = {
-	sanityFetch: DefinedSanityFetchType;
+	sanityFetch: DefinedFetchType;
 	baseUrl: string;
 };
 
 export type InitSanityI18nUtilsConfig = {
-	sanityFetch: DefinedSanityFetchType;
+	sanityFetch: DefinedFetchType;
 	baseUrl: string;
 	i18n: {
 		locales: Array<{id: string; title: string}>;

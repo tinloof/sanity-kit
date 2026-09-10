@@ -8,7 +8,6 @@ const locales = [
 ];
 
 export const {
-	SanityImage,
 	SanityLive,
 	client,
 	generateSitemap,
@@ -21,3 +20,5 @@ export const {
 		defaultLocaleId: locales[0].id,
 	},
 });
+
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";

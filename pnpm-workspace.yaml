@@ -2,3 +2,40 @@ packages:
   - 'apps/*'
   - 'examples/*'
   - 'packages/*'
+minimumReleaseAgeExclude:
+  - '@aws-sdk/client-s3@3.1128.0'
+  - '@aws-sdk/s3-request-presigner@3.1128.0'
+  - '@sanity/client@8.6.1'
+  - get-it@9.5.4
+  - lucide-react@1.43.0
+  - '@sanity/access-ui@6.13.1'
+  - '@sanity/diff@6.13.1'
+  - '@sanity/mutator@6.13.1'
+  - '@sanity/schema@6.13.1'
+  - '@sanity/types@6.13.1'
+  - '@sanity/util@6.13.1'
+  - '@sanity/validation@6.13.1'
+  - '@sanity/vision@6.13.1'
+  - groq@6.13.1
+  - sanity@6.13.1
+  - '@portabletext/editor@8.1.3'
+  - '@portabletext/plugin-character-pair-decorator@9.0.8'
+  - '@portabletext/plugin-dnd@2.0.9'
+  - '@portabletext/plugin-input-rule@7.0.8'
+  - '@portabletext/plugin-list-index@2.0.7'
+  - '@portabletext/plugin-markdown-shortcuts@9.0.8'
+  - '@portabletext/plugin-one-line@8.0.7'
+  - '@portabletext/plugin-paste-link@5.0.7'
+  - '@portabletext/plugin-table@2.0.7'
+  - '@portabletext/plugin-typography@9.0.8'
+
+allowBuilds:
+  esbuild@0.27.7 || 0.28.2: true
+
+# @vercel/frameworks pins vulnerable parser releases. Keep the same API majors.
+# Remove these selectors when its upstream dependency pins are patched.
+overrides:
+  # Keep workspace auto-installed peers on the integration-tested Sanity release.
+  sanity: 6.13.1
+  '@vercel/frameworks@3.29.0>js-yaml': 3.15.2
+  '@vercel/frameworks@3.29.0>smol-toml': 1.8.0

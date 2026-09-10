@@ -1,4 +1,4 @@
-import {CalendarIcon} from "@sanity/icons";
+import {CalendarIcon} from "@sanity/icons/Calendar";
 import type {FieldGroupDefinition} from "sanity";
 
 /**

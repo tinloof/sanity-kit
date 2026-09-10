@@ -55,6 +55,9 @@ export type TranslationReference = KeyedObject & {
 };
 
 export type Metadata = {
+	[key: string]: unknown;
+	_rev?: string;
+	_updatedAt?: string;
 	_id: string;
 	_createdAt: string;
 	translations: TranslationReference[];

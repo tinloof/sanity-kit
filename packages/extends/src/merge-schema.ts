@@ -1,4 +1,4 @@
-import mergeWith from "lodash/mergeWith";
+import mergeWith from "lodash/mergeWith.js";
 import type {DocumentDefinition} from "sanity";
 import type {AbstractDefinition} from "./types";
 

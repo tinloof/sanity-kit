@@ -1,9 +1,14 @@
+import {useToast} from "@sanity/ui/toast";
 import {useCallback, useState} from "react";
 import {useClient} from "sanity";
-import {useToast} from "@sanity/ui";
 import type {StorageAdapter} from "../../../adapters";
 import {API_VERSION} from "../../../constants";
-import {deleteFile, type StorageCredentials} from "../../../storage-client";
+import {deleteAssets, type StorageAsset} from "../../../delete-assets";
+import {
+	deleteFile,
+	deleteFilePresigned,
+	type StorageCredentials,
+} from "../../../storage-client";
 import type {MediaAsset, Tag} from "../../media-panel/types";
 
 export interface UseBulkSelectionOptions {
@@ -96,136 +101,64 @@ export function useBulkSelection({
 		setDeleteTarget(null);
 	}, []);
 
-	// Helper to delete file from storage
 	const deleteFromStorage = useCallback(
-		async (asset: MediaAsset) => {
-			if (!asset.path) {
-				console.warn("Cannot delete from storage: missing path");
-				return;
+		async (asset: StorageAsset): Promise<boolean> => {
+			if (!asset.path) return false;
+			if (adapter.presignDelete) {
+				await deleteFilePresigned(adapter, asset.path);
+			} else if (credentials) {
+				await deleteFile(credentials, asset.path);
+			} else {
+				return false;
 			}
-
-			try {
-				if (adapter.presignDelete) {
-					const {deleteUrl} = await adapter.presignDelete(asset.path);
-					await fetch(deleteUrl, {method: "DELETE"});
-				} else if (credentials) {
-					await deleteFile(credentials, asset.path);
-				} else if (adapter.presign) {
-					// Adapter uses presigned URLs but has no presignDelete
-					console.warn(
-						"StorageAdapter does not support presigned delete — file will remain in storage",
-					);
-				} else {
-					console.warn("Cannot delete from storage: missing credentials");
-				}
-			} catch (error) {
-				console.error("Failed to delete from storage:", error);
-				// Don't throw - we'll still delete from Sanity even if storage delete fails
-				// The file will become orphaned but that's better than leaving a broken reference
-			}
+			return true;
 		},
 		[adapter, credentials],
 	);
 
-	// Confirm and execute deletion
 	const confirmDelete = useCallback(
 		async (singleAsset?: MediaAsset | null) => {
-			if (deleteTarget === "single" && singleAsset) {
-				setIsDeleting(true);
-				try {
-					// Delete from storage first
-					await deleteFromStorage(singleAsset);
-
-					// Delete thumbnail from storage if it's a video
-					if (singleAsset.mediaType === "video" && singleAsset.thumbnail) {
-						const thumbnailAsset = singleAsset.thumbnail as MediaAsset & {
-							path?: string;
-						};
-						if (thumbnailAsset.path) {
-							await deleteFromStorage(thumbnailAsset as MediaAsset);
-						}
-					}
-
-					const transaction = client.transaction();
-
-					// Delete thumbnail document if it's a video
-					if (singleAsset.mediaType === "video" && singleAsset.thumbnail?._id) {
-						transaction.delete(singleAsset.thumbnail._id);
-					}
-					transaction.delete(singleAsset._id);
-
-					await transaction.commit();
-
-					toast.push({
-						status: "success",
-						title: "Asset deleted successfully",
-					});
-
-					onDelete?.();
-				} catch (error) {
-					console.error("Failed to delete asset:", error);
-					toast.push({
-						status: "error",
-						title: "Failed to delete asset",
-						description:
-							error instanceof Error ? error.message : "Unknown error",
-					});
-				} finally {
-					setIsDeleting(false);
-				}
-			} else if (deleteTarget === "bulk" && selectedIds.size > 0) {
-				const count = selectedIds.size;
-				setIsDeleting(true);
-				try {
-					const assetsToDelete = media.filter((m) => selectedIds.has(m._id));
-
-					// Delete all files from storage first
-					for (const asset of assetsToDelete) {
-						await deleteFromStorage(asset);
-
-						// Delete thumbnail from storage if it's a video
-						if (asset.mediaType === "video" && asset.thumbnail) {
-							const thumbnailAsset = asset.thumbnail as MediaAsset & {
-								path?: string;
-							};
-							if (thumbnailAsset.path) {
-								await deleteFromStorage(thumbnailAsset as MediaAsset);
-							}
-						}
-					}
-
-					const transaction = client.transaction();
-
-					for (const asset of assetsToDelete) {
-						// Delete thumbnail document if it's a video
-						if (asset.mediaType === "video" && asset.thumbnail?._id) {
-							transaction.delete(asset.thumbnail._id);
-						}
-						transaction.delete(asset._id);
-					}
-
-					await transaction.commit();
-
-					toast.push({
-						status: "success",
-						title: `${count} asset${count > 1 ? "s" : ""} deleted successfully`,
-					});
-
-					setSelectedIds(new Set());
-					onDelete?.();
-				} catch (error) {
-					console.error("Failed to delete assets:", error);
-					toast.push({
-						status: "error",
-						title: "Failed to delete some assets",
-						description:
-							error instanceof Error ? error.message : "Unknown error",
-					});
-				} finally {
-					setIsDeleting(false);
-				}
+			const assets =
+				deleteTarget === "single" && singleAsset
+					? [singleAsset]
+					: deleteTarget === "bulk"
+						? media.filter((asset) => selectedIds.has(asset._id))
+						: [];
+			if (!assets.length) {
+				closeDeleteDialog();
+				return;
 			}
-			closeDeleteDialog();
+			setIsDeleting(true);
+			try {
+				const failed = await deleteAssets(client, assets, deleteFromStorage);
+				toast.push(
+					failed.length
+						? {
+								status: "warning",
+								title: "Assets deleted; storage cleanup incomplete",
+								description: `Some files may remain in storage. Ask your storage administrator to remove: ${failed.map((asset) => asset.path || asset.originalFilename || asset._id).join(", ")}`,
+							}
+						: {
+								status: "success",
+								title:
+									assets.length === 1
+										? "Asset deleted successfully"
+										: `${assets.length} assets deleted successfully`,
+							},
+				);
+				if (deleteTarget === "bulk") setSelectedIds(new Set());
+				onDelete?.();
+			} catch (error) {
+				console.error("Failed to delete assets:", error);
+				toast.push({
+					status: "error",
+					title: "Failed to delete assets",
+					description: error instanceof Error ? error.message : "Unknown error",
+				});
+			} finally {
+				setIsDeleting(false);
+				closeDeleteDialog();
+			}
 		},
 		[
 			deleteTarget,
@@ -236,7 +169,6 @@ export function useBulkSelection({
 			onDelete,
 			closeDeleteDialog,
 			deleteFromStorage,
-			credentials,
 		],
 	);
 

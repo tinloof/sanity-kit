@@ -1,4 +1,7 @@
-import {DocumentIcon, ImageIcon, PlayIcon, TagIcon} from "@sanity/icons";
+import {DocumentIcon} from "@sanity/icons/Document";
+import {ImageIcon} from "@sanity/icons/Image";
+import {PlayIcon} from "@sanity/icons/Play";
+import {TagIcon} from "@sanity/icons/Tag";
 import {defineField, defineType} from "sanity";
 import type {StorageAdapter} from "./adapters";
 import {formatDuration, formatFileSize} from "./utils";

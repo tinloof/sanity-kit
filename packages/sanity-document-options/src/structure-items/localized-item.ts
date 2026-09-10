@@ -1,4 +1,4 @@
-import {FolderIcon} from "@sanity/icons";
+import {FolderIcon} from "@sanity/icons/Folder";
 import pluralize from "pluralize";
 import type {BaseSchemaDefinition} from "sanity";
 import type {ListItemBuilder, StructureBuilder} from "sanity/structure";
@@ -55,6 +55,7 @@ const localizedItem = ({
 						.title("All")
 						.child(
 							S.documentTypeList(name)
+								.apiVersion("2025-11-14")
 								.filter(`_type == $name`)
 								.params({name})
 								.title(`All ${pluralize(title).toLowerCase()}`),
@@ -67,6 +68,7 @@ const localizedItem = ({
 							.child(
 								S.documentTypeList(name)
 									.title(`${locale.title} ${pluralize(title).toLowerCase()}`)
+									.apiVersion("2025-11-14")
 									.filter(`_type == $name && ${localeFieldName} == $locale`)
 									.params({locale: locale.id, name})
 									.initialValueTemplates(

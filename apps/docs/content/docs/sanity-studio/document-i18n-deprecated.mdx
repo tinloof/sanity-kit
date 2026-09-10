@@ -1,39 +1,42 @@
 ---
-title: documentI18n (DEPRECATED)
-description: Deprecated plugin - use @tinloof/sanity-document-i18n instead
+title: documentI18n wrapper removal
+description: Move from the removed Studio wrapper to the standalone translation plugin
 ---
 
-# `documentI18n` (DEPRECATED)
+# `documentI18n` wrapper removal
 
-> ⚠️ **DEPRECATED**: This plugin has been moved to a separate package `@tinloof/sanity-document-i18n` with enhanced features and better template management. Please migrate to the new package.
+The `documentI18n` export and `SanityI18NPluginOptions` type are removed from `@tinloof/sanity-studio` 3. Use the standalone `@tinloof/sanity-document-i18n` package.
 
-The `documentI18n` plugin is an opinionated thin wrapper around Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) that makes it possible to add internationalization without having to specify schema types.
-`documentI18n` enables internationalization on any schema with a `locale` field.
+## Update the consuming Studio
 
-**Migration:**
-
-```bash
-npm install @tinloof/sanity-document-i18n
-```
+1. Add `@tinloof/sanity-document-i18n` and change the import.
+2. Remove the wrapper-only `schemas` option. The standalone plugin identifies localized schema types using their configured locale field.
+3. Keep the same locale IDs and locale field. The old wrapper used `locale`; that is also the standalone default.
+4. Check stored translation metadata before switching an existing project, then test creation, publication, navigation, duplication, and deletion in a disposable dataset copy.
 
 ```typescript
-// OLD (deprecated)
-import {documentI18n} from "@tinloof/sanity-studio";
-
-// NEW (recommended)
+import {defineConfig} from "sanity";
+import {structureTool} from "sanity/structure";
 import {documentI18n} from "@tinloof/sanity-document-i18n";
 
 export default defineConfig({
   plugins: [
+    structureTool(),
     documentI18n({
       locales: [
         {id: "en", title: "English"},
         {id: "fr", title: "French"},
       ],
+      localeField: "locale",
     }),
   ],
 });
 ```
 
-See the [`@tinloof/sanity-document-i18n` documentation](../../document-i18n/) for complete usage instructions.
+Place `documentI18n()` after `structureTool()` so its translation actions can extend Sanity's default actions. If you use `documentOptions()` with its Structure tool enabled, place that before `documentI18n()` instead of adding another `structureTool()`.
 
+The Studio developer owns this configuration. Existing standalone data uses the locale ID as each translation reference's `_key` and requires no migration. Data from another plugin version may use independent keys or a separate language field. Do not assume that changing an import converts that data; inspect the stored format and custom metadata readers first.
+
+No automatic dataset migration is included. Bulk publishing and the metadata management editor remain disabled in the standalone implementation.
+
+See the [standalone plugin documentation](/docs/sanity-document-i18n) for configuration details.

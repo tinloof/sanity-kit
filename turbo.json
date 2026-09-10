@@ -18,10 +18,7 @@
 		},
 		"typecheck": {},
 		"@examples/hello-world-i18n-studio#typegen": {
-			"outputs": [
-				"schema.json",
-				"../hello-world-i18n-next/types/sanity.generated.d.ts"
-			],
+			"outputs": ["schema.json", "sanity.types.ts"],
 			"cache": true,
 			"env": [
 				"SANITY_STUDIO_DATASET",
@@ -30,12 +27,11 @@
 			]
 		},
 		"@examples/hello-world-i18n-studio#typegen:watch": {
-			"outputs": [
-				"schema.json",
-				"../hello-world-i18n-next/types/sanity.generated.d.ts"
-			],
+			"outputs": ["sanity.types.ts"],
 			"cache": false,
-			"persistent": true
+			"persistent": true,
+			"dependsOn": ["@examples/hello-world-i18n-studio#typegen"],
+			"with": ["@examples/hello-world-i18n-studio#extract-types:watch"]
 		},
 		"@examples/hello-world-i18n-studio#build": {
 			"dependsOn": ["@examples/hello-world-i18n-studio#typegen"],
@@ -56,7 +52,7 @@
 			"cache": true
 		},
 		"@examples/blog-studio#typegen": {
-			"outputs": ["schema.json", "../blog-next/types/sanity.generated.d.ts"],
+			"outputs": ["schema.json", "sanity.types.ts"],
 			"cache": true,
 			"env": [
 				"SANITY_STUDIO_DATASET",
@@ -65,9 +61,11 @@
 			]
 		},
 		"@examples/blog-studio#typegen:watch": {
-			"outputs": ["schema.json", "../blog-next/types/sanity.generated.d.ts"],
+			"outputs": ["sanity.types.ts"],
 			"cache": false,
-			"persistent": true
+			"persistent": true,
+			"dependsOn": ["@examples/blog-studio#typegen"],
+			"with": ["@examples/blog-studio#extract-types:watch"]
 		},
 		"@examples/blog-studio#build": {
 			"dependsOn": ["@examples/blog-studio#typegen"],
@@ -86,6 +84,28 @@
 		"@examples/blog-next#build": {
 			"dependsOn": ["@examples/blog-studio#build"],
 			"cache": true
+		},
+		"@examples/blog-studio#extract-types:watch": {
+			"cache": false,
+			"persistent": true,
+			"dependsOn": ["@examples/blog-studio#typegen"]
+		},
+		"@examples/hello-world-i18n-studio#extract-types:watch": {
+			"cache": false,
+			"persistent": true,
+			"dependsOn": ["@examples/hello-world-i18n-studio#typegen"]
+		},
+		"@tinloof/sanity-web#test": {
+			"cache": false,
+			"dependsOn": ["@tinloof/sanity-web#build"]
+		},
+		"@tinloof/sanity-media#test": {
+			"cache": false,
+			"dependsOn": ["@tinloof/sanity-media#build"]
+		},
+		"@tinloof/sanity-studio#test": {
+			"cache": false,
+			"dependsOn": ["@tinloof/sanity-studio#build"]
 		}
 	}
 }

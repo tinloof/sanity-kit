@@ -1,5 +1,5 @@
 import {singletonListItem} from "@tinloof/sanity-studio";
-import {isDev} from "sanity";
+import {type DocumentDefinition, isDev} from "sanity";
 import type {StructureResolver} from "sanity/structure";
 import documents from "./schemas/documents";
 
@@ -15,7 +15,7 @@ export const structure: StructureResolver = (S) => {
 };
 
 const disableCreationDocuments = documents.filter(
-	(document) => document.options?.disableCreation,
+	(document: DocumentDefinition) => document.options?.disableCreation,
 );
 
 const disabledSingletons = () => {

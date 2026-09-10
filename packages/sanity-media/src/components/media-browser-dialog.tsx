@@ -1,4 +1,4 @@
-import {PlayIcon} from "@sanity/icons";
+import {PlayIcon} from "@sanity/icons/Play";
 import {
 	Box,
 	Button,
@@ -123,7 +123,7 @@ export function MediaBrowserDialog({
 			}
 		>
 			<Box padding={4}>
-				<Stack space={4}>
+				<Stack gap={4}>
 					<TextInput
 						placeholder="Search files..."
 						value={searchQuery}

@@ -3,7 +3,6 @@ import {initSanity} from "@tinloof/sanity-next";
 export type * as SanityTypes from "@examples/blog-studio/types";
 
 export const {
-	SanityImage,
 	SanityLive,
 	client,
 	generateSitemap,
@@ -12,3 +11,5 @@ export const {
 	sanityFetch,
 	defineEnableDraftMode,
 } = initSanity();
+
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";

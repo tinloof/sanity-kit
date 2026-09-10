@@ -3,5 +3,5 @@ export type PagePayload = {
 	_type: string;
 	pathname: string;
 	title?: string;
-	sectionsBody?: unknown[];
+	sectionsBody?: Array<{_key: string; _type: string}>;
 };

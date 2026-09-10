@@ -1,0 +1,63 @@
+--- a/packages/@sanity/validation/src/Rule.ts
++++ b/packages/@sanity/validation/src/Rule.ts
+@@ -1,4 +1,6 @@
+ /* oxlint-disable typescript/no-deprecated -- this is the concrete implementation of the legacy Rule internals */
++import {customSlugUniquenessValidator, hasCustomSlugUniqueness} from './validators/slugValidator'
++
+ import {Rule as BaseRule} from '@sanity/schema'
+ import {
+   type CustomValidator,
+@@ -127,6 +129,14 @@
+         }
+ 
+         let specConstraint = 'constraint' in curr ? curr.constraint : null
++
++        // An inherited slug rule may have no custom callback on the final field type.
++        if (
++          specConstraint === customSlugUniquenessValidator &&
++          !hasCustomSlugUniqueness(context.type?.options)
++        ) {
++          return []
++        }
+         if (isFieldRef(specConstraint)) {
+           specConstraint = get(context.parent, specConstraint.path)
+         }
+--- a/packages/@sanity/validation/src/validators/slugValidator.ts
++++ b/packages/@sanity/validation/src/validators/slugValidator.ts
+@@ -142,7 +142,9 @@
+ }
+ 
+ export const defaultSlugUniquenessValidator: CustomValidator = (value, context) =>
+-  validateSlugUniqueness(value, context, defaultIsUnique)
++  hasCustomSlugUniqueness(context.type?.options)
++    ? true
++    : validateSlugUniqueness(value, context, defaultIsUnique)
+ 
+ export const customSlugUniquenessValidator: CustomValidator = (value, context) => {
+   const options = context.type?.options
+--- a/packages/@sanity/validation/src/util/normalizeValidationRules.ts
++++ b/packages/@sanity/validation/src/util/normalizeValidationRules.ts
+@@ -12,7 +12,6 @@
+ import {
+   customSlugUniquenessValidator,
+   defaultSlugUniquenessValidator,
+-  hasCustomSlugUniqueness,
+   slugStructureValidator,
+ } from '../validators/slugValidator'
+ 
+@@ -68,13 +67,10 @@
+   if (type.name === 'date') return baseRule.type('Date')
+   if (type.name === 'url') return baseRule.uri()
+   if (type.name === 'slug') {
+-    const uniquenessValidator = hasCustomSlugUniqueness(type.options)
+-      ? customSlugUniquenessValidator
+-      : markInternalValidator(defaultSlugUniquenessValidator)
+-
+     return baseRule
+       .custom(markInternalValidator(slugStructureValidator), {bypassConcurrencyLimit: true})
+-      .custom(uniquenessValidator, {bypassConcurrencyLimit: true})
++      .custom(markInternalValidator(defaultSlugUniquenessValidator), {bypassConcurrencyLimit: true})
++      .custom(customSlugUniquenessValidator, {bypassConcurrencyLimit: true})
+   }
+   if (type.name === 'reference') return baseRule.reference()
+   if (type.name === 'email') return baseRule.email()

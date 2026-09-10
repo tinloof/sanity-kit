@@ -1,4 +1,4 @@
-import {capitalize} from "lodash";
+import capitalize from "lodash/capitalize.js";
 import {useMemo} from "react";
 import {useObservable} from "react-rx";
 import {type QueryParams, useDocumentStore} from "sanity";

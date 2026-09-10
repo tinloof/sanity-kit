@@ -21,23 +21,20 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
 
       - name: Setup PNPM
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v6.1.0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7.0.0
         with:
-          node-version: 22
+          node-version: "24.18.0"
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Upgrade npm for trusted publishing
-        # Pinned to 11: npm 12 errors on the pnpm-specific --no-git-checks
-        # flag that changesets passes through (EUNKNOWNCONFIG).
-        # Trusted publishing requires npm >= 11.5.
-        run: npm install -g npm@11
+      - name: Set npm version
+        run: npm install -g npm@12.0.2
 
       - name: Install dependencies
         run: pnpm run build-install
@@ -47,23 +44,24 @@ jobs:
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2.1.2
         with:
           # Note: pnpm install after versioning is necessary to refresh lockfile
-          version: pnpm run version
-          publish: pnpm exec changeset publish
-          commit: "[ci] release"
-          title: "[ci] release"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          version-script: pnpm run ci:version
+          publish-script: pnpm run ci:publish
+          commit-message: "chore: release packages"
+          pr-title: "chore: release packages"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v9.0.0
         if: steps.changesets.outputs.published == 'true'
-        name: Parse Changeset `publishedPackages` output
+        name: Parse Changeset `published-packages` output
         id: parse_packages
+        env:
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.published-packages }}
         with:
           script: |
-            const changes = ${{steps.changesets.outputs.publishedPackages}};
+            const changes = JSON.parse(process.env.PUBLISHED_PACKAGES || "[]");
             let message = ":rocket: *New release* :rocket:\n\n\nA new release of *${{github.repository}}* was published!";
             if (Array.isArray(changes) && changes.length > 0) {
               message += "\n\n";
@@ -81,9 +79,9 @@ jobs:
       - name: Send a Slack notification if a publish happens
         if: steps.changesets.outputs.published == 'true'
         id: slack
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@v4.0.0
         with:
           # This data can be any valid JSON from a previous step in the GitHub Action
           payload: ${{steps.parse_packages.outputs.blocks}}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook

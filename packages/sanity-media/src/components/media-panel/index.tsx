@@ -1,35 +1,23 @@
-import {
-	AddIcon,
-	CalendarIcon,
-	CheckmarkIcon,
-	CloseIcon,
-	CogIcon,
-	DatabaseIcon,
-	DocumentTextIcon,
-	ImageIcon,
-	ImagesIcon,
-	PlayIcon,
-	RemoveIcon,
-	SortIcon,
-	TagIcon,
-	ThLargeIcon,
-	ThListIcon,
-	TrashIcon,
-	UploadIcon,
-} from "@sanity/icons";
-import {
-	Box,
-	Button,
-	Card,
-	Flex,
-	Menu,
-	MenuButton,
-	MenuItem,
-	Spinner,
-	Stack,
-	Text,
-	Tooltip,
-} from "@sanity/ui";
+import {AddIcon} from "@sanity/icons/Add";
+import {CalendarIcon} from "@sanity/icons/Calendar";
+import {CheckmarkIcon} from "@sanity/icons/Checkmark";
+import {CloseIcon} from "@sanity/icons/Close";
+import {CogIcon} from "@sanity/icons/Cog";
+import {DatabaseIcon} from "@sanity/icons/Database";
+import {DocumentTextIcon} from "@sanity/icons/DocumentText";
+import {ImageIcon} from "@sanity/icons/Image";
+import {ImagesIcon} from "@sanity/icons/Images";
+import {PlayIcon} from "@sanity/icons/Play";
+import {RemoveIcon} from "@sanity/icons/Remove";
+import {SortIcon} from "@sanity/icons/Sort";
+import {TagIcon} from "@sanity/icons/Tag";
+import {ThLargeIcon} from "@sanity/icons/ThLarge";
+import {ThListIcon} from "@sanity/icons/ThList";
+import {TrashIcon} from "@sanity/icons/Trash";
+import {UploadIcon} from "@sanity/icons/Upload";
+import {Box, Button, Card, Flex, Spinner, Stack, Text} from "@sanity/ui";
+import {Menu, MenuButton, MenuItem} from "@sanity/ui/menu";
+import {Tooltip} from "@sanity/ui/tooltip";
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {isDev, useClient} from "sanity";
 import useSWR from "swr";
@@ -467,7 +455,7 @@ export function MediaPanel({
 		return (
 			<Box padding={4}>
 				<Card padding={4} radius={2} shadow={1} tone="caution">
-					<Stack space={4}>
+					<Stack gap={4}>
 						<Text align="center">
 							Please configure your storage credentials in the Settings tab
 							first.
@@ -515,7 +503,7 @@ export function MediaPanel({
 						pointerEvents: "none",
 					}}
 				>
-					<Stack space={3} style={{textAlign: "center"}}>
+					<Stack gap={3} style={{textAlign: "center"}}>
 						<Text size={4}>
 							<UploadIcon />
 						</Text>
@@ -631,7 +619,7 @@ export function MediaPanel({
 						borderBottom: "1px solid var(--card-border-color)",
 					}}
 				>
-					<Stack space={3}>
+					<Stack gap={3}>
 						{/* Row 1: Search + Upload + Settings */}
 						<Flex paddingX={4} gap={2} align="center">
 							<Box style={{flex: 1}}>
@@ -1014,7 +1002,7 @@ export function MediaPanel({
 
 				{/* Scrollable Content */}
 				<Box style={{flex: 1, overflow: "auto"}} paddingY={4}>
-					<Stack space={4}>
+					<Stack gap={4}>
 						{/* Media Content */}
 						<Box paddingX={4}>
 							{counts?.total === 0 && !countsLoading ? (
@@ -1026,7 +1014,7 @@ export function MediaPanel({
 										style={{minHeight: "300px"}}
 									>
 										<Stack
-											space={3}
+											gap={3}
 											style={{textAlign: "center", maxWidth: "320px"}}
 										>
 											<Text size={2} weight="semibold">
@@ -1058,7 +1046,7 @@ export function MediaPanel({
 										style={{minHeight: "200px"}}
 									>
 										<Stack
-											space={3}
+											gap={3}
 											style={{textAlign: "center", maxWidth: "320px"}}
 										>
 											<Text size={2} weight="semibold">

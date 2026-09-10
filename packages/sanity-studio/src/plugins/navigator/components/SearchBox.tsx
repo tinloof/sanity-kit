@@ -1,4 +1,4 @@
-import {SearchIcon} from "@sanity/icons";
+import {SearchIcon} from "@sanity/icons/Search";
 import {Box, Card, Flex, TextInput, useGlobalKeyDown} from "@sanity/ui";
 import type React from "react";
 import {useCallback, useRef} from "react";

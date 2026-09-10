@@ -1,10 +1,10 @@
-import "tailwindcss/tailwind.css";
+import "@/styles/tailwind.css";
 
 import type {Metadata} from "next";
 import {revalidatePath, revalidateTag} from "next/cache";
 import {Inter} from "next/font/google";
 import {draftMode} from "next/headers";
-import {VisualEditing} from "next-sanity";
+import {VisualEditing} from "next-sanity/visual-editing";
 
 import config from "@/config";
 
@@ -45,10 +45,10 @@ export default async function RootLayout({
 								if (payload.document.slug?.current) {
 									const tag = `${payload.document._type}:${payload.document.slug.current}`;
 									console.log("Revalidate slug", tag);
-									await revalidateTag(tag);
+									await revalidateTag(tag, {expire: 0});
 								}
 								console.log("Revalidate tag", payload.document._type);
-								return revalidateTag(payload.document._type);
+								return revalidateTag(payload.document._type, {expire: 0});
 							}
 							await revalidatePath("/", "layout");
 						}}
