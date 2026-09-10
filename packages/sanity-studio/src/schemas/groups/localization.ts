@@ -1,4 +1,4 @@
-import {EarthGlobeIcon} from "@sanity/icons";
+import {EarthGlobeIcon} from "@sanity/icons/EarthGlobe";
 import type {FieldGroupDefinition} from "sanity";
 
 /**

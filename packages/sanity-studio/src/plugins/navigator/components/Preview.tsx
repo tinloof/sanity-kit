@@ -1,5 +1,5 @@
 import {isImageSource, type SanityImageSource} from "@sanity/asset-utils";
-import {DocumentIcon} from "@sanity/icons";
+import {DocumentIcon} from "@sanity/icons/Document";
 import {createImageUrlBuilder} from "@sanity/image-url";
 import React, {useMemo} from "react";
 import {isValidElementType} from "react-is";

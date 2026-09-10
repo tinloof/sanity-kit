@@ -19,10 +19,10 @@ export default defineConfig({
 	projectId: process.env.SANITY_STUDIO_PROJECT_ID || "rnkfj9jg",
 	dataset: process.env.SANITY_STUDIO_DATASET || "production",
 	plugins: [
+		documentOptions({structure: {locales}}),
 		documentI18n({
 			locales,
 		}),
-		documentOptions({structure: {locales}}),
 		pages({
 			i18n: {
 				locales,

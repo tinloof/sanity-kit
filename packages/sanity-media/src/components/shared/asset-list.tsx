@@ -1,7 +1,7 @@
-import {CheckmarkCircleIcon} from "@sanity/icons";
+import {CheckmarkCircleIcon} from "@sanity/icons/CheckmarkCircle";
 import {Box, Flex, Text} from "@sanity/ui";
-import {formatDuration, formatFileSize} from "../../utils";
 import type {ImageTransformer} from "../../types";
+import {formatDuration, formatFileSize} from "../../utils";
 import type {MediaAsset, Tag} from "../media-panel/types";
 import {TAG_COLORS} from "../media-panel/types";
 import {ThumbnailCell} from "./thumbnail-cell";
@@ -161,7 +161,7 @@ export function AssetList({
 									className="media-list-col-size"
 									style={{flexShrink: 0, width: "70px", textAlign: "right"}}
 								>
-									{item.size ? formatFileSize(item.size) : "—"}
+									{item.size ? formatFileSize(item.size) : ";"}
 								</Text>
 
 								{/* Date - hidden on mobile/tablet */}

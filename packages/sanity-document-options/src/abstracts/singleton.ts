@@ -1,6 +1,6 @@
 import {
-	defineAbstractResolver,
 	type AbstractDefinition,
+	defineAbstractResolver,
 } from "@tinloof/sanity-extends";
 import type {
 	DocumentActionComponent,
@@ -8,7 +8,8 @@ import type {
 	TemplateItem,
 } from "sanity";
 
-export default defineAbstractResolver(
+/** @public */
+const singletonAbstract = defineAbstractResolver(
 	(schema, options) =>
 		({
 			name: "singleton",
@@ -54,3 +55,5 @@ export default defineAbstractResolver(
 			},
 		}) as AbstractDefinition,
 );
+
+export default singletonAbstract;

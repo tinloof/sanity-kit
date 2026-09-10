@@ -1,4 +1,4 @@
-import {generateSanitySitemap} from "@tinloof/sanity-web/server";
+import {generateSanitySitemap} from "@tinloof/sanity-next/utils/sitemap";
 
 import config from "@/config";
 import {sanityFetch} from "@/data/sanity/live";

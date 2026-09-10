@@ -7,13 +7,13 @@
 		"packages/*"
 	],
 	"scripts": {
-		"build-install": "pnpm install --filter='./packages/*'",
+		"build-install": "pnpm install --frozen-lockfile",
 		"build": "turbo run build --filter='./packages/*'",
 		"build:example:hello-world-i18n": "turbo run build --filter=./examples/hello-world-i18n-*",
 		"build:example:blog": "turbo run build --filter=./examples/blog-*",
 		"changeset": "changeset add",
 		"version": "changeset version",
-		"ci:version": "changeset version",
+		"ci:version": "changeset version && pnpm install --lockfile-only --ignore-scripts",
 		"ci:publish": "changeset publish",
 		"dev": "turbo run dev --parallel --filter=./packages/*",
 		"dev:all": "turbo run dev",
@@ -26,18 +26,22 @@
 		"publish-packages": "turbo run build --filter='./packages/*' lint && changeset version && changeset publish",
 		"typecheck": "turbo run typecheck",
 		"test": "turbo run test",
-		"clean": "rimraf .turbo apps/**/{.next,.sanity,dist,node_modules} packages/**/{.next,.sanity,dist,node_modules} examples/**/{.next,.sanity,dist,node_modules} node_modules"
+		"clean": "rimraf .turbo apps/**/{.next,.sanity,dist,node_modules} packages/**/{.next,.sanity,dist,node_modules} examples/**/{.next,.sanity,dist,node_modules} node_modules",
+		"typegen": "pnpm --filter @examples/blog-studio run typegen && pnpm --filter @examples/hello-world-i18n-studio run typegen && pnpm --filter next-basic-website exec sanity typegen generate"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24.18.0"
 	},
-	"packageManager": "pnpm@9.15.0",
+	"packageManager": "pnpm@12.3.4",
 	"dependencies": {
-		"@changesets/cli": "^2.29.8",
-		"turbo": "^2.6.3"
+		"@changesets/cli": "^3.0.2",
+		"turbo": "^2.10.12"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.8",
-		"rimraf": "^6.1.2"
+		"@biomejs/biome": "^2.5.12",
+		"rimraf": "^6.1.3",
+		"@babel/core": "^7.29.7",
+		"rolldown": "^1.2.7",
+		"vite": "^8.2.2"
 	}
 }

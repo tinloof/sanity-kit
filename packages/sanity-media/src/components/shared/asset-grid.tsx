@@ -1,7 +1,9 @@
-import {CheckmarkCircleIcon, ImageIcon, PlayIcon} from "@sanity/icons";
+import {CheckmarkCircleIcon} from "@sanity/icons/CheckmarkCircle";
+import {ImageIcon} from "@sanity/icons/Image";
+import {PlayIcon} from "@sanity/icons/Play";
 import {Box, Card, Flex, Stack, Text} from "@sanity/ui";
-import {formatDuration, formatFileSize, getAssetPreviewUrl} from "../../utils";
 import type {ImageTransformer} from "../../types";
+import {formatDuration, formatFileSize, getAssetPreviewUrl} from "../../utils";
 import type {MediaAsset, Tag} from "../media-panel/types";
 import {ResponsiveGrid} from "./responsive-grid";
 import {TagList} from "./tag-list";
@@ -215,7 +217,7 @@ export function AssetGrid({
 							</Box>
 							{/* Footer */}
 							<Box padding={3} className="media-card-footer">
-								<Stack space={2}>
+								<Stack gap={2}>
 									<Text
 										size={1}
 										weight="medium"

@@ -1,4 +1,4 @@
-import {InfoOutlineIcon} from "@sanity/icons";
+import {InfoOutlineIcon} from "@sanity/icons/InfoOutline";
 import {Box, Stack, Text} from "@sanity/ui";
 
 import InfoIcon from "./info-icon";
@@ -6,7 +6,7 @@ import InfoIcon from "./info-icon";
 export default function Info() {
 	return (
 		<InfoIcon icon={InfoOutlineIcon} tone="primary">
-			<Stack padding={3} space={4} style={{maxWidth: 250}}>
+			<Stack padding={3} gap={4} style={{maxWidth: 250}}>
 				<Box>
 					<Text size={1}>Bulk publishing uses the Scheduling API.</Text>
 				</Box>

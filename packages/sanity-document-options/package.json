@@ -14,21 +14,21 @@
 	"license": "MIT",
 	"author": "Tinloof",
 	"sideEffects": false,
-	"type": "commonjs",
+	"type": "module",
 	"exports": {
 		".": {
 			"source": "./src/index.ts",
-			"import": "./dist/index.mjs",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
 			"default": "./dist/index.js"
 		},
 		"./package.json": "./package.json"
 	},
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
+	"main": "./dist/index.cjs",
+	"types": "./dist/index.d.cts",
 	"files": [
 		"dist",
 		"sanity.json",
-		"src",
 		"v2-incompatible.js"
 	],
 	"scripts": {
@@ -39,42 +39,59 @@
 		"link-watch": "plugin-kit link-watch",
 		"prepublishOnly": "npm run build",
 		"watch": "pkg-utils watch --strict",
-		"dev": "npm run watch"
+		"dev": "npm run watch",
+		"typecheck": "tsc --noEmit"
 	},
 	"sanityPlugin": {
 		"verifyPackage": {
-			"eslintImports": false
+			"eslintImports": false,
+			"esmOnly": false,
+			"oxfmt": false,
+			"oxlint": false,
+			"nodeEngine": false
 		}
 	},
 	"dependencies": {
-		"@sanity/icons": "^3.7.4",
+		"@sanity/icons": "^5.2.1",
 		"@sanity/incompatible-plugin": "^1.0.5",
-		"@sanity/orderable-document-list": "^1.5.1",
+		"@sanity/orderable-document-list": "^2.0.23",
 		"pluralize": "^8.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.4",
-		"@sanity/pkg-utils": "^10.1.1",
-		"@sanity/plugin-kit": "^4.0.20",
+		"@biomejs/biome": "2.5.12",
+		"@sanity/pkg-utils": "^12.3.4",
+		"@sanity/plugin-kit": "^10.0.9",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@types/pluralize": "^0.0.33",
-		"@types/react": "^19.2.14",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"sanity": "^5.12.0",
-		"styled-components": "^6.3.11",
-		"typescript": "^5.9.3"
+		"@types/react": "^19.2.18",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
+		"sanity": "6.13.1",
+		"styled-components": "^6.5.3",
+		"typescript": "npm:@typescript/typescript6@6.0.2",
+		"@typescript/native": "npm:typescript@7.0.2",
+		"oxfmt": "^0.63.0",
+		"oxlint": "^1.80.0"
 	},
 	"peerDependencies": {
 		"@tinloof/sanity-extends": "workspace:*",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"sanity": "^5.12.0"
+		"sanity": "^6.12.0"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=22.12"
 	},
 	"publishConfig": {
-		"access": "public"
-	}
+		"access": "public",
+		"exports": {
+			".": {
+				"import": "./dist/index.js",
+				"require": "./dist/index.cjs",
+				"default": "./dist/index.js"
+			},
+			"./package.json": "./package.json"
+		}
+	},
+	"module": "./dist/index.js"
 }

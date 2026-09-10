@@ -31,6 +31,9 @@ export function definePathname(
 			...(slugOptions ?? {}),
 			isUnique: slugOptions?.isUnique ?? isUnique,
 		},
+		// Normalize this field's slug rules after its custom options are available.
+		// Sanity 6.13 otherwise inherits the default uniqueness rule too early.
+		validation: schema.validation ?? ((rule) => rule),
 	});
 }
 

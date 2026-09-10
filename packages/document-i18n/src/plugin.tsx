@@ -8,6 +8,8 @@ import {
 } from "sanity";
 import {ABSTRACTS_MAP} from "./abstracts";
 import {DeleteMetadataAction} from "./actions/delete-metadata-action";
+import {DeleteTranslationAction} from "./actions/delete-translation-action";
+import {DuplicateWithTranslationsAction} from "./actions/duplicate-with-transaltion-action";
 import BulkPublish from "./components/bulk-publish";
 import {DocumentI18nProvider} from "./components/document-i18n-context";
 import {DocumentI18nMenu} from "./components/document-i18n-menu";
@@ -70,7 +72,7 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 						);
 
 						return (
-							<Stack space={5}>
+							<Stack gap={5}>
 								{bulkPublish ? (
 									<BulkPublish translations={translations} />
 								) : null}
@@ -143,12 +145,53 @@ export const documentI18n = definePlugin<PluginConfig>((config) => {
 					return !isMetadataSchema && !schemaHasLocaleField;
 				});
 			},
-			actions: (prev, {schemaType}) => {
+			actions: (prev, {schemaType, schema, versionType}) => {
+				if (versionType && !["published", "draft"].includes(versionType))
+					return prev;
 				if (schemaType === METADATA_SCHEMA_NAME) {
 					return [...prev, DeleteMetadataAction];
 				}
 
-				return prev;
+				if (
+					!extractSchemaTypeNames(
+						schema._original?.types || [],
+						localeField,
+					).includes(schemaType)
+				)
+					return prev;
+
+				return prev.flatMap((action) => {
+					if (
+						action.action === "duplicate" &&
+						!prev.includes(DuplicateWithTranslationsAction)
+					) {
+						const LocalizedDuplicate: typeof action = (props) => {
+							const original = action(props);
+							const translated = DuplicateWithTranslationsAction(props);
+							if (!original || !translated) return null;
+							return {
+								...translated,
+								disabled: original.disabled || translated.disabled,
+							};
+						};
+						LocalizedDuplicate.action = "duplicate";
+						return [action, LocalizedDuplicate];
+					}
+					if (action.action !== "delete") return [action];
+					const LocalizedDelete: typeof action = (props) => {
+						const original = action(props);
+						const translated = DeleteTranslationAction(props);
+						if (!original || !translated) return original;
+						if (!(props.draft || props.published)?.[localeField])
+							return original;
+						return {
+							...translated,
+							disabled: original?.disabled || translated?.disabled,
+						};
+					};
+					LocalizedDelete.action = "delete";
+					return [LocalizedDelete];
+				});
 			},
 		},
 

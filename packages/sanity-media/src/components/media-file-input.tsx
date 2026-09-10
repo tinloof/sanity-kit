@@ -1,6 +1,6 @@
 import {Button, Card, Flex, Spinner, Stack, Text, TextInput} from "@sanity/ui";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {set, unset, type ObjectInputProps, useClient} from "sanity";
+import {type ObjectInputProps, set, unset, useClient} from "sanity";
 import {API_VERSION} from "../constants";
 import {useAdapter} from "../context/adapter-context";
 import {handleFileUpload} from "../upload-handler";
@@ -113,7 +113,7 @@ export function MediaFileInput(props: ObjectInputProps) {
 	if (!ready) {
 		return (
 			<Card padding={4} radius={2} shadow={1} tone="caution">
-				<Stack space={2}>
+				<Stack gap={2}>
 					<Text size={2} weight="semibold">
 						Storage Not Configured
 					</Text>
@@ -127,9 +127,9 @@ export function MediaFileInput(props: ObjectInputProps) {
 
 	if (value?.asset?._ref && assetPreview) {
 		return (
-			<Stack space={3}>
+			<Stack gap={3}>
 				<Card padding={3} radius={2} shadow={1}>
-					<Stack space={2}>
+					<Stack gap={2}>
 						<Text size={1} weight="medium">
 							{assetPreview.originalFilename}
 						</Text>
@@ -156,7 +156,7 @@ export function MediaFileInput(props: ObjectInputProps) {
 	}
 
 	return (
-		<Stack space={3}>
+		<Stack gap={3}>
 			<Card
 				padding={5}
 				radius={2}
@@ -190,7 +190,7 @@ export function MediaFileInput(props: ObjectInputProps) {
 
 			{uploading && (
 				<Card padding={3}>
-					<Stack space={2}>
+					<Stack gap={2}>
 						<Flex align="center" gap={2}>
 							<Spinner />
 							<Text size={1}>Uploading... {progress}%</Text>

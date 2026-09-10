@@ -1,7 +1,10 @@
+import type {ObjectDefinition} from "sanity";
 import image from "./image";
 import text from "./text";
 
-export default [text, image].map((section) => ({
+const sections: ObjectDefinition[] = [text, image];
+
+export default sections.map((section) => ({
 	...section,
 	preview: {
 		select: {

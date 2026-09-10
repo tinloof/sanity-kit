@@ -1,4 +1,5 @@
-import type {Language as Locale} from "@sanity/document-internationalization";
+type Locale = {id: string; title: string};
+
 import type {CreateAbstractsConfig} from "@tinloof/sanity-extends";
 import type {LocalizePathnameFn} from "@tinloof/sanity-web";
 import type {

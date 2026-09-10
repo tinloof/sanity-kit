@@ -65,7 +65,7 @@ function extractPaths(
 		const fieldPath = [...path, field.name];
 		const fieldSchema = field.type;
 		const {value} = extractWithPath(pathToString(fieldPath), doc)[0] ?? {};
-		if (!value) {
+		if (value === undefined) {
 			return acc;
 		}
 

@@ -1,4 +1,4 @@
-import {BarChartIcon} from "@sanity/icons";
+import {BarChartIcon} from "@sanity/icons/BarChart";
 import type {FieldGroupDefinition} from "sanity";
 
 /**

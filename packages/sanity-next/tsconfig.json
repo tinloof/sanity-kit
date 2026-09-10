@@ -14,8 +14,9 @@
 		"sourceMap": false,
 		"outDir": "./dist",
 		"moduleResolution": "bundler",
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+		"types": ["node", "react"]
 	},
-	"include": ["src/index.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx"],
 	"exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

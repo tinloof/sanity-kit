@@ -1,4 +1,4 @@
-import type {BLOG_POST_QUERYResult} from "@examples/blog-studio/types";
+import type {BLOG_POST_QUERY_RESULT} from "@examples/blog-studio/types";
 import {SanityImage} from "@/data/sanity/client";
 import DynamicLink from "../dynamic-link";
 import {BlogPortableText} from "../portable-text";
@@ -6,7 +6,7 @@ import {BlogPortableText} from "../portable-text";
 export default function BlogPostTemplate({
 	data,
 }: {
-	data: BLOG_POST_QUERYResult;
+	data: BLOG_POST_QUERY_RESULT;
 }) {
 	return (
 		<article className="mx-auto max-w-3xl px-4 py-8">

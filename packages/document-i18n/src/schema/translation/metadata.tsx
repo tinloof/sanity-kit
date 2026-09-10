@@ -1,4 +1,4 @@
-import {TranslateIcon} from "@sanity/icons";
+import {TranslateIcon} from "@sanity/icons/Translate";
 import {
 	type DocumentDefinition,
 	defineField,

@@ -1,9 +1,12 @@
+import type {ObjectDefinition} from "sanity";
 import image from "./image";
 import mediaImage from "./media-image";
 import mediaVideo from "./media-video";
 import text from "./text";
 
-export default [text, image, mediaImage, mediaVideo].map((section) => ({
+const sections: ObjectDefinition[] = [text, image, mediaImage, mediaVideo];
+
+export default sections.map((section) => ({
 	...section,
 	preview: {
 		select: {

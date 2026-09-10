@@ -3,11 +3,12 @@ import {
 	orderRankOrdering,
 } from "@sanity/orderable-document-list";
 import {
-	defineAbstractResolver,
 	type AbstractDefinition,
+	defineAbstractResolver,
 } from "@tinloof/sanity-extends";
 
-export default defineAbstractResolver(
+/** @public */
+const orderableAbstract = defineAbstractResolver(
 	({name: type}) =>
 		({
 			name: "orderable",
@@ -21,3 +22,5 @@ export default defineAbstractResolver(
 			fields: [orderRankField({type})],
 		}) as AbstractDefinition,
 );
+
+export default orderableAbstract;

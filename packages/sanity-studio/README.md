@@ -47,7 +47,7 @@ npm install @tinloof/sanity-studio
   - [Create a sections list array](#2-create-a-sections-list-array)
   - [Add a section picker to your document](#3-add-a-section-picker-to-your-document)
   - [Add sections to your Sanity schema](#4-add-sections-to-your-sanity-schema)
-- [`documentI18n` (DEPRECATED)](#documenti18n-deprecated)
+- [`documentI18n` wrapper removal](#documenti18n-wrapper-removal)
 - [`localizedItem`](#localizedItem)
 - [`singletonListItem`](#singletonlistitem)
 - [Schemas](#schemas)
@@ -884,6 +884,8 @@ export default defineType({
 
 Documents with a defined `pathname` field value are now recognized as pages and are automatically grouped into directories in the pages navigator.
 
+`definePathname` preserves locale-aware uniqueness and any `options.isUnique` callback you supply. When no `validation` is supplied, it initializes the field's validation rules explicitly to avoid Sanity 6.13 inheriting the default uniqueness check before reading the field options. Existing validation rules and field optionality are preserved. This compatibility fix applies to fields created by this helper; it does not repair arbitrary named slug types in your schema. Keep using the package's declared Sanity peer range.
+
 Like Sanity's native `slug` type, the `pathname` supports a `source` option which can be used to generate the pathname from another field on the document, eg. the title:
 
 ```tsx
@@ -1328,39 +1330,39 @@ const schemas = [page, ...sections];
 export default schemas;
 ```
 
-## `documentI18n` (DEPRECATED)
+## `documentI18n` wrapper removal
 
-> ⚠️ **DEPRECATED**: This plugin has been moved to a separate package `@tinloof/sanity-document-i18n` with enhanced features and better template management. Please migrate to the new package.
+The `documentI18n` export and `SanityI18NPluginOptions` type are removed from `@tinloof/sanity-studio` 3. Use the standalone `@tinloof/sanity-document-i18n` package.
 
-The `documentI18n` plugin is an opinionated thin wrapper around Sanity's [Document Internationalization](https://www.sanity.io/plugins/document-internationalization) that makes it possible to add internationalization without having to specify schema types.
-`documentI18n` enables internationalization on any schema with a `locale` field.
+### Update the consuming Studio
 
-**Migration:**
-
-```bash
-npm install @tinloof/sanity-document-i18n
-```
+1. Add `@tinloof/sanity-document-i18n` and change the import.
+2. Remove the wrapper-only `schemas` option. The standalone plugin identifies localized schema types using their configured locale field.
+3. Keep the same locale IDs and locale field. The old wrapper used `locale`; that is also the standalone default.
+4. Check stored translation metadata before switching an existing project, then test creation, publication, navigation, duplication, and deletion in a disposable dataset copy.
 
 ```typescript
-// OLD (deprecated)
-import { documentI18n } from "@tinloof/sanity-studio";
-
-// NEW (recommended)
-import { documentI18n } from "@tinloof/sanity-document-i18n";
+import {defineConfig} from "sanity";
+import {documentI18n} from "@tinloof/sanity-document-i18n";
 
 export default defineConfig({
   plugins: [
     documentI18n({
       locales: [
-        { id: "en", title: "English" },
-        { id: "fr", title: "French" },
+        {id: "en", title: "English"},
+        {id: "fr", title: "French"},
       ],
+      localeField: "locale",
     }),
   ],
 });
 ```
 
-See the [`@tinloof/sanity-document-i18n` documentation](../document-i18n/) for complete usage instructions.
+The Studio developer owns this configuration. Existing standalone data uses the locale ID as each translation reference's `_key` and requires no migration. Data from another plugin version may use independent keys or a separate language field. Do not assume that changing an import converts that data; inspect the stored format and custom metadata readers first.
+
+No automatic dataset migration is included. Bulk publishing and the metadata management editor remain disabled in the standalone implementation.
+
+See the [standalone plugin documentation](/docs/sanity-document-i18n) for configuration details.
 
 ## `localizedItem`
 

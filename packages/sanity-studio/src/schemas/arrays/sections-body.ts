@@ -19,8 +19,6 @@ export type SectionBodyArraySchemaProps = {
  * in document schemas. It operates synchronously and requires a `sections` array to be provided.
  *
  * @param props - Configuration options for the sections body array
- * @param props.sections - Array of section schemas that will be available in the array
- * @param props.previewImage - Function to generate preview image URLs for sections in the insert menu
  *
  * @returns A field definition object for the sections body array
  *

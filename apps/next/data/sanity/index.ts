@@ -1,5 +1,5 @@
 import {sanityFetch} from "./live";
-import {GLOBAL_QUERY, PAGE_QUERY} from "./queries";
+import {GLOBAL_QUERY, HOME_QUERY, PAGE_QUERY} from "./queries";
 
 export async function loadHome() {
 	const {data} = await sanityFetch({
@@ -21,6 +21,7 @@ export async function loadPage(pathname: string) {
 export async function loadGlobalData() {
 	const {data} = await sanityFetch({
 		query: GLOBAL_QUERY,
+		stega: false,
 	});
 	return data;
 }

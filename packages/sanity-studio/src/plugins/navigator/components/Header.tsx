@@ -1,13 +1,8 @@
-import {AddIcon, ArrowLeftIcon, HomeIcon} from "@sanity/icons";
-import {
-	Button,
-	Card,
-	Flex,
-	Menu,
-	MenuButton,
-	MenuItem as MenuItemComponent,
-	Text,
-} from "@sanity/ui";
+import {AddIcon} from "@sanity/icons/Add";
+import {ArrowLeftIcon} from "@sanity/icons/ArrowLeft";
+import {HomeIcon} from "@sanity/icons/Home";
+import {Button, Card, Flex, Text} from "@sanity/ui";
+import {Menu, MenuButton, MenuItem as MenuItemComponent} from "@sanity/ui/menu";
 import {type ReactElement, useCallback} from "react";
 import {useSchema} from "sanity";
 import {useIntentLink} from "sanity/router";

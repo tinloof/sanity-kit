@@ -1,4 +1,4 @@
-import {ShareIcon} from "@sanity/icons";
+import {ShareIcon} from "@sanity/icons/Share";
 import type {FieldGroupDefinition} from "sanity";
 
 /**

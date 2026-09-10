@@ -20,17 +20,23 @@ The `initSanity` function provides a complete setup for your Next.js application
 ```tsx
 // lib/sanity/index.ts
 import {initSanity} from "@tinloof/sanity-next/client/init";
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";
 
 export const {
   client,
   sanityFetch,
-  SanityImage,
   resolveSanityMetadata,
   // Draft mode handler
   defineEnableDraftMode,
   // Redirect utilities
   redirectIfNeeded,
   // Sitemap utilities
-  generateSanitySitemap,
+  generateSitemap,
 } = initSanity();
 ```
+
+## Compatibility
+
+This release requires Next.js `^16.3.4`, React and React DOM `^19.2.4`, next-sanity `^13.3.4`, and Sanity client `^7.26.2 || ^8.6.1`. The optional Sanity peer supports `^6.12.0`.
+
+`initSanity` exposes the installed next-sanity version's `SanityLive`. In next-sanity 13, `revalidateSyncTags` becomes `action`; the `refreshOnFocus`, `refreshOnReconnect`, and `refreshOnMount` props and the `defineLive.fetchOptions` option are removed. The examples use a compatibility action for version 12 cache invalidation while a browser is connected. This does not restore focus/reconnect refresh or guarantee fresh content when no browser observes a publication. Consumers requiring that guarantee need server-side cache invalidation. See the [upstream migration guide](https://github.com/sanity-io/next-sanity/blob/main/packages/next-sanity/MIGRATE-v12-to-v13.md).

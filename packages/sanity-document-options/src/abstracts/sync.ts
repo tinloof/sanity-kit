@@ -1,12 +1,13 @@
 import type {AbstractDefinition} from "@tinloof/sanity-extends";
-import {isDev} from "sanity";
 import type {
 	DocumentActionComponent,
 	NewDocumentOptionsContext,
 	TemplateItem,
 } from "sanity";
+import {isDev} from "sanity";
 
-export default {
+/** @public */
+const syncAbstract = {
 	name: "sync",
 	type: "abstract",
 	options: {
@@ -40,3 +41,5 @@ export default {
 		},
 	},
 } as AbstractDefinition;
+
+export default syncAbstract;

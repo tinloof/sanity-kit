@@ -1,7 +1,7 @@
 "use client";
 
 import {BLOG_INDEX_QUERY} from "@examples/blog-studio/queries";
-import type {BLOG_INDEX_QUERYResult} from "@examples/blog-studio/types";
+import type {BLOG_INDEX_QUERY_RESULT} from "@examples/blog-studio/types";
 import {createClient} from "@tinloof/sanity-next/client/create-client";
 import {InfiniteScroll} from "@tinloof/sanity-next/components/infinite-scroll";
 import SanityImage from "@tinloof/sanity-next/components/sanity-image";
@@ -20,7 +20,7 @@ export function BlogIndex({
 	tagParam,
 }: {
 	entriesPerPage: number;
-	initialData: BLOG_INDEX_QUERYResult;
+	initialData: BLOG_INDEX_QUERY_RESULT;
 	tagParam?: string;
 }) {
 	return (

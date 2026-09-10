@@ -9,27 +9,29 @@
 		"start": "sanity start",
 		"build": "sanity build",
 		"lint": "biome lint .",
-		"check": "biome check --write ."
+		"check": "biome check --write .",
+		"typecheck": "tsc --noEmit"
 	},
 	"keywords": [
 		"sanity"
 	],
 	"dependencies": {
-		"@sanity/vision": "^5.12.0",
+		"@sanity/vision": "6.13.1",
 		"@tinloof/sanity-document-i18n": "workspace:*",
 		"@tinloof/sanity-document-options": "workspace:*",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"react-is": "^19.2.4",
-		"sanity": "^5.12.0",
-		"styled-components": "^6.3.11"
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
+		"react-is": "^19.2.8",
+		"sanity": "6.13.1",
+		"styled-components": "^6.5.3"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.4",
-		"@sanity/types": "^5.12.0",
-		"@types/react": "^19.2.14",
-		"typescript": "^5.9.3"
+		"@biomejs/biome": "2.5.12",
+		"@sanity/types": "6.13.1",
+		"@types/react": "^19.2.18",
+		"typescript": "npm:@typescript/typescript6@6.0.2",
+		"@typescript/native": "npm:typescript@7.0.2"
 	}
 }

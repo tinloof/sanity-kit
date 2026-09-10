@@ -14,7 +14,8 @@
 		"module": "ESNext",
 		"noEmit": true,
 		"lib": ["esnext", "dom", "dom.iterable"],
-		"jsx": "react"
+		"jsx": "react",
+		"types": ["node", "react"]
 	},
 	"exclude": ["dist", "node_modules"]
 }

@@ -8,9 +8,7 @@ import type {Metadata} from "../types";
 // AFAIK: references is _faster_ when querying with GROQ
 // const query = `*[_type == $translationSchema && references($id)]`
 const query = `*[_type == $translationSchema && $id in translations[].value._ref]{
-  _id,
-  _createdAt,
-  translations
+  ...
 }`;
 
 export function useTranslationMetadata(id: string): {

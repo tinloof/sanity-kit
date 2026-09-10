@@ -1,4 +1,4 @@
-# @tinloof/sanity-plugin-pages-navigator
+# @tinloof/sanity-studio
 
 ## 2.0.2
 

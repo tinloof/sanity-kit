@@ -40,18 +40,22 @@ The `initSanity` function provides a complete setup for your Next.js application
 ```tsx
 // lib/sanity/index.ts
 import { initSanity } from "@tinloof/sanity-next";
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";
 
 export const {
   client,
   clientWithToken,
   sanityFetch,
-  SanityImage,
   resolveSanityMetadata,
   defineEnableDraftMode,
   redirectIfNeeded,
   generateSitemap,
 } = initSanity();
 ```
+
+## Upgrading to next-sanity 13
+
+`initSanity` exposes the installed next-sanity version's `SanityLive`. In next-sanity 13, `revalidateSyncTags` becomes `action`; the `refreshOnFocus`, `refreshOnReconnect`, and `refreshOnMount` props and the `defineLive.fetchOptions` option are removed. The examples use a compatibility action for version 12 cache invalidation while a browser is connected. This does not restore focus/reconnect refresh or guarantee fresh content when no browser observes a publication. Consumers requiring that guarantee need server-side cache invalidation. See the [upstream migration guide](https://github.com/sanity-io/next-sanity/blob/main/packages/next-sanity/MIGRATE-v12-to-v13.md).
 
 ## Configuration
 
@@ -70,12 +74,12 @@ SANITY_API_VERSION=2025-01-01
 
 ```tsx
 import { initSanity } from "@tinloof/sanity-next";
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";
 
 export const {
   client,
   clientWithToken,
   sanityFetch,
-  SanityImage,
   resolveSanityMetadata,
   generateSitemap,
   defineEnableDraftMode,
@@ -94,6 +98,7 @@ export const {
 
 ```tsx
 import { initSanity } from "@tinloof/sanity-next";
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";
 
 const i18nConfig = {
   locales: [
@@ -107,7 +112,6 @@ const i18nConfig = {
 export const {
   client,
   sanityFetch,
-  SanityImage,
   resolveSanityMetadata,
   generateSitemap,
   localizePathname,
@@ -675,6 +679,7 @@ export default function RootLayout({ children }) {
 
 ```tsx
 import { initSanity } from "@tinloof/sanity-next";
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";
 
 export const sanity = initSanity({
   client: {
@@ -696,6 +701,7 @@ export const sanity = initSanity({
 
 ```tsx
 import { initSanity } from "@tinloof/sanity-next";
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";
 
 export const sanity = initSanity({
   baseUrl:
@@ -709,6 +715,7 @@ export const sanity = initSanity({
 
 ```tsx
 import { initSanity } from "@tinloof/sanity-next";
+export {default as SanityImage} from "@tinloof/sanity-next/components/sanity-image";
 
 export const sanity = initSanity({
   viewerToken: process.env.MY_CUSTOM_VIEWER_TOKEN,
@@ -752,9 +759,11 @@ export default async function Page({
 
 ## Requirements
 
-- **Next.js**: ^15.0.0 || ^16.0.0
-- **React**: ^18 || ^19.0.0
-- **next-sanity**: ^10.0.0 || ^11.0.0
+- **Next.js**: ^16.3.4
+- **React and React DOM**: ^19.2.4
+- **next-sanity**: ^13.3.4
+- **Sanity client**: ^7.26.2 || ^8.6.1
+- **Sanity** (optional peer): ^6.12.0
 
 ## License
 
@@ -762,6 +771,4 @@ export default async function Page({
 
 ## Develop & test
 
-This package uses [@sanity/plugin-kit](https://github.com/sanity-io/plugin-kit) with default configuration for build & watch scripts.
-
-See [Testing a plugin in Sanity Studio](https://github.com/sanity-io/plugin-kit#testing-a-plugin-in-sanity-studio) on how to run this plugin with hotreload in the studio.
+From the repository root, run `pnpm --filter @tinloof/sanity-next typecheck` and `pnpm --filter @tinloof/sanity-next build`. Use `pnpm --filter @tinloof/sanity-next dev` to rebuild the package in watch mode while running a consuming example.

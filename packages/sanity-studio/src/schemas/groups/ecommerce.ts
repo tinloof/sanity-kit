@@ -1,4 +1,4 @@
-import {TagIcon} from "@sanity/icons";
+import {TagIcon} from "@sanity/icons/Tag";
 import type {FieldGroupDefinition} from "sanity";
 
 /**

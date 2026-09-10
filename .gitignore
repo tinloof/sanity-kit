@@ -42,3 +42,6 @@ ___temp
 
 # Context
 .context
+
+# Local pnpm store
+.pnpm-store/

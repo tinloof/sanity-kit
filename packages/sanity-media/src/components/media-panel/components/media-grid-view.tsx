@@ -1,5 +1,8 @@
-import {CheckmarkIcon, ImageIcon, PlayIcon} from "@sanity/icons";
+import {CheckmarkIcon} from "@sanity/icons/Checkmark";
+import {ImageIcon} from "@sanity/icons/Image";
+import {PlayIcon} from "@sanity/icons/Play";
 import {Box, Card, Flex, Stack, Text} from "@sanity/ui";
+import type {ImageTransformer} from "../../../types";
 import {
 	formatDuration,
 	formatFileSize,
@@ -7,8 +10,7 @@ import {
 } from "../../../utils";
 import {ResponsiveGrid} from "../../shared/responsive-grid";
 import {TagList} from "../../shared/tag-list";
-import {type ImageTransformer} from "../../../types";
-import {type MediaAsset, type Tag} from "../types";
+import type {MediaAsset, Tag} from "../types";
 
 export interface MediaGridViewProps {
 	media: MediaAsset[];
@@ -213,7 +215,7 @@ export function MediaGridView({
 							</Box>
 							{/* Footer */}
 							<Box padding={3} className="media-card-footer">
-								<Stack space={2}>
+								<Stack gap={2}>
 									<Text
 										size={1}
 										weight="medium"

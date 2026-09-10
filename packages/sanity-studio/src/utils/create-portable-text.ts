@@ -1,4 +1,4 @@
-import {HighlightIcon} from "@sanity/icons";
+import {HighlightIcon} from "@sanity/icons/Highlight";
 import type {
 	BlockDefinition,
 	BlockMarksDefinition,
@@ -28,7 +28,10 @@ export const defaultPTLists: Record<string, BlockDefinitionType<"lists">> = {
 	number: {title: "Numbered list", value: "number"},
 } as const;
 
-export const defaultPTDecorators: Record<string, BlockMarkType<"decorators">> = {
+export const defaultPTDecorators: Record<
+	string,
+	BlockMarkType<"decorators">
+> = {
 	strong: {title: "Strong", value: "strong"},
 	em: {title: "Emphasis", value: "em"},
 	underline: {title: "Underline", value: "underline"},
@@ -220,9 +223,11 @@ export const definePortableTextFactory = <T extends PortableTextRegistry>(
 							const block = registry.innerBlocks?.[key as string];
 							return block ? defineArrayMember(block) : undefined;
 						})
-						.filter((item): item is ReturnType<typeof defineArrayMember> =>
-							Boolean(item),
-						),
+						// sanity 6 made defineArrayMember generic over the literal it is
+						// given, so `ReturnType<typeof defineArrayMember>` no longer names
+						// the value this map produces. Let the inferred type predicate
+						// (TS 5.5+) drop the undefined instead.
+						.filter((item) => item !== undefined),
 				}),
 				...blocks
 					.map((key) => {
