@@ -106,6 +106,10 @@
 		"@tinloof/sanity-studio#test": {
 			"cache": false,
 			"dependsOn": ["@tinloof/sanity-studio#build"]
+		},
+		"@tinloof/sanity-document-options#test": {
+			"cache": false,
+			"dependsOn": ["@tinloof/sanity-document-options#build"]
 		}
 	}
 }

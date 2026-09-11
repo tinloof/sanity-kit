@@ -1,9 +1,9 @@
 import {resolveAbstractSchemaTypes} from "@tinloof/sanity-extends";
 import {definePlugin} from "sanity";
 import {
-	structureTool,
 	type StructureBuilder,
 	type StructureResolverContext,
+	structureTool,
 } from "sanity/structure";
 
 import {ABSTRACTS_MAP} from "./abstracts";
@@ -69,6 +69,7 @@ export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
 		localeFieldName = LOCALE_FIELD_NAME,
 		locales = [],
 		toolTitle = TOOL_TITLE,
+		keepPanesOnCreate,
 	} = structure ?? {};
 
 	return {
@@ -76,6 +77,7 @@ export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
 		plugins: [
 			structureTool({
 				title: toolTitle,
+				keepPanesOnCreate,
 				structure: (S: StructureBuilder, context: StructureResolverContext) =>
 					defineStructure(S, context, {
 						locales,

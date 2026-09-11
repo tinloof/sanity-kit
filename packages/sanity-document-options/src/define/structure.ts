@@ -70,12 +70,12 @@ export default function defineStructure(
 
 	// Create structure item for a schema
 	function createSchemaItem(schema: DocumentDefinition) {
+		const structureOptions = schema.options?.structureOptions;
+
 		// Skip hidden schemas
-		if (hide.includes(schema.name)) {
+		if (structureOptions === false || hide.includes(schema.name)) {
 			return null;
 		}
-
-		const structureOptions = schema.options?.structureOptions;
 
 		// Handle custom builder function
 		if (typeof structureOptions === "function") {
