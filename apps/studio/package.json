@@ -16,21 +16,21 @@
 		"sanity"
 	],
 	"dependencies": {
-		"@sanity/vision": "6.13.1",
+		"@sanity/vision": "6.13.2",
 		"@tinloof/sanity-document-i18n": "workspace:*",
 		"@tinloof/sanity-document-options": "workspace:*",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
-		"react": "^19.2.8",
-		"react-dom": "^19.2.8",
-		"react-is": "^19.2.8",
-		"sanity": "6.13.1",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
+		"react-is": "^19.3.0",
+		"sanity": "6.13.2",
 		"styled-components": "^6.5.3"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.12",
-		"@sanity/types": "6.13.1",
-		"@types/react": "^19.2.18",
+		"@biomejs/biome": "2.5.13",
+		"@sanity/types": "6.13.2",
+		"@types/react": "^19.3.0",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"@typescript/native": "npm:typescript@7.0.2"
 	}
