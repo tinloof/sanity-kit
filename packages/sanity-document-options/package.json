@@ -40,7 +40,8 @@
 		"prepublishOnly": "npm run build",
 		"watch": "pkg-utils watch --strict",
 		"dev": "npm run watch",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
+		"test": "node --test test/*.test.mjs"
 	},
 	"sanityPlugin": {
 		"verifyPackage": {
