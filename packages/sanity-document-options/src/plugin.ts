@@ -16,7 +16,7 @@ import {
 	defineStructure,
 	defineTemplates,
 } from "./define";
-import type {DocumentOptionsProps} from "./types";
+import type {DocumentOptionsPluginOptions as PluginOptions} from "./types";
 
 /**
  * Configure document options and structure directly in schema definitions.
@@ -36,7 +36,7 @@ import type {DocumentOptionsProps} from "./types";
  * ```
  * @public
  */
-export const documentOptions = definePlugin<DocumentOptionsProps>((props) => {
+export const documentOptions = definePlugin<PluginOptions | void>((props) => {
 	const {
 		structure,
 		abstracts = {orderable: true, singleton: true, sync: true},

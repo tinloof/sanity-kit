@@ -4,13 +4,22 @@ import type {
 	StructureBuilder,
 	StructureResolverContext,
 } from "sanity/structure";
-import {documentOptions, type InlineStructureProps} from "../src";
+import {
+	type DocumentOptionsPluginOptions,
+	type DocumentOptionsProps,
+	type DocumentOptionsStructureOptions,
+	documentOptions,
+	type InlineStructureProps,
+} from "../src";
 
 defineType({
 	name: "article",
 	type: "document",
 	fields: [],
-	options: {structureOptions: false},
+	options: {
+		structureGroup: ["content", "articles"],
+		structureOptions: false,
+	},
 });
 defineType({name: "post", type: "document", fields: []});
 defineType({
@@ -54,9 +63,30 @@ const invalidKeepPanes: InlineStructureProps = {
 	keepPanesOnCreate: "true",
 };
 
+const structureOptions: DocumentOptionsStructureOptions = {
+	hide: ["article"],
+	keepPanesOnCreate: true,
+};
+const pluginOptions: DocumentOptionsPluginOptions = {
+	structure: structureOptions,
+};
+const legacyStructureOptions: InlineStructureProps = structureOptions;
+const legacyPluginOptions: DocumentOptionsProps = {
+	structure: legacyStructureOptions,
+};
+
+documentOptions();
+documentOptions(undefined);
 documentOptions({});
+documentOptions(pluginOptions);
+documentOptions(legacyPluginOptions);
 documentOptions({structure: {}});
 documentOptions({structure: false});
 documentOptions({structure: {keepPanesOnCreate: true}});
 documentOptions({structure: {keepPanesOnCreate: false}});
 documentOptions({structure: {keepPanesOnCreate: undefined}});
+
+// @ts-expect-error The plugin takes a configuration object, not a boolean.
+documentOptions(false);
+// @ts-expect-error Optional configuration still checks native structure options.
+documentOptions({structure: {keepPanesOnCreate: "true"}});

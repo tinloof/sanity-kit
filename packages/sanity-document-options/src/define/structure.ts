@@ -16,7 +16,10 @@ import {
 	localizedSingletonItem,
 	singletonItem,
 } from "../structure-items";
-import type {InlineStructureProps, StructureBuiltinOptions} from "../types";
+import type {
+	DocumentOptionsStructureOptions,
+	StructureBuiltinOptions,
+} from "../types";
 
 /**
  * Generates structure from document schema options.
@@ -25,7 +28,7 @@ import type {InlineStructureProps, StructureBuiltinOptions} from "../types";
 export default function defineStructure(
 	S: StructureBuilder,
 	context: StructureResolverContext,
-	options?: InlineStructureProps,
+	options?: DocumentOptionsStructureOptions,
 ): StructureResolver | null {
 	const {
 		schema: {_original},
