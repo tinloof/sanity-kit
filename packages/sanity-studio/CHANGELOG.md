@@ -1,5 +1,11 @@
 # @tinloof/sanity-studio
 
+## 3.1.1
+
+### Patch Changes
+
+- 0548b4f: Keep floating table selection actions inside the visible Portable Text editing body when scrolling or resizing the editor.
+
 ## 3.1.0
 
 ### Minor Changes
