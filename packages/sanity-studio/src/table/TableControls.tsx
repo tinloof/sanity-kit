@@ -130,7 +130,8 @@ export function TableControls({
 	}, [currentStructure]);
 
 	const toolbarRow = first?.rowIndex,
-		toolbarColumn = first?.start;
+		toolbarColumn = first?.start,
+		toolbarEndColumn = slots.at(-1)?.end;
 	const toolbarVisible = (canMerge || canSplit) && !menu && !readOnly;
 	useLayoutEffect(() => {
 		const toolbar = toolbarRef.current,
@@ -143,28 +144,97 @@ export function TableControls({
 			toolbarColumn === undefined
 		)
 			return;
+		const editable = editor.dom.getEditorElement();
+		if (!editable) return;
+		const ancestors: HTMLElement[] = [];
+		for (
+			let parent = editable.parentElement;
+			parent;
+			parent = parent.parentElement
+		)
+			ancestors.push(parent);
+		const hide = () => {
+			if (toolbar.matches(":popover-open")) toolbar.hidePopover();
+		};
 		const place = () => {
 			const rect = element.getBoundingClientRect();
 			const scroll = element.closest(".scroll")?.getBoundingClientRect();
+			const body = editable.getBoundingClientRect();
+			const bounds = {
+				left: Math.max(0, body.left, scroll?.left ?? 0),
+				right: Math.min(
+					window.innerWidth,
+					body.right,
+					scroll?.right ?? window.innerWidth,
+				),
+				top: Math.max(0, body.top),
+				bottom: Math.min(window.innerHeight, body.bottom),
+			};
+			// Top-layer popovers bypass overflow. Intersect the editable with its
+			// clipping ancestors, including Sanity's body scroller below its toolbar.
+			for (const parent of ancestors) {
+				const style = getComputedStyle(parent);
+				const clipX = /auto|scroll|hidden|clip/.test(style.overflowX);
+				const clipY = /auto|scroll|hidden|clip/.test(style.overflowY);
+				if (!clipX && !clipY) continue;
+				const box = parent.getBoundingClientRect();
+				const left = box.left + parent.clientLeft;
+				const top = box.top + parent.clientTop;
+				if (clipX) {
+					bounds.left = Math.max(bounds.left, left);
+					bounds.right = Math.min(bounds.right, left + parent.clientWidth);
+				}
+				if (clipY) {
+					bounds.top = Math.max(bounds.top, top);
+					bounds.bottom = Math.min(bounds.bottom, top + parent.clientHeight);
+				}
+			}
 			const top = rect.top + (rows[toolbarRow]?.top ?? 0);
-			const visible = top > 0 && top < window.innerHeight;
-			if (!visible) {
-				if (toolbar.matches(":popover-open")) toolbar.hidePopover();
+			const left = rect.left + (toolbarColumn / grid.width) * rect.width;
+			const right =
+				rect.left +
+				((toolbarEndColumn ?? toolbarColumn + 1) / grid.width) * rect.width;
+			if (
+				top < bounds.top ||
+				top >= bounds.bottom ||
+				right <= bounds.left ||
+				left >= bounds.right
+			) {
+				hide();
 				return;
 			}
 			if (!toolbar.matches(":popover-open")) toolbar.showPopover();
-			const width = toolbar.getBoundingClientRect().width;
-			toolbar.style.left = `${Math.max(8, scroll?.left ?? 0, Math.min(rect.left + (toolbarColumn / grid.width) * rect.width, (scroll?.right ?? window.innerWidth) - width, window.innerWidth - width - 8))}px`;
-			toolbar.style.top = `${Math.max(8, top - (toolbarRow === 0 ? 68 : 40))}px`;
+			const {width, height} = toolbar.getBoundingClientRect();
+			if (
+				bounds.right - bounds.left < width + 16 ||
+				bounds.bottom - bounds.top < height + 16
+			) {
+				hide();
+				return;
+			}
+			toolbar.style.left = `${Math.max(bounds.left + 8, Math.min(left, bounds.right - width - 8))}px`;
+			toolbar.style.top = `${Math.max(bounds.top + 8, Math.min(top - (toolbarRow === 0 ? 68 : 40), bounds.bottom - height - 8))}px`;
 		};
+		const observer = new ResizeObserver(place);
+		for (const boundary of [element, editable, ...ancestors])
+			observer.observe(boundary);
 		place();
 		window.addEventListener("scroll", place, true);
 		window.addEventListener("resize", place);
 		return () => {
+			observer.disconnect();
 			window.removeEventListener("scroll", place, true);
 			window.removeEventListener("resize", place);
 		};
-	}, [toolbarVisible, toolbarRow, toolbarColumn, grid.width, rows]);
+	}, [
+		editor,
+		toolbarVisible,
+		toolbarRow,
+		toolbarColumn,
+		toolbarEndColumn,
+		grid.width,
+		rows,
+	]);
 
 	useEffect(() => {
 		const listener = (event: Event) => {
