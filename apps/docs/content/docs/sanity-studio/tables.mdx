@@ -1,0 +1,100 @@
+---
+title: Tables
+description: Opt-in horizontal cell merging for Portable Text tables
+---
+
+Use `@tinloof/sanity-studio/table` to enable horizontal cell merging on selected Portable Text fields. Existing fields keep their current editor configuration until you wrap them with `withTableMerging`.
+
+## Compatibility
+
+The table entry point is verified with Sanity **6.13.1**, React and React DOM **19.2.8**, `@portabletext/editor` **8.1.3**, and `@portabletext/plugin-table` **2.0.7**. Other editor versions have not been verified. The package pins the table plugin and declares the editor as an optional, exact-version peer, needed when you use this entry point.
+
+Install the editor in the Studio so Sanity and the table plugin share one runtime:
+
+```sh
+pnpm add --save-exact @portabletext/editor@8.1.3
+pnpm why @portabletext/editor
+```
+
+Check your lockfile after Sanity upgrades. A second editor instance can separate the plugin from Sanity's editor context. The package does not bundle the editor, React, React DOM, or styled-components. Clipboard HTML rendering uses the declared `@portabletext/react` dependency and the consumer's React DOM runtime.
+
+## Define the schema and enable the editor
+
+`defineTableSchema(cellContent)` accepts a Portable Text array field, including one returned by `definePortableTextFactory`. It names the cell field `value` and keeps its styles, lists, marks, annotations, and other field settings.
+
+```tsx
+import {defineArrayMember, defineField, defineType} from "sanity";
+import {defineTableSchema, withTableMerging} from "@tinloof/sanity-studio/table";
+
+const cellContent = defineField({
+  name: "cellContent",
+  type: "array",
+  of: [defineArrayMember({
+    type: "block",
+    styles: [{title: "Normal", value: "normal"}],
+    lists: [{title: "Bullet", value: "bullet"}],
+    marks: {
+      decorators: [
+        {title: "Bold", value: "strong"},
+        {title: "Italic", value: "em"},
+      ],
+      annotations: [],
+    },
+  })],
+});
+
+export const table = defineTableSchema(cellContent);
+
+export const article = defineType({
+  name: "article",
+  type: "document",
+  fields: [withTableMerging(defineField({
+    name: "body",
+    type: "array",
+    of: [
+      defineArrayMember({type: "block"}),
+      defineArrayMember({type: "table"}),
+    ],
+  }))],
+});
+
+// Include both `table` and `article` in your Studio's schema.types.
+```
+
+`withTableMerging(field, options?)` returns an array field. It preserves existing field components and composes the field's Portable Text plugin component, disabling Sanity's built-in table plugin for that field. Existing plugin components must forward their supplied props to `renderDefault`. Apply the helper once per field. Keep nested tables out of cell content.
+
+The integration uses the supported [NodePlugin and BehaviorPlugin extension points](https://github.com/portabletext/editor/blob/main/packages/plugin-table/README.md). Text editing stays in Sanity's Portable Text editor. The table controls use logical column positions because a merged cell occupies several columns while remaining one stored cell.
+
+## Custom clipboard rendering
+
+Pass `clipboardComponents` when cell content uses custom marks, annotations, or objects. These are `@portabletext/react` components used for HTML when copying multiple selected cells. They do not change the editor's schema or its mark rendering. Keep link validation and URL policy in your project.
+
+```tsx
+const body = withTableMerging(bodyField, {
+  clipboardComponents: {
+    marks: {
+      highlight: ({children}) => <mark>{children}</mark>,
+      sup: ({children}) => <sup>{children}</sup>,
+      sub: ({children}) => <sub>{children}</sub>,
+    },
+  },
+});
+```
+
+Without custom components, the Portable Text renderer's default components apply. Structured Portable Text copy keeps the stored block content and annotations independently of HTML rendering.
+
+## Editing behavior
+
+- Select cells with their corner buttons. Shift-click extends the selection to include entire intersecting spans. Adjacent cells in one row can merge immediately; a merged cell can split immediately.
+- Merging keeps the first cell's key and appends all blocks in order. Only colliding block keys are regenerated. Splitting keeps content in the first cell and creates empty neighbors. Both operations use editor history for undo and redo.
+- Edge buttons insert rows or columns at inner and outer boundaries. Row and column grips open action menus and support dragging. Columns cannot move while any cells are merged. The header-row toggle is inside Table options.
+- Inserting a column inside a span expands it. Deleting a covered column shrinks the span and preserves the cell's content. Right-click menus offer relevant merge, split, and row actions.
+- Ordinary text and rich-text paste inside one cell use the native editor. Unsafe paste across merged cells, table fragments into merged targets, and unsupported table drag operations are rejected with a status message.
+
+## Stored data and rendering
+
+The fixed data shape is `table.rows[]` containing `row.cells[]`, with each `cell.value[]` holding Portable Text. Keys stay in place. `headerRows` is zero or one. An absent `colSpan` means one column; an explicit `colSpan` must be a positive integer. Every row must cover the same logical width. Existing data with this shape needs no migration. Other table schemas are not replaced automatically.
+
+Vertical merging and `rowSpan` are unsupported. Invalid grids remain visible with a validation message and structural controls disabled. Commands use keyed edits and check for stale structure; merge and split also check the affected content. These guards do not lock documents or guarantee conflict-free simultaneous structural editing. Verify save/reopen and concurrent editing in your own Studio before rollout.
+
+Your frontend renderer must use semantic `<table>`, `<tr>`, `<td colSpan={...}>`, and appropriate `<th scope="col">` header cells. Render cell Portable Text with your project's components and put wide tables inside a horizontally scrolling container on mobile. This package provides Studio editing, not a public table renderer.
