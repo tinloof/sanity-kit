@@ -76,12 +76,13 @@ jobs:
               })
             );
 
-      - name: Send a Slack notification if a publish happens
-        if: steps.changesets.outputs.published == 'true'
-        id: slack
-        uses: slackapi/slack-github-action@v4.0.0
-        with:
-          # This data can be any valid JSON from a previous step in the GitHub Action
-          payload: ${{steps.parse_packages.outputs.blocks}}
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
+      # Temporarily disabled to avoid spamming the team with release notifications.
+      # - name: Send a Slack notification if a publish happens
+      #   if: steps.changesets.outputs.published == 'true'
+      #   id: slack
+      #   uses: slackapi/slack-github-action@v4.0.0
+      #   with:
+      #     # This data can be any valid JSON from a previous step in the GitHub Action
+      #     payload: ${{steps.parse_packages.outputs.blocks}}
+      #     webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     webhook-type: incoming-webhook
