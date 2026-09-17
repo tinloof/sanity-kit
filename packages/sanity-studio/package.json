@@ -75,7 +75,7 @@
 		"nanoid": "^6.0.1",
 		"react-rx": "^6.1.0",
 		"use-debounce": "^10.1.1",
-		"@portabletext/plugin-table": "2.0.7",
+		"@portabletext/plugin-table": "2.0.9",
 		"@portabletext/react": "8.0.1"
 	},
 	"devDependencies": {
@@ -92,20 +92,20 @@
 		"@types/react-dom": "^19.2.7",
 		"react-is": "^19.2.8",
 		"rimraf": "^6.1.3",
-		"sanity": "6.13.1",
+		"sanity": "6.14.1",
 		"styled-components": "^6.5.3",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"@typescript/native": "npm:typescript@7.0.2",
 		"oxfmt": "^0.63.0",
 		"oxlint": "^1.80.0",
-		"@portabletext/editor": "8.1.3"
+		"@portabletext/editor": "8.1.5"
 	},
 	"peerDependencies": {
 		"@tinloof/sanity-extends": "workspace:*",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
 		"sanity": "^6.12.0",
-		"@portabletext/editor": "8.1.3",
+		"@portabletext/editor": "8.1.5",
 		"styled-components": "^6.1.15"
 	},
 	"engines": {
@@ -128,7 +128,7 @@
 		}
 	},
 	"inlinedDependencies": {
-		"react-is": "19.2.8"
+		"react-is": "19.3.0"
 	},
 	"peerDependenciesMeta": {
 		"@portabletext/editor": {

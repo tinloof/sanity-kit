@@ -7,12 +7,14 @@ Use `@tinloof/sanity-studio/table` to enable horizontal cell merging on selected
 
 ## Compatibility
 
-The table entry point is verified with Sanity **6.13.1**, React and React DOM **19.2.8**, `@portabletext/editor` **8.1.3**, and `@portabletext/plugin-table` **2.0.7**. Other editor versions have not been verified. The package pins the table plugin and declares the editor as an optional, exact-version peer, needed when you use this entry point.
+The table entry point is verified with Sanity **6.14.1**, React and React DOM **19.2.8** or **19.3.0**, `@portabletext/editor` **8.1.5**, and `@portabletext/plugin-table` **2.0.9**. Other editor versions have not been verified. The package pins the table plugin and declares the editor as an optional, exact-version peer, needed when you use this entry point.
+
+Sanity 6.14.1 fixes a [Portable Text data-loss bug](https://www.sanity.io/docs/changelog/studio-Ni4xNC4w). When upgrading from the previous table integration, update Sanity, `@tinloof/sanity-studio`, and the exact editor dependency together. Use a Kit release that declares editor 8.1.5; Studio 3.1.1 still requires editor 8.1.3. Keeping editor 8.1.3 can install a second editor instance.
 
 Install the editor in the Studio so Sanity and the table plugin share one runtime:
 
 ```sh
-pnpm add --save-exact @portabletext/editor@8.1.3
+pnpm add --save-exact sanity@6.14.1 @portabletext/editor@8.1.5
 pnpm why @portabletext/editor
 ```
 

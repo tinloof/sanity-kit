@@ -1644,4 +1644,4 @@ on how to run this plugin with hot reload in the studio.
 
 Use the opt-in `@tinloof/sanity-studio/table` entry point to define a table schema with `defineTableSchema(cellContent)` and enable its Portable Text editor with `withTableMerging(field, {clipboardComponents})`. Existing fields keep their current behavior. The integration preserves the `table.rows[].cells[].value[]` shape and supports horizontal `colSpan` only.
 
-Verified with Sanity 6.13.1, React 19.2.8, and `@portabletext/editor` 8.1.3. Install that exact editor version in the consuming Studio and ensure Sanity resolves the same runtime. See the [table documentation](../../apps/docs/content/docs/sanity-studio/tables.mdx) for configuration, clipboard rendering, and frontend requirements.
+Verified with Sanity 6.14.1, React 19.2.8 and 19.3.0, and `@portabletext/editor` 8.1.5. Install that exact editor version in the consuming Studio and ensure Sanity resolves the same runtime. See the [table documentation](../../apps/docs/content/docs/sanity-studio/tables.mdx) for configuration, clipboard rendering, and frontend requirements.
