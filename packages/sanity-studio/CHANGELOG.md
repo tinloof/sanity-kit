@@ -1,5 +1,16 @@
 # @tinloof/sanity-studio
 
+## 3.2.0
+
+### Minor Changes
+
+- 2011c10: Update table merging to use Portable Text editor 8.1.5 and table plugin 2.0.9 with Sanity 6.14.1, which fixes a Portable Text data-loss bug. Studios using the table entry point must update their exact editor dependency to 8.1.5 so Sanity and the plugin share one editor instance.
+
+### Patch Changes
+
+- Updated dependencies [2011c10]
+  - @tinloof/sanity-web@3.0.1
+
 ## 3.1.1
 
 ### Patch Changes

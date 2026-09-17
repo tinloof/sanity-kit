@@ -1,5 +1,11 @@
 # @tinloof/sanity-media
 
+## 1.0.1
+
+### Patch Changes
+
+- bca0adf: Fix declaration builds with React 19.3 types by explicitly typing internal media document schema helpers.
+
 ## 1.0.0
 
 ### Major Changes

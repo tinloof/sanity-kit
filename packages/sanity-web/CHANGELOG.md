@@ -1,5 +1,11 @@
 # @tinloof/sanity-web
 
+## 3.0.1
+
+### Patch Changes
+
+- 2011c10: Update the GROQ dependency to 6.14.1 alongside the Sanity upgrade.
+
 ## 3.0.0
 
 ### Major Changes
