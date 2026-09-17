@@ -5,6 +5,9 @@ export default defineConfig({
 	tsconfig: "tsconfig.build.json",
 	deps: {
 		neverBundle: [
+			"@portabletext/editor",
+			"@portabletext/plugin-table",
+			"@portabletext/react",
 			"@sanity/ui",
 			"react",
 			"react-dom",
