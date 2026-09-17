@@ -2,7 +2,7 @@ import {DocumentIcon} from "@sanity/icons/Document";
 import {ImageIcon} from "@sanity/icons/Image";
 import {PlayIcon} from "@sanity/icons/Play";
 import {TagIcon} from "@sanity/icons/Tag";
-import {defineField, defineType} from "sanity";
+import {type DocumentDefinition, defineField, defineType} from "sanity";
 import type {StorageAdapter} from "./adapters";
 import {formatDuration, formatFileSize} from "./utils";
 
@@ -10,7 +10,7 @@ import {formatDuration, formatFileSize} from "./utils";
  * Generate tag document type for an adapter
  * Used to organize and filter media assets
  */
-export function generateTagType(adapter: StorageAdapter) {
+export function generateTagType(adapter: StorageAdapter): DocumentDefinition {
 	const typeName = `${adapter.typePrefix}.tag`;
 
 	return defineType({
@@ -66,7 +66,9 @@ export function generateTagType(adapter: StorageAdapter) {
  * Generate imageAsset document type for an adapter
  * Mirrors sanity.imageAsset schema exactly
  */
-export function generateImageAssetType(adapter: StorageAdapter) {
+export function generateImageAssetType(
+	adapter: StorageAdapter,
+): DocumentDefinition {
 	const typeName = `${adapter.typePrefix}.imageAsset`;
 
 	return defineType({
@@ -224,7 +226,9 @@ export function generateImageAssetType(adapter: StorageAdapter) {
  * Generate fileAsset document type for an adapter
  * Mirrors sanity.fileAsset schema exactly (without image metadata)
  */
-export function generateFileAssetType(adapter: StorageAdapter) {
+export function generateFileAssetType(
+	adapter: StorageAdapter,
+): DocumentDefinition {
 	const typeName = `${adapter.typePrefix}.fileAsset`;
 
 	return defineType({
@@ -374,7 +378,9 @@ export function generateMediaImageType(adapter: StorageAdapter) {
  * Generate videoAsset document type for an adapter
  * Similar to imageAsset but with video-specific metadata and thumbnail reference
  */
-export function generateVideoAssetType(adapter: StorageAdapter) {
+export function generateVideoAssetType(
+	adapter: StorageAdapter,
+): DocumentDefinition {
 	const typeName = `${adapter.typePrefix}.videoAsset`;
 	const thumbnailTypeName = `${adapter.typePrefix}.imageAsset`;
 
