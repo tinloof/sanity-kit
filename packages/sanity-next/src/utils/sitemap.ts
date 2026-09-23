@@ -6,11 +6,15 @@ import {formatPath, localizePathname} from "./urls";
 interface GenerateSanitySitemapProps {
 	sanityFetch: DefinedFetchType;
 	websiteBaseURL: string;
+	/** Custom GROQ query returning the documented sitemap route shape. */
+	query?: string;
 }
 
 interface GenerateSanityI18nSitemapProps {
 	sanityFetch: DefinedFetchType;
 	websiteBaseURL: string;
+	/** Custom GROQ query returning the documented sitemap route shape. */
+	query?: string;
 	i18n: {
 		locales: Array<{id: string; title: string}>;
 		defaultLocaleId: string;
@@ -34,7 +38,7 @@ export function pathToAbsUrl(args: {
 
 type SITEMAP_QUERYResult = {
 	pathname: string | null;
-	lastModified: string;
+	lastModified?: string | null;
 	_type: string;
 };
 
@@ -50,12 +54,13 @@ const HOME_TYPE = "home";
 export async function generateSanitySitemap({
 	sanityFetch,
 	websiteBaseURL,
+	query = SITEMAP_QUERY,
 }: GenerateSanitySitemapProps) {
 	// next-sanity 13 resolves `data` through `ClientReturn<Query, unknown>`, which
 	// falls back to `unknown` for queries absent from the consumer's generated
-	// `SanityQueries`. SITEMAP_QUERY is defined here, so its shape is known.
+	// `SanityQueries`. Custom queries must return the documented route shape.
 	const {data: routes} = (await sanityFetch({
-		query: SITEMAP_QUERY,
+		query,
 		params: {
 			homeType: HOME_TYPE,
 		},
@@ -109,6 +114,7 @@ export async function generateSanityI18nSitemap({
 	websiteBaseURL,
 	sanityFetch,
 	i18n,
+	query,
 }: GenerateSanityI18nSitemapProps): Promise<MetadataRoute.Sitemap> {
 	const allRoutes: I18N_SITEMAP_QUERYResult[] = [];
 
@@ -116,7 +122,7 @@ export async function generateSanityI18nSitemap({
 	await Promise.all(
 		i18n.locales.map(async (locale) => {
 			const {data: routes} = (await sanityFetch({
-				query: I18N_SITEMAP_QUERY,
+				query: query ?? I18N_SITEMAP_QUERY,
 				perspective: "published",
 				stega: false,
 				params: {
@@ -124,6 +130,21 @@ export async function generateSanityI18nSitemap({
 					homeType: HOME_TYPE,
 				},
 			})) as {data: I18N_SITEMAP_QUERYResult[]};
+			if (query !== undefined) {
+				if (
+					!Array.isArray(routes) ||
+					routes.some(
+						(route) =>
+							!route ||
+							route.locale !== locale.id ||
+							!Array.isArray(route.translations),
+					)
+				) {
+					throw new Error(
+						`Custom i18n sitemap query must return an array of routes with locale "${locale.id}" and a translations array. Filter by $locale and project locale and translations.`,
+					);
+				}
+			}
 			if (routes) allRoutes.push(...routes);
 		}),
 	);

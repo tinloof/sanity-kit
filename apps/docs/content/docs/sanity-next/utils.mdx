@@ -64,27 +64,103 @@ export async function middleware(request: NextRequest) {
 
 ## Sitemap Generation
 
-Generate XML sitemaps from your Sanity content. The sitemap utilities automatically find all documents that have a `pathname.current` field and are marked as indexable.
-
-### Single Language
+`initSanity()` returns `generateSitemap()` for both single-language and i18n configurations. Export it from your Next.js sitemap route:
 
 ```tsx
 // app/sitemap.ts
-import {generateSanitySitemap} from "./lib/sanity";
-
-export default function Sitemap() {
-  return generateSanitySitemap();
-}
+export {generateSitemap as default} from "@/sanity";
 ```
 
-### Multi-language
+By default, documents must have `seo.indexable` enabled and either a `pathname.current` or `_type == "home"`. The helpers use `_updatedAt` for `lastModified`. Fetches always use `perspective: "published"` and `stega: false`.
+
+### Custom Query
+
+Set `sitemap.query` in your existing `initSanity` configuration to replace the selection and projection. URL generation still uses the configured `baseUrl`. Omitting `sitemap`, passing `sitemap: {}`, or omitting its `query` keeps the default query.
 
 ```tsx
-// app/sitemap.ts
-import {generateSanityI18nSitemap} from "./lib/sanity";
+// sanity/index.ts
+import {initSanity} from "@tinloof/sanity-next";
+import {defineQuery} from "next-sanity";
 
-export default function Sitemap() {
-  return generateSanityI18nSitemap();
+export const {generateSitemap} = initSanity({
+  baseUrl: "https://example.com",
+  sitemap: {
+    query: defineQuery(`*[
+      _type in ["legalPage"] &&
+      coalesce(noIndex, false) == false &&
+      defined(pathname.current)
+    ] {
+      _type,
+      "pathname": pathname.current,
+      "lastModified": coalesce(lastUpdatedAt, publishedAt)
+    }`),
+  },
+});
+```
+
+This example includes only `legalPage` documents whose `noIndex` is false or missing. Only allow document types whose frontend routes exist. For an application with no document-backed routes yet, use `_type in []` until those routes are implemented.
+
+The date projection is a consumer choice: it prefers an editorial update date, then a publication date. If both are missing, the sitemap omits the XML `lastmod` element. The package's default `_updatedAt` policy is unchanged.
+
+The query must return an array of objects with this shape:
+
+```ts
+{
+  _type: string;
+  pathname: string | null;
+  lastModified?: string | null;
 }
 ```
 
+Use site-relative paths beginning with `/`. `_type == "home"` keeps the existing special handling for the site root; otherwise the single-language helper appends `pathname` to `baseUrl` as provided. Return valid date strings, or omit `lastModified`/return null to leave out the date.
+
+The helper supplies `$homeType` as `"home"`. The query does not have to use it. No additional query parameters are configurable.
+
+### Custom i18n Query
+
+With `i18n` configured, the same `sitemap.query` option replaces the i18n query. It runs once per configured locale and receives `$locale` as well as `$homeType`.
+
+```tsx
+import {initSanity} from "@tinloof/sanity-next";
+import {defineQuery} from "next-sanity";
+
+export const {generateSitemap} = initSanity({
+  baseUrl: "https://example.com",
+  i18n: {
+    defaultLocaleId: "en",
+    locales: [
+      {id: "en", title: "English"},
+      {id: "fr", title: "French"},
+    ],
+  },
+  sitemap: {
+    query: defineQuery(`*[
+      _type in ["legalPage"] &&
+      coalesce(noIndex, false) == false &&
+      defined(pathname.current) && locale == $locale
+    ] {
+      _type,
+      locale,
+      "pathname": pathname.current,
+      "lastModified": coalesce(lastUpdatedAt, publishedAt),
+      "translations": (*[
+        _type == "translation.metadata" && references(^._id)
+      ].translations[].value->)[
+        _type in ["legalPage"] &&
+        coalesce(noIndex, false) == false && defined(pathname.current)
+      ] {
+        "pathname": pathname.current,
+        locale
+      }
+    }`),
+  },
+});
+```
+
+Each route must also return `locale: string` matching the requested `$locale` and `translations: {pathname: string | null; locale: string}[]`. Return an empty translations array when there are no alternatives. A custom query that returns a non-array result, omits these fields, or returns a different locale throws an error instead of producing an incorrect sitemap. Filter translations to eligible, implemented routes as well.
+
+The existing locale prefixes, language alternates, and `x-default` calculation are unchanged. A single-language projection cannot be reused unchanged for i18n.
+
+### Direct Utilities
+
+`initSanityUtils` and `initSanityI18nUtils` from `@tinloof/sanity-next/utils` also accept `sitemap.query`. When calling `generateSanitySitemap` or `generateSanityI18nSitemap` directly, pass the override as `query` alongside the existing `sanityFetch`, `websiteBaseURL`, and, for i18n, `i18n` arguments. Omitting it keeps the corresponding default query.
