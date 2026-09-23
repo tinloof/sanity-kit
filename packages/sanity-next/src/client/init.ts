@@ -16,7 +16,7 @@ type InitSanityConfig = {
 	live?: Omit<DefineLiveOptions, "client" | "strict">;
 	baseUrl?: string;
 	/** Override the sitemap GROQ query; i18n queries must include locale and translations. */
-	sitemapQuery?: string;
+	sitemap?: {query?: string};
 	i18n?: Parameters<typeof initSanityI18nUtils>[0]["i18n"];
 	viewerToken?: string;
 };
@@ -75,13 +75,13 @@ export function initSanity(config?: InitSanityConfig) {
 				? initSanityUtils({
 						sanityFetch,
 						baseUrl,
-						sitemapQuery: config?.sitemapQuery,
+						sitemap: config?.sitemap,
 					})
 				: initSanityI18nUtils({
 						sanityFetch,
 						baseUrl,
 						i18n: config.i18n,
-						sitemapQuery: config.sitemapQuery,
+						sitemap: config.sitemap,
 					});
 
 		const clientWithToken = client.withConfig({token: sanity_api_token});
@@ -116,13 +116,13 @@ export function initSanity(config?: InitSanityConfig) {
 			? initSanityUtils({
 					sanityFetch,
 					baseUrl,
-					sitemapQuery: config.sitemapQuery,
+					sitemap: config.sitemap,
 				})
 			: initSanityI18nUtils({
 					sanityFetch,
 					baseUrl,
 					i18n: config.i18n,
-					sitemapQuery: config.sitemapQuery,
+					sitemap: config.sitemap,
 				});
 
 	const defineEnableDraftMode = sanity_api_token

@@ -106,7 +106,7 @@ it("uses custom eligibility and editorial dates without falling back to _updated
 		await initSanityUtils({
 			sanityFetch,
 			baseUrl,
-			sitemapQuery: customQuery,
+			sitemap: {query: customQuery},
 		}).generateSitemap(),
 	).toEqual([
 		{url: `${baseUrl}/updated`, lastModified: lastUpdatedAt},
@@ -302,22 +302,24 @@ describe("initSanity public configuration", () => {
 	]) {
 		for (const locales of [undefined, i18n]) {
 			it(`forwards custom and default queries with live=${!!live}, i18n=${!!locales}`, async () => {
-				for (const sitemapQuery of [
+				for (const sitemap of [
 					undefined,
-					locales ? customI18nQuery : customQuery,
+					{},
+					{query: locales ? customI18nQuery : customQuery},
 				]) {
 					liveFetch.mockClear();
 					await initSanity({
 						baseUrl,
 						live,
 						i18n: locales,
-						sitemapQuery,
+						sitemap,
 					}).generateSitemap();
 					expect(liveFetch).toHaveBeenCalledTimes(locales ? 2 : 1);
 					expect(liveFetch).toHaveBeenCalledWith(
 						expect.objectContaining({
 							query:
-								sitemapQuery ?? (locales ? I18N_SITEMAP_QUERY : SITEMAP_QUERY),
+								sitemap?.query ??
+								(locales ? I18N_SITEMAP_QUERY : SITEMAP_QUERY),
 							perspective: "published",
 							stega: false,
 						}),

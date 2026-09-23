@@ -75,7 +75,7 @@ By default, documents must have `seo.indexable` enabled and either a `pathname.c
 
 ### Custom Query
 
-Set `sitemapQuery` in your existing `initSanity` configuration to replace the selection and projection. URL generation still uses the configured `baseUrl`.
+Set `sitemap.query` in your existing `initSanity` configuration to replace the selection and projection. URL generation still uses the configured `baseUrl`. Omitting `sitemap`, passing `sitemap: {}`, or omitting its `query` keeps the default query.
 
 ```tsx
 // sanity/index.ts
@@ -84,15 +84,17 @@ import {defineQuery} from "next-sanity";
 
 export const {generateSitemap} = initSanity({
   baseUrl: "https://example.com",
-  sitemapQuery: defineQuery(`*[
-    _type in ["legalPage"] &&
-    coalesce(noIndex, false) == false &&
-    defined(pathname.current)
-  ] {
-    _type,
-    "pathname": pathname.current,
-    "lastModified": coalesce(lastUpdatedAt, publishedAt)
-  }`),
+  sitemap: {
+    query: defineQuery(`*[
+      _type in ["legalPage"] &&
+      coalesce(noIndex, false) == false &&
+      defined(pathname.current)
+    ] {
+      _type,
+      "pathname": pathname.current,
+      "lastModified": coalesce(lastUpdatedAt, publishedAt)
+    }`),
+  },
 });
 ```
 
@@ -116,7 +118,7 @@ The helper supplies `$homeType` as `"home"`. The query does not have to use it. 
 
 ### Custom i18n Query
 
-With `i18n` configured, the same `sitemapQuery` option replaces the i18n query. It runs once per configured locale and receives `$locale` as well as `$homeType`.
+With `i18n` configured, the same `sitemap.query` option replaces the i18n query. It runs once per configured locale and receives `$locale` as well as `$homeType`.
 
 ```tsx
 import {initSanity} from "@tinloof/sanity-next";
@@ -131,25 +133,27 @@ export const {generateSitemap} = initSanity({
       {id: "fr", title: "French"},
     ],
   },
-  sitemapQuery: defineQuery(`*[
-    _type in ["legalPage"] &&
-    coalesce(noIndex, false) == false &&
-    defined(pathname.current) && locale == $locale
-  ] {
-    _type,
-    locale,
-    "pathname": pathname.current,
-    "lastModified": coalesce(lastUpdatedAt, publishedAt),
-    "translations": (*[
-      _type == "translation.metadata" && references(^._id)
-    ].translations[].value->)[
+  sitemap: {
+    query: defineQuery(`*[
       _type in ["legalPage"] &&
-      coalesce(noIndex, false) == false && defined(pathname.current)
+      coalesce(noIndex, false) == false &&
+      defined(pathname.current) && locale == $locale
     ] {
+      _type,
+      locale,
       "pathname": pathname.current,
-      locale
-    }
-  }`),
+      "lastModified": coalesce(lastUpdatedAt, publishedAt),
+      "translations": (*[
+        _type == "translation.metadata" && references(^._id)
+      ].translations[].value->)[
+        _type in ["legalPage"] &&
+        coalesce(noIndex, false) == false && defined(pathname.current)
+      ] {
+        "pathname": pathname.current,
+        locale
+      }
+    }`),
+  },
 });
 ```
 
@@ -159,4 +163,4 @@ The existing locale prefixes, language alternates, and `x-default` calculation a
 
 ### Direct Utilities
 
-`initSanityUtils` and `initSanityI18nUtils` from `@tinloof/sanity-next/utils` also accept `sitemapQuery`. When calling `generateSanitySitemap` or `generateSanityI18nSitemap` directly, pass the override as `query` alongside the existing `sanityFetch`, `websiteBaseURL`, and, for i18n, `i18n` arguments. Omitting it keeps the corresponding default query.
+`initSanityUtils` and `initSanityI18nUtils` from `@tinloof/sanity-next/utils` also accept `sitemap.query`. When calling `generateSanitySitemap` or `generateSanityI18nSitemap` directly, pass the override as `query` alongside the existing `sanityFetch`, `websiteBaseURL`, and, for i18n, `i18n` arguments. Omitting it keeps the corresponding default query.

@@ -8,14 +8,14 @@ export type InitSanityUtilsConfig = {
 	sanityFetch: DefinedFetchType;
 	baseUrl: string;
 	/** Override the sitemap GROQ query; i18n queries must include locale and translations. */
-	sitemapQuery?: string;
+	sitemap?: {query?: string};
 };
 
 export type InitSanityI18nUtilsConfig = {
 	sanityFetch: DefinedFetchType;
 	baseUrl: string;
 	/** Override the sitemap GROQ query; i18n queries must include locale and translations. */
-	sitemapQuery?: string;
+	sitemap?: {query?: string};
 	i18n: {
 		locales: Array<{id: string; title: string}>;
 		defaultLocaleId: string;
@@ -39,14 +39,14 @@ export type InitSanityI18nUtilsConfig = {
 export function initSanityUtils({
 	sanityFetch,
 	baseUrl,
-	sitemapQuery,
+	sitemap,
 }: InitSanityUtilsConfig) {
 	return {
 		generateSitemap: () =>
 			generateSanitySitemap({
 				sanityFetch,
 				websiteBaseURL: baseUrl,
-				query: sitemapQuery,
+				query: sitemap?.query,
 			}),
 		redirectIfNeeded: async ({request}: {request: NextRequest}) =>
 			await redirectIfNeeded({request, sanityFetch}),
@@ -78,7 +78,7 @@ export function initSanityUtils({
 export function initSanityI18nUtils({
 	sanityFetch,
 	baseUrl,
-	sitemapQuery,
+	sitemap,
 	i18n,
 }: InitSanityI18nUtilsConfig) {
 	return {
@@ -86,7 +86,7 @@ export function initSanityI18nUtils({
 			generateSanityI18nSitemap({
 				sanityFetch,
 				websiteBaseURL: baseUrl,
-				query: sitemapQuery,
+				query: sitemap?.query,
 				i18n,
 			}),
 		redirectIfNeeded: async ({request}: {request: NextRequest}) =>
