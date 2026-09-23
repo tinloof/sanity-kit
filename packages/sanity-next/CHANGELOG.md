@@ -1,5 +1,11 @@
 # @tinloof/sanity-next
 
+## 3.1.0
+
+### Minor Changes
+
+- 8d0ede5: Add optional `sitemap.query` configuration to `initSanity`, `initSanityUtils`, and `initSanityI18nUtils`, and a `query` option to the underlying sitemap helpers. Consumers can customize document filtering and date projections while keeping the zero-argument `generateSitemap()` route integration. Default queries, URL generation, and published-only fetching are unchanged. Custom i18n queries must return the requested locale and a translations array.
+
 ## 3.0.0
 
 ### Major Changes
