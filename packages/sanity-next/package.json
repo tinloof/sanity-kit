@@ -88,8 +88,9 @@
 	"scripts": {
 		"build": "tsup",
 		"dev": "tsup --watch",
-		"typecheck": "tsc --noEmit",
-		"prepublishOnly": "npm run typecheck && npm run build"
+		"typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
+		"prepublishOnly": "npm run typecheck && npm run build",
+		"test": "vitest run"
 	},
 	"sideEffects": false,
 	"peerDependencies": {
@@ -101,19 +102,21 @@
 		"sanity": "^6.12.0"
 	},
 	"devDependencies": {
+		"@sanity/client": "^8.6.1",
 		"@types/node": "^24.13.3",
 		"@types/react": "^19.2.18",
 		"@types/react-dom": "^19.2.7",
 		"@types/speakingurl": "^13.0.6",
+		"@typescript/native": "npm:typescript@7.0.2",
+		"groq-js": "2.0.0",
 		"next": "^16.3.4",
 		"next-sanity": "^13.3.4",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
+		"sanity": "6.14.1",
 		"tsup": "^8.5.1",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
-		"sanity": "6.14.1",
-		"@sanity/client": "^8.6.1",
-		"@typescript/native": "npm:typescript@7.0.2"
+		"vitest": "5.0.0"
 	},
 	"dependencies": {
 		"@portabletext/react": "^8.0.1",

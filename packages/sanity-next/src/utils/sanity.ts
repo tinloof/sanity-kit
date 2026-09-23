@@ -7,11 +7,15 @@ import {getPathVariations, localizePathname} from "./urls";
 export type InitSanityUtilsConfig = {
 	sanityFetch: DefinedFetchType;
 	baseUrl: string;
+	/** Override the sitemap GROQ query; i18n queries must include locale and translations. */
+	sitemapQuery?: string;
 };
 
 export type InitSanityI18nUtilsConfig = {
 	sanityFetch: DefinedFetchType;
 	baseUrl: string;
+	/** Override the sitemap GROQ query; i18n queries must include locale and translations. */
+	sitemapQuery?: string;
 	i18n: {
 		locales: Array<{id: string; title: string}>;
 		defaultLocaleId: string;
@@ -32,12 +36,17 @@ export type InitSanityI18nUtilsConfig = {
  * const redirect = await sanityUtils.getRedirect("/old-page");
  * ```
  */
-export function initSanityUtils({sanityFetch, baseUrl}: InitSanityUtilsConfig) {
+export function initSanityUtils({
+	sanityFetch,
+	baseUrl,
+	sitemapQuery,
+}: InitSanityUtilsConfig) {
 	return {
 		generateSitemap: () =>
 			generateSanitySitemap({
 				sanityFetch,
 				websiteBaseURL: baseUrl,
+				query: sitemapQuery,
 			}),
 		redirectIfNeeded: async ({request}: {request: NextRequest}) =>
 			await redirectIfNeeded({request, sanityFetch}),
@@ -69,6 +78,7 @@ export function initSanityUtils({sanityFetch, baseUrl}: InitSanityUtilsConfig) {
 export function initSanityI18nUtils({
 	sanityFetch,
 	baseUrl,
+	sitemapQuery,
 	i18n,
 }: InitSanityI18nUtilsConfig) {
 	return {
@@ -76,6 +86,7 @@ export function initSanityI18nUtils({
 			generateSanityI18nSitemap({
 				sanityFetch,
 				websiteBaseURL: baseUrl,
+				query: sitemapQuery,
 				i18n,
 			}),
 		redirectIfNeeded: async ({request}: {request: NextRequest}) =>

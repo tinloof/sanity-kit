@@ -26,7 +26,7 @@ export const {
   sanityFetch,
   SanityImage,
   resolveSanityMetadata,
-  generateSanitySitemap,
+  generateSitemap,
 } = initSanity({
   baseUrl: "https://yoursite.com",
   client: {
@@ -61,10 +61,13 @@ export const {
   sanityFetch,
   SanityImage,
   resolveSanityMetadata,
-  // I18n-specific utilities
-  generateSanityI18nSitemap,
+  // Sitemap utilities
+  generateSitemap,
 } = initSanity({
   i18n: i18nConfig,
 });
 ```
 
+## Sitemap Queries
+
+Set `sitemapQuery` to a custom GROQ query to control sitemap eligibility and date projections. Omit it to keep the default query. The returned `generateSitemap()` function takes no arguments in either mode. See [Sitemap Generation](./utils#sitemap-generation) for the single-language and i18n result contracts.
