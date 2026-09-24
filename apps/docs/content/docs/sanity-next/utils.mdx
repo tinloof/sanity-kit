@@ -49,18 +49,64 @@ export async function generateMetadata(
 
 ## Redirects
 
-Handle dynamic redirects managed through Sanity CMS. The `redirectIfNeeded` utility from `initSanity` provides a streamlined approach:
+Handle redirects stored in the first `settings` document's `redirects` array. By default, lookup uses only the request pathname and accepts the existing leading/trailing slash variations.
+
+Enable exact query-string matching in your existing client setup:
 
 ```tsx
-// middleware.ts
-import {NextRequest} from "next/server";
-import {redirectIfNeeded} from "./lib/sanity";
+import {initSanity} from "@tinloof/sanity-next/client";
 
-export async function middleware(request: NextRequest) {
-  // This handles the redirect logic automatically
-  await redirectIfNeeded(request);
+export const {redirectIfNeeded} = initSanity({
+  redirects: {matchQueryString: true},
+});
+```
+
+For exact matching against the original incoming query string, also disable Next.js proxy URL normalization in your existing Next configuration:
+
+```ts
+// next.config.ts
+const nextConfig = {
+  skipProxyUrlNormalize: true,
+};
+export default nextConfig;
+```
+
+Without this flag, Next.js can reserialize the query before Kit receives it, for example changing `%20` to `+` or regrouping repeated keys. Kit matches the `NextRequest` it receives and cannot recover the original spelling afterward. Review [Next.js proxy normalization and trailing-slash flags](https://nextjs.org/docs/app/api-reference/file-conventions/proxy#advanced-proxy-flags) when enabling this option. Next's own trailing-slash redirect can also run before the proxy; disable it only if your application handles that policy itself.
+
+Return the response from your proxy before continuing with locale rewrites or other routing:
+
+```tsx
+// proxy.ts
+import type {NextRequest} from "next/server";
+import {redirectIfNeeded} from "@/lib/sanity";
+
+export async function proxy(request: NextRequest) {
+  const redirect = await redirectIfNeeded({request});
+  if (redirect) return redirect;
+  // Continue with other routing when no redirect matches.
 }
 ```
+
+With `matchQueryString: true`, `/jobs?gh_jid=123` first looks for that complete query string. If no rule matches, it falls back to `/jobs`. Query parameter order, duplicates, case, and encoding are literal: extra parameters or `%20` instead of `+` can cause path fallback. Slash variations apply only to the pathname, so `/jobs/?gh_jid=123` can match `/jobs?gh_jid=123`. Query values containing slashes are unchanged. An empty query string uses the path lookup only. This does not add regex, wildcard, or subset matching.
+
+The first matching array entry wins within each lookup. Query-specific rules take priority over path rules regardless of array order. Incoming query parameters are not appended to the destination. Destination query strings and fragments are preserved through URL resolution. Permanent redirects return **301** and temporary redirects return **302**. Every lookup uses `perspective: "published"` and `stega: false`. An unmatched query adds one lookup before path fallback; requests without a query still need only one.
+
+Omit `redirects`, pass `{}`, or set `matchQueryString: false` to retain path-only behavior. The same options work with i18n; lookup uses the incoming pathname before your locale rewrite. The existing Studio `redirectsSchema` already accepts sources such as `/jobs?gh_jid=123` without a schema migration.
+
+For redirects stored elsewhere, set `redirects.query`:
+
+```tsx
+export const {redirectIfNeeded} = initSanity({
+  redirects: {
+    matchQueryString: true,
+    query: '*[_type == "siteSettings"][0].rules[source in $paths][0]',
+  },
+});
+```
+
+A custom query receives `$paths: string[]` and must return `{source: string, destination: string, permanent: boolean}` or `null`. The same query runs for each lookup: query-bearing path variations first, then path-only variations if necessary. Existing `$paths` queries need no additional parameters.
+
+`initSanityUtils` and `initSanityI18nUtils` from `@tinloof/sanity-next/utils` also accept `redirects`. Direct `getRedirect` and `redirectIfNeeded` calls accept `matchQueryString` and `query` alongside their existing arguments. With direct `getRedirect`, include the query in `source`, for example `getRedirect({source: "/jobs?gh_jid=123", sanityFetch, matchQueryString: true})`.
 
 ## Sitemap Generation
 
