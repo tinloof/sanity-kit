@@ -1,5 +1,11 @@
 # @tinloof/sanity-studio
 
+## 3.2.1
+
+### Patch Changes
+
+- ee37944: Paginate the redirects editor in groups of 50, with full-list search, result counts, and previous/next controls. Preserve active entries, validation errors, and original array indexes while paging.
+
 ## 3.2.0
 
 ### Minor Changes
