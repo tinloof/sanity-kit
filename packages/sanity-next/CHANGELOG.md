@@ -1,5 +1,11 @@
 # @tinloof/sanity-next
 
+## 3.2.0
+
+### Minor Changes
+
+- a60e8e0: Add opt-in exact query-string redirect matching before path fallback through `redirects.matchQueryString` in `initSanity` and both utility initializers. Expose custom redirect queries through `redirects.query`, preserving the existing `$paths` contract, published-only lookups, disabled stega, and 301/302 responses. Existing callers retain path-only behavior.
+
 ## 3.1.0
 
 ### Minor Changes
