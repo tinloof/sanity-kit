@@ -1,5 +1,5 @@
 import {SearchIcon} from "@sanity/icons/Search";
-import {TextInput} from "@sanity/ui";
+import {Button, Flex, Stack, Text, TextInput} from "@sanity/ui";
 import React from "react";
 import {
 	type ArrayOfObjectsInputProps,
@@ -17,6 +17,8 @@ const BOOLEAN_VALUES = {
 	FALSE: "false",
 } as const;
 
+const PAGE_SIZE = 50;
+
 const SEARCH_PLACEHOLDER =
 	"Search redirects by source, destination, or status...";
 
@@ -30,17 +32,24 @@ function getBooleanString(permanent: boolean): string {
 }
 
 function matchesSearch(
-	item: {source: string; destination: string; permanent: boolean},
+	item: {
+		_key: string;
+		source?: unknown;
+		destination?: unknown;
+		permanent?: unknown;
+	},
 	search: string,
 ): boolean {
-	if (!item?.source || !item?.destination) return false;
+	if (typeof item.source !== "string" || typeof item.destination !== "string") {
+		return false;
+	}
 
 	const searchLower = search.toLowerCase();
 	return (
 		item.source.toLowerCase().includes(searchLower) ||
 		item.destination.toLowerCase().includes(searchLower) ||
-		getRedirectStatus(item.permanent).includes(searchLower) ||
-		getBooleanString(item.permanent).includes(searchLower)
+		getRedirectStatus(Boolean(item.permanent)).includes(searchLower) ||
+		getBooleanString(Boolean(item.permanent)).includes(searchLower)
 	);
 }
 
@@ -146,49 +155,114 @@ export default defineField({
 
 function ArrayInput({members, ...props}: ArrayOfObjectsInputProps) {
 	const [search, setSearch] = React.useState("");
-
-	const handleSearchChange = React.useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			setSearch(e.currentTarget.value);
-		},
-		[],
+	const [page, setPage] = React.useState(0);
+	const itemMembers = members.filter((member) => member.kind === "item");
+	const filteredMembers = itemMembers.filter(
+		(member) => !search || matchesSearch(member.item.value, search),
 	);
+	const focusSegment = props.focusPath[0];
+	const isActive = (member: (typeof itemMembers)[number]) =>
+		member.open ||
+		member.item.focused ||
+		(typeof focusSegment === "object" && "_key" in focusSegment
+			? member.key === focusSegment._key
+			: member.index === focusSegment);
+	const activeMember =
+		itemMembers.find((member) => member.open) || itemMembers.find(isActive);
 
-	const filteredMembers = !search
-		? members
-		: members?.filter((member) => {
-				const {item} = member as unknown as {
-					item: {
-						value: {source: string; destination: string; permanent: boolean};
-					};
-				};
+	// Follow newly opened/focused items, including Sanity's append and insert actions.
+	// Keep active items mounted below while their fields or the search are changing.
+	React.useEffect(() => {
+		if (!activeMember) return;
+		const index = filteredMembers.indexOf(activeMember);
+		if (index < 0) {
+			setSearch("");
+			setPage(Math.floor(itemMembers.indexOf(activeMember) / PAGE_SIZE));
+		} else {
+			setPage(Math.floor(index / PAGE_SIZE));
+		}
+	}, [activeMember?.key]);
 
-				return item?.value ? matchesSearch(item.value, search) : false;
-			});
+	const pageCount = Math.max(1, Math.ceil(filteredMembers.length / PAGE_SIZE));
+	const currentPage = Math.min(page, pageCount - 1);
+	React.useEffect(() => {
+		if (page !== currentPage) setPage(currentPage);
+	}, [page, currentPage]);
+	const start = currentPage * PAGE_SIZE;
+	const pageMembers = filteredMembers.slice(start, start + PAGE_SIZE);
+	const visibleMembers = members.filter(
+		(member) =>
+			member.kind !== "item" ||
+			pageMembers.includes(member) ||
+			isActive(member),
+	);
+	const activeOutsidePage = visibleMembers.filter(
+		(member) => member.kind === "item" && !pageMembers.includes(member),
+	).length;
+	const filteredCount = filteredMembers.length;
+	const totalCount = itemMembers.length;
 
-	const totalMembers = members?.length || 0;
-	const filteredCount = filteredMembers?.length || 0;
-	const isFiltered = search.length > 0;
+	const handleMove: ArrayOfObjectsInputProps["onItemMove"] = (event) => {
+		const from = visibleMembers[event.fromIndex];
+		const to = visibleMembers[event.toIndex];
+		if (props.readOnly || !from || !to) return;
+		// Sanity's sortable list reports visible positions, not original array indexes.
+		props.onItemMove({fromIndex: from.index, toIndex: to.index});
+	};
 
 	return (
-		<div style={{display: "grid", gap: 8}}>
-			<div style={{display: "flex", flexDirection: "column", gap: 4}}>
-				<TextInput
-					onChange={handleSearchChange}
-					placeholder={SEARCH_PLACEHOLDER}
-					type="text"
-					value={search}
-					icon={SearchIcon}
-				/>
-				{isFiltered && (
-					<div style={{fontSize: 12, color: "#666"}}>
-						{filteredCount === 0
+		<Stack gap={3}>
+			<TextInput
+				aria-label="Search redirects"
+				onChange={(event) => {
+					setSearch(event.currentTarget.value);
+					setPage(0);
+				}}
+				placeholder={SEARCH_PLACEHOLDER}
+				type="text"
+				value={search}
+				icon={SearchIcon}
+			/>
+			<Flex align="center" justify="space-between" gap={3} wrap="wrap">
+				<Text size={1} muted aria-live="polite">
+					{filteredCount === 0
+						? search
 							? "No redirects match your search"
-							: `Showing ${filteredCount} of ${totalMembers} redirect${totalMembers === 1 ? "" : "s"}`}
-					</div>
-				)}
-			</div>
-			{props.renderDefault({...props, members: filteredMembers})}
-		</div>
+							: "No redirects"
+						: `Showing ${start + 1}-${Math.min(start + PAGE_SIZE, filteredCount)} of ${filteredCount} redirect${filteredCount === 1 ? "" : "s"}${search ? ` (${totalCount} total)` : ""}`}
+				</Text>
+				<Flex align="center" gap={2}>
+					<Button
+						aria-label="Previous page of redirects"
+						text="Previous"
+						mode="ghost"
+						disabled={currentPage === 0}
+						onClick={() => setPage(currentPage - 1)}
+					/>
+					<Text size={1}>
+						Page {currentPage + 1} of {pageCount}
+					</Text>
+					<Button
+						aria-label="Next page of redirects"
+						text="Next"
+						mode="ghost"
+						disabled={currentPage === pageCount - 1}
+						onClick={() => setPage(currentPage + 1)}
+					/>
+				</Flex>
+			</Flex>
+			{activeOutsidePage > 0 && (
+				<Text size={1} muted>
+					{activeOutsidePage} active redirect
+					{activeOutsidePage === 1 ? "" : "s"} kept visible outside these
+					results.
+				</Text>
+			)}
+			{props.renderDefault({
+				...props,
+				members: visibleMembers,
+				onItemMove: handleMove,
+			})}
+		</Stack>
 	);
 }
