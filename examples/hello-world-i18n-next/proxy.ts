@@ -5,7 +5,8 @@ import {redirectIfNeeded} from "./data/sanity/client";
 export async function proxy(request: NextRequest) {
 	const {pathname, searchParams} = request.nextUrl;
 
-	await redirectIfNeeded({request});
+	const redirect = await redirectIfNeeded({request});
+	if (redirect) return redirect;
 
 	/**
 	 * Internationalization

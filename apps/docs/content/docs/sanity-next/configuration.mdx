@@ -71,3 +71,7 @@ export const {
 ## Sitemap Queries
 
 Set `sitemap.query` to a custom GROQ query to control sitemap eligibility and date projections. Omit it to keep the default query. The returned `generateSitemap()` function takes no arguments in either mode. See [Sitemap Generation](./utils#sitemap-generation) for the single-language and i18n result contracts.
+
+## Redirect lookup
+
+Set `redirects: {matchQueryString: true}` in `initSanity` to try an exact query-string source before path fallback. Add `redirects.query` for a custom GROQ lookup accepting `$paths`. Omitting these options preserves the existing path-only lookup. Both options also work with i18n. Exact original query spelling requires `skipProxyUrlNormalize: true` in Next.js configuration. See [Redirects](./utils#redirects) for matching rules and the response contract.

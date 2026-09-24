@@ -4,15 +4,20 @@ import type {DefinedFetchType} from "./next-sanity-types";
 import {getPathVariations} from "./urls";
 
 /**
- * Parameters for the getRedirect function.
+ * Shared redirect lookup options.
  */
-export type GetRedirectParams = {
-	/** The source path to look up redirects for (e.g., "/old-page") */
+export type RedirectOptions = {
+	/** Try the exact query string before falling back to the path. Defaults to false. */
+	matchQueryString?: boolean;
+	/** Optional custom GROQ query accepting $paths and returning a redirect or null. */
+	query?: string;
+};
+
+export type GetRedirectParams = RedirectOptions & {
+	/** Source path, including the query string when matchQueryString is enabled. */
 	source: string;
 	/** Sanity fetch function from next-sanity */
 	sanityFetch: DefinedFetchType;
-	/** Optional custom GROQ query (defaults to REDIRECT_QUERY) */
-	query?: string;
 };
 
 /**
@@ -42,9 +47,10 @@ const REDIRECT_QUERY = defineQuery(`
  * to find matching redirect rules.
  *
  * @param params - Configuration object
- * @param params.source - The source path to look up (e.g., "/old-page")
+ * @param params.source - Source path, optionally including the query string
  * @param params.sanityFetch - Sanity fetch function from next-sanity
  * @param params.query - Optional custom GROQ query
+ * @param params.matchQueryString - Try the exact query before path fallback
  *
  * @returns Promise that resolves to redirect data or null if no redirect found
  */
@@ -52,7 +58,28 @@ export async function getRedirect({
 	source,
 	sanityFetch,
 	query = REDIRECT_QUERY,
+	matchQueryString = false,
 }: GetRedirectParams): Promise<RedirectData> {
+	if (matchQueryString) {
+		const queryIndex = source.indexOf("?");
+		if (queryIndex !== -1) {
+			const pathname = source.slice(0, queryIndex);
+			const search = source.slice(queryIndex);
+			// Vary only the pathname. Query order, encoding, and slashes are literal.
+			if (search !== "?") {
+				const {data} = (await sanityFetch({
+					params: {
+						paths: getPathVariations(pathname).map((path) => path + search),
+					},
+					query,
+					perspective: "published",
+					stega: false,
+				})) as {data: RedirectData};
+				if (data) return data;
+			}
+			source = pathname;
+		}
+	}
 	const paths = getPathVariations(source);
 
 	// next-sanity 13 resolves `data` through `ClientReturn<Query, unknown>`, which
@@ -68,7 +95,7 @@ export async function getRedirect({
 	return data;
 }
 
-export type RedirectIfNeededParams = {
+export type RedirectIfNeededParams = RedirectOptions & {
 	sanityFetch: DefinedFetchType;
 	request: NextRequest;
 };
@@ -76,10 +103,16 @@ export type RedirectIfNeededParams = {
 export async function redirectIfNeeded({
 	sanityFetch,
 	request,
+	query,
+	matchQueryString = false,
 }: RedirectIfNeededParams) {
 	const redirect = await getRedirect({
-		source: request.nextUrl.pathname,
+		source:
+			request.nextUrl.pathname +
+			(matchQueryString ? request.nextUrl.search : ""),
 		sanityFetch,
+		query,
+		matchQueryString,
 	});
 
 	if (redirect && redirect?.destination) {

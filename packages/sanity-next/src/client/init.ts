@@ -2,6 +2,7 @@ import {type ClientConfig, createClient} from "@sanity/client";
 import {defineLive} from "next-sanity/live";
 import {createErrorDraftRoute, defineDraftRoute} from "../utils/draft-mode";
 import type {DefineLiveOptions} from "../utils/next-sanity-types";
+import type {RedirectOptions} from "../utils/redirect";
 import {createSanityMetadataResolver} from "../utils/resolve-sanity-metadata";
 import {initSanityI18nUtils, initSanityUtils} from "../utils/sanity";
 import {getVercelBaseUrl} from "../utils/vercel-base-url";
@@ -17,6 +18,8 @@ type InitSanityConfig = {
 	baseUrl?: string;
 	/** Override the sitemap GROQ query; i18n queries must include locale and translations. */
 	sitemap?: {query?: string};
+	/** Configure redirect lookup and optional exact query-string matching. */
+	redirects?: RedirectOptions;
 	i18n?: Parameters<typeof initSanityI18nUtils>[0]["i18n"];
 	viewerToken?: string;
 };
@@ -76,12 +79,14 @@ export function initSanity(config?: InitSanityConfig) {
 						sanityFetch,
 						baseUrl,
 						sitemap: config?.sitemap,
+						redirects: config?.redirects,
 					})
 				: initSanityI18nUtils({
 						sanityFetch,
 						baseUrl,
 						i18n: config.i18n,
 						sitemap: config.sitemap,
+						redirects: config.redirects,
 					});
 
 		const clientWithToken = client.withConfig({token: sanity_api_token});
@@ -117,12 +122,14 @@ export function initSanity(config?: InitSanityConfig) {
 					sanityFetch,
 					baseUrl,
 					sitemap: config.sitemap,
+					redirects: config.redirects,
 				})
 			: initSanityI18nUtils({
 					sanityFetch,
 					baseUrl,
 					i18n: config.i18n,
 					sitemap: config.sitemap,
+					redirects: config.redirects,
 				});
 
 	const defineEnableDraftMode = sanity_api_token
