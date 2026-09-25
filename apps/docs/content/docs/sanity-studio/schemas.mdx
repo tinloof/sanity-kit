@@ -78,6 +78,7 @@ Each redirect object contains:
 - `source` (string, required): The original URL path
 - `destination` (string, required): The target URL to redirect to
 - `permanent` (boolean, required): Whether the redirect is permanent or temporary
+- `keepQueryParameters` (boolean, optional, default false): **Keep query parameters** copies incoming query values when the matched redirect opts in. Destination query keys take priority; repeated incoming values for other keys are preserved by `@tinloof/sanity-next`. Existing rules without this field retain their behavior.
 
 ### Preview
 
