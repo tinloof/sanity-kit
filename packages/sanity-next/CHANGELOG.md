@@ -1,5 +1,11 @@
 # @tinloof/sanity-next
 
+## 3.3.0
+
+### Minor Changes
+
+- d246baa: Add an optional per-redirect `keepQueryParameters` boolean, shown as "Keep query parameters" in Studio and defaulting to false. The redirect helper forwards incoming values only when the matched rule explicitly enables it, preserving repeated values for keys absent from the destination. Destination keys take priority; fragments, absolute URLs, status codes and existing lookup behavior remain unchanged.
+
 ## 3.2.0
 
 ### Minor Changes
