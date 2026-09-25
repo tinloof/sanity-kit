@@ -3,7 +3,11 @@ import {NextRequest} from "next/server";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {initSanity} from "../src/client/init";
 import type {DefinedFetchType} from "../src/utils/next-sanity-types";
-import {getRedirect, redirectIfNeeded} from "../src/utils/redirect";
+import {
+	getRedirect,
+	type RedirectData,
+	redirectIfNeeded,
+} from "../src/utils/redirect";
 import {initSanityI18nUtils, initSanityUtils} from "../src/utils/sanity";
 import {getPathVariations} from "../src/utils/urls";
 
@@ -26,7 +30,10 @@ const exact = {
 };
 const customQuery = '*[_type == "siteSettings"][0].rules[source in $paths][0]';
 
-function fetchFrom(rules = [fallback, exact], custom = false) {
+function fetchFrom(
+	rules: NonNullable<RedirectData>[] = [fallback, exact],
+	custom = false,
+) {
 	const dataset = [
 		{_type: custom ? "siteSettings" : "settings", redirects: rules, rules},
 	];
@@ -289,7 +296,13 @@ describe("initSanity redirect configuration", () => {
 					{matchQueryString: true},
 					{matchQueryString: true, query: customQuery},
 				]) {
-					const {fetch} = fetchFrom(undefined, !!redirects?.query);
+					const {fetch} = fetchFrom(
+						[
+							{...fallback, keepQueryParameters: true},
+							{...exact, keepQueryParameters: true},
+						],
+						!!redirects?.query,
+					);
 					liveFetch.mockImplementation(fetch);
 					const response = await initSanity({
 						baseUrl,
@@ -301,12 +314,181 @@ describe("initSanity redirect configuration", () => {
 					expect(response?.headers.get("location")).toBe(
 						baseUrl +
 							(redirects?.matchQueryString
-								? exact.destination
-								: fallback.destination),
+								? "/careers/design-manager?ref=jobs&gh_jid=5089924002#apply"
+								: "/careers?gh_jid=5089924002"),
 					);
 					expect(fetch).toHaveBeenCalledTimes(1);
 				}
 			});
 		}
 	}
+});
+
+describe("per-rule query preservation", () => {
+	it.each([undefined, false, null, "true", 1])(
+		"requires an explicit true flag, received %s",
+		async (keepQueryParameters) => {
+			const fetch = vi.fn().mockResolvedValue({
+				data: {
+					...fallback,
+					destination: "/careers?fixed=a%20b#apply",
+					keepQueryParameters,
+				},
+			});
+			const response = await redirectIfNeeded({
+				request: request("/jobs?tag=a&tag=b"),
+				sanityFetch: fetch as unknown as DefinedFetchType,
+			});
+			expect(response?.headers.get("location")).toBe(
+				baseUrl + "/careers?fixed=a%20b#apply",
+			);
+		},
+	);
+
+	it.each([
+		[true, "/careers?fixed=one&fixed=two&empty=#apply", 301],
+		[
+			false,
+			"https://other.example/careers?fixed=one&fixed=two&empty=#apply",
+			302,
+		],
+		[
+			true,
+			"http://other.example/careers?fixed=one&fixed=two&empty=#apply",
+			301,
+		],
+	] as const)(
+		"keeps destination keys and all other incoming values: %s %s",
+		async (permanent, target, status) => {
+			const {sanityFetch} = fetchFrom([
+				{
+					...fallback,
+					destination: target,
+					permanent,
+					keepQueryParameters: true,
+				},
+			]);
+			const incoming = request(
+				"/jobs?fixed=incoming&tag=a&other=x&tag=b&empty=ignored&blank=&url=https%3A%2F%2Fexample.com%2F&Fixed=case",
+			);
+			const originalUrl = incoming.url;
+			const response = await redirectIfNeeded({request: incoming, sanityFetch});
+			const destination = new URL(response!.headers.get("location")!);
+			expect(response?.status).toBe(status);
+			expect(destination.origin).toBe(new URL(target, baseUrl).origin);
+			expect(destination.pathname).toBe("/careers");
+			expect(destination.hash).toBe("#apply");
+			expect([...destination.searchParams]).toEqual([
+				["fixed", "one"],
+				["fixed", "two"],
+				["empty", ""],
+				["tag", "a"],
+				["other", "x"],
+				["tag", "b"],
+				["blank", ""],
+				["url", "https://example.com/"],
+				["Fixed", "case"],
+			]);
+			expect(incoming.url).toBe(originalUrl);
+			expect(incoming.nextUrl.searchParams.getAll("fixed")).toEqual([
+				"incoming",
+			]);
+		},
+	);
+
+	it("compares decoded keys and preserves encoded values", async () => {
+		const {sanityFetch} = fetchFrom([
+			{
+				...fallback,
+				destination: "/careers?na%6De=destination",
+				keepQueryParameters: true,
+			},
+		]);
+		const response = await redirectIfNeeded({
+			request: request(
+				"/jobs?name=incoming&value=a%2Bb&value=a+b&value=a%20b&=first&=second",
+			),
+			sanityFetch,
+		});
+		const params = new URL(response!.headers.get("location")!).searchParams;
+		expect(params.getAll("name")).toEqual(["destination"]);
+		expect(params.getAll("value")).toEqual(["a+b", "a b", "a b"]);
+		expect(params.getAll("")).toEqual(["first", "second"]);
+	});
+
+	it.each(["/jobs", "/jobs?fixed=incoming"])(
+		"leaves destination spelling unchanged when nothing is copied: %s",
+		async (source) => {
+			const {sanityFetch} = fetchFrom([
+				{
+					...fallback,
+					destination: "/careers?fixed=a%20b#apply",
+					keepQueryParameters: true,
+				},
+			]);
+			const response = await redirectIfNeeded({
+				request: request(source),
+				sanityFetch,
+			});
+			expect(response?.headers.get("location")).toBe(
+				baseUrl + "/careers?fixed=a%20b#apply",
+			);
+		},
+	);
+
+	it.each([true, false])(
+		"uses only the matched rule's flag through exact-query lookup and path fallback: %s",
+		async (exactKeepsQuery) => {
+			const {fetch, sanityFetch} = fetchFrom([
+				{...fallback, keepQueryParameters: !exactKeepsQuery},
+				{...exact, keepQueryParameters: exactKeepsQuery},
+			]);
+			const exactResponse = await redirectIfNeeded({
+				request: request(exact.source),
+				sanityFetch,
+				matchQueryString: true,
+			});
+			const exactDestination = new URL(exactResponse!.headers.get("location")!);
+			expect(exactDestination.pathname).toBe("/careers/design-manager");
+			expect(exactDestination.searchParams.get("gh_jid")).toBe(
+				exactKeepsQuery ? "5089924002" : null,
+			);
+			expect(exactDestination.searchParams.get("ref")).toBe("jobs");
+			expect(exactDestination.hash).toBe("#apply");
+			const fallbackResponse = await redirectIfNeeded({
+				request: request(exact.source + "&tag=a&tag=b"),
+				sanityFetch,
+				matchQueryString: true,
+			});
+			const fallbackDestination = new URL(
+				fallbackResponse!.headers.get("location")!,
+			);
+			expect(fallbackDestination.pathname).toBe("/careers");
+			expect(fallbackDestination.searchParams.getAll("tag")).toEqual(
+				exactKeepsQuery ? [] : ["a", "b"],
+			);
+			expect(fetch).toHaveBeenCalledTimes(3);
+			for (const [options] of fetch.mock.calls)
+				expect(options).toMatchObject({perspective: "published", stega: false});
+		},
+	);
+
+	it("carries the field through custom query results and both utility wrappers", async () => {
+		const {sanityFetch} = fetchFrom(
+			[{...fallback, keepQueryParameters: true}],
+			true,
+		);
+		const config = {sanityFetch, baseUrl, redirects: {query: customQuery}};
+		for (const utils of [
+			initSanityUtils(config),
+			initSanityI18nUtils({...config, i18n}),
+		]) {
+			const response = await utils.redirectIfNeeded({
+				request: request("/jobs?tag=a&tag=b"),
+			});
+			expect(response?.headers.get("location")).toBe(
+				baseUrl + "/careers?tag=a&tag=b",
+			);
+		}
+	});
 });

@@ -30,6 +30,8 @@ export type RedirectData = {
 	destination: string;
 	/** Whether this is a permanent or temporary redirect */
 	permanent: boolean;
+	/** Keep incoming query values for keys absent from the destination. Defaults to false. */
+	keepQueryParameters?: boolean;
 } | null;
 
 /**
@@ -116,7 +118,15 @@ export async function redirectIfNeeded({
 	});
 
 	if (redirect && redirect?.destination) {
-		return NextResponse.redirect(new URL(redirect.destination, request.url), {
+		const destination = new URL(redirect.destination, request.url);
+		if (redirect.keepQueryParameters === true) {
+			const destinationKeys = new Set(destination.searchParams.keys());
+			for (const [key, value] of request.nextUrl.searchParams) {
+				if (!destinationKeys.has(key))
+					destination.searchParams.append(key, value);
+			}
+		}
+		return NextResponse.redirect(destination, {
 			status: redirect.permanent ? 301 : 302,
 		});
 	}

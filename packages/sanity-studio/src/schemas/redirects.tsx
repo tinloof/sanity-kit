@@ -133,6 +133,14 @@ export default defineField({
 					type: "boolean",
 					validation: (Rule) => Rule.required(),
 				}),
+				defineField({
+					name: "keepQueryParameters",
+					title: "Keep query parameters",
+					description:
+						"Copy incoming query parameters to the destination. Parameters already in the destination take priority.",
+					type: "boolean",
+					initialValue: false,
+				}),
 			],
 
 			preview: {

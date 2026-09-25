@@ -89,7 +89,11 @@ export async function proxy(request: NextRequest) {
 
 With `matchQueryString: true`, `/jobs?gh_jid=123` first looks for that complete query string. If no rule matches, it falls back to `/jobs`. Query parameter order, duplicates, case, and encoding are literal: extra parameters or `%20` instead of `+` can cause path fallback. Slash variations apply only to the pathname, so `/jobs/?gh_jid=123` can match `/jobs?gh_jid=123`. Query values containing slashes are unchanged. An empty query string uses the path lookup only. This does not add regex, wildcard, or subset matching.
 
-The first matching array entry wins within each lookup. Query-specific rules take priority over path rules regardless of array order. Incoming query parameters are not appended to the destination. Destination query strings and fragments are preserved through URL resolution. Permanent redirects return **301** and temporary redirects return **302**. Every lookup uses `perspective: "published"` and `stega: false`. An unmatched query adds one lookup before path fallback; requests without a query still need only one.
+The first matching array entry wins within each lookup. Query-specific rules take priority over path rules regardless of array order. Incoming query parameters are discarded unless the matched rule sets `keepQueryParameters: true`. Destination query strings and fragments are preserved through URL resolution. Permanent redirects return **301** and temporary redirects return **302**. Every lookup uses `perspective: "published"` and `stega: false`. An unmatched query adds one lookup before path fallback; requests without a query still need only one.
+
+Set **Keep query parameters** on an individual Studio redirect to forward incoming query values. The stored field is `keepQueryParameters?: boolean`, defaulting to false. Missing or false retains the existing behavior; no global configuration is needed. Destination query keys take priority, including empty values. All repeated incoming values for other keys are appended in order; destination fragments and absolute URLs are retained. Copied parameters use standard URL query serialization, so their encoding may change while their values are preserved.
+
+For example, `{source: "/old", destination: "/new?campaign=fixed#form", permanent: true, keepQueryParameters: true}` redirects `/old?campaign=incoming&tag=a&tag=b` to `/new?campaign=fixed&tag=a&tag=b#form`. This works with both exact-query hits and path fallback, using only the matched rule's flag.
 
 Omit `redirects`, pass `{}`, or set `matchQueryString: false` to retain path-only behavior. The same options work with i18n; lookup uses the incoming pathname before your locale rewrite. The existing Studio `redirectsSchema` already accepts sources such as `/jobs?gh_jid=123` without a schema migration.
 
@@ -104,7 +108,7 @@ export const {redirectIfNeeded} = initSanity({
 });
 ```
 
-A custom query receives `$paths: string[]` and must return `{source: string, destination: string, permanent: boolean}` or `null`. The same query runs for each lookup: query-bearing path variations first, then path-only variations if necessary. Existing `$paths` queries need no additional parameters.
+A custom query receives `$paths: string[]` and must return `{source: string, destination: string, permanent: boolean}` or `null`. The same query runs for each lookup: query-bearing path variations first, then path-only variations if necessary. Existing `$paths` queries need no additional parameters. If a custom query projects fields, include `keepQueryParameters` in the returned redirect to enable forwarding; omitting it keeps query parameters discarded.
 
 `initSanityUtils` and `initSanityI18nUtils` from `@tinloof/sanity-next/utils` also accept `redirects`. Direct `getRedirect` and `redirectIfNeeded` calls accept `matchQueryString` and `query` alongside their existing arguments. With direct `getRedirect`, include the query in `source`, for example `getRedirect({source: "/jobs?gh_jid=123", sanityFetch, matchQueryString: true})`.
 
