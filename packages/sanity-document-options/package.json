@@ -53,32 +53,32 @@
 		}
 	},
 	"dependencies": {
-		"@sanity/icons": "^5.2.1",
+		"@sanity/icons": "^5.2.3",
 		"@sanity/incompatible-plugin": "^1.0.5",
-		"@sanity/orderable-document-list": "^2.0.23",
+		"@sanity/orderable-document-list": "^2.0.25",
 		"pluralize": "^8.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.12",
+		"@biomejs/biome": "2.5.15",
 		"@sanity/pkg-utils": "^12.3.4",
 		"@sanity/plugin-kit": "^10.0.9",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@types/pluralize": "^0.0.33",
-		"@types/react": "^19.2.18",
-		"react": "^19.2.8",
-		"react-dom": "^19.2.8",
-		"sanity": "6.14.1",
+		"@types/react": "^19.3.0",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
+		"sanity": "6.17.0",
 		"styled-components": "^6.5.3",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"@typescript/native": "npm:typescript@7.0.2",
-		"oxfmt": "^0.63.0",
-		"oxlint": "^1.80.0"
+		"oxfmt": "^0.71.0",
+		"oxlint": "^1.86.0"
 	},
 	"peerDependencies": {
 		"@tinloof/sanity-extends": "workspace:*",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"sanity": "^6.12.0"
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
+		"sanity": "^6.17.0"
 	},
 	"engines": {
 		"node": ">=22.12"
