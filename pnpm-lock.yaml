@@ -957,8 +957,8 @@ importers:
         specifier: ^12.3.4
         version: 12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@5.5.0)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
       '@sanity/plugin-kit':
-        specifier: ^10.0.9
-        version: 10.0.9(@sanity/pkg-utils@12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@5.5.0)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)))(@types/node@24.13.4)(oxfmt@0.63.0)(oxlint@1.82.0)
+        specifier: ^10.0.12
+        version: 10.0.12(@sanity/pkg-utils@12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@5.5.0)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)))(@types/node@24.13.4)(oxfmt@0.63.0)(oxlint@1.82.0)
       '@tinloof/sanity-extends':
         specifier: workspace:*
         version: link:../extends
@@ -1170,8 +1170,8 @@ importers:
         specifier: ^12.3.4
         version: 12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@10.2.2)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
       '@sanity/plugin-kit':
-        specifier: ^10.0.9
-        version: 10.0.9(@sanity/pkg-utils@12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@10.2.2)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)))(@types/node@24.13.4)(oxfmt@0.63.0)(oxlint@1.82.0)
+        specifier: ^10.0.12
+        version: 10.0.12(@sanity/pkg-utils@12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@10.2.2)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)))(@types/node@24.13.4)(oxfmt@0.63.0)(oxlint@1.82.0)
       '@tinloof/sanity-extends':
         specifier: workspace:*
         version: link:../extends
@@ -4848,14 +4848,14 @@ packages:
       oxc-transform-react:
         optional: true
 
-  '@sanity/plugin-kit@10.0.9':
-    resolution: {integrity: sha512-N/biFJGH8G226aLD4FfW1eK6JUyNgLvk4y9W5YQrRZRcowcwCNvwNBOZRLTOJK2Ni5+P1h1A9BFQcOl06QZ/3w==}
+  '@sanity/plugin-kit@10.0.12':
+    resolution: {integrity: sha512-S+9hdZw7DKsHGGIeoCdMimJsvJVKQt+XnrfQ7ID7d0JUL0/sz464ZRwrKbmXLCV6I01Gse4MnFjugbgTtGWHtQ==}
     engines: {node: '>=24'}
     hasBin: true
     peerDependencies:
-      '@sanity/pkg-utils': ^12.3.0
-      oxfmt: ^0.63.0
-      oxlint: ^1.80.0
+      '@sanity/pkg-utils': ^12.3.4
+      oxfmt: ^0.71.0
+      oxlint: ^1.83.0
     peerDependenciesMeta:
       oxfmt:
         optional: true
@@ -17891,7 +17891,7 @@ snapshots:
       - vite
       - vue-tsc
 
-  '@sanity/plugin-kit@10.0.9(@sanity/pkg-utils@12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@10.2.2)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)))(@types/node@24.13.4)(oxfmt@0.63.0)(oxlint@1.82.0)':
+  '@sanity/plugin-kit@10.0.12(@sanity/pkg-utils@12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@10.2.2)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)))(@types/node@24.13.4)(oxfmt@0.63.0)(oxlint@1.82.0)':
     dependencies:
       '@rexxars/choosealicense-list': 1.1.2
       '@sanity/pkg-utils': 12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@10.2.2)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))
@@ -17910,7 +17910,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@sanity/plugin-kit@10.0.9(@sanity/pkg-utils@12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@5.5.0)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)))(@types/node@24.13.4)(oxfmt@0.63.0)(oxlint@1.82.0)':
+  '@sanity/plugin-kit@10.0.12(@sanity/pkg-utils@12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@5.5.0)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0)))(@types/node@24.13.4)(oxfmt@0.63.0)(oxlint@1.82.0)':
     dependencies:
       '@rexxars/choosealicense-list': 1.1.2
       '@sanity/pkg-utils': 12.3.4(@babel/runtime@7.29.7)(@types/node@24.13.4)(@typescript/typescript6@6.0.2)(babel-plugin-react-compiler@1.0.0)(rolldown@1.2.9)(supports-color@5.5.0)(vite@8.3.0(@types/node@24.13.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.0))

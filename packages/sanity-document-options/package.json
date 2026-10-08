@@ -61,7 +61,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.5.12",
 		"@sanity/pkg-utils": "^12.3.4",
-		"@sanity/plugin-kit": "^10.0.9",
+		"@sanity/plugin-kit": "^10.0.12",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@types/pluralize": "^0.0.33",
 		"@types/react": "^19.2.18",
