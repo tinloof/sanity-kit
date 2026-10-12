@@ -73,7 +73,7 @@
 		"@tinloof/sanity-web": "workspace:*",
 		"lodash": "^4.18.1",
 		"nanoid": "^6.0.1",
-		"react-rx": "^6.1.0",
+		"react-rx": "^7.0.1",
 		"use-debounce": "^10.1.1",
 		"@portabletext/plugin-table": "2.0.9",
 		"@portabletext/react": "8.0.1"
