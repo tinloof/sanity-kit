@@ -10,31 +10,31 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@sanity/client": "^8.6.1",
+		"@sanity/client": "^8.9.0",
 		"@sanity/preview-url-secret": "^4.1.5",
-		"@sanity/vision": "6.14.1",
+		"@sanity/vision": "6.19.0",
 		"@tailwindcss/typography": "0.5.20",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
 		"classnames": "2.5.1",
-		"lucide-react": "^1.46.0",
+		"lucide-react": "^1.59.0",
 		"next": "16.3.5",
 		"next-sanity": "^13.3.4",
-		"react": "^19.3.0",
-		"react-dom": "^19.3.0",
-		"sanity": "6.14.1",
+		"react": "^19.3.1",
+		"react-dom": "^19.3.1",
+		"sanity": "6.19.0",
 		"server-only": "0.0.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.13",
+		"@biomejs/biome": "2.5.15",
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
-		"autoprefixer": "10.6.0",
-		"postcss": "8.5.28",
+		"autoprefixer": "10.6.1",
+		"postcss": "8.5.30",
 		"tailwindcss": "4.3.3",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"@tailwindcss/postcss": "4.3.3",
-		"@next/env": "16.3.5",
+		"@next/env": "16.4.2",
 		"@typescript/native": "npm:typescript@7.0.2"
 	}
 }
