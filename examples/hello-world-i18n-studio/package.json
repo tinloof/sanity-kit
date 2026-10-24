@@ -19,20 +19,20 @@
 		"./types": "./sanity.types.ts"
 	},
 	"dependencies": {
-		"@sanity/client": "^8.6.1",
-		"@sanity/vision": "6.14.1",
+		"@sanity/client": "^8.11.0",
+		"@sanity/vision": "6.20.0",
 		"@tinloof/sanity-document-i18n": "workspace:*",
 		"@tinloof/sanity-document-options": "workspace:*",
 		"@tinloof/sanity-extends": "workspace:*",
 		"@tinloof/sanity-studio": "workspace:*",
-		"groq": "6.14.1",
-		"react": "^19.3.0",
-		"react-dom": "^19.3.0",
-		"sanity": "6.14.1",
-		"styled-components": "^6.5.3"
+		"groq": "6.20.0",
+		"react": "^19.3.1",
+		"react-dom": "^19.3.1",
+		"sanity": "6.20.0",
+		"styled-components": "^6.6.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.13",
+		"@biomejs/biome": "2.6.3",
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
