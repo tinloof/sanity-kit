@@ -47,6 +47,12 @@
       allowedVersions: "<25",
     },
     {
+      // @vercel/frameworks calls yaml.safeLoad (removed in js-yaml 4). Keep 3.x.
+      matchPackageNames: ["js-yaml"],
+      matchDepTypes: ["pnpm-workspace.overrides"],
+      allowedVersions: "<4",
+    },
+    {
       matchPackageNames: ["@changesets/cli", "changesets/action", "@scaleway/changesets-renovate"],
       groupName: "release tooling",
     },
