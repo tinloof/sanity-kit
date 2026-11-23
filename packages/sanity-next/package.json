@@ -95,7 +95,7 @@
 	"sideEffects": false,
 	"peerDependencies": {
 		"@sanity/client": "^7.26.2 || ^8.6.1",
-		"next": "^16.3.4",
+		"next": "^16.4.6",
 		"next-sanity": "^13.3.4",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
